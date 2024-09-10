@@ -468,7 +468,7 @@ object Prettifier {
       case _ => (a, b)
     }
 	
-  private[org] val lineSeparator: String = scala.compat.Platform.EOL
+  private[org] val lineSeparator: String = System.lineSeparator
 }
 
 private[scalactic] class BasicPrettifier extends Prettifier {

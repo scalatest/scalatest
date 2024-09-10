@@ -2340,8 +2340,8 @@ trait PrivateMethodTester {
         val anyRefArgs = // Need to box these myself, because that's invoke is expecting an Array[Object], which maps to an Array[AnyRef]
           for (arg <- args) yield arg match {
             case anyRef: AnyRef => anyRef
-            case any: Any => any.asInstanceOf[AnyRef] // Can't use AnyVal in 2.8
             case null => null
+            case any => any.asInstanceOf[AnyRef]
           }
         val privateMethodToInvoke = methodArray(0)
         privateMethodToInvoke.setAccessible(true)
@@ -2770,8 +2770,8 @@ trait PrivateMethodTester {
         val anyRefArgs = // Need to box these myself, because that's invoke is expecting an Array[Object], which maps to an Array[AnyRef]
           for (arg <- args) yield arg match {
             case anyRef: AnyRef => anyRef
-            case any: Any => any.asInstanceOf[AnyRef] // Can't use AnyVal in 2.8
             case null => null
+            case any => any.asInstanceOf[AnyRef]
           }
         val privateMethodToInvoke = methodArray(0)
         privateMethodToInvoke.setAccessible(true)

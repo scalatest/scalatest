@@ -15,7 +15,7 @@
 */
 package org.scalactic.anyvals
 
-import reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 import org.scalactic.Resources
 
 import CompileTimeAssertions._

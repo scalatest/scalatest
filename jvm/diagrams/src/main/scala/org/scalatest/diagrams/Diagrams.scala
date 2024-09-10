@@ -345,15 +345,15 @@ object Diagrams extends Diagrams {
       lines.mkString(Prettifier.lineSeparator)
     }
 
-    private[this] def filterAndSortByAnchorOld(anchorValues: List[org.scalatest.AnchorValue]): Traversable[org.scalatest.AnchorValue] = {
-      var map = TreeMap[Int, org.scalatest.AnchorValue]()(Ordering.by(-_))
+    private[this] def filterAndSortByAnchorOld(anchorValues: List[AnchorValue]): Traversable[AnchorValue] = {
+      var map = TreeMap[Int, AnchorValue]()(Ordering.by(-_))
       // values stemming from compiler generated code often have the same anchor as regular values
       // and get recorded before them; let's filter them out
       for (value <- anchorValues) if (!map.contains(value.anchor)) map += (value.anchor -> value)
       map.values
     }
 
-    private[this] def renderDiagramOld(sourceText: String, anchorValues: List[org.scalatest.AnchorValue]): String = {
+    private[this] def renderDiagramOld(sourceText: String, anchorValues: List[AnchorValue]): String = {
       val offset = sourceText.prefixLength(_.isWhitespace)
       val intro = new StringBuilder().append(sourceText.trim())
       val lines = ListBuffer(new StringBuilder)

@@ -15,7 +15,7 @@
 */
 package org.scalactic.anyvals
 
-import reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 import java.util.regex.Pattern
 // SKIP-SCALATESTJS,NATIVE-START
 import java.util.regex.PatternSyntaxException

@@ -17,7 +17,7 @@ package org.scalatest
 package expectations
 
 import org.scalactic._
-import reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 
 /**
  * Macro implementation that provides rich error message for boolean expression assertion.
@@ -32,20 +32,20 @@ private[scalatest] object ExpectationsMacro {
           Select(
             Select(
               Select(
-                Ident(newTermName("_root_")),
-                newTermName("org")
+                Ident(TermName("_root_")),
+                TermName("org")
               ),
-              newTermName("scalatest")
+              TermName("scalatest")
             ),
-            newTermName("expectations")
+            TermName("expectations")
           ),
-          newTermName("Expectations")
+          TermName("Expectations")
         ),
-        newTermName("expectationsHelper")
+        TermName("expectationsHelper")
       ),
       expression,
       "macroExpect",
-      context.literal(""),
+      context.Expr[String](q"${""}"),
       prettifier,
       pos)
   }
@@ -58,16 +58,16 @@ private[scalatest] object ExpectationsMacro {
           Select(
             Select(
               Select(
-                Ident(newTermName("_root_")),
-                newTermName("org")
+                Ident(TermName("_root_")),
+                TermName("org")
               ),
-              newTermName("scalatest")
+              TermName("scalatest")
             ),
-            newTermName("expectations")
+            TermName("expectations")
           ),
-          newTermName("Expectations")
+          TermName("Expectations")
         ),
-        newTermName("expectationsHelper")
+        TermName("expectationsHelper")
       ),
       expression,
       "macroExpect",

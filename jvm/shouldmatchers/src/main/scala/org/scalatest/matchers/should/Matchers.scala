@@ -3168,15 +3168,15 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
   // This is where InspectorShorthands started
 
-  protected sealed class Collected(name: String) extends Serializable {
+  protected sealed abstract class Collected(name: String) extends Serializable {
     override def toString: String = name
   }
-  private val AllCollected = new Collected("AllCollected")
-  private val EveryCollected = new Collected("EveryCollected")
+  private object AllCollected extends Collected("AllCollected")
+  private object EveryCollected extends Collected("EveryCollected")
   private case class BetweenCollected(from: Int, to: Int) extends Collected("BetweenCollected")
   private case class AtLeastCollected(num: Int) extends Collected("AtLeastCollected")
   private case class AtMostCollected(num: Int) extends Collected("AtMostCollected")
-  private val NoCollected = new Collected("NoCollected")
+  private object NoCollected extends Collected("NoCollected")
   private case class ExactlyCollected(num: Int) extends Collected("ExactlyCollected")
 
   private[scalatest] def doCollected[T](collected: Collected, xs: Iterable[T], original: Any, prettifier: Prettifier, pos: source.Position)(fun: T => Assertion): Assertion = {
@@ -3355,7 +3355,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * cases still compile, but silently wouldn't work.
      * </p>
      */
-    @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
+    @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.", "1.9.2")
     //DOTTY-ONLY infix def be(comparison: TripleEqualsInvocation[_]): Nothing = {
     // SKIP-DOTTY-START
     def be(comparison: TripleEqualsInvocation[_]): Nothing = {

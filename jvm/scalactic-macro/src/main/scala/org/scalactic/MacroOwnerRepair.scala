@@ -17,7 +17,7 @@ package org.scalactic
 
 // This is needed to repair owner chain as encountered in the following issue:
 // https://github.com/scalatest/scalatest/issues/276
-private[org] class MacroOwnerRepair[C <: reflect.macros.Context with Singleton](val c: C) {
+private[org] class MacroOwnerRepair[C <: scala.reflect.macros.whitebox.Context with Singleton](val c: C) {
   /**
    * If macro arguments are spliced into underneath DefTree that introduces
    * an entry into the symbol ownership chain, any symbols defined in the
@@ -31,8 +31,7 @@ private[org] class MacroOwnerRepair[C <: reflect.macros.Context with Singleton](
 
     // Proactively typecheck the tree. This will assign symbols to
     // DefTrees introduced by the macro.
-    //val typed = c.typeCheck(expr.tree).asInstanceOf[symtab.Tree]
-    val typed = c.typeCheck(c.universe.atPos(c.macroApplication.pos)(expr.tree)).asInstanceOf[symtab.Tree]
+    val typed = c.typecheck(c.universe.atPos(c.macroApplication.pos)(expr.tree)).asInstanceOf[symtab.Tree]
 
     // The current owner at the call site. Symbols owned by this may need
     // to be transplanted.

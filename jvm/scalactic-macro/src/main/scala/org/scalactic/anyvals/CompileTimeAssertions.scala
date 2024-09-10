@@ -16,7 +16,7 @@
 package org.scalactic.anyvals
 
 import org.scalactic.Resources
-import reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 
 /**
  * Trait providing assertion methods that can be called at compile time from macros
@@ -132,7 +132,7 @@ import reflect.macros.Context
  *
  * <pre class="stHighlight">
  * import org.scalactic.anyvals.CompileTimeAssertions
- * import reflect.macros.Context
+ * import scala.reflect.macros.whitebox.Context
  *
  * object OddIntMacro extends CompileTimeAssertions {
  *

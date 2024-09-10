@@ -16,7 +16,7 @@
 package org.scalactic
 
 import exceptions.NullArgumentException
-import reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 
 /**
  * Trait that contains <code>require</code>, and <code>requireState</code>, and <code>requireNonNull</code> methods for checking pre-conditions
@@ -233,18 +233,18 @@ private[scalactic] object RequirementsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalactic")
+            TermName("scalactic")
           ),
-          newTermName("Requirements")
+          TermName("Requirements")
         ),
-        newTermName("requirementsHelper")
+        TermName("requirementsHelper")
       ),
       condition,
       "macroRequire",
-      context.literal(""),
+      context.Expr[String](q"${""}"),
       prettifier)
   }
 
@@ -263,14 +263,14 @@ private[scalactic] object RequirementsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalactic")
+            TermName("scalactic")
           ),
-          newTermName("Requirements")
+          TermName("Requirements")
         ),
-        newTermName("requirementsHelper")
+        TermName("requirementsHelper")
       ),
       condition,
       "macroRequire",
@@ -292,18 +292,18 @@ private[scalactic] object RequirementsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalactic")
+            TermName("scalactic")
           ),
-          newTermName("Requirements")
+          TermName("Requirements")
         ),
-        newTermName("requirementsHelper")
+        TermName("requirementsHelper")
       ),
       condition,
       "macroRequireState",
-      context.literal(""),
+      context.Expr[String](q"${""}"),
       prettifier)
   }
 
@@ -322,14 +322,14 @@ private[scalactic] object RequirementsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalactic")
+            TermName("scalactic")
           ),
-          newTermName("Requirements")
+          TermName("Requirements")
         ),
-        newTermName("requirementsHelper")
+        TermName("requirementsHelper")
       ),
       condition,
       "macroRequireState",
@@ -360,10 +360,10 @@ private[scalactic] object RequirementsMacro {
     val variablesNamesArray =
       Apply(
         Select(
-          Ident("Array"),
-          newTermName("apply")
+          Ident(TermName("Array")),
+          TermName("apply")
         ),
-        List(arguments.map(e => context.literal(show(e.tree)).tree): _*)
+        List(arguments.map(e => q"${show(e.tree)}"): _*)
       )
 
     // generate AST that create array containing the argument values
@@ -378,8 +378,8 @@ private[scalactic] object RequirementsMacro {
     val argumentsArray =
       Apply(
         Select(
-          Ident("Array"),
-          newTermName("apply")
+          Ident(TermName("Array")),
+          TermName("apply")
         ),
         List(arguments.map(e => e.tree): _*)
       )
@@ -394,16 +394,16 @@ private[scalactic] object RequirementsMacro {
             Select(
               Select(
                 Select(
-                  Ident(newTermName("_root_")),
-                  newTermName("org")
+                  Ident(TermName("_root_")),
+                  TermName("org")
                 ),
-                newTermName("scalactic")
+                TermName("scalactic")
               ),
-              newTermName("Requirements")
+              TermName("Requirements")
             ),
-            newTermName("requirementsHelper")
+            TermName("requirementsHelper")
           ),
-          newTermName("macroRequireNonNull")
+          TermName("macroRequireNonNull")
         ),
         List(variablesNamesArray, argumentsArray, prettifier.tree, pos.tree)
       )

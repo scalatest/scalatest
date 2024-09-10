@@ -641,7 +641,7 @@ object GenAnyVals {
        |/**
        | * <strong>The formerly implicit <code>$name</code> field has been deprecated and will be removed in a future version of ScalaTest. Please use the <code>ordering</code> field instead.</strong>
        | */
-       |@deprecated("The formerly implicit $name field has been deprecated and will be removed in a future version of ScalaTest. Please use the ordering field instead.")
+       |@deprecated("The formerly implicit $name field has been deprecated and will be removed in a future version of ScalaTest. Please use the ordering field instead.", "3.1.0")
        |val $name: Ordering[$typePrefix$primitiveName] =
        |  new Ordering[$typePrefix$primitiveName] {
        |    def compare(x: $typePrefix$primitiveName, y: $typePrefix$primitiveName): Int = ordering.compare(x, y)
@@ -652,7 +652,7 @@ object GenAnyVals {
     if (dotty)
       "import scala.quoted._"
     else
-      "import reflect.macros.Context"
+      "import scala.reflect.macros.whitebox.Context"
 
 
   def genMain(dir: File, version: String, scalaVersion: String, dotty: Boolean): Seq[File] = {

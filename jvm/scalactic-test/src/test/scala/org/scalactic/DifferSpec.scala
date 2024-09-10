@@ -259,7 +259,7 @@ class DifferSpec extends funspec.AnyFunSpec {
 
   }
 
-  val EOL = scala.compat.Platform.EOL
+  val EOL = System.lineSeparator
 
   sealed trait Parent
   case class Bar( s: String, private val i: Int ) extends Parent

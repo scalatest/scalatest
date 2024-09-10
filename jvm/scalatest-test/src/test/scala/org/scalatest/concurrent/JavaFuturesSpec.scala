@@ -24,7 +24,7 @@ import org.scalatest.exceptions.TestPendingException
 import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.StackDepthException
 import org.scalactic.source
-import scala.compat.Platform.EOL
+import System.{lineSeparator => EOL}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.tagobjects.Flicker

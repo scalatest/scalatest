@@ -17,9 +17,9 @@ package org.scalatest
 
 import org.scalactic._
 import org.scalatest.verbs.{TypeCheckWord, CompileWord}
-import scala.reflect.macros.{ Context, TypecheckException, ParseException }
+import scala.reflect.macros.whitebox.Context
+import scala.reflect.macros.{TypecheckException, ParseException}
 import org.scalatest.exceptions._
-import scala.language.experimental.macros
 
 private[scalatest] object CompileMacro {
 
@@ -39,7 +39,7 @@ private[scalatest] object CompileMacro {
           )
         ),
         stripMarginTermName
-      ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" => codeStr.toString.stripMargin // """xxx""".stripMargin string literal
+      ) if augmentStringTermName.decodedName.toString == "augmentString" && stripMarginTermName.decodedName.toString == "stripMargin" => codeStr.toString.stripMargin // """xxx""".stripMargin string literal
       case _ => c.abort(c.enclosingPosition, methodName + " only works with String literals.")
     }
   }
@@ -75,9 +75,9 @@ private[scalatest] object CompileMacro {
     try {
       val tree = c.parse("{ "+codeStr+" }")
       if (!containsAnyValNullStatement(c)(List(tree))) {
-        c.typeCheck(tree) // parse and type check code snippet
+        c.typecheck(tree) // parse and type check code snippet
         // If reach here, type check passes, let's generate code to throw TestFailedException
-        val messageExpr = c.literal(Resources.expectedTypeErrorButGotNone(codeStr))
+        val messageExpr = c.Expr[String](q"${Resources.expectedTypeErrorButGotNone(codeStr)}")
         reify {
           throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
         }
@@ -96,7 +96,7 @@ private[scalatest] object CompileMacro {
         }
       case e: ParseException =>
         // parse error, generate code to throw TestFailedException
-        val messageExpr = c.literal(Resources.expectedTypeErrorButGotParseError(e.getMessage, codeStr))
+        val messageExpr = c.Expr[String](q"${Resources.expectedTypeErrorButGotParseError(e.getMessage, codeStr)}")
         reify {
           throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
         }
@@ -112,9 +112,9 @@ private[scalatest] object CompileMacro {
     try {
       val tree = c.parse("{ "+codeStr+" }")
       if (!containsAnyValNullStatement(c)(List(tree))) {
-        c.typeCheck(tree)  // parse and type check code snippet
+        c.typecheck(tree)  // parse and type check code snippet
         // If reach here, type check passes, let's generate code to throw TestFailedException
-        val messageExpr = c.literal(Resources.expectedTypeErrorButGotNone(codeStr))
+        val messageExpr = c.Expr[String](q"${Resources.expectedTypeErrorButGotNone(codeStr)}")
         reify {
           Fact.No(
             messageExpr.splice,
@@ -130,7 +130,7 @@ private[scalatest] object CompileMacro {
         }
       }
       else {
-        val messageExpr = c.literal(Resources.gotTypeErrorAsExpected(codeStr))
+        val messageExpr = c.Expr[String](q"${Resources.gotTypeErrorAsExpected(codeStr)}")
         reify {
           // statement such as val i: Int = null, type check fails as expected, return Yes
           Fact.Yes(
@@ -149,7 +149,7 @@ private[scalatest] object CompileMacro {
 
     } catch {
       case e: TypecheckException =>
-        val messageExpr = c.literal(Resources.gotTypeErrorAsExpected(codeStr))
+        val messageExpr = c.Expr[String](q"${Resources.gotTypeErrorAsExpected(codeStr)}")
         reify {
           // type check failed as expected, return Yes
           Fact.Yes(
@@ -166,7 +166,7 @@ private[scalatest] object CompileMacro {
         }
       case e: ParseException =>
         // parse error, generate code to throw TestFailedException
-        val messageExpr = c.literal(Resources.expectedTypeErrorButGotParseError(e.getMessage, codeStr))
+        val messageExpr = c.Expr[String](q"${Resources.expectedTypeErrorButGotParseError(e.getMessage, codeStr)}")
         reify {
           Fact.No(
             messageExpr.splice,
@@ -193,9 +193,9 @@ private[scalatest] object CompileMacro {
     try {
       val tree = c.parse("{ "+codeStr+" }")
       if (!containsAnyValNullStatement(c)(List(tree))) {
-        c.typeCheck(tree, c.universe.WildcardType)  // parse and type check code snippet
+        c.typecheck(tree)  // parse and type check code snippet
         // Both parse and type check succeeded, the code snippet compiles unexpectedly, let's generate code to throw TestFailedException
-        val messageExpr = c.literal(Resources.expectedCompileErrorButGotNone(codeStr))
+        val messageExpr = c.Expr[String](q"${Resources.expectedCompileErrorButGotNone(codeStr)}")
         reify {
           throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
         }
@@ -232,9 +232,9 @@ private[scalatest] object CompileMacro {
     try {
       val tree = c.parse("{ "+codeStr+" }")
       if (!containsAnyValNullStatement(c)(List(tree))) {
-        c.typeCheck(tree, c.universe.WildcardType) // parse and type check code snippet
+        c.typecheck(tree) // parse and type check code snippet
         // Both parse and type check succeeded, the code snippet compiles unexpectedly, let's generate code to throw TestFailedException
-        val messageExpr = c.literal(Resources.expectedCompileErrorButGotNone(codeStr))
+        val messageExpr = c.Expr[String](q"${Resources.expectedCompileErrorButGotNone(codeStr)}")
         reify {
           Fact.No(
             messageExpr.splice,
@@ -251,7 +251,7 @@ private[scalatest] object CompileMacro {
         }
       }
       else {
-        val messageExpr = c.literal(Resources.didNotCompile(codeStr))
+        val messageExpr = c.Expr[String](q"${Resources.didNotCompile(codeStr)}")
         reify {
           // statement such as val i: Int = null, compile fails as expected, generate code to return Fact.Yes
           Fact.Yes(
@@ -269,7 +269,7 @@ private[scalatest] object CompileMacro {
       }
     } catch {
       case e: TypecheckException =>
-        val messageExpr = c.literal(Resources.didNotCompile(codeStr))
+        val messageExpr = c.Expr[String](q"${Resources.didNotCompile(codeStr)}")
         reify {
           // type check error, code snippet does not compile as expected, generate code to return Succeeded
           Fact.Yes(
@@ -285,7 +285,7 @@ private[scalatest] object CompileMacro {
           )
         }
       case e: ParseException =>
-        val messageExpr = c.literal(Resources.didNotCompile(codeStr))
+        val messageExpr = c.Expr[String](q"${Resources.didNotCompile(codeStr)}")
         reify {
           // parse error, code snippet does not compile as expected, generate code to return Succeeded
           Fact.Yes(
@@ -313,7 +313,7 @@ private[scalatest] object CompileMacro {
 
     try {
       val tree = c.parse("{ " + codeStr + " }")
-      c.typeCheck(tree) // parse and type check code snippet
+      c.typecheck(tree) // parse and type check code snippet
       // Both parse and type check succeeded, the code snippet compiles as expected, generate code to return Succeeded
       reify {
         Succeeded
@@ -321,13 +321,13 @@ private[scalatest] object CompileMacro {
     } catch {
       case e: TypecheckException =>
         // type check error, compiles fails, generate code to throw TestFailedException
-        val messageExpr = c.literal(Resources.expectedNoErrorButGotTypeError(e.getMessage, codeStr))
+        val messageExpr = c.Expr[String](q"${Resources.expectedNoErrorButGotTypeError(e.getMessage, codeStr)}")
         reify {
           throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
         }
       case e: ParseException =>
         // parse error, compiles fails, generate code to throw TestFailedException
-        val messageExpr = c.literal(Resources.expectedNoErrorButGotParseError(e.getMessage, codeStr))
+        val messageExpr = c.Expr[String](q"${Resources.expectedNoErrorButGotParseError(e.getMessage, codeStr)}")
         reify {
           throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
         }
@@ -341,9 +341,9 @@ private[scalatest] object CompileMacro {
     val codeStr = getCodeStringFromCodeExpression(c)("expectCompiles", code)
 
     try {
-      c.typeCheck(c.parse("{ " + codeStr + " }")) // parse and type check code snippet
+      c.typecheck(c.parse("{ " + codeStr + " }")) // parse and type check code snippet
       // Both parse and type check succeeded, the code snippet compiles as expected, generate code to return Succeeded
-      val messageExpr = c.literal(Resources.compiledSuccessfully(codeStr))
+      val messageExpr = c.Expr[String](q"${Resources.compiledSuccessfully(codeStr)}")
       reify {
         Fact.Yes(
           messageExpr.splice,
@@ -361,7 +361,7 @@ private[scalatest] object CompileMacro {
     } catch {
       case e: TypecheckException =>
         // type check error, compiles fails, generate code to throw TestFailedException
-        val messageExpr = c.literal(Resources.expectedNoErrorButGotTypeError(e.getMessage, codeStr))
+        val messageExpr = c.Expr[String](q"${Resources.expectedNoErrorButGotTypeError(e.getMessage, codeStr)}")
         reify {
           Fact.No(
             messageExpr.splice,
@@ -377,7 +377,7 @@ private[scalatest] object CompileMacro {
         }
       case e: ParseException =>
         // parse error, compiles fails, generate code to throw TestFailedException
-        val messageExpr = c.literal(Resources.expectedNoErrorButGotParseError(e.getMessage, codeStr))
+        val messageExpr = c.Expr[String](q"${Resources.expectedNoErrorButGotParseError(e.getMessage, codeStr)}")
         reify {
           Fact.No(
             messageExpr.splice,
@@ -404,9 +404,9 @@ private[scalatest] object CompileMacro {
       try {
         val tree = c.parse("{ " + code + " }")
         if (!containsAnyValNullStatement(c)(List(tree))) {
-          c.typeCheck(tree)
+          c.typecheck(tree)
           // both parse and type check succeeded, compiles succeeded unexpectedly, generate code to throw TestFailedException
-          val messageExpr = c.literal(Resources.expectedCompileErrorButGotNone(code))
+          val messageExpr = c.Expr[String](q"${Resources.expectedCompileErrorButGotNone(code)}")
           reify {
             throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
           }
@@ -450,7 +450,7 @@ private[scalatest] object CompileMacro {
                _
              ),
              _
-           ) if methodNameTermName.decoded == methodName =>
+           ) if methodNameTermName.decodedName.toString == methodName =>
         // LHS is a normal string literal, call checkNotCompile with the extracted code string to generate code
         val codeStr = code.toString
         checkNotCompile(codeStr)
@@ -485,7 +485,7 @@ private[scalatest] object CompileMacro {
                _
              ),
              _
-           ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" && methodNameTermName.decoded == methodName =>
+           ) if augmentStringTermName.decodedName.toString == "augmentString" && stripMarginTermName.decodedName.toString == "stripMargin" && methodNameTermName.decodedName.toString == methodName =>
         // LHS is a """xxx""".stripMargin string literal, call checkNotCompile with the extracted code string to generate code
         val codeStr = code.toString.stripMargin
         checkNotCompile(codeStr)
@@ -511,15 +511,15 @@ private[scalatest] object CompileMacro {
       try {
         val tree = c.parse("{ " + code + " }")
         if (!containsAnyValNullStatement(c)(List(tree))) {
-          c.typeCheck(tree)  // parse and type check code snippet
+          c.typecheck(tree)  // parse and type check code snippet
           // both parse and type check succeeded, compiles succeeded unexpectedly, generate code to throw TestFailedException
-          val messageExpr = c.literal(Resources.expectedCompileErrorButGotNone(code))
+          val messageExpr = c.Expr[String](q"${Resources.expectedCompileErrorButGotNone(code)}")
           reify {
             Fact.No(messageExpr.splice, prettifier.splice)
           }
         }
         else {
-          val messageExpr = c.literal(Resources.compiledSuccessfully(code))
+          val messageExpr = c.Expr[String](q"${Resources.compiledSuccessfully(code)}")
           reify {
             // statement such as val i: Int = null, type check error as expected, return Yes
             Fact.Yes(messageExpr.splice, prettifier.splice)
@@ -527,13 +527,13 @@ private[scalatest] object CompileMacro {
         }
       } catch {
         case e: TypecheckException =>
-          val messageExpr = c.literal(Resources.compiledSuccessfully(code))
+          val messageExpr = c.Expr[String](q"${Resources.compiledSuccessfully(code)}")
           reify {
             // type check error, compile fails as expected, generate code to return Yes
             Fact.Yes(messageExpr.splice, prettifier.splice)
           }
         case e: ParseException =>
-          val messageExpr = c.literal(Resources.compiledSuccessfully(code))
+          val messageExpr = c.Expr[String](q"${Resources.compiledSuccessfully(code)}")
           reify {
             // parse error, compile fails as expected, generate code to return Yes
             Fact.Yes(messageExpr.splice, prettifier.splice)
@@ -555,7 +555,7 @@ private[scalatest] object CompileMacro {
           methodNameTermName
         ),
         _
-      ) if methodNameTermName.decoded == methodName =>
+      ) if methodNameTermName.decodedName.toString == methodName =>
         // LHS is a normal string literal, call checkNotCompile with the extracted code string to generate code
         val codeStr = code.toString
         checkNotCompile(codeStr)
@@ -584,7 +584,7 @@ private[scalatest] object CompileMacro {
           methodNameTermName
         ),
         _
-      ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" && methodNameTermName.decoded == methodName =>
+      ) if augmentStringTermName.decodedName.toString == "augmentString" && stripMarginTermName.decodedName.toString == "stripMargin" && methodNameTermName.decodedName.toString == methodName =>
         // LHS is a """xxx""".stripMargin string literal, call checkNotCompile with the extracted code string to generate code
         val codeStr = code.toString.stripMargin
         checkNotCompile(codeStr)
@@ -607,9 +607,9 @@ private[scalatest] object CompileMacro {
       try {
         val tree = c.parse("{ " + code + " }")
         if (!containsAnyValNullStatement(c)(List(tree))) {
-          c.typeCheck(tree) // parse and type check code snippet
+          c.typecheck(tree) // parse and type check code snippet
           // both parse and type check succeeded unexpectedly, generate code to throw TestFailedException
-          val messageExpr = c.literal(Resources.expectedTypeErrorButGotNone(code))
+          val messageExpr = c.Expr[String](q"${Resources.expectedTypeErrorButGotNone(code)}")
           reify {
             throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
           }
@@ -628,7 +628,7 @@ private[scalatest] object CompileMacro {
           }
         case e: ParseException =>
           // expect type check error but got parse error, generate code to throw TestFailedException
-          val messageExpr = c.literal(Resources.expectedTypeErrorButGotParseError(e.getMessage, code))
+          val messageExpr = c.Expr[String](q"${Resources.expectedTypeErrorButGotParseError(e.getMessage, code)}")
           reify {
             throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
           }
@@ -655,7 +655,7 @@ private[scalatest] object CompileMacro {
                _
              ),
              _
-           ) if methodNameTermName.decoded == methodName =>
+           ) if methodNameTermName.decodedName.toString == methodName =>
         // LHS is a normal string literal, call checkNotTypeCheck with the extracted code string to generate code
         val codeStr = code.toString
         checkNotTypeCheck(codeStr)
@@ -690,7 +690,7 @@ private[scalatest] object CompileMacro {
                _
              ),
              _
-      ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" && methodNameTermName.decoded == methodName =>
+      ) if augmentStringTermName.decodedName.toString == "augmentString" && stripMarginTermName.decodedName.toString == "stripMargin" && methodNameTermName.decodedName.toString == methodName =>
         // LHS is a """xxx""".stripMargin string literal, call checkNotTypeCheck with the extracted code string to generate code
         val codeStr = code.toString.stripMargin
         checkNotTypeCheck(codeStr)
@@ -716,15 +716,15 @@ private[scalatest] object CompileMacro {
       try {
         val tree = c.parse("{ " + code + " }")
         if (!containsAnyValNullStatement(c)(List(tree))) {
-          c.typeCheck(tree)  // parse and type check code snippet
+          c.typecheck(tree)  // parse and type check code snippet
           // both parse and type check succeeded unexpectedly, generate code to throw TestFailedException
-          val messageExpr = c.literal(Resources.expectedTypeErrorButGotNone(code))
+          val messageExpr = c.Expr[String](q"${Resources.expectedTypeErrorButGotNone(code)}")
           reify {
             Fact.No(messageExpr.splice, prettifier.splice)
           }
         }
         else {
-          val messageExpr = c.literal(Resources.gotTypeErrorAsExpected(code))
+          val messageExpr = c.Expr[String](q"${Resources.gotTypeErrorAsExpected(code)}")
           reify {
             // statement such as val i: Int = null, type check fails as expected, generate code to return Yes
             Fact.Yes(messageExpr.splice, prettifier.splice)
@@ -732,14 +732,14 @@ private[scalatest] object CompileMacro {
         }
       } catch {
         case e: TypecheckException =>
-          val messageExpr = c.literal(Resources.gotTypeErrorAsExpected(code))
+          val messageExpr = c.Expr[String](q"${Resources.gotTypeErrorAsExpected(code)}")
           reify {
             // type check error as expected, generate code to return Yes
             Fact.Yes(messageExpr.splice, prettifier.splice)
           }
         case e: ParseException =>
           // expect type check error but got parse error, generate code to throw No
-          val messageExpr = c.literal(Resources.expectedTypeErrorButGotParseError(e.getMessage, code))
+          val messageExpr = c.Expr[String](q"${Resources.expectedTypeErrorButGotParseError(e.getMessage, code)}")
           reify {
             Fact.No(messageExpr.splice, prettifier.splice)
           }
@@ -760,7 +760,7 @@ private[scalatest] object CompileMacro {
           methodNameTermName
         ),
         _
-      ) if methodNameTermName.decoded == methodName =>
+      ) if methodNameTermName.decodedName.toString == methodName =>
         // LHS is a normal string literal, call checkNotTypeCheck with the extracted code string to generate code
         val codeStr = code.toString
         checkNotTypeCheck(codeStr)
@@ -789,7 +789,7 @@ private[scalatest] object CompileMacro {
           methodNameTermName
         ),
         _
-      ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" && methodNameTermName.decoded == methodName =>
+      ) if augmentStringTermName.decodedName.toString == "augmentString" && stripMarginTermName.decodedName.toString == "stripMargin" && methodNameTermName.decodedName.toString == methodName =>
         // LHS is a """xxx""".stripMargin string literal, call checkNotTypeCheck with the extracted code string to generate code
         val codeStr = code.toString.stripMargin
         checkNotTypeCheck(codeStr)
@@ -809,7 +809,7 @@ private[scalatest] object CompileMacro {
     // parse and type check a code snippet, generate code to throw TestFailedException if either parse error or type check error
     def checkCompile(code: String): c.Expr[Assertion] = {
       try {
-        c.typeCheck(c.parse("{ " + code + " }"))  // parse and type check code snippet
+        c.typecheck(c.parse("{ " + code + " }"))  // parse and type check code snippet
         // both parse and type check succeeded, compile succeeded expectedly, generate code to do nothing
         reify {
           Succeeded
@@ -817,13 +817,13 @@ private[scalatest] object CompileMacro {
       } catch {
         case e: TypecheckException =>
           // type check error, compile fails unexpectedly, generate code to throw TestFailedException
-          val messageExpr = c.literal(Resources.expectedNoErrorButGotTypeError(e.getMessage, code))
+          val messageExpr = c.Expr[String](q"${Resources.expectedNoErrorButGotTypeError(e.getMessage, code)}")
           reify {
             throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
           }
         case e: ParseException =>
           // parse error, compile failes unexpectedly, generate code to throw TestFailedException
-          val messageExpr = c.literal(Resources.expectedNoErrorButGotParseError(e.getMessage, code))
+          val messageExpr = c.Expr[String](q"${Resources.expectedNoErrorButGotParseError(e.getMessage, code)}")
           reify {
             throw new TestFailedException((_: StackDepthException) => Some(messageExpr.splice), None, pos.splice)
           }
@@ -850,7 +850,7 @@ private[scalatest] object CompileMacro {
                _
              ),
              _
-      ) if shouldOrMustTermName.decoded == shouldOrMust =>
+      ) if shouldOrMustTermName.decodedName.toString == shouldOrMust =>
         // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
         val codeStr = code.toString
         checkCompile(codeStr)
@@ -885,7 +885,7 @@ private[scalatest] object CompileMacro {
                _
              ),
            _
-      ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" && shouldOrMustTermName.decoded == shouldOrMust =>
+      ) if augmentStringTermName.decodedName.toString == "augmentString" && stripMarginTermName.decodedName.toString == "stripMargin" && shouldOrMustTermName.decodedName.toString == shouldOrMust =>
         // LHS is a """xxx""".stripMargin string literal, call checkCompile with the extracted code string to generate code
         val codeStr = code.toString.stripMargin
         checkCompile(codeStr)
@@ -909,8 +909,8 @@ private[scalatest] object CompileMacro {
     // parse and type check a code snippet, generate code to throw TestFailedException if either parse error or type check error
     def checkCompile(code: String): c.Expr[Fact] = {
       try {
-        c.typeCheck(c.parse("{ " + code + " }"))  // parse and type check code snippet
-        val messageExpr = c.literal(Resources.compiledSuccessfully(code))
+        c.typecheck(c.parse("{ " + code + " }"))  // parse and type check code snippet
+        val messageExpr = c.Expr[String](q"${Resources.compiledSuccessfully(code)}")
         // both parse and type check succeeded, compile succeeded expectedly, generate code to do nothing
         reify {
           Fact.Yes(messageExpr.splice, prettifier.splice)
@@ -918,13 +918,13 @@ private[scalatest] object CompileMacro {
       } catch {
         case e: TypecheckException =>
           // type check error, compile fails unexpectedly, generate code to throw TestFailedException
-          val messageExpr = c.literal(Resources.expectedNoErrorButGotTypeError(e.getMessage, code))
+          val messageExpr = c.Expr[String](q"${Resources.expectedNoErrorButGotTypeError(e.getMessage, code)}")
           reify {
             Fact.No(messageExpr.splice, prettifier.splice)
           }
         case e: ParseException =>
           // parse error, compile failes unexpectedly, generate code to throw TestFailedException
-          val messageExpr = c.literal(Resources.expectedNoErrorButGotParseError(e.getMessage, code))
+          val messageExpr = c.Expr[String](q"${Resources.expectedNoErrorButGotParseError(e.getMessage, code)}")
           reify {
             Fact.No(messageExpr.splice, prettifier.splice)
           }
@@ -945,7 +945,7 @@ private[scalatest] object CompileMacro {
           willTermName
         ),
         _
-      ) if willTermName.decoded == "will" =>
+      ) if willTermName.decodedName.toString == "will" =>
         // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
         val codeStr = code.toString
         checkCompile(codeStr)
@@ -974,7 +974,7 @@ private[scalatest] object CompileMacro {
           willTermName
         ),
         _
-      ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" && willTermName.decoded == "will" =>
+      ) if augmentStringTermName.decodedName.toString == "augmentString" && stripMarginTermName.decodedName.toString == "stripMargin" && willTermName.decodedName.toString == "will" =>
         // LHS is a """xxx""".stripMargin string literal, call checkCompile with the extracted code string to generate code
         val codeStr = code.toString.stripMargin
         checkCompile(codeStr)

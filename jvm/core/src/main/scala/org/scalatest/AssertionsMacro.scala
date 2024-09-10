@@ -16,7 +16,7 @@
 package org.scalatest
 
 import org.scalactic._
-import reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 
 /**
  * Macro implementation that provides rich error message for boolean expression assertion.
@@ -37,18 +37,18 @@ private[scalatest] object AssertionsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalatest")
+            TermName("scalatest")
           ),
-          newTermName("Assertions")
+          TermName("Assertions")
         ),
-        newTermName("assertionsHelper")
+        TermName("assertionsHelper")
       ),
       condition,
       "macroAssert",
-      context.literal(""),
+      context.Expr[String](q"${""}"),
       prettifier,
       pos)
   }
@@ -68,14 +68,14 @@ private[scalatest] object AssertionsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalatest")
+            TermName("scalatest")
           ),
-          newTermName("Assertions")
+          TermName("Assertions")
         ),
-        newTermName("assertionsHelper")
+        TermName("assertionsHelper")
       ),
       condition,
       "macroAssert",
@@ -98,18 +98,18 @@ private[scalatest] object AssertionsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalatest")
+            TermName("scalatest")
           ),
-          newTermName("Assertions")
+          TermName("Assertions")
         ),
-        newTermName("assertionsHelper")
+        TermName("assertionsHelper")
       ),
       condition,
       "macroAssume",
-      context.literal(""),
+      context.Expr[String](q"${""}"),
       prettifier,
       pos)
   }
@@ -129,14 +129,14 @@ private[scalatest] object AssertionsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalatest")
+            TermName("scalatest")
           ),
-          newTermName("Assertions")
+          TermName("Assertions")
         ),
-        newTermName("assertionsHelper")
+        TermName("assertionsHelper")
       ),
       condition,
       "macroAssume",

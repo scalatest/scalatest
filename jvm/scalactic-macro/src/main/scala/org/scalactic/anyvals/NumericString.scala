@@ -24,6 +24,7 @@ import scala.collection.GenSeq
 import scala.collection.SeqView
 import scala.collection.GenIterable
 import scala.collection.generic.CanBuildFrom
+import scala.collection.JavaConverters._
 import org.scalactic.ColCompatHelper
 //import scala.collection.parallel.ParSeq
 import scala.util.matching.Regex
@@ -894,7 +895,7 @@ final class NumericString private (val value: String) extends AnyVal {
    * @param combop an associative operator used to combine results within a
    *               partition
    */
-  def aggregate[B](z: ⇒ B)(seqop: (B, Char) ⇒ B, combop: (B, B) ⇒ B): B =
+  def aggregate[B](z: => B)(seqop: (B, Char) => B, combop: (B, B) => B): B =
     ColCompatHelper.aggregate(value, z)(seqop, combop)
 
   /**
@@ -1567,7 +1568,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *                  largest value measured by function f with respect to the
    *                  ordering `cmp`.
    */
-  def maxBy[B](f: (Char) ⇒ B)(implicit cmp: Ordering[B]): Char =
+  def maxBy[B](f: (Char) => B)(implicit cmp: Ordering[B]): Char =
     value.maxBy(f)
 
   /** Finds the smallest element.
@@ -1587,7 +1588,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *                  smallest value measured by function f with respect to the
    *                  ordering `cmp`.
    */
-  def minBy[B](f: (Char) ⇒ B)(implicit cmp: Ordering[B]): Char =
+  def minBy[B](f: (Char) => B)(implicit cmp: Ordering[B]): Char =
     value.minBy(f)
 
   /** Displays all elements of this `NumericString` in a string.
@@ -1760,7 +1761,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *  @throws UnsupportedOperationException
    *                  if this `NumericString` is empty.
    */
-  def reduce[A1 >: Char](op: (A1, A1) ⇒ A1): A1 =
+  def reduce[A1 >: Char](op: (A1, A1) => A1): A1 =
     value.reduce(op)
 
   /** Applies a binary operator to all elements of this `NumericString`,
@@ -1778,7 +1779,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *           this `NumericString`.
    *  @throws UnsupportedOperationException if this `NumericString` is empty.
    */
-  def reduceLeft[B >: Char](op: (B, Char) ⇒ B): B =
+  def reduceLeft[B >: Char](op: (B, Char) => B): B =
     value.reduceLeft(op)
 
   /** Optionally applies a binary operator to all elements of
@@ -1790,7 +1791,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *                `reduceLeft(op)` if this `NumericString` is
    *                nonempty, `None` otherwise.
    */
-  def reduceLeftOption[B >: Char](op: (B, Char) ⇒ B): Option[B] =
+  def reduceLeftOption[B >: Char](op: (B, Char) => B): Option[B] =
     value.reduceLeftOption(op)
 
   /** Reduces the elements of this `NumericString`, if any, using the specified
@@ -1804,7 +1805,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *                 elements if the collection is nonempty, and
    *                 `None` otherwise.
    */
-  def reduceOption[A1 >: Char](op: (A1, A1) ⇒ A1): Option[A1] =
+  def reduceOption[A1 >: Char](op: (A1, A1) => A1): Option[A1] =
     value.reduceOption(op)
 
   /** Applies a binary operator to all elements of this
@@ -1822,7 +1823,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *           this `NumericString`.
    *  @throws UnsupportedOperationException if this `NumericString` is empty.
    */
-  def reduceRight[B >: Char](op: (Char, B) ⇒ B): B =
+  def reduceRight[B >: Char](op: (Char, B) => B): B =
     value.reduceRight(op)
 
   /** Optionally applies a binary operator to all elements of
@@ -1834,7 +1835,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *                `reduceRight(op)` if this `NumericString` is
    *                nonempty, `None` otherwise.
    */
-  def reduceRightOption[B >: Char](op: (Char, B) ⇒ B): Option[B] =
+  def reduceRightOption[B >: Char](op: (Char, B) => B): Option[B] =
     value.reduceRightOption(op)
 
   /** Replace all literal occurrences of `literal` with the
@@ -1907,7 +1908,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *  @return a new string containing the prefix scan of the
    *          elements in this `NumericString`
    */
-  def scan(z: Char)(op: (Char, Char) ⇒ Char) =
+  def scan(z: Char)(op: (Char, Char) => Char) =
     value.scan(z)(op)
 
   /** Produces a collection containing cumulative results of applying the
@@ -1918,7 +1919,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *                 result and the element
    *  @return        collection with intermediate results
    */
-  def scanLeft(z: String)(op: (String, Char) ⇒ String) =
+  def scanLeft(z: String)(op: (String, Char) => String) =
     value.scanLeft(z)(op)
 
   /** Produces a collection containing cumulative results of
@@ -1930,7 +1931,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *                 result and the element
    *  @return        collection with intermediate results
    */
-  def scanRight(z: String)(op: (Char, String) ⇒ String) =
+  def scanRight(z: String)(op: (Char, String) => String) =
     value.scanRight(z)(op)
                     
 
@@ -1944,7 +1945,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *           element of the segment satisfies the predicate
    *           `p`.
    */
-  def segmentLength(p: (Char) ⇒ Boolean, from: Int): Int =
+  def segmentLength(p: (Char) => Boolean, from: Int): Int =
     value.segmentLength(p, from)
 
   /** A version of this collection with all of the operations
@@ -2029,7 +2030,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *    res13: String = 122
    *  }}}
    */
-  def sortBy[B](f: (Char) ⇒ B)(implicit ord: math.Ordering[B]): String =
+  def sortBy[B](f: (Char) => B)(implicit ord: math.Ordering[B]): String =
     value.sortBy(f)
 
   /** Sorts this `NumericString` according to a comparison function.
@@ -2047,7 +2048,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *    res14: String = 122
    *  }}}
    */
-  def sortWith(lt: (Char, Char) ⇒ Boolean): String =
+  def sortWith(lt: (Char, Char) => Boolean): String =
     value.sortWith(lt)
 
   /** Sorts this `NumericString` according to an Ordering.
@@ -2077,7 +2078,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *           satisfy `p`, and the rest of this
    *           `NumericString`.
    */
-  def span(p: (Char) ⇒ Boolean): (String, String) =
+  def span(p: (Char) => Boolean): (String, String) =
     value.span(p)
 
   /**
@@ -2256,7 +2257,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *  @return     the longest prefix of this `NumericString` whose
    *              elements all satisfy the predicate `p`.
    */
-  def takeWhile(p: (Char) ⇒ Boolean): String =
+  def takeWhile(p: (Char) => Boolean): String =
     value.takeWhile(p)
 
   /** Converts this `NumericString` to an array.
@@ -2426,7 +2427,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *             those elements of this `NumericString` which
    *             satisfy the predicate `p`.
    */
-  def withFilter(p: (Char) ⇒ Boolean) =
+  def withFilter(p: (Char) => Boolean) =
     value.withFilter(p)
 
   /** Returns a <code>Iterable</code> of pairs formed from this `NumericString`

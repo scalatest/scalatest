@@ -29,7 +29,6 @@ package org.scalatest.matchers.dsl
 import org.scalatest.enablers._
 import org.scalatest.matchers.MatchersHelper.andMatchersAndApply
 import org.scalatest.matchers.MatchersHelper.orMatchersAndApply
-import org.scalatest.matchers.dsl.MatcherWords
 import org.scalactic.ColCompatHelper.Iterable
 import scala.util.matching.Regex
 import org.scalactic._
@@ -47,58 +46,6 @@ import org.scalatest.matchers.AnMatcher
 import org.scalatest.matchers.MatchPatternMacro
 import org.scalatest.matchers.TypeMatcherMacro
 import org.scalatest.matchers.MatchPatternHelper
-import org.scalatest.matchers.dsl.FullyMatchWord
-import org.scalatest.matchers.dsl.StartWithWord
-import org.scalatest.matchers.dsl.EndWithWord
-import org.scalatest.matchers.dsl.IncludeWord
-import org.scalatest.matchers.dsl.HaveWord
-import org.scalatest.matchers.dsl.BeWord
-import org.scalatest.matchers.dsl.NotWord
-import org.scalatest.matchers.dsl.ContainWord
-import org.scalatest.matchers.dsl.ResultOfLengthWordApplication
-import org.scalatest.matchers.dsl.ResultOfSizeWordApplication
-import org.scalatest.matchers.dsl.ResultOfMessageWordApplication
-import org.scalatest.matchers.dsl.ResultOfLessThanComparison
-import org.scalatest.matchers.dsl.ResultOfGreaterThanComparison
-import org.scalatest.matchers.dsl.ResultOfLessThanOrEqualToComparison
-import org.scalatest.matchers.dsl.ResultOfGreaterThanOrEqualToComparison
-import org.scalatest.matchers.dsl.ResultOfAWordToSymbolApplication
-import org.scalatest.matchers.dsl.ResultOfAWordToBePropertyMatcherApplication
-import org.scalatest.matchers.dsl.ResultOfAWordToAMatcherApplication
-import org.scalatest.matchers.dsl.ResultOfAnWordToSymbolApplication
-import org.scalatest.matchers.dsl.ResultOfAnWordToBePropertyMatcherApplication
-import org.scalatest.matchers.dsl.ResultOfAnWordToAnMatcherApplication
-import org.scalatest.matchers.dsl.ResultOfTheSameInstanceAsApplication
-import org.scalatest.matchers.dsl.ResultOfRegexWordApplication
-import org.scalatest.matchers.dsl.ResultOfKeyWordApplication
-import org.scalatest.matchers.dsl.ResultOfValueWordApplication
-import org.scalatest.matchers.dsl.RegexWithGroups
-import org.scalatest.matchers.dsl.ResultOfDefinedAt
-import org.scalatest.matchers.dsl.ResultOfOneOfApplication
-import org.scalatest.matchers.dsl.ResultOfOneElementOfApplication
-import org.scalatest.matchers.dsl.ResultOfAtLeastOneOfApplication
-import org.scalatest.matchers.dsl.ResultOfAtLeastOneElementOfApplication
-import org.scalatest.matchers.dsl.ResultOfNoneOfApplication
-import org.scalatest.matchers.dsl.ResultOfNoElementsOfApplication
-import org.scalatest.matchers.dsl.ResultOfTheSameElementsAsApplication
-import org.scalatest.matchers.dsl.ResultOfTheSameElementsInOrderAsApplication
-import org.scalatest.matchers.dsl.ResultOfOnlyApplication
-import org.scalatest.matchers.dsl.ResultOfAllOfApplication
-import org.scalatest.matchers.dsl.ResultOfAllElementsOfApplication
-import org.scalatest.matchers.dsl.ResultOfInOrderOnlyApplication
-import org.scalatest.matchers.dsl.ResultOfInOrderApplication
-import org.scalatest.matchers.dsl.ResultOfInOrderElementsOfApplication
-import org.scalatest.matchers.dsl.ResultOfAtMostOneOfApplication
-import org.scalatest.matchers.dsl.ResultOfAtMostOneElementOfApplication
-import org.scalatest.matchers.dsl.SortedWord
-import org.scalatest.matchers.dsl.ResultOfATypeInvocation
-import org.scalatest.matchers.dsl.ResultOfAnTypeInvocation
-import org.scalatest.matchers.dsl.ExistWord
-import org.scalatest.matchers.dsl.ResultOfNotExist
-import org.scalatest.matchers.dsl.ReadableWord
-import org.scalatest.matchers.dsl.WritableWord
-import org.scalatest.matchers.dsl.EmptyWord
-import org.scalatest.matchers.dsl.DefinedWord
 
 import scala.language.higherKinds
 
@@ -138,7 +85,7 @@ $if (arityIsOne)$
    * result should equal (1) (decided by defaultEquality)
    * </pre>
    */
-  def apply[T <: SC](explicit: TC1[T]): Matcher[T] = matcher[T](explicit)
+  def apply[T <: SC](explicit: TC1[T]): Matcher[T] = matcher[T](using explicit)
 
 $endif$
 

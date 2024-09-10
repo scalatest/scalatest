@@ -23,7 +23,6 @@ import org.scalactic.source
 import org.scalatest.exceptions.StackDepthException._
 
 import org.scalactic.source
-import org.scalatest.compatible.Assertion
 
 /**
  * Offers two methods for transforming futures when exceptions are expected.

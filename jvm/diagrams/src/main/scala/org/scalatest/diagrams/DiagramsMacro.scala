@@ -17,7 +17,7 @@ package org.scalatest
 package diagrams
 
 import org.scalactic._
-import reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 
 private[scalatest] object DiagramsMacro {
 
@@ -83,16 +83,16 @@ private[scalatest] object DiagramsMacro {
             Select(
               Select(
                 Select(
-                  Ident(newTermName("_root_")),
-                  newTermName("org")
+                  Ident(TermName("_root_")),
+                  TermName("org")
                 ),
-                newTermName("scalatest")
+                TermName("scalatest")
               ),
-              newTermName("diagrams")
+              TermName("diagrams")
             ),
-            newTermName("Diagrams")
+            TermName("Diagrams")
           ),
-          newTermName("diagrammedAssertionsHelper")
+          TermName("diagrammedAssertionsHelper")
         ),
         condition,
         methodName,
@@ -105,14 +105,14 @@ private[scalatest] object DiagramsMacro {
           Select(
             Select(
               Select(
-                Ident(newTermName("_root_")),
-                newTermName("org")
+                Ident(TermName("_root_")),
+                TermName("org")
               ),
-              newTermName("scalatest")
+              TermName("scalatest")
             ),
-            newTermName("Assertions")
+            TermName("Assertions")
           ),
-          newTermName("assertionsHelper")
+          TermName("assertionsHelper")
         ),
         condition,
         methodName,
@@ -121,14 +121,18 @@ private[scalatest] object DiagramsMacro {
         pos)
   }
 
-  def assert(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[_], pos: context.Expr[source.Position]): context.Expr[Assertion] =
-    macroImpl(context)("macroAssert", condition, context.literal(""), prettifier, pos)
+  def assert(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[_], pos: context.Expr[source.Position]): context.Expr[Assertion] = {
+    import context.universe._
+    macroImpl(context)("macroAssert", condition, context.Expr[String](q"${""}"), prettifier, pos)
+  }
 
   def assertWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any])(prettifier: context.Expr[_], pos: context.Expr[source.Position]): context.Expr[Assertion] =
     macroImpl(context)("macroAssert", condition, clue, prettifier, pos)
 
-  def assume(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[_], pos: context.Expr[source.Position]): context.Expr[Assertion] =
-    macroImpl(context)("macroAssume", condition, context.literal(""), prettifier, pos)
+  def assume(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[_], pos: context.Expr[source.Position]): context.Expr[Assertion] = {
+    import context.universe._
+    macroImpl(context)("macroAssume", condition, context.Expr[String](q"${""}"), prettifier, pos)
+  }
 
   def assumeWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any])(prettifier: context.Expr[_], pos: context.Expr[source.Position]): context.Expr[Assertion] =
     macroImpl(context)("macroAssume", condition, clue, prettifier, pos)

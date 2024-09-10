@@ -17,7 +17,7 @@ package org.scalactic.source
 
 import org.scalactic.{MacroOwnerRepair, Resources}
 
-import scala.reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 
 /**
   * Helper class for Position macro. (Will be removed from the public API if possible in a subsequent 3.0.0-RCx release.)
@@ -41,16 +41,16 @@ object TypeInfoMacro {
               Select(
                 Select(
                   Select(
-                    Ident(newTermName("_root_")),
-                    newTermName("org")
+                    Ident(TermName("_root_")),
+                    TermName("org")
                   ),
-                  newTermName("scalactic")
+                  TermName("scalactic")
                 ),
-                newTermName("source")
+                TermName("source")
               ),
-              newTermName("TypeInfo")
+              TermName("TypeInfo")
             ),
-            newTermName("apply")
+            TermName("apply")
           ),
           List(typeTree.duplicate)
         ),

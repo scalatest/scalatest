@@ -38,7 +38,7 @@ No(4 did not equal 3)
 */
 class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with ExpectationHavePropertyMatchers {
 
-  val NEWLINE = scala.compat.Platform.EOL
+  val NEWLINE = System.lineSeparator
 
   "A Fact" - {
     // As if we said expectResult(3) { 1 + 1 }

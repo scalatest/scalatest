@@ -232,7 +232,7 @@ sealed abstract class Fact {
   private def makeString(raw: String, args: IndexedSeq[Any]): String =
     Resources.formatString(raw, args.map(prettifier.apply).toArray)
 
-  private[scalatest] val NEWLINE = scala.compat.Platform.EOL
+  private[scalatest] val NEWLINE = System.lineSeparator
 
   /**
    * Generates a fact diagram, which is a textual representation of the fact and its structure.

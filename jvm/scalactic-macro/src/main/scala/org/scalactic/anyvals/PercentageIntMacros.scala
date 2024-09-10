@@ -15,7 +15,7 @@
 */
 package org.scalactic.anyvals
 
-import reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 
 import CompileTimeAssertions._
 private[scalactic] object PercentageIntMacro {

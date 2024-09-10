@@ -46,8 +46,8 @@ private[scalatest] object DocSpec {
     val firstNonWhiteLine = zipLines.find { case (line, _) => !line.trim.isEmpty }
     val lastNonWhiteLine = zipLines.reverse.find { case (line, _) => !line.trim.isEmpty }
     (firstNonWhiteLine, lastNonWhiteLine) match {
-      case (None, None) => text.trim // Will be either (None, None) or (Some, Some)
       case (Some((_, frontIdx)), Some((_, backIdx))) => lines.take(backIdx + 1).drop(frontIdx).mkString("\n")
+      case _ => text.trim // Will be either (None, None) or (Some, Some)
     }
   }
 

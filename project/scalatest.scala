@@ -66,6 +66,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
   def commonSharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome(scalaBinaryVersion.value),
     version := releaseVersion,
+    scalacOptions ++= Seq("-deprecation"), 
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     publishTo := sonatypePublishToBundle.value, 
     publishMavenStyle := true,
@@ -189,8 +190,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           ScalacticGenResourcesJVM.genResources((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenAnyVals.genMain((Compile / sourceManaged).value / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value, false) ++
           GenEvery.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenColCompatHelper.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++ 
-          GenMacroContext.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value)
+          GenColCompatHelper.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       // Disable publishing macros directly, included in scalactic main jar

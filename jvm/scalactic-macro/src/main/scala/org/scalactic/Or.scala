@@ -850,7 +850,7 @@ sealed abstract class Or[+G,+B] extends Product with Serializable {
     * <code>Good[Type].orBad(value)</code> (which now return a type already widened to <code>Or</code>), otherwise please
     * use a type annotation to widen the type, such as: <code>(Good(3): Int Or ErrorMessage)</code>.</strong>
     */
-  @deprecated("The asOr is no longer needed because Good(value).orBad[Type] and Good[Type].orBad(value) now return Or. You can delete invocations of asOr in those cases, otherwise, please use a type annotation to widen the type, like (Good(3): Int Or ErrorMessage).")
+  @deprecated("The asOr is no longer needed because Good(value).orBad[Type] and Good[Type].orBad(value) now return Or. You can delete invocations of asOr in those cases, otherwise, please use a type annotation to widen the type, like (Good(3): Int Or ErrorMessage).", "3.0.0")
   def asOr: G Or B = this
 }
 
@@ -1176,7 +1176,7 @@ final case class Good[+G](g: G) extends Or[G,Nothing] {
     * <code>Good[Type].orBad(value)</code> (which now return a type already widened to <code>Or</code>), otherwise please
     * use a type annotation to widen the type, such as: <code>(Good(3): Int Or ErrorMessage)</code>.</strong>
     */
-  @deprecated("The asOr is no longer needed because Good(value).orBad[Type] and Good[Type].orBad(value) now return Or. You can delete invocations of asOr in those cases, otherwise, please use a type annotation to widen the type, like (Good(3): Int Or ErrorMessage).")
+  @deprecated("The asOr is no longer needed because Good(value).orBad[Type] and Good[Type].orBad(value) now return Or. You can delete invocations of asOr in those cases, otherwise, please use a type annotation to widen the type, like (Good(3): Int Or ErrorMessage).", "3.0.0")
   override def asOr: G Or Nothing = this
 
   /**
@@ -1363,7 +1363,7 @@ final case class Bad[+B](b: B) extends Or[Nothing,B] {
     * <code>Good[Type].orBad(value)</code> (which now return a type already widened to <code>Or</code>), otherwise please
     * use a type annotation to widen the type, such as: <code>(Good(3): Int Or ErrorMessage)</code>.</strong>
     */
-  @deprecated("The asOr is no longer needed because Good(value).orBad[Type] and Good[Type].orBad(value) now return Or. You can delete invocations of asOr in those cases, otherwise, please use a type annotation to widen the type, like (Good(3): Int Or ErrorMessage).")
+  @deprecated("The asOr is no longer needed because Good(value).orBad[Type] and Good[Type].orBad(value) now return Or. You can delete invocations of asOr in those cases, otherwise, please use a type annotation to widen the type, like (Good(3): Int Or ErrorMessage).", "3.0.0")
   override def asOr: Nothing Or B = this
   def get: Nothing = throw new NoSuchElementException("Bad(" + b + ").get")
   def map[H](f: Nothing => H): H Or B = this

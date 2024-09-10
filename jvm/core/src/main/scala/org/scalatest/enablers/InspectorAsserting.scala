@@ -458,7 +458,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
               else
                 Future.successful((newPassedCount, newMessageAcc))
 
-            case other => Future { throw other}
+            case other: Throwable => Future { throw other}
           }
         }
         else
@@ -744,7 +744,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
         catch {
           case e if !shouldPropagate(e) =>
             Future.successful((next, idx, Failure(e)))
-          case other =>
+          case other: Throwable =>
             Future { throw other }
         }
       }
@@ -829,7 +829,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
           else
             runAsyncSerial(itr, xsIsMap, index + 1, newResult, fun, stopFun)
 
-        case other => Future { throw other }
+        case other: Throwable => Future { throw other }
       }
     }
     else {

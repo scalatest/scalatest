@@ -16,7 +16,7 @@
 package org.scalatest.matchers
 
 import org.scalatest.Resources
-import reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 
 private[scalatest] object MatchPatternMacro {
 
@@ -29,12 +29,12 @@ private[scalatest] object MatchPatternMacro {
     // Check if it is a default case
     def defaultCase(t: Tree): Boolean =
       t match {
-        case Bind(defaultCaseTermName, Ident(nme.WILDCARD)) if defaultCaseTermName.decoded == "defaultCase$" => true  // default case
+        case Bind(defaultCaseTermName, Ident(termNames.WILDCARD)) if defaultCaseTermName.decodedName.toString == "defaultCase$" => true  // default case
         case _ => false // not default case
       }
 
     tree match {
-      case Typed(Block(List(ClassDef(_, _, _, Template(_, _, List(_, DefDef(_, applyOrElseTermName, _, _, _, Match(_, caseDefList)), _)))), _), _) if applyOrElseTermName.decoded == "applyOrElse" =>
+      case Typed(Block(List(ClassDef(_, _, _, Template(_, _, List(_, DefDef(_, applyOrElseTermName, _, _, _, Match(_, caseDefList)), _)))), _), _) if applyOrElseTermName.decodedName.toString == "applyOrElse" =>
         // We got a case definition list, let's go through them to check
         caseDefList.foreach {
           case CaseDef(pat, _, body) if !defaultCase(pat) => // case definition, and not default case
@@ -70,14 +70,14 @@ private[scalatest] object MatchPatternMacro {
           Select(
             Select(
               Select(
-                Ident(newTermName("org")),
-                newTermName("scalatest")
+                Ident(TermName("org")),
+                TermName("scalatest")
               ),
-              newTermName("matchers")
+              TermName("matchers")
             ),
-            newTermName("MatchPatternHelper")
+            TermName("MatchPatternHelper")
           ),
-          newTermName("matchPatternMatcher")
+          TermName("matchPatternMatcher")
         ),
         List(tree)
       )
@@ -104,14 +104,14 @@ private[scalatest] object MatchPatternMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("org")),
-              newTermName("scalatest")
+              Ident(TermName("org")),
+              TermName("scalatest")
             ),
-            newTermName("matchers")
+            TermName("matchers")
           ),
-          newTermName("MatchPatternHelper")
+          TermName("MatchPatternHelper")
         ),
-        newTermName("notMatchPatternMatcher")
+        TermName("notMatchPatternMatcher")
       ),
       List(tree)
     )
@@ -142,9 +142,9 @@ private[scalatest] object MatchPatternMacro {
             Select(
               Select(
                 qualifier,
-                "owner"
+                TermName("owner")
               ),
-              newTermName("and")
+              TermName("and")
             ),
             List(notMatcher)
           )
@@ -174,9 +174,9 @@ private[scalatest] object MatchPatternMacro {
             Select(
               Select(
                 qualifier,
-                "owner"
+                TermName("owner")
               ),
-              newTermName("or")
+              TermName("or")
             ),
             List(notMatcher)
           )
@@ -212,14 +212,14 @@ private[scalatest] object MatchPatternMacro {
               Select(
                 Select(
                   Select(
-                    Ident(newTermName("org")),
-                    newTermName("scalatest")
+                    Ident(TermName("org")),
+                    TermName("scalatest")
                   ),
-                  newTermName("matchers")
+                  TermName("matchers")
                 ),
-                newTermName("MatchPatternHelper")
+                TermName("MatchPatternHelper")
               ),
-              newTermName("checkMatchPattern")
+              TermName("checkMatchPattern")
             ),
             List(qualifier, tree)
           )

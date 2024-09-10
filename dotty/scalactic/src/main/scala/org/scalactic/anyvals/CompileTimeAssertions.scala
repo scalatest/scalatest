@@ -133,7 +133,7 @@ import scala.quoted._
  *
  * <pre class="stHighlight">
  * import org.scalactic.anyvals.CompileTimeAssertions
- * import reflect.macros.Context
+ * import scala.reflect.macros.whitebox.Context
  *
  * object OddIntMacro extends CompileTimeAssertions {
  *

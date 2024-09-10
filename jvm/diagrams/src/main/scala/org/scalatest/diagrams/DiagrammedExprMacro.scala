@@ -17,7 +17,7 @@ package org.scalatest.diagrams
 
 import org.scalactic._
 import org.scalatest.Assertion
-import reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 import scala.annotation.tailrec
 
 private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
@@ -29,7 +29,7 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
   def valDef(name: String, rhs: Tree): ValDef =
     ValDef(
       Modifiers(),
-      newTermName(name),
+      TermName(name),
       TypeTree(),
       rhs
     )
@@ -73,14 +73,14 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
         Select(
           Select(
             Select(
-              Ident(newTermName("scala")),
-              newTermName("collection")
+              Ident(TermName("scala")),
+              TermName("collection")
             ),
-            newTermName("immutable")
+            TermName("immutable")
           ),
-          newTermName("List")
+          TermName("List")
         ),
-        newTermName("apply")
+        TermName("apply")
       ),
       elements
     )
@@ -92,16 +92,16 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
           Select(
             Select(
               Select(
-                Ident(newTermName("_root_")),
-                newTermName("org")
+                Ident(TermName("_root_")),
+                TermName("org")
               ),
-              newTermName("scalatest")
+              TermName("scalatest")
             ),
-            newTermName("diagrams")
+            TermName("diagrams")
           ), 
-          newTermName("DiagrammedExpr")
+          TermName("DiagrammedExpr")
         ),
-        newTermName("byNameExpr")
+        TermName("byNameExpr")
       ),
       List(
         tree,
@@ -122,16 +122,16 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
           Select(
             Select(
               Select(
-                Ident(newTermName("_root_")),
-                newTermName("org")
+                Ident(TermName("_root_")),
+                TermName("org")
               ),
-              newTermName("scalatest")
+              TermName("scalatest")
             ),
-            newTermName("diagrams")
+            TermName("diagrams")
           ), 
-          newTermName("DiagrammedExpr")
+          TermName("DiagrammedExpr")
         ),
-        newTermName("simpleExpr")
+        TermName("simpleExpr")
       ),
       List(
         tree,
@@ -176,7 +176,7 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
 
     val valueExpr =
       Select(
-        Select(Ident(newTermName("$org_scalatest_macro_qualifier")), newTermName("value")),
+        Select(Ident(TermName("$org_scalatest_macro_qualifier")), TermName("value")),
         select.name
       )
 
@@ -187,19 +187,19 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
             Select(
               Select(
                 Select(
-                  Ident(newTermName("_root_")),
-                  newTermName("org")
+                  Ident(TermName("_root_")),
+                  TermName("org")
                 ),
-                newTermName("scalatest")
+                TermName("scalatest")
               ),
-              newTermName("diagrams")
+              TermName("diagrams")
             ),
-            newTermName("DiagrammedExpr")
+            TermName("DiagrammedExpr")
           ),
-          newTermName("selectExpr")
+          TermName("selectExpr")
         ),
         List(
-          Ident(newTermName("$org_scalatest_macro_qualifier")),
+          Ident(TermName("$org_scalatest_macro_qualifier")),
           valueExpr,
           Literal(Constant(getAnchor(select)))
         )
@@ -207,7 +207,7 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
 
     val exprList: List[Tree] = List(qualifierValDef, resultExpr)
 
-    Block(exprList: _*)
+    q"..${exprList}"
   }
 
   def paramss(tpe: Type): List[List[Symbol]] = {
@@ -222,7 +222,7 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
 
   // inspired from https://github.com/scala/async/blob/master/src/main/scala/scala/async/internal/TransformUtils.scala#L112-L127
   private def isByName(fun: Tree, i: Int, j: Int): Boolean = {
-    val byNamess = fun.tpe.paramss.map(_.map(_.asTerm.isByNameParam))
+    val byNamess = fun.tpe.paramLists.map(_.map(_.asTerm.isByNameParam))
     util.Try(byNamess(i)(j)).getOrElse(false)
   }
 
@@ -275,16 +275,16 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
                 arg match {
                   case func: Function =>  
                     Apply(
-                      Select(Select(Ident(newTermName("$org_scalatest_macro_arg_" + (base + j))), newTermName("value")), newTermName("apply")),
+                      Select(Select(Ident(TermName("$org_scalatest_macro_arg_" + (base + j))), TermName("value")), TermName("apply")),
                       List.empty 
                     )
                     
                   case byName if isByName(fun, 0, j) => //byName
                     Apply(
-                      Select(Select(Ident(newTermName("$org_scalatest_macro_arg_" + (base + j))), newTermName("value")), newTermName("apply")),
+                      Select(Select(Ident(TermName("$org_scalatest_macro_arg_" + (base + j))), TermName("value")), TermName("apply")),
                       List.empty 
                     ) 
-                  case _ => Select(Ident(newTermName("$org_scalatest_macro_arg_" + (base + j))), newTermName("value"))
+                  case _ => Select(Ident(TermName("$org_scalatest_macro_arg_" + (base + j))), TermName("value"))
                 }
               }
             case _ => currentApply.args
@@ -301,7 +301,7 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
         case typeApply: TypeApply =>
           TypeApply(
             Select(
-              Select(Ident(newTermName("$org_scalatest_macro_qualifier")), newTermName("value")),
+              Select(Ident(TermName("$org_scalatest_macro_qualifier")), TermName("value")),
               applyInfo.select.name
             ),
             substitutedArgsList.head._2
@@ -309,7 +309,7 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
         case _ =>
           Apply(
             Select(
-              Select(Ident(newTermName("$org_scalatest_macro_qualifier")), newTermName("value")),
+              Select(Ident(TermName("$org_scalatest_macro_qualifier")), TermName("value")),
               applyInfo.select.name
             ),
             substitutedArgsList.head._2
@@ -339,19 +339,19 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
             Select(
               Select(
                 Select(
-                  Ident(newTermName("_root_")),
-                  newTermName("org")
+                  Ident(TermName("_root_")),
+                  TermName("org")
                 ),
-                newTermName("scalatest")
+                TermName("scalatest")
               ),
-              newTermName("diagrams")
+              TermName("diagrams")
             ),
-            newTermName("DiagrammedExpr")
+            TermName("DiagrammedExpr")
           ),
-          newTermName("applyExpr")
+          TermName("applyExpr")
         ),
         List(
-          Ident(newTermName("$org_scalatest_macro_qualifier")),
+          Ident(TermName("$org_scalatest_macro_qualifier")),
           list(argIdents),
           valueExpr,
           Literal(Constant(getAnchor(apply)))
@@ -360,7 +360,7 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
 
     // Special handle if the method invocation is logical expression &&, &, || and |
     val exprList: List[Tree] = {
-      val funcName = applyInfo.select.name.decoded
+      val funcName = applyInfo.select.name.decodedName.toString
       if ((funcName == "&&" || funcName == "&") && argIdents.length == 1) {
         /**
          * If it is && or &, try to be lazy by doing:
@@ -375,11 +375,11 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
         val ifCheck =
           If(
             Select(
-              Ident(newTermName("$org_scalatest_macro_qualifier")),
-              newTermName("value")
+              Ident(TermName("$org_scalatest_macro_qualifier")),
+              TermName("value")
             ),
-            Block((argsValDefList ::: List(resultExpr)): _*),
-            Ident(newTermName("$org_scalatest_macro_qualifier"))
+            q"..${(argsValDefList ::: List(resultExpr))}",
+            Ident(TermName("$org_scalatest_macro_qualifier"))
           )
         List(qualifierValDef, ifCheck)
       }
@@ -398,11 +398,11 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
         val ifCheck =
           If(
             Select(
-              Ident(newTermName("$org_scalatest_macro_qualifier")),
-              newTermName("value")
+              Ident(TermName("$org_scalatest_macro_qualifier")),
+              TermName("value")
             ),
-            Ident(newTermName("$org_scalatest_macro_qualifier")),
-            Block((argsValDefList ::: List(resultExpr)): _*)
+            Ident(TermName("$org_scalatest_macro_qualifier")),
+            q"..${(argsValDefList ::: List(resultExpr))}"
           )
         List(qualifierValDef, ifCheck)
       }
@@ -410,7 +410,7 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
         qualifierValDef :: argsValDefList ::: List(resultExpr)
     }
 
-    Block(exprList: _*)
+    q"""..${exprList}"""
   }
 
   def isXmlSugar(apply: Apply): Boolean =
@@ -429,7 +429,7 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
                constructorName
              ),
              _
-           ) if scalaName.decoded == "scala" && xmlName.decoded == "xml" && xmlElemName.decoded == "Elem" && constructorName.decoded == "<init>" => true
+           ) if scalaName.decodedName.toString == "scala" && xmlName.decodedName.toString == "xml" && xmlElemName.decodedName.toString == "Elem" && constructorName.decodedName.toString == "<init>" => true
       case _ => false
     }
 
@@ -457,9 +457,9 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
     Apply(
       Select(
         helper,
-        newTermName(methodName)
+        TermName(methodName)
       ),
-      List(Ident(newTermName("$org_scalatest_assert_macro_expr")), clueTree, Literal(Constant(sourceText)), pos)
+      List(Ident(TermName("$org_scalatest_assert_macro_expr")), clueTree, Literal(Constant(sourceText)), pos)
     )
 
   /**
@@ -474,10 +474,10 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
     val ownerRepair = new MacroOwnerRepair[context.type](context)
     val expandedCode =
       context.Expr(
-        Block(
-          valDef("$org_scalatest_assert_macro_expr", transformAst(booleanExpr.tree)),
-          callHelper(helper, methodName, clueExpr.tree, sourceText, pos.tree)
-        )
+        q"""
+          ${valDef("$org_scalatest_assert_macro_expr", transformAst(booleanExpr.tree))}
+          ${callHelper(helper, methodName, clueExpr.tree, sourceText, pos.tree)}
+        """
       )  
     ownerRepair.repairOwners(expandedCode)
   }
