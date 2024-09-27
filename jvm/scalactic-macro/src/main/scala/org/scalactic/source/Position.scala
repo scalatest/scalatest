@@ -36,7 +36,7 @@ package org.scalactic.source
  *
  * @param fileName the simple name of a source file
  * @param filePathname the fully qualified pathname of the source file
- * @param lineNumber a line number inside the source file with the given filePathname and fileNamae
+ * @param lineNumber a line number inside the source file with the given filePathname and fileName
  */
 case class Position(fileName: String, filePathname: String, lineNumber: Int)
 
