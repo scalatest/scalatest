@@ -42,7 +42,7 @@ import scala.reflect.macros.whitebox.Context
  * </pre>
  *
  * <p>
- * In either the precondition or postcondition check fails, an exception will
+ * If either the precondition or postcondition check fails, an exception will
  * be thrown at runtime. If you have many methods like this you may want to
  * create a type to represent an odd <code>Int</code>, so that the checking
  * for validity errors is isolated in just one place. By using an <code>AnyVal</code>
@@ -66,7 +66,7 @@ import scala.reflect.macros.whitebox.Context
  * <p>
  * An <code>AnyVal</code> cannot have any constructor code, so to ensure that
  * any <code>Int</code> passed to the <code>OddInt</code> constructor is actually
- * odd, the constructor must be private. That way the only way to construct a
+ * odd, its constructor must be private. That way the only way to construct a
  * new <code>OddInt</code> is via the <code>apply</code> factory method in the
  * <code>OddInt</code> companion object, which can require that the value be
  * odd. This design eliminates the need for placing <code>require</code> and
@@ -99,7 +99,7 @@ import scala.reflect.macros.whitebox.Context
  * will only work with literals, you'll need a second method that can work
  * an any expression of type <code>Int</code>. We recommend a <code>from</code> method
  * that returns an <code>Option[OddInt]</code> that returns <code>Some[OddInt}</code> if the passed <code>Int</code> is odd,
- * else returns <code>None</code>, and an <code>ensuringValid</code> method that returns an <code>OddInt</code>
+ * otherwise returns <code>None</code>, and an <code>ensuringValid</code> method that returns an <code>OddInt</code>
  * if the passed <code>Int</code> is valid, else throws <code>AssertionError</code>.
  * </p>
  *
@@ -165,7 +165,7 @@ import scala.reflect.macros.whitebox.Context
  * If the assertion fails, <code>ensureValidIntLiteral</code> will complete abruptly with an exception that will
  * contain an appropriate error message (one of the two you passed in) and cause a compiler error with that message.
  * If the assertion succeeds, <code>ensureValidIntLiteral</code> will just return normally. The next line of code
- * will then execute. This line of code must construct an AST (abstract syntax tree) of code that will replace
+ * will then execute. This line of code then constructs an AST (abstract syntax tree) that will replace
  * the <code>OddInt.apply</code> invocation. We invoke the other factory method that either returns an <code>OddInt</code>
  * or throws an <code>AssertionError</code>, since we've proven at compile time that the call will succeed.
  * </p>
