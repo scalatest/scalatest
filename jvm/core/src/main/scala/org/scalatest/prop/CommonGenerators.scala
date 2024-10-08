@@ -32,12 +32,12 @@ import org.scalactic.ColCompatHelper.LazyListOrStream
   * Provides various specialized [[Generator]]s that are often useful.
   *
   * This exists as both a trait that you can mix into your classes, and an object
-  * that you can import -- choose whichever better suits your tests. However, you
+  * that you can import -- choose whichever best suits your tests. However, you
   * usually should not need to pull this in directly, since it is already mixed into
   * both [[GeneratorDrivenPropertyChecks]] and [[TableDrivenPropertyChecks]].
   *
   * This incorporates the standard [[Generator]]s defined in the [[Generator]] object,
-  * so you generally shouldn't need both.
+  * so you generally won't need both.
   *
   * @groupprio Specific 10
   * @groupname Specific Creating Generators from Specific Values
@@ -56,11 +56,11 @@ import org.scalactic.ColCompatHelper.LazyListOrStream
   * @groupprio Values 40
   * @groupname Values Generators that produce the values from Scalactic Types
   * @groupdesc Values Scalactic has many highly-precise numeric types such as [[NonZeroLong]],
-  *            [[PosZFloat]] or [[FiniteDouble]]. These help you make sure your code is using
+  *            [[PosZFloat]] or [[FiniteDouble]]. These help ensure your code is using
   *            exactly the numbers you intend, and they are very convenient for using with
   *            [[Generator]]s. But if the code under test is ''not'' using Scalactic, you
   *            sometimes find that you need to type `.value` a lot. These Generators do that
-  *            for so: you can choose a precise numeric Generator, but get the conventional
+  *            for you: you can choose a precise numeric Generator, but get the conventional
   *            numeric type from it.
   *
   * @groupprio Collections 50
@@ -99,12 +99,12 @@ trait CommonGenerators {
   /**
     * Create a [[Generator]] that returns values in the specified range.
     *
-    * This is the general-purpose function that underlies all of the other `xxsBetween()` functions in
+    * This is the general-purpose function that underlies all other `xxsBetween()` functions in
     * CommonGenerators. It works with any type for which there is an [[Ordering]], a [[Generator]], and
     * a [[Chooser]], making it easy to create [[Generator]]s for ranges within that type.
     *
     * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
-    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they ''will'' usually be
     * produced in a typical run.
     *
     * The value of `from` must be less than or equal to the value of `to`. (However "less than or equal"
@@ -163,7 +163,7 @@ trait CommonGenerators {
   /**
     * Create a [[Generator]] that returns [[Byte]]s in the specified range.
     *
-    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * The range is inclusive: both ''from'' and ''to'' may be produced by the returned [[Generator]].
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
@@ -1319,7 +1319,7 @@ trait CommonGenerators {
 
   /**
     * A [[Generator]] that produces positive [[Float]] values, not including zero
-    * but including infinites and `NaN`.
+    * but including infinities and `NaN`.
     *
     * @group Values
     */
@@ -1515,14 +1515,14 @@ trait CommonGenerators {
   val nonZeroFiniteDoubleValues: Generator[Double] = Generator.nonZeroFiniteDoubleGenerator.map(_.value)
 
   /**
-    * A [[Generator]] that produces [[Float]] values, including zero but not including infinities or `NaN`.
+    * A [[Generator]] that produces [[Float]] values, including zero but not including infinity or `NaN`.
     *
     * @group Values
     */
   val finiteFloatValues: Generator[Float] = Generator.finiteFloatGenerator.map(_.value)
 
   /**
-    * A [[Generator]] that produces [[Double]] values, including zero but not including infinities or `NaN`.
+    * A [[Generator]] that produces [[Double]] values, including zero but not including infinity or `NaN`.
     *
     * @group Values
     */
