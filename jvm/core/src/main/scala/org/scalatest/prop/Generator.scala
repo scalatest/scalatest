@@ -53,7 +53,7 @@ import org.scalactic.ColCompatHelper.LazyListOrStream
   *
   * In most cases, you do not need to write Generators from scratch -- Generators for most non-primitive
   * types can be composed using for comprehensions, as described in the section ''Composing Your Own
-  * Generators'' in the documentation for the [[org.scalatest.prop]] pacakge. You can also often create
+  * Generators'' in the documentation for the [[org.scalatest.prop]] package. You can also often create
   * them using the [[CommonGenerators.instancesOf]] method. You should only need to write a Generator
   * from scratch for relatively primitive types, that aren't composed of other types.
   *
@@ -90,7 +90,7 @@ import org.scalactic.ColCompatHelper.LazyListOrStream
   * ===next()===
   *
   * Using this randomization function, write a first draft of your Generator, filling in the
-  * `next()` method. This is the only required method, and should suffice to start playing with
+  * `next()` method. This is the only required method, and should be sufficient to start using
   * your Generator. Once this is working, you have a useful Generator.
   *
   * ===Edges===
@@ -101,7 +101,7 @@ import org.scalactic.ColCompatHelper.LazyListOrStream
   * the property, since they are assumed to be the values most likely to cause failures.
   *
   * Figure out some appropriate edge cases for your type. Override `initEdges()` to return
-  * those, and enhance `next()` to produce them ahead of the random values. Identifying these will tend to make
+  * those, and enhance `next()` to produce them before the random values. Identifying these will tend to make
   * your property checks more effective, by catching these edge cases early.
   *
   * ===Canonicals===
@@ -127,7 +127,7 @@ import org.scalactic.ColCompatHelper.LazyListOrStream
   * values, to see if those also fail. So for example, if a String of length 15 causes a failure, its
   * Generator could try Strings of length 3, and then 1, and then 0, to see if those also cause failure.
   *
-  * You to ''not'' have to implement the [[Generator.shrink]] method, but it is helpful to do so when it makes sense;
+  * You do ''not'' have to implement the [[Generator.shrink]] method, but it is helpful to do so when it makes sense;
   * the test system will use that to produce smaller, easier-to-debug examples when something fails.
   *
   * One important rule: the values returned from `shrink` must always be smaller than -- not equal to --
@@ -276,7 +276,7 @@ trait Generator[T] { thisGeneratorOfT =>
   // This map method can be used if the function from T to U is invertible. For example, if f
   // is a function from Int => Option[Int] that just wraps each Int in a Some, (n: Int) => (Some(n): Option[Int]),
   // the g function can be a function that unwraps it back to Int: (n: Option[Int]) => n.get. The point of this
-  // method is to map the Generator while preserving an intersting shrinksForValue method. To do that we need
+  // method is to map the Generator while preserving an interesting shrinksForValue method. To do that we need
   // the U to T function, because shrinksToValue takes a U in the resulting Generator[U].
   def mapInvertible[U](f: T => U, g: U => T): Generator[U] = {
     new Generator[U] { thisGeneratorOfU =>
@@ -386,7 +386,7 @@ trait Generator[T] { thisGeneratorOfT =>
   /**
     * Support for filtering in for comprehensions.
     *
-    * This means the same thing is does for all standard Scala Monads: it applies a filter function
+    * This means the same thing it does for all standard Scala Monads: it applies a filter function
     * to this Generator. If you use an `if` clause in a `for` comprehension, this is the function
     * that will be called.
     *
@@ -404,7 +404,7 @@ trait Generator[T] { thisGeneratorOfT =>
   /**
     * Support for filtering in for comprehensions.
     *
-    * This means the same thing is does for all standard Scala Monads: it applies a filter function
+    * This means the same thing it does for all standard Scala Monads: it applies a filter function
     * to this Generator. If you use an `if` clause in a `for` comprehension, this is the function
     * that will be called.
     *
@@ -448,7 +448,7 @@ trait Generator[T] { thisGeneratorOfT =>
     *
     *   - `Int`: 0, 1, -1, 2, -2, 3, -3
     *   - `Char`: the letters and digits
-    *   - `String`: single-charactor Strings of the letter and digits
+    *   - `String`: single-character Strings of the letters and digits
     *
     * You do not have to provide canonicals for a Generator. By default, this simply
     * returns an empty [[LazyListOrStream]].
@@ -929,7 +929,7 @@ object Generator {
               if (isValidFun(0.0f, sizeParam)) Rose(0.0f) #:: LazyListOrStream.empty else LazyListOrStream.empty
             else if (!theValue.isWhole) {
               // We need to handle infinity and NaN specially because without it, this method
-              // will go into an infinite loop. The reason is floor and ciel give back the same value
+              // will go into an infinite loop. The reason is floor and ceil give back the same value
               // on these values:
               //
               // scala> val f = Float.PositiveInfinity
@@ -966,7 +966,7 @@ object Generator {
               if (sqrt < 1.0f && sqrt >= -1.0) 
                 if (isValidFun(0.0f, sizeParam)) Rose(0.0f) #:: LazyListOrStream.empty else LazyListOrStream.empty
               else {
-                // Try both the negative and postive, negative first because positive is simpler for humans,
+                // Try both the negative and positive, negative first because positive is simpler for humans,
                 // so more "shrunk."
                 val whole: Float = sqrt.floor
                 val negWhole: Float = -whole // math.rint((-whole).toDouble).toFloat
@@ -1023,7 +1023,7 @@ object Generator {
               if (isValidFun(0.0, sizeParam)) Rose(0.0) #:: LazyListOrStream.empty else LazyListOrStream.empty
             else if (!theValue.isWhole) {
               // We need to handle infinity and NaN specially because without it, this method
-              // will go into an infinite loop. The reason is floor and ciel give back the same value
+              // will go into an infinite loop. The reason is floor and ceil give back the same value
               // on these values:
               //
               // scala> val n = Double.PositiveInfinity
@@ -1060,7 +1060,7 @@ object Generator {
               if (sqrt < 1.0 && sqrt >= -1.0) 
                 if (isValidFun(0.0, sizeParam)) Rose(0.0) #:: LazyListOrStream.empty else LazyListOrStream.empty
               else {
-                // Try both the negative and postive, negative first because positive is simpler for humans,
+                // Try both the negative and positive, negative first because positive is simpler for humans,
                 // so more "shrunk."
                 val whole: Double = sqrt.floor
                 val negWhole: Double = -whole // math.rint((-whole).toDouble).toDouble
