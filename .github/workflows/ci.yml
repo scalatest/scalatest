@@ -115,3 +115,20 @@ jobs:
         cache: 'sbt'
     - name: Build and Run Generated Tests on JDK ${{ matrix.Java }}
       run: sbt gentests/test
+  test-scaladoc:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [ '8' ]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Setup JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: ${{ matrix.java }}
+        cache: 'sbt'
+    - name: Build Scalactic and ScalaTest' ScalaDoc using Scala 2.13 on JDK ${{ matrix.Java }}
+      run: sbt doc
