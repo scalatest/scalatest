@@ -44,7 +44,7 @@ trait Configuration {
     /**
       * Compute the actual number of discards allowed for this run.
       *
-      * Note that this function appears to only be used in one place, in a test. It really should be
+      * Note that this function appears to be used only in one place, in a test. It really should be
       * merged with the version in [[Configuration]].
       *
       * @param maxDiscardedRatio the maximum number of discards, as a multiplier of the minimum number of

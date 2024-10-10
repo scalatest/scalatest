@@ -39,16 +39,16 @@ import org.scalactic.Requirements._
   * then values from 10 to 20 are desired.
   *
   * The `size` member gives the desired size for ''this'' particular invocation of [[Generator.next()]].
-  * Most [[Generator]]s will create a result of that size. However, it is up to the individual
-  * [[Generator]] to choose how it interprets [[SizeParam]].
+  * Most [[Generator]] instances will create a result of that size. However, it is up to each individual
+  * [[Generator]] to determine how it interprets [[SizeParam]].
   *
-  * You should not usually need to create a [[SizeParam]] directly -- most of the time, you
+  * You usually do not need to create a [[SizeParam]] directly -- most of the time, you
   * should be able to use the [[HavingSize]] or [[HavingLength]] traits to describe the
   * desired sizes of your [[Generator]]s. You may occasionally need to manipulate [[SizeParam]]
   * directly if you want to use [[HavingSize.havingSizesDeterminedBy()]], or if you want to
   * call [[Generator.next()]] directly.
   *
-  * @param minSize the minimum desired size for this [[Generator]] or invocation
+  * @param minSize the minimum desired size for this [[Generator]] instance or invocation
   * @param sizeRange the range above [[minSize]] to consider allowable
   * @param size the actual size to use for this specific invocation of [[Generator.next()]]
   */
@@ -57,7 +57,7 @@ case class SizeParam(minSize: PosZInt, sizeRange: PosZInt, size: PosZInt) {
   require(size.value <= minSize + sizeRange, s"the passed size (${size.value}) must be less than or equal to passed minSize plus the passed sizeRange ($minSize + $sizeRange = ${minSize + sizeRange})")
 
   /**
-    * The maximum size to allow. Calculated from [[minSize]] and [[sizeRange]].
+    * The maximum size to allow, calculated from [[minSize]] and [[sizeRange]].
     */
   val maxSize: PosZInt = PosZInt.ensuringValid(minSize + sizeRange)
 }

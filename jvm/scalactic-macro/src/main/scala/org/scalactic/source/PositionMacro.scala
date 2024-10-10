@@ -19,7 +19,7 @@ import scala.reflect.macros.whitebox.Context
 import org.scalactic.Resources
 
 /**
- * Helper class for Position macro. (Will be removed from the public API if possible in a subsequent 3.0.0-RCx release.)
+ * Helper class for Position macro. (Will be removed from the public API in a future ScalaTest release, if possible.)
  */
 object PositionMacro {   
   private object sourceCompatHack {

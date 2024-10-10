@@ -17,12 +17,12 @@ package org.scalatest.prop
  */
 
 /**
- * Seed data class holding seed value used for generating random value.
+ * Data class holding a seed value used for generating random values.
  */
 final case class Seed(value: Long)
 
 /**
- * Companion object for Seed class.
+ * Companion object for the `Seed` class.
  */
 object Seed {
 
@@ -49,5 +49,14 @@ object Seed {
       }
     )
 
+  /**
+   * Retrieves an optional `Seed` object based on the currently configured seed value.
+   *
+   * If a seed value has been configured (i.e., set in `configuredRef`), this method will return a `Some` 
+   * containing a `Seed` instance initialized with that value. Otherwise, it returns `None`, indicating that
+   * no seed value has been explicitly configured.
+   *
+   * @return an optional `Seed` containing the configured seed value, or `None` if no seed has been set
+   */
   def configured: Option[Seed] = configuredRef.get().map(Seed(_))  
 }

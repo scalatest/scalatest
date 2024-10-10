@@ -50,8 +50,18 @@ import prop._
   *
   * ==Background==
   *
-  * '''TODO: Bill should insert a brief section on QuickCheck, ScalaCheck, etc, and how this
-  * system is similar and different.'''
+  * This property-based testing system shares some conceptual similarities with other property-based testing frameworks, 
+  * such as QuickCheck and ScalaCheck. QuickCheck, originally developed for Haskell, introduced the concept of automatically
+  * generating random test cases based on properties that should hold for all valid inputs of a program. ScalaCheck is a 
+  * popular Scala-based implementation that follows the QuickCheck model.
+  * 
+  * Like QuickCheck and ScalaCheck, this system allows for the definition of properties that should hold for various inputs,
+  * automatically generating data to verify those properties. This helps reveal edge cases that might not be tested otherwise.
+  * 
+  * However, unlike QuickCheck and ScalaCheck, this testing framework integrates more closely with the existing [ScalaTest framework].
+  * While ScalaCheck focuses primarily on property-based testing, this system is designed to be more versatile, supporting a range 
+  * of testing styles and offering detailed control over test behavior and generation through customizable generators and fine-tuned 
+  * assertions.
   *
   *
   * ==Using Property Checks==
@@ -214,13 +224,10 @@ import prop._
   * [info]     Falsified after 2 successful property evaluations.
   * [info]     Location: (DocExamples.scala:42)
   * [info]     Occurred when passed generated values (
-  * [info]       None = PosInt(399455539),
-  * [info]       None = PosInt(703518968)
+  * [info]       (PosInt(399455539), PosInt(703518968))
   * [info]     )
   * [info]     Init Seed: 1568878346200
   * }}}
-  * '''TODO:''' fix the above error to reflect the better errors we should get when we merge in
-  * the code being forward-ported from 3.0.5.
   *
   * Looking at it, we can see that the numbers being used are pretty large. What happens when we
   * multiply them together?

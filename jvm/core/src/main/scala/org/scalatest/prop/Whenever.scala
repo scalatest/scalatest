@@ -68,7 +68,7 @@ trait Whenever {
    *
    * <p>
    * Imagine you wanted to check a property against this class with data that includes some
-   * value that are rejected by the constructor, such as a denominator of zero, which should
+   * values that are rejected by the constructor, such as a denominator of zero, which should
    * result in an <code>IllegalArgumentException</code>. You could use <code>whenever</code>
    * to discard any rows in the <code>fraction</code> that represent illegal arguments, like this:
    * </p>
@@ -96,15 +96,15 @@ trait Whenever {
    * </pre>
    *
    * <p>
-   * In this example, rows 6, 8, and 9 have values that would cause a false to be passed
+   * In this example, rows 6, 8, and 9 have values that would cause a `false` to be passed
    * to <code>whenever</code>. (For example, in row 6, <code>d</code> is 0, which means <code>d</code> <code>!=</code> <code>0</code>
-   * will be false.) For those rows, <code>whenever</code> will throw <code>DiscardedEvaluationException</code>,
+   * will be `false`.) For those rows, <code>whenever</code> will throw <code>DiscardedEvaluationException</code>,
    * which will cause the <code>forAll</code> method to discard that row.
    * </p>
    *
    * @param condition the boolean condition that determines whether <code>whenever</code> will evaluate the
-   *    <code>fun</code> function (<code>condition</code> is true) or throws <code>DiscardedEvaluationException</code> (<code>condition</code> is false)
-   * @param fun the function to evaluate if the specified <code>condition</code> is true
+   *    <code>fun</code> function (<code>condition</code> is true) or throw <code>DiscardedEvaluationException</code> (<code>condition</code> is `false`)
+   * @param fun the function to evaluate if the specified <code>condition</code> is `true`
    */
   def whenever[T](condition: Boolean)(fun: => T)(implicit wa: WheneverAsserting[T]): wa.Result =
     wa.whenever(condition)(fun)

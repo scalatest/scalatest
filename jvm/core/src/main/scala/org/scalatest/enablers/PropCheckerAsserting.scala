@@ -52,11 +52,11 @@ trait PropCheckerAsserting[T] {
   /**
     * Perform the property check using the given function, generator and <code>Configuration.Parameters</code>.
     *
-    * @param fun the function to be used to check
+    * @param fun the function to be used to perform the check
     * @param genA the generator of type <code>A</code>
-    * @param prms the <code>Configuration.Parameters</code> to be used to check
+    * @param prms the <code>Configuration.Parameters</code> to be used to perform the check
     * @param prettifier the <code>Prettifier</code> to be used to prettify error message
-    * @param pos the <code>Position</code> of the caller site
+    * @param pos the <code>Position</code> of the caller's site
     * @param names the list of names
     * @param argNames the list of argument names
     * @return the <code>Result</code> of the property check.
@@ -127,7 +127,7 @@ trait PropCheckerAsserting[T] {
 }
 
 /**
-  * Class holding lowest priority <code>CheckerAsserting</code> implicit, which enables [[org.scalatest.prop.GeneratorDrivenPropertyChecks GeneratorDrivenPropertyChecks]] expressions that have result type <code>Unit</code>.
+  * Class holding the lowest priority <code>CheckerAsserting</code> implicit, which enables [[org.scalatest.prop.GeneratorDrivenPropertyChecks GeneratorDrivenPropertyChecks]] expressions that have result type <code>Unit</code>.
   */
 abstract class UnitPropCheckerAsserting {
 
@@ -137,6 +137,22 @@ abstract class UnitPropCheckerAsserting {
 
     type S = T
 
+    /**
+      * Checks a property for all combinations of generated values of type A.
+      *
+      * This method generates values using the provided generators and applies the given function `fun`
+      * to each combination of generated values. It tracks the number of successful evaluations, 
+      * discarded evaluations, and maintains relevant state. It will stop when the specified number 
+      * of successful evaluations has been reached or the maximum number of discarded evaluations 
+      * has been exceeded.
+      *
+      * @tparam A the type of the first generated value
+      * @param names a list of names for the generated arguments, used for reporting results
+      * @param config the configuration parameters for property checking
+      * @param genA the generator for values of type A
+      * @param fun the function to apply to the generated values
+      * @return the result of the property check
+      */
     private def checkForAll[A](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A])(fun: (A) => T): PropertyCheckResult = {
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
@@ -201,7 +217,7 @@ abstract class UnitPropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initRnd = Randomizer.default // This can be set by a cmd line param.
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       // ensuringValid will always succeed because /ing a PosInt by a positive number will always yield a positive or zero
@@ -209,6 +225,24 @@ abstract class UnitPropCheckerAsserting {
       loop(0, 0, initEdges, afterEdgesRnd, initialSizes, initSeed) // We may need to be able to pass in a oh, pass in a key? Or grab it from the outside via cmd ln parm?
     }
 
+    /**
+      * Checks a property for all combinations of generated values of types A and B.
+      *
+      * This method generates values using the provided generators and applies the given function `fun`
+      * to each combination of generated values. It tracks the number of successful evaluations, 
+      * discarded evaluations, and maintains relevant state. It will stop when the specified number 
+      * of successful evaluations has been reached or the maximum number of discarded evaluations 
+      * has been exceeded.
+      *
+      * @tparam A the type of the first generated value
+      * @tparam B the type of the second generated value
+      * @param names a list of names for the generated arguments, used for reporting results
+      * @param config the configuration parameters for property checking
+      * @param genA the generator for values of type A
+      * @param genB the generator for values of type B
+      * @param fun the function to apply to the generated values
+      * @return the result of the property check
+      */
     private def checkForAll[A, B](names: List[String], config: Parameter,
                           genA: org.scalatest.prop.Generator[A],
                           genB: org.scalatest.prop.Generator[B])
@@ -281,7 +315,7 @@ abstract class UnitPropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initRnd = Randomizer.default // This can be set by a cmd line param.
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
@@ -290,6 +324,26 @@ abstract class UnitPropCheckerAsserting {
       loop(0, 0, initAEdges, initBEdges, afterBEdgesRnd, initialSizes, initSeed)
     }
 
+    /**
+      * Checks a property for all combinations of generated values of types A, B, and C.
+      *
+      * This method generates values using the provided generators and applies the given function `fun`
+      * to each combination of generated values. It tracks the number of successful evaluations, 
+      * discarded evaluations, and maintains relevant state. It will stop when the specified number 
+      * of successful evaluations has been reached or the maximum number of discarded evaluations 
+      * has been exceeded.
+      *
+      * @tparam A the type of the first generated value
+      * @tparam B the type of the second generated value
+      * @tparam C the type of the third generated value
+      * @param names a list of names for the generated arguments, used for reporting results
+      * @param config the configuration parameters for property checking
+      * @param genA the generator for values of type A
+      * @param genB the generator for values of type B
+      * @param genC the generator for values of type C
+      * @param fun the function to apply to the generated values
+      * @return the result of the property check
+      */
     private def checkForAll[A, B, C](names: List[String], config: Parameter,
                              genA: org.scalatest.prop.Generator[A],
                              genB: org.scalatest.prop.Generator[B],
@@ -366,7 +420,7 @@ abstract class UnitPropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initRnd = Randomizer.default // This can be set by a cmd line param.
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
@@ -376,6 +430,28 @@ abstract class UnitPropCheckerAsserting {
       loop(0, 0, initAEdges, initBEdges, initCEdges, afterCEdgesRnd, initialSizes, initSeed)
     }
 
+    /**
+      * Checks a property for all combinations of generated values of types A, B, C, and D.
+      *
+      * This method generates values using the provided generators and applies the given function `fun`
+      * to each combination of generated values. It tracks the number of successful evaluations, 
+      * discarded evaluations, and maintains relevant state. It will stop when the specified number 
+      * of successful evaluations has been reached or the maximum number of discarded evaluations 
+      * has been exceeded.
+      *
+      * @tparam A the type of the first generated value
+      * @tparam B the type of the second generated value
+      * @tparam C the type of the third generated value
+      * @tparam D the type of the fourth generated value
+      * @param names a list of names for the generated arguments, used for reporting results
+      * @param config the configuration parameters for property checking
+      * @param genA the generator for values of type A
+      * @param genB the generator for values of type B
+      * @param genC the generator for values of type C
+      * @param genD the generator for values of type D
+      * @param fun the function to apply to the generated values
+      * @return the result of the property check
+      */
     private def checkForAll[A, B, C, D](names: List[String], config: Parameter,
                                 genA: org.scalatest.prop.Generator[A],
                                 genB: org.scalatest.prop.Generator[B],
@@ -458,7 +534,7 @@ abstract class UnitPropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initRnd = Randomizer.default // This can be set by a cmd line param.
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
@@ -469,6 +545,30 @@ abstract class UnitPropCheckerAsserting {
       loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, afterDEdgesRnd, initialSizes, initSeed)
     }
 
+    /**
+      * Checks a property for all combinations of generated values of types A, B, C, D, and E.
+      *
+      * This method generates values using the provided generators and applies the given function `fun`
+      * to each combination of generated values. It tracks the number of successful evaluations, 
+      * discarded evaluations, and maintains relevant state. It will stop when the specified number 
+      * of successful evaluations has been reached or the maximum number of discarded evaluations 
+      * has been exceeded.
+      *
+      * @tparam A the type of the first generated value
+      * @tparam B the type of the second generated value
+      * @tparam C the type of the third generated value
+      * @tparam D the type of the fourth generated value
+      * @tparam E the type of the fifth generated value
+      * @param names a list of names for the generated arguments, used for reporting results
+      * @param config the configuration parameters for property checking
+      * @param genA the generator for values of type A
+      * @param genB the generator for values of type B
+      * @param genC the generator for values of type C
+      * @param genD the generator for values of type D
+      * @param genE the generator for values of type E
+      * @param fun the function to apply to the generated values
+      * @return the result of the property check
+      */
     private def checkForAll[A, B, C, D, E](names: List[String], config: Parameter,
                                    genA: org.scalatest.prop.Generator[A],
                                    genB: org.scalatest.prop.Generator[B],
@@ -554,7 +654,7 @@ abstract class UnitPropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initRnd = Randomizer.default // This can be set by a cmd line param.
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
@@ -566,6 +666,32 @@ abstract class UnitPropCheckerAsserting {
       loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, initEEdges, afterEEdgesRnd, initialSizes, initSeed)
     }
 
+    /**
+      * Checks a property for all combinations of generated values of types A, B, C, D, E, and F.
+      *
+      * This method generates values using the provided generators and applies the given function `fun`
+      * to each combination of generated values. It tracks the number of successful evaluations, 
+      * discarded evaluations, and maintains relevant state. It will stop when the specified number 
+      * of successful evaluations has been reached or the maximum number of discarded evaluations 
+      * has been exceeded.
+      *
+      * @tparam A the type of the first generated value
+      * @tparam B the type of the second generated value
+      * @tparam C the type of the third generated value
+      * @tparam D the type of the fourth generated value
+      * @tparam E the type of the fifth generated value
+      * @tparam F the type of the sixth generated value
+      * @param names a list of names for the generated arguments, used for reporting results
+      * @param config the configuration parameters for property checking
+      * @param genA the generator for values of type A
+      * @param genB the generator for values of type B
+      * @param genC the generator for values of type C
+      * @param genD the generator for values of type D
+      * @param genE the generator for values of type E
+      * @param genF the generator for values of type F
+      * @param fun the function to apply to the generated values
+      * @return the result of the property check
+      */
     private def checkForAll[A, B, C, D, E, F](names: List[String], config: Parameter,
                                       genA: org.scalatest.prop.Generator[A],
                                       genB: org.scalatest.prop.Generator[B],
@@ -657,7 +783,7 @@ abstract class UnitPropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initRnd = Randomizer.default // This can be set by a cmd line param.
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
@@ -803,6 +929,22 @@ trait FuturePropCheckerAsserting {
     type Result = Future[Assertion]
     type S = T
 
+    /**
+      * Checks a property for all combinations of generated values of type A.
+      *
+      * This method generates values using the provided generators and applies the given function `fun`
+      * to each combination of generated values. It tracks the number of successful evaluations, 
+      * discarded evaluations, and maintains relevant state. It will stop when the specified number 
+      * of successful evaluations has been reached or the maximum number of discarded evaluations 
+      * has been exceeded.
+      *
+      * @tparam A the type of the first generated value
+      * @param names a list of names for the generated arguments, used for reporting results
+      * @param config the configuration parameters for property checking
+      * @param genA the generator for values of type A
+      * @param fun the function to apply to the generated values
+      * @return a Future containing the result of the property check
+      */
     private def checkForAll[A](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A])(fun: (A) => Future[T]): Future[PropertyCheckResult] = {
 
       case class AccumulatedResult(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedA: Option[A])
@@ -925,7 +1067,7 @@ trait FuturePropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initRnd = Randomizer.default // This can be set by a cmd line param.
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       // ensuringValid will always succeed because /ing a PosInt by a positive number will always yield a positive or zero
@@ -934,6 +1076,24 @@ trait FuturePropCheckerAsserting {
       loop(0, 0, initEdges, afterEdgesRnd, initialSizes, initSeed).map(_.result.getOrElse(PropertyCheckResult.Success(List.empty, initSeed)))
     }
 
+    /**
+      * Checks a property for all combinations of generated values of types A and B.
+      *
+      * This method generates values using the provided generators and applies the given function `fun`
+      * to each combination of generated values. It tracks the number of successful evaluations, 
+      * discarded evaluations, and maintains relevant state. It will stop when the specified number 
+      * of successful evaluations has been reached or the maximum number of discarded evaluations 
+      * has been exceeded.
+      *
+      * @tparam A the type of the first generated value
+      * @tparam B the type of the second generated value
+      * @param names a list of names for the generated arguments, used for reporting results
+      * @param config the configuration parameters for property checking
+      * @param genA the generator for values of type A
+      * @param genB the generator for values of type B
+      * @param fun the function to apply to the generated values
+      * @return a Future containing the result of the property check
+      */
     private def checkForAll[A, B](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B])(fun: (A, B) => Future[T]): Future[PropertyCheckResult] = {
 
       case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedAB: Option[(A, B)])
@@ -1061,7 +1221,7 @@ trait FuturePropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initRnd = Randomizer.default // This can be set by a cmd line param.
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
@@ -1071,6 +1231,26 @@ trait FuturePropCheckerAsserting {
       loop(0, 0, initAEdges, initBEdges, afterBEdgesRnd, initialSizes, initSeed).map(_.result.getOrElse(PropertyCheckResult.Success(List.empty, initSeed)))
     }
 
+    /**
+      * Checks a property for all combinations of generated values of types A, B, and C.
+      *
+      * This method generates values using the provided generators and applies the given function `fun`
+      * to each combination of generated values. It tracks the number of successful evaluations, 
+      * discarded evaluations, and maintains relevant state. It will stop when the specified number 
+      * of successful evaluations has been reached or the maximum number of discarded evaluations 
+      * has been exceeded.
+      *
+      * @tparam A the type of the first generated value
+      * @tparam B the type of the second generated value
+      * @tparam C the type of the third generated value
+      * @param names a list of names for the generated arguments, used for reporting results
+      * @param config the configuration parameters for property checking
+      * @param genA the generator for values of type A
+      * @param genB the generator for values of type B
+      * @param genC the generator for values of type C
+      * @param fun the function to apply to the generated values
+      * @return a Future containing the result of the property check
+      */
     private def checkForAll[A, B, C](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B],
                                      genC: org.scalatest.prop.Generator[C])(fun: (A, B, C) => Future[T]): Future[PropertyCheckResult] = {
 
@@ -1202,7 +1382,7 @@ trait FuturePropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initRnd = Randomizer.default // This can be set by a cmd line param.
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
@@ -1213,6 +1393,28 @@ trait FuturePropCheckerAsserting {
       loop(0, 0, initAEdges, initBEdges, initCEdges, afterCEdgesRnd, initialSizes, initSeed).map(_.result.getOrElse(PropertyCheckResult.Success(List.empty, initSeed)))
     }
 
+    /**
+      * Checks a property for all combinations of generated values of types A, B, C, and D.
+      *
+      * This method generates values using the provided generators and applies the given function `fun`
+      * to each combination of generated values. It tracks the number of successful evaluations, 
+      * discarded evaluations, and maintains relevant state. It will stop when the specified number 
+      * of successful evaluations has been reached or the maximum number of discarded evaluations 
+      * has been exceeded.
+      *
+      * @tparam A the type of the first generated value
+      * @tparam B the type of the second generated value
+      * @tparam C the type of the third generated value
+      * @tparam D the type of the fourth generated value
+      * @param names a list of names for the generated arguments, used for reporting results
+      * @param config the configuration parameters for property checking
+      * @param genA the generator for values of type A
+      * @param genB the generator for values of type B
+      * @param genC the generator for values of type C
+      * @param genD the generator for values of type D
+      * @param fun the function to apply to the generated values
+      * @return a Future containing the result of the property check
+      */
     private def checkForAll[A, B, C, D](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B],
                                      genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D])(fun: (A, B, C, D) => Future[T]): Future[PropertyCheckResult] = {
 
@@ -1349,7 +1551,7 @@ trait FuturePropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initRnd = Randomizer.default // This can be set by a cmd line param.
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
@@ -1361,6 +1563,30 @@ trait FuturePropCheckerAsserting {
       loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, afterDEdgesRnd, initialSizes, initSeed).map(_.result.getOrElse(PropertyCheckResult.Success(List.empty, initSeed)))
     }
 
+    /**
+      * Checks a property for all combinations of generated values of types A, B, C, D, and E.
+      *
+      * This method generates values using the provided generators and applies the given function `fun`
+      * to each combination of generated values. It tracks the number of successful evaluations, 
+      * discarded evaluations, and maintains relevant state. It will stop when the specified number 
+      * of successful evaluations has been reached or the maximum number of discarded evaluations 
+      * has been exceeded.
+      *
+      * @tparam A the type of the first generated value
+      * @tparam B the type of the second generated value
+      * @tparam C the type of the third generated value
+      * @tparam D the type of the fourth generated value
+      * @tparam E the type of the fifth generated value
+      * @param names a list of names for the generated arguments, used for reporting results
+      * @param config the configuration parameters for property checking
+      * @param genA the generator for values of type A
+      * @param genB the generator for values of type B
+      * @param genC the generator for values of type C
+      * @param genD the generator for values of type D
+      * @param genE the generator for values of type E
+      * @param fun the function to apply to the generated values
+      * @return a Future containing the result of the property check
+      */
     private def checkForAll[A, B, C, D, E](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B],
                                         genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D], genE: org.scalatest.prop.Generator[E])(fun: (A, B, C, D, E) => Future[T]): Future[PropertyCheckResult] = {
 
@@ -1502,7 +1728,7 @@ trait FuturePropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initRnd = Randomizer.default // This can be set by a cmd line param.
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
@@ -1515,6 +1741,32 @@ trait FuturePropCheckerAsserting {
       loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, initEEdges, afterEEdgesRnd, initialSizes, initSeed).map(_.result.getOrElse(PropertyCheckResult.Success(List.empty, initSeed)))
     }
 
+    /**
+      * Checks a property for all combinations of generated values of types A, B, C, D, E, and F.
+      *
+      * This method generates values using the provided generators and applies the given function `fun`
+      * to each combination of generated values. It tracks the number of successful evaluations, 
+      * discarded evaluations, and maintains relevant state. It will stop when the specified number 
+      * of successful evaluations has been reached or the maximum number of discarded evaluations 
+      * has been exceeded.
+      *
+      * @tparam A the type of the first generated value
+      * @tparam B the type of the second generated value
+      * @tparam C the type of the third generated value
+      * @tparam D the type of the fourth generated value
+      * @tparam E the type of the fifth generated value
+      * @tparam F the type of the sixth generated value
+      * @param names a list of names for the generated arguments, used for reporting results
+      * @param config the configuration parameters for property checking
+      * @param genA the generator for values of type A
+      * @param genB the generator for values of type B
+      * @param genC the generator for values of type C
+      * @param genD the generator for values of type D
+      * @param genE the generator for values of type E
+      * @param genF the generator for values of type F
+      * @param fun the function to apply to the generated values
+      * @return a Future containing the result of the property check
+      */
     private def checkForAll[A, B, C, D, E, F](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B],
                                            genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D], genE: org.scalatest.prop.Generator[E],
                                            genF: org.scalatest.prop.Generator[F])(fun: (A, B, C, D, E, F) => Future[T]): Future[PropertyCheckResult] = {
@@ -1662,7 +1914,7 @@ trait FuturePropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // Eventually we'll grab this from a global that can be set by a cmd line param.
+      val initRnd = Randomizer.default // This can be set by a cmd line param.
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
@@ -1709,6 +1961,20 @@ trait FuturePropCheckerAsserting {
       }
     }
 
+    /**
+      * Checks a property using a single generated value of type A.
+      *
+      * This method generates a value using the provided generator and applies the given function `fun`
+      * to the generated value. It tracks the number of successful evaluations and any relevant state.
+      * It will stop when the specified number of successful evaluations has been reached.
+      *
+      * @tparam A the type of the generated value
+      * @param names a list of names for the generated arguments, used for reporting results
+      * @param config the configuration parameters for property checking
+      * @param genA the generator for values of type A
+      * @param fun the function to apply to the generated value
+      * @return the result of the property check
+      */
     def check1[A](fun: (A) => Future[T],
                   genA: org.scalatest.prop.Generator[A],
                   prms: Configuration.Parameter,
@@ -1722,6 +1988,22 @@ trait FuturePropCheckerAsserting {
       }
     }
 
+    /**
+      * Checks a property using two generated values of types A and B.
+      *
+      * This method generates values using the provided generators and applies the given function `fun`
+      * to the generated values. It tracks the number of successful evaluations and any relevant state.
+      * It will stop when the specified number of successful evaluations has been reached.
+      *
+      * @tparam A the type of the first generated value
+      * @tparam B the type of the second generated value
+      * @param names a list of names for the generated arguments, used for reporting results
+      * @param config the configuration parameters for property checking
+      * @param genA the generator for values of type A
+      * @param genB the generator for values of type B
+      * @param fun the function to apply to the generated values
+      * @return the result of the property check
+      */
     def check2[A, B](fun: (A, B) => Future[T],
                      genA: org.scalatest.prop.Generator[A],
                      genB: org.scalatest.prop.Generator[B],
@@ -1736,6 +2018,24 @@ trait FuturePropCheckerAsserting {
       }
     }
 
+    /**
+      * Checks a property using three generated values of types A, B, and C.
+      *
+      * This method generates values using the provided generators and applies the given function `fun`
+      * to the generated values. It tracks the number of successful evaluations and any relevant state.
+      * It will stop when the specified number of successful evaluations has been reached.
+      *
+      * @tparam A the type of the first generated value
+      * @tparam B the type of the second generated value
+      * @tparam C the type of third generated value
+      * @param names a list of names for the generated arguments, used for reporting results
+      * @param config the configuration parameters for property checking
+      * @param genA the generator for values of type A
+      * @param genB the generator for values of type B
+      * @param genC the generator for values of type C
+      * @param fun the function to apply to the generated values
+      * @return the result of the property check
+      */
     def check3[A, B, C](fun: (A, B, C) => Future[T],
                         genA: org.scalatest.prop.Generator[A],
                         genB: org.scalatest.prop.Generator[B],
@@ -1751,6 +2051,26 @@ trait FuturePropCheckerAsserting {
       }
     }
 
+    /**
+      * Checks a property using four generated values of types A, B, C, and D.
+      *
+      * This method generates values using the provided generators and applies the given function `fun`
+      * to the generated values. It tracks the number of successful evaluations and any relevant state.
+      * It will stop when the specified number of successful evaluations has been reached.
+      *
+      * @tparam A the type of the first generated value
+      * @tparam B the type of the second generated value
+      * @tparam C the type of the third generated value
+      * @tparam D the type of the fourth generated value
+      * @param names a list of names for the generated arguments, used for reporting results
+      * @param config the configuration parameters for property checking
+      * @param genA the generator for values of type A
+      * @param genB the generator for values of type B
+      * @param genC the generator for values of type C
+      * @param genD the generator for values of type D
+      * @param fun the function to apply to the generated values
+      * @return the result of the property check
+      */
     def check4[A, B, C, D](fun: (A, B, C, D) => Future[T],
                            genA: org.scalatest.prop.Generator[A],
                            genB: org.scalatest.prop.Generator[B],
@@ -1767,6 +2087,28 @@ trait FuturePropCheckerAsserting {
       }
     }
 
+    /**
+      * Checks a property using four generated values of types A, B, C, D, and E.
+      *
+      * This method generates values using the provided generators and applies the given function `fun`
+      * to the generated values. It tracks the number of successful evaluations and any relevant state.
+      * It will stop when the specified number of successful evaluations has been reached.
+      *
+      * @tparam A the type of the first generated value
+      * @tparam B the type of the second generated value
+      * @tparam C the type of the third generated value
+      * @tparam D the type of the fourth generated value
+      * @tparam E the type of the fifth generated value
+      * @param names a list of names for the generated arguments, used for reporting results
+      * @param config the configuration parameters for property checking
+      * @param genA the generator for values of type A
+      * @param genB the generator for values of type B
+      * @param genC the generator for values of type C
+      * @param genD the generator for values of type D
+      * @param genE the generator for values of type E
+      * @param fun the function to apply to the generated values
+      * @return the result of the property check
+      */
     def check5[A, B, C, D, E](fun: (A, B, C, D, E) => Future[T],
                               genA: org.scalatest.prop.Generator[A],
                               genB: org.scalatest.prop.Generator[B],
@@ -1784,6 +2126,30 @@ trait FuturePropCheckerAsserting {
       }
     }
 
+    /**
+      * Checks a property using four generated values of types A, B, C, D, E, and F.
+      *
+      * This method generates values using the provided generators and applies the given function `fun`
+      * to the generated values. It tracks the number of successful evaluations and any relevant state.
+      * It will stop when the specified number of successful evaluations has been reached.
+      *
+      * @tparam A the type of the first generated value
+      * @tparam B the type of the second generated value
+      * @tparam C the type of the third generated value
+      * @tparam D the type of the fourth generated value
+      * @tparam E the type of the fifth generated value
+      * @tparam F the type of the sixth generated value
+      * @param names a list of names for the generated arguments, used for reporting results
+      * @param config the configuration parameters for property checking
+      * @param genA the generator for values of type A
+      * @param genB the generator for values of type B
+      * @param genC the generator for values of type C
+      * @param genD the generator for values of type D
+      * @param genE the generator for values of type E
+      * @param genF the generator for values of type F
+      * @param fun the function to apply to the generated values
+      * @return the result of the property check
+      */
     def check6[A, B, C, D, E, F](fun: (A, B, C, D, E, F) => Future[T],
                                  genA: org.scalatest.prop.Generator[A],
                                  genB: org.scalatest.prop.Generator[B],

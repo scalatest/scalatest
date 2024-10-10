@@ -25,7 +25,7 @@ package org.scalactic.source
  * </p>
  *
  * <p>
- * The <code>pathFilename<code> should always end with the <code>fileName</code>, which
+ * The <code>filePathname</code> should always end with the <code>fileName</code>, which
  * is the simple file name. For example, if the <code>filePathname</code> were <code>"/Users/this/is/a/class/Act.scala"</code>,
  * the <code>fileName</code> would be <code>"Act.scala"</code>.
  * </p>
@@ -36,7 +36,7 @@ package org.scalactic.source
  *
  * @param fileName the simple name of a source file
  * @param filePathname the fully qualified pathname of the source file
- * @param lineNumber a line number inside the source file with the given filePathname and fileNamae
+ * @param lineNumber a line number inside the source file with the given filePathname and fileName
  */
 case class Position(fileName: String, filePathname: String, lineNumber: Int)
 
