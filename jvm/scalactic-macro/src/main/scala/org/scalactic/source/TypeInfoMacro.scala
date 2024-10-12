@@ -20,7 +20,7 @@ import org.scalactic.{MacroOwnerRepair, Resources}
 import scala.reflect.macros.whitebox.Context
 
 /**
-  * Helper class for Position macro. (Will be removed from the public API if possible in a subsequent 3.0.0-RCx release.)
+  * Helper class for Position macro. (Will be removed from the public API in future ScalaTest release, if possible.)
   */
 object TypeInfoMacro {
 

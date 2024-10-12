@@ -22,7 +22,7 @@ import org.scalactic.anyvals._
   *
   * This typeclass is used as the basis for [[CommonGenerators.between]], so that
   * you can use that function with your own types by creating an implicit instance
-  * of [[Chooser]]. (Note that such types will also requires instances of [[Generator]] and
+  * of [[Chooser]]. (Note that such types will also require instances of [[Generator]] and
   * [[Ordering]].)
   *
   * @tparam T A type to choose a value of.
@@ -35,15 +35,15 @@ trait Chooser[T] {
     * to return `from` or `to`.
     *
     * Implementations of this function should be tolerant about
-    * the ordering of `from` or `to` -- that it should behave appropriately if `from` is
+    * the ordering of `from` or `to` -- and it should behave appropriately if `from` is
     * less than `to` semantically.
     *
     * This function should use the provided [[Randomizer]] in making its choice, and
     * should then return the ''next'' [[Randomizer]]. (Which is returned from all
     * functions on [[Randomizer]].)
     *
-    * @param from one end of the target range, inclusive
-    * @param to the other end of the target range, inclusive
+    * @param from one endpoint of the target range, inclusive
+    * @param to the other endpoint of the target range, inclusive
     * @param rnd the [[Randomizer]] to use for choosing a value
     * @return the selected value, and the next [[Randomizer]]
     */
@@ -51,11 +51,11 @@ trait Chooser[T] {
 }
 
 /**
-  * Provides Chooser instances for all of the major numeric types in the Scala Standard
+  * Provides Chooser instances for all major numeric types in the Scala Standard
   * Library and Scalactic.
   *
   * All of the instances provided here are simply shells over functions in
-  * [[Randomizer]], but there is nothing sacred about that -- your own instances
+  * [[Randomizer]], but nothing is sacred about that -- your own instances
   * should use that for randomization, but will not usually be direct calls to its
   * built-in "choose" functions.
   */

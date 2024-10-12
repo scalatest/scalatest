@@ -17,17 +17,17 @@ package org.scalatest
 package prop
 
 /**
- * Trait that facilitates property checks on data supplied by tables and generators.
+ * Trait that facilitates property checks on data supplied by tables or generators.
  *
  * <p>
  * This trait extends both <a href="TableDrivenPropertyChecks.html"><code>TableDrivenPropertyChecks</code></a> and
- * <a href="GeneratorDrivenPropertyChecks.html"><code>GeneratorDrivenPropertyChecks</code></a>. Thus by mixing in
+ * <a href="GeneratorDrivenPropertyChecks.html"><code>GeneratorDrivenPropertyChecks</code></a>. By mixing in
  * this trait you can perform property checks on data supplied either by tables or generators. For the details of
  * table- and generator-driven property checks, see the documentation for each by following the links above.
  * </p>
  *
  * <p>
- * For a quick example of using both table and generator-driven property checks in the same suite of tests, however,
+ * For a quick example of using both table-driven and generator-driven property checks in the same suite of tests, however,
  * imagine you want to test this <code>Fraction</code> class:
  * </p>
  *
@@ -98,9 +98,9 @@ package prop
 trait PropertyChecks extends TableDrivenPropertyChecks with GeneratorDrivenPropertyChecks
 
 /**
- * Companion object that facilitates the importing of <code>PropertyChecks</code> members as 
- * an alternative to mixing it in. One use case is to import <code>PropertyChecks</code> members so you can use
- * them in the Scala interpreter.
+ * Companion object that facilitates the import of <code>PropertyChecks</code> members as 
+ * an alternative to mixing it in. One use case is to import <code>PropertyChecks</code> members 
+ * for use in the Scala interpreter.
  *
  * @author Bill Venners
  */

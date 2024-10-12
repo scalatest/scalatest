@@ -22,7 +22,7 @@ import org.scalactic.ColCompatHelper.LazyListOrStream
 /**
  * A tree data structure in which each node contains a value of type `T` and
  * a lazy list (or stream) of `RoseTree[T]`. The values in each RoseTree[T] in the
- * lazy list represent shrunken or simplified values of type T.
+ * lazy list represent shrunken or simplified values of type `T`.
  *
  * @tparam T the type of value contained in each node of the tree
  */
@@ -35,7 +35,7 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
 
   /**
    * Lazily computed stream of child nodes (subtrees) of this node, the values of which represent
-   * shrunken or simplified values of type T as compared to the member named `value`.
+   * shrunken or simplified values of type `T` as compared to the member named `value`.
    * Each child node is a `RoseTree[T]`.
    */
   def shrinks: LazyListOrStream[RoseTree[T]]
@@ -46,8 +46,8 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
    * Performs a search for a minimal (most shrunken or simplified) failing case.
    *
    * @param fun a function that takes a value of type `T` and returns an `Option[E]`,
-   *            where the option is a Some that contains data (of type `E`) if the given T caused a failure, else
-   *            the given T did not cause a failure and the returned option will be a None
+   *            where the option is a `Some` that contains data (of type `E`) if the given `T` caused a failure, otherwise, 
+   *            the given `T` did not cause a failure, and the returned `Option` will be a `None`
    * @tparam E the type of additional data returned in case of failure
    * @return an optional error data, if a shrunken or simplified case was found during the search
    */
@@ -77,11 +77,11 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
   }
 
   /**
-   * Performs a search for a minimal (most shrunken or simplified) failing case for a Future[T].
+   * Performs a search for a minimal (most shrunken or simplified) failing case for a `Future[T]`.
    *
-   * @param fun a function that takes a value of type `T` and returns an `Future[Option[E]]`,
-   *            where the option is a Some that contains data (of type `E`) if the given T causes a failure, else
-   *            the given T does not cause a failure and the option will be a None
+   * @param fun a function that takes a value of type `T` and returns a `Future[Option[E]]`,
+   *            where the `Option` is a `Some` that contains data (of type `E`) if the given `T` causes a failure, otherwise, 
+   *            the given `T` does not cause a failure and the `Option` will be a `None`
    * @tparam E the type of additional data returned in case of failure
    * @return a future optional error data, if a shrunken or simplified case was found during the search
    */
@@ -93,7 +93,7 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
             val future = fun(head.value)
             future.flatMap {
               case Some(errData) =>
-                // If the function fail, we got a new failure value, and we'll go one level deeper.
+                // If the function failed, we got a new failure value, and we'll go one level deeper.
                 val headChildrenRTs = head.shrinks
                 shrinkLoop(Some((head, errData)), headChildrenRTs, count + 1)
               case None =>
