@@ -65,7 +65,7 @@ object PropertyCheckResult {
   /**
     * This Property Check did not succeed -- the property was falsified.
     *
-    * This generally indicates a bug in your code. Generated values that produced an error.
+    * This generally indicates a bug in your code: generated values produced an error.
     * The next step is usually to examine these values, and understand why they caused an error.
     *
     * Note that this does not ``necessarily`` mean that the code under test is in error: the property 
