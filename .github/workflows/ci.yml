@@ -22,6 +22,16 @@ jobs:
         distribution: temurin
         java-version: ${{ matrix.java }}
         cache: 'sbt'
+    - name: Setup SBT
+      run: |
+        sudo apt update
+        sudo apt install apt-transport-https curl gnupg -yqq
+        echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | sudo tee /etc/apt/sources.list.d/sbt.list
+        echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | sudo tee /etc/apt/sources.list.d/sbt_old.list
+        curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo -H gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/scalasbt-release.gpg --import
+        sudo chmod 644 /etc/apt/trusted.gpg.d/scalasbt-release.gpg
+        sudo apt update
+        sudo apt install sbt    
     - name: Build and Test Scalactic and ScalaTest using Scala 2.13 on JDK ${{ matrix.Java }}
       run: sbt test
   test-scala-2-11:
@@ -39,6 +49,16 @@ jobs:
         distribution: temurin
         java-version: ${{ matrix.java }}
         cache: 'sbt'
+    - name: Setup SBT
+      run: |
+        sudo apt update
+        sudo apt install apt-transport-https curl gnupg -yqq
+        echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | sudo tee /etc/apt/sources.list.d/sbt.list
+        echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | sudo tee /etc/apt/sources.list.d/sbt_old.list
+        curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo -H gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/scalasbt-release.gpg --import
+        sudo chmod 644 /etc/apt/trusted.gpg.d/scalasbt-release.gpg
+        sudo apt update
+        sudo apt install sbt     
     - name: Build and Test Scalactic and ScalaTest using Scala 2.11 on JDK ${{ matrix.Java }}
       run: sbt ++2.11.12 test        
   test-scala-3:
@@ -56,6 +76,16 @@ jobs:
         distribution: temurin
         java-version: ${{ matrix.java }}
         cache: 'sbt'
+    - name: Setup SBT
+      run: |
+        sudo apt update
+        sudo apt install apt-transport-https curl gnupg -yqq
+        echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | sudo tee /etc/apt/sources.list.d/sbt.list
+        echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | sudo tee /etc/apt/sources.list.d/sbt_old.list
+        curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo -H gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/scalasbt-release.gpg --import
+        sudo chmod 644 /etc/apt/trusted.gpg.d/scalasbt-release.gpg
+        sudo apt update
+        sudo apt install sbt    
     - name: Build and Test ScalaTest using Scala 3 on JDK ${{ matrix.Java }}
       run: sbt scalatestTestDotty/test
     - name: Build and Test Scalactic using Scala 3 on JDK ${{ matrix.Java }}
@@ -75,6 +105,16 @@ jobs:
         distribution: temurin
         java-version: ${{ matrix.java }}
         cache: 'sbt'
+    - name: Setup SBT
+      run: |
+        sudo apt update
+        sudo apt install apt-transport-https curl gnupg -yqq
+        echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | sudo tee /etc/apt/sources.list.d/sbt.list
+        echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | sudo tee /etc/apt/sources.list.d/sbt_old.list
+        curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo -H gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/scalasbt-release.gpg --import
+        sudo chmod 644 /etc/apt/trusted.gpg.d/scalasbt-release.gpg
+        sudo apt update
+        sudo apt install sbt    
     - name: Build and Test ScalaTest using Scala-js on JDK ${{ matrix.Java }}
       run: sbt scalatestTestJS/test
     - name: Build and Test Scalactic using Scala-js on JDK ${{ matrix.Java }}
@@ -94,6 +134,16 @@ jobs:
         distribution: temurin
         java-version: ${{ matrix.java }}
         cache: 'sbt'
+    - name: Setup SBT
+      run: |
+        sudo apt update
+        sudo apt install apt-transport-https curl gnupg -yqq
+        echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | sudo tee /etc/apt/sources.list.d/sbt.list
+        echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | sudo tee /etc/apt/sources.list.d/sbt_old.list
+        curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo -H gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/scalasbt-release.gpg --import
+        sudo chmod 644 /etc/apt/trusted.gpg.d/scalasbt-release.gpg
+        sudo apt update
+        sudo apt install sbt    
     - name: Build and Test ScalaTest using Scala-native on JDK ${{ matrix.Java }}
       run: sbt scalatestTestDottyNative/test
     - name: Build and Test Scalactic using Scala-native on JDK ${{ matrix.Java }}
@@ -113,5 +163,15 @@ jobs:
         distribution: temurin
         java-version: ${{ matrix.java }}
         cache: 'sbt'
+    - name: Setup SBT
+      run: |
+        sudo apt update
+        sudo apt install apt-transport-https curl gnupg -yqq
+        echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | sudo tee /etc/apt/sources.list.d/sbt.list
+        echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | sudo tee /etc/apt/sources.list.d/sbt_old.list
+        curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo -H gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/scalasbt-release.gpg --import
+        sudo chmod 644 /etc/apt/trusted.gpg.d/scalasbt-release.gpg
+        sudo apt update
+        sudo apt install sbt    
     - name: Build and Run Generated Tests on JDK ${{ matrix.Java }}
       run: sbt gentests/test
