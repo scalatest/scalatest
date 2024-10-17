@@ -183,6 +183,8 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
     ()
   }
 
+  private lazy val getDiscoveredSuitesPattern = "getDiscoveredSuites-(.+)".r
+
   def receiveMessage(msg: String): Option[String] = {
     msg match {
       case "org.scalatest.events.TestPending" =>
@@ -201,7 +203,7 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
         summaryCounter.incrementSuitesAbortedCount()
       case "org.scalatest.events.ScopePending" =>
         summaryCounter.incrementScopesPendingCount()
-      case s"getDiscoveredSuites-$filePath" =>
+      case getDiscoveredSuitesPattern(filePath)  =>
         val tempFile = new java.io.File(filePath)
         val writer = new PrintWriter(filePath)
         try {
