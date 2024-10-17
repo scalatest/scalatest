@@ -32,12 +32,12 @@ import org.scalactic.ColCompatHelper.LazyListOrStream
   * Provides various specialized [[Generator]]s that are often useful.
   *
   * This exists as both a trait that you can mix into your classes, and an object
-  * that you can import -- choose whichever better suits your tests. However, you
+  * that you can import -- choose whichever best suits your tests. However, you
   * usually should not need to pull this in directly, since it is already mixed into
   * both [[GeneratorDrivenPropertyChecks]] and [[TableDrivenPropertyChecks]].
   *
   * This incorporates the standard [[Generator]]s defined in the [[Generator]] object,
-  * so you generally shouldn't need both.
+  * so you generally won't need both.
   *
   * @groupprio Specific 10
   * @groupname Specific Creating Generators from Specific Values
@@ -56,11 +56,11 @@ import org.scalactic.ColCompatHelper.LazyListOrStream
   * @groupprio Values 40
   * @groupname Values Generators that produce the values from Scalactic Types
   * @groupdesc Values Scalactic has many highly-precise numeric types such as [[NonZeroLong]],
-  *            [[PosZFloat]] or [[FiniteDouble]]. These help you make sure your code is using
+  *            [[PosZFloat]] or [[FiniteDouble]]. These help ensure your code is using
   *            exactly the numbers you intend, and they are very convenient for using with
   *            [[Generator]]s. But if the code under test is ''not'' using Scalactic, you
   *            sometimes find that you need to type `.value` a lot. These Generators do that
-  *            for so: you can choose a precise numeric Generator, but get the conventional
+  *            for you: you can choose a precise numeric Generator, but get the conventional
   *            numeric type from it.
   *
   * @groupprio Collections 50
@@ -99,12 +99,12 @@ trait CommonGenerators {
   /**
     * Create a [[Generator]] that returns values in the specified range.
     *
-    * This is the general-purpose function that underlies all of the other `xxsBetween()` functions in
+    * This is the general-purpose function that underlies all other `xxsBetween()` functions in
     * CommonGenerators. It works with any type for which there is an [[Ordering]], a [[Generator]], and
     * a [[Chooser]], making it easy to create [[Generator]]s for ranges within that type.
     *
     * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
-    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
+    * Moreover, ''from'' and ''to'' are considered to be edge cases, so they ''will'' usually be
     * produced in a typical run.
     *
     * The value of `from` must be less than or equal to the value of `to`. (However "less than or equal"
@@ -163,7 +163,7 @@ trait CommonGenerators {
   /**
     * Create a [[Generator]] that returns [[Byte]]s in the specified range.
     *
-    * The range is inclusive: both ''from'' and ''to'' may be produced by this [[Generator]].
+    * The range is inclusive: both ''from'' and ''to'' may be produced by the returned [[Generator]].
     * Moreover, ''from'' and ''to'' are considered to be edge cases, so they usually ''will'' be
     * produced in a typical run.
     *
@@ -1319,7 +1319,7 @@ trait CommonGenerators {
 
   /**
     * A [[Generator]] that produces positive [[Float]] values, not including zero
-    * but including infinites and `NaN`.
+    * but including infinities and `NaN`.
     *
     * @group Values
     */
@@ -1515,14 +1515,14 @@ trait CommonGenerators {
   val nonZeroFiniteDoubleValues: Generator[Double] = Generator.nonZeroFiniteDoubleGenerator.map(_.value)
 
   /**
-    * A [[Generator]] that produces [[Float]] values, including zero but not including infinities or `NaN`.
+    * A [[Generator]] that produces [[Float]] values, including zero but not including infinity or `NaN`.
     *
     * @group Values
     */
   val finiteFloatValues: Generator[Float] = Generator.finiteFloatGenerator.map(_.value)
 
   /**
-    * A [[Generator]] that produces [[Double]] values, including zero but not including infinities or `NaN`.
+    * A [[Generator]] that produces [[Double]] values, including zero but not including infinity or `NaN`.
     *
     * @group Values
     */
@@ -1554,56 +1554,56 @@ trait CommonGenerators {
   def tuple2s[A, B](implicit genOfA: Generator[A], genOfB: Generator[B]): Generator[(A, B)] = Generator.tuple2Generator[A, B]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
   def tuple3s[A, B, C](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C]): Generator[(A, B, C)] = Generator.tuple3Generator[A, B, C]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
   def tuple4s[A, B, C, D](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D]): Generator[(A, B, C, D)] = Generator.tuple4Generator[A, B, C, D]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
   def tuple5s[A, B, C, D, E](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E]): Generator[(A, B, C, D, E)] = Generator.tuple5Generator[A, B, C, D, E]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
   def tuple6s[A, B, C, D, E, F](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F]): Generator[(A, B, C, D, E, F)] = Generator.tuple6Generator[A, B, C, D, E, F]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
   def tuple7s[A, B, C, D, E, F, G](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G]): Generator[(A, B, C, D, E, F, G)] = Generator.tuple7Generator[A, B, C, D, E, F, G]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
   def tuple8s[A, B, C, D, E, F, G, H](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H]): Generator[(A, B, C, D, E, F, G, H)] = Generator.tuple8Generator[A, B, C, D, E, F, G, H]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
   def tuple9s[A, B, C, D, E, F, G, H, I](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I]): Generator[(A, B, C, D, E, F, G, H, I)] = Generator.tuple9Generator[A, B, C, D, E, F, G, H, I]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
@@ -1611,7 +1611,7 @@ trait CommonGenerators {
                                              genOfJ: Generator[J]): Generator[(A, B, C, D, E, F, G, H, I, J)] = Generator.tuple10Generator[A, B, C, D, E, F, G, H, I, J]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
@@ -1619,7 +1619,7 @@ trait CommonGenerators {
                                                 genOfJ: Generator[J], genOfK: Generator[K]): Generator[(A, B, C, D, E, F, G, H, I, J, K)] = Generator.tuple11Generator[A, B, C, D, E, F, G, H, I, J, K]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
@@ -1627,7 +1627,7 @@ trait CommonGenerators {
                                                    genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L)] = Generator.tuple12Generator[A, B, C, D, E, F, G, H, I, J, K, L]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
@@ -1635,7 +1635,7 @@ trait CommonGenerators {
                                                       genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M)] = Generator.tuple13Generator[A, B, C, D, E, F, G, H, I, J, K, L, M]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
@@ -1643,7 +1643,7 @@ trait CommonGenerators {
                                                          genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N)] = Generator.tuple14Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
@@ -1651,7 +1651,7 @@ trait CommonGenerators {
                                                             genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)] = Generator.tuple15Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
@@ -1659,7 +1659,7 @@ trait CommonGenerators {
                                                                genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)] = Generator.tuple16Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
@@ -1667,7 +1667,7 @@ trait CommonGenerators {
                                                                   genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] = Generator.tuple17Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
@@ -1675,7 +1675,7 @@ trait CommonGenerators {
                                                                      genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] = Generator.tuple18Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
@@ -1683,7 +1683,7 @@ trait CommonGenerators {
                                                                         genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] = Generator.tuple19Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
@@ -1692,7 +1692,7 @@ trait CommonGenerators {
                                                                            genOfT: Generator[T]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] = Generator.tuple20Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
@@ -1701,7 +1701,7 @@ trait CommonGenerators {
                                                                               genOfT: Generator[T], genOfU: Generator[U]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] = Generator.tuple21Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]
 
   /**
-    * See [[tuple2s]].
+    * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
@@ -1710,7 +1710,7 @@ trait CommonGenerators {
                                                                                  genOfT: Generator[T], genOfU: Generator[U], genOfV: Generator[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] = Generator.tuple22Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]
 
   /**
-    * Given a [[Generator]] for type [[T]], this creates one for a [[Vector]] of [[T]].
+    * Given a [[Generator]] for type [[T]], this creates a [[Generator]] for [[Vector]] of [[T]].
     *
     * Note that the [[Vector]] type is considered to have a "size", so you can use the configuration parameters
     * [[Configuration.minSize]] and [[Configuration.sizeRange]] to constrain the sizes of the resulting `Vector`s
@@ -1728,7 +1728,7 @@ trait CommonGenerators {
   def vectors[T](implicit genOfT: Generator[T]): Generator[Vector[T]] with HavingLength[Vector[T]] = Generator.vectorGenerator
 
   /**
-    * Given an existing `Generator[T]`, this creates a `Generator[Option[T]]`.
+    * Given a `Generator[T]`, this creates a `Generator[Option[T]]`.
     *
     * @param genOfT a [[Generator]] that produces values of type [[T]]
     * @tparam T the type that we are producing an Option of
@@ -1739,7 +1739,7 @@ trait CommonGenerators {
   def options[T](implicit genOfT: Generator[T]): Generator[Option[T]] = Generator.optionGenerator
 
   /**
-    * Given [[Generator]]s for two types, [[G]] and [[B]], this provides one for `G Or B`.
+    * Given [[Generator]]s for two types, [[G]] and [[B]], this creates a [[Generator]] for `G Or B`.
     *
     * @param genOfG a [[Generator]] that produces type [[G]]
     * @param genOfB a [[Generator]] that produces type [[B]]
@@ -1750,7 +1750,7 @@ trait CommonGenerators {
   def ors[G, B](implicit genOfG: Generator[G], genOfB: Generator[B]): Generator[G Or B] = Generator.orGenerator
 
   /**
-    * Given [[Generator]]s for two types, [[L]] and [[R]], this provides one for `Either[L, R]`.
+    * Given [[Generator]]s for two types, [[L]] and [[R]], this creates a [[Generator]] for `Either[L, R]`.
     *
     * @param genOfL a [[Generator]] that produces type [[L]]
     * @param genOfR a [[Generator]] that produces type [[R]]
@@ -1811,8 +1811,8 @@ trait CommonGenerators {
     * Given a [[Generator]] that produces Tuples of key/value pairs, this gives you one that produces [[Map]]s
     * with those pairs.
     *
-    * If you are simply looking for random pairing of the key and value types, this is pretty easy to use:
-    * if both the key and value types have [[Generator]]s, then the Tuple and Map ones will be automatically
+    * If you are simply looking for random-pairing of the key and value types, this is pretty easy to use:
+    * if both the key and value types have corresponding [[Generator]]s, then the Tuple and Map ones will be automatically
     * and implicitly created when you need them.
     *
     * The resulting [[Generator]] also has the [[HavingSize]] trait, so you can use it to generate [[Map]]s
@@ -1867,11 +1867,11 @@ trait CommonGenerators {
     *
     * Note that the generated functions are, necessarily, pretty random. In practice, the function you get from a
     * [[function1s]] call (and its variations, up through [[function22s]]) takes the hashes of its input
-    * values, combines those with a randomly-chosen number, and combines them in order to choose the generated value
+    * values, combines those with a randomly chosen number, and combines them in order to choose the generated value
     * [[B]].
     *
     * That said, each of the generated functions ''is'' deterministic: given the same input parameters and the same
-    * randomly-chosen number, you will always get the same [[B]] result. And the `toString` function on the generated
+    * randomly chosen number, you will always get the same [[B]] result. And the `toString` function on the generated
     * function will show the formula you need to use in order to recreate that, which will look something like:
     *
     * {{{
@@ -1881,7 +1881,7 @@ trait CommonGenerators {
     *
     * The number and type of the `a`, `b`, `c`, etc, parameters, as well as the type parameter of [[valueOf]], will depend
     * on the function type you are generating, but they will always follow this pattern. [[valueOf]] is the underlying
-    * function that takes these parameters and the randomly-chosen number, and returns a value of the specified type.
+    * function that takes these parameters and the randomly chosen number, and returns a value of the specified type.
     *
     * So if a property evaluation fails, the display of the generated function will tell you how to call [[valueOf]]
     * to recreate the failure.
@@ -2110,7 +2110,7 @@ trait CommonGenerators {
     * @param construct a constructor that builds the target type from its constituents;
     *                  most often, a case class constructor
     * @param deconstruct a deconstructor function that takes the target type and breaks
-    *                    is down into its constituents
+    *                    it down into its constituents
     * @param genOfA a [[Generator]] for the input type
     * @tparam A the input type
     * @tparam B the target type to be generated
@@ -2325,7 +2325,7 @@ trait CommonGenerators {
     * collates all of the results. You can then look at the [[Classification]] to see if the proportions match
     * your expectations.
     *
-    * For example, consider this simple classification of small numbers:
+    * For example, consider the following simple classification of small numbers:
     * {{{
     * val classification: Classification =
     *   CommonGenerators.classify(10000, CommonGenerators.intsBetween(0, 9))
@@ -2334,7 +2334,7 @@ trait CommonGenerators {
     *     case _ => "odd"
     *   }
     * }}}
-    * As expected, the results come out evenly:
+    * As expected, the results are distributed evenly:
     * {{{
     * classification: org.scalatest.prop.Classification =
     * 50% odd

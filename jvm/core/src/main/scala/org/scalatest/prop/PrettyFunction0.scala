@@ -23,7 +23,7 @@ package org.scalatest.prop
   * lazy (it is not evaluated until you call it), this one is strict (you pass the
   * result in as a parameter).
   *
-  * In exchange, this is more usable and reproducible for test environments. Its
+  * In exchange, this is more usable, and reproducible for test environments. Its
   * `hashCode` and `equals` are based on those of the passed-in value (so they are
   * consistent and reproducible), and its `toString` nicely displays the result
   * that will always be returned.
@@ -32,9 +32,31 @@ package org.scalatest.prop
   * @tparam A the type that is returned by this function
   */
 class PrettyFunction0[A](private val result: A) extends (() => A) {
+  /**
+  * Applies this function and returns the stored result.
+  *
+  * @return the result that was stored in this function
+  */
   def apply(): A = result
+  /**
+  * Returns a string representation of this function.
+  *
+  * @return a string that represents this function in the form "() => result"
+  */
   override def toString = s"() => $result"
+  /**
+  * Computes the hash code based on the stored result.
+  *
+  * @return the hash code of the stored result
+  */
   override def hashCode: Int = result.hashCode
+  /**
+  * Checks if this function is equal to another object.
+  *
+  * @param o the object to compare against
+  * @return true if the given object is also a `PrettyFunction0`
+  *         with an equivalent stored result, otherwise false
+  */
   override def equals(o: Any): Boolean = {
     o match {
       case that: PrettyFunction0[_] => that.result == this.result
