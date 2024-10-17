@@ -23,9 +23,7 @@ object GenSafeStyles {
   val generatorSource = new File("GenSafeStyles.scala")
 
   def translateLine(traitName: String)(line: String): String =
-    line.replaceAllLiterally("TestRegistration", "SafeTestRegistration")
-        .replaceAllLiterally("org.scalatest.FixtureTestRegistration", "org.scalatest.FixtureSafeTestRegistration")
-        .replaceAllLiterally("Any /* Assertion */", "Assertion")
+    line.replaceAllLiterally("Any /* Assertion */", "Assertion")
         .replaceAllLiterally(traitName, (if (traitName.startsWith("Any")) traitName.drop(3) else traitName))
         .replaceAllLiterally("Resources.concurrentSafe" + traitName + "Mod", "Resources.concurrent" + traitName + "Mod")
         .replaceAllLiterally("Resources.concurrentFixtureSafe" + traitName + "Mod", "Resources.concurrentFixture" + traitName + "Mod")
