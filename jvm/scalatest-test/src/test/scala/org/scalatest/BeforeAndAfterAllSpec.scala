@@ -109,11 +109,11 @@ class BeforeAndAfterAllSpec extends AnyFunSpec {
 
   describe("BeforeAndAfterAll") {
     it ("should call beforeAll before any test starts, and call afterAll after all tests completed") {
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       val execService = java.util.concurrent.Executors.newFixedThreadPool(2)
       val dist = new TestConcurrentDistributor(execService)
-      // SKIP-SCALATESTJS,NATIVE-END
-      //SCALATESTJS,NATIVE-ONLY val dist = new TestConcurrentDistributor()
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val dist = new TestConcurrentDistributor()
       try {
         val suite = new ExampleSuite()
         val rep = new EventRecordingReporter()
@@ -137,9 +137,9 @@ class BeforeAndAfterAllSpec extends AnyFunSpec {
         }
       }
       finally {
-        // SKIP-SCALATESTJS,NATIVE-START
+        // SKIP-SCALATESTJS-START
         execService.shutdown()
-        // SKIP-SCALATESTJS,NATIVE-END
+        // SKIP-SCALATESTJS-END
       }
     }
     it ("should call beforeAll before any test starts in nested suite, and call afterAll after all tests in nested suites completed") {
@@ -147,11 +147,11 @@ class BeforeAndAfterAllSpec extends AnyFunSpec {
       val suite = new ExampleSuites
       val rep = new EventRecordingReporter
       
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       val execService = java.util.concurrent.Executors.newFixedThreadPool(2)
       val dist = new TestConcurrentDistributor(execService)
-      // SKIP-SCALATESTJS,NATIVE-END
-      //SCALATESTJS,NATIVE-ONLY val dist = new TestConcurrentDistributor()
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val dist = new TestConcurrentDistributor()
       
       try {
         suite.run(None, Args(reporter = rep, distributor = Some(dist)))
@@ -174,9 +174,9 @@ class BeforeAndAfterAllSpec extends AnyFunSpec {
         }
       }
       finally {
-        // SKIP-SCALATESTJS,NATIVE-START
+        // SKIP-SCALATESTJS-START
         execService.shutdown()
-        // SKIP-SCALATESTJS,NATIVE-END
+        // SKIP-SCALATESTJS-END
       }
     }
     it ("should be called once for beforeAll and afterAll when used with OneInstancePerTest") {

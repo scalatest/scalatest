@@ -283,6 +283,8 @@ class ConductorSuite extends AnyFunSuite with Matchers with Conductors with Seve
     threadWasKilled.get should be (true)
   }
 
+  // SKIP-SCALATESTNATIVE-START
+  // Deadlocks in Scala Native, fixed in 0.5.7
   test("runaway threads will cause a test to be timed out") {
     val conductor = new Conductor
     import conductor._
@@ -304,6 +306,7 @@ class ConductorSuite extends AnyFunSuite with Matchers with Conductors with Seve
       }
     caught.getMessage should be ("Test timed out because threads existed that were runnable while no progress was made (the beat did not advance) for 1 second.")
   }
+  // SKIP-SCALATESTNATIVE-END
 
   test("ConductorFixture is a stackable trait that delegates test function execution to withFixture(NoArgTest)") {
     var calledSuperWithFixtureNoArgTest = false

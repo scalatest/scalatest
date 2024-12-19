@@ -1107,25 +1107,25 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should allow other execution context to be used") {
-      //SCALATESTJS,NATIVE-ONLY var changeMe = false
+      //SCALATESTJS-ONLY var changeMe = false
 
-      //SCALATESTJS,NATIVE-ONLY object CustomTestExecutionContext extends scala.concurrent.ExecutionContextExecutor {
-      //SCALATESTJS,NATIVE-ONLY   override def execute(runnable: Runnable): Unit = {
-      //SCALATESTJS,NATIVE-ONLY     changeMe = true
-      //SCALATESTJS,NATIVE-ONLY     try {
-      //SCALATESTJS,NATIVE-ONLY       runnable.run()
-      //SCALATESTJS,NATIVE-ONLY     } catch {
-      //SCALATESTJS,NATIVE-ONLY       case t: Throwable => reportFailure(t)
-      //SCALATESTJS,NATIVE-ONLY     }
-      //SCALATESTJS,NATIVE-ONLY   }
-      //SCALATESTJS,NATIVE-ONLY   def reportFailure(t: Throwable): Unit =
-      //SCALATESTJS,NATIVE-ONLY     t.printStackTrace()
-      //SCALATESTJS,NATIVE-ONLY }
+      //SCALATESTJS-ONLY object CustomTestExecutionContext extends scala.concurrent.ExecutionContextExecutor {
+      //SCALATESTJS-ONLY   override def execute(runnable: Runnable): Unit = {
+      //SCALATESTJS-ONLY     changeMe = true
+      //SCALATESTJS-ONLY     try {
+      //SCALATESTJS-ONLY       runnable.run()
+      //SCALATESTJS-ONLY     } catch {
+      //SCALATESTJS-ONLY       case t: Throwable => reportFailure(t)
+      //SCALATESTJS-ONLY     }
+      //SCALATESTJS-ONLY   }
+      //SCALATESTJS-ONLY   def reportFailure(t: Throwable): Unit =
+      //SCALATESTJS-ONLY     t.printStackTrace()
+      //SCALATESTJS-ONLY }
       class TestSpec extends AsyncWordSpecLike {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END
-        //SCALATESTJS,NATIVE-ONLY override implicit val executionContext: ExecutionContext = CustomTestExecutionContext
+        //SCALATESTJS-ONLY override implicit val executionContext: ExecutionContext = CustomTestExecutionContext
         val a = 1
         "feature 1" should {
           "test A" in {

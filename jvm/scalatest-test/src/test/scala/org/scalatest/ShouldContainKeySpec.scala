@@ -221,11 +221,11 @@ class ShouldContainKeySpec extends AnyFunSpec with ReturnsNormallyThrowsAssertio
         assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained key \"two\", and Map(\"one\" -> 1, \"two\" -> 2) contained key \"two\"")
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should work on parallel form") {
         Map("one" -> 1, "two" -> 2).par should contain key ("two")
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       it("should show escaped key string in analysis") {
         val a = "\u0000test"
@@ -384,11 +384,11 @@ class ShouldContainKeySpec extends AnyFunSpec with ReturnsNormallyThrowsAssertio
         assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained key \"two\", and " + decorateToStringValue(prettifier, map3) + " contained key \"two\"")
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should work on parallel form") {
         mutable.Map("one" -> 1, "two" -> 2).par should contain key ("two")
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       it("should show escaped key string in analysis") {
         val a = "\u0000test"
@@ -536,11 +536,11 @@ class ShouldContainKeySpec extends AnyFunSpec with ReturnsNormallyThrowsAssertio
         assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained key \"two\", and Map(\"one\" -> 1, \"two\" -> 2) contained key \"two\"")
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should work on parallel form") {
         map.par should contain key ("two")
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       it("should show escaped key string in analysis") {
         val a = "\u0000test"
@@ -689,11 +689,11 @@ class ShouldContainKeySpec extends AnyFunSpec with ReturnsNormallyThrowsAssertio
         assert(caught3.getMessage === Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained key \"two\", and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained key \"two\"")
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should work on parallel form") {
         HashMap("one" -> 1, "two" -> 2).par should contain key ("two")
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       it("should show escaped key string in analysis") {
         val a = "\u0000test"
@@ -852,11 +852,11 @@ class ShouldContainKeySpec extends AnyFunSpec with ReturnsNormallyThrowsAssertio
         assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained key \"two\", and " + decorateToStringValue(prettifier, map3) + " contained key \"two\"")
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should work on parallel form") {
         mutable.HashMap("one" -> 1, "two" -> 2).par should contain key ("two")
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       it("should show escaped key string in analysis") {
         val a = "\u0000test"
@@ -868,7 +868,7 @@ class ShouldContainKeySpec extends AnyFunSpec with ReturnsNormallyThrowsAssertio
       }
     }
 
-    // SKIP-SCALATESTJS,NATIVE-START
+    // SKIP-SCALATESTJS-START
     describe("on java.util.Map") {
 
       val javaMap: java.util.Map[String, Int] = new java.util.HashMap
@@ -1034,6 +1034,6 @@ class ShouldContainKeySpec extends AnyFunSpec with ReturnsNormallyThrowsAssertio
         e.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"\\u0000test\"=\"test\""))
       }
     }
-    // SKIP-SCALATESTJS,NATIVE-END
+    // SKIP-SCALATESTJS-END
   }
 }

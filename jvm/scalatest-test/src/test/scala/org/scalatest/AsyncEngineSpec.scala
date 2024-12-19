@@ -147,7 +147,7 @@ class AsyncEngineSpec extends flatspec.AnyFlatSpec with matchers.should.Matchers
       // SKIP-SCALATESTJS,NATIVE-START
       implicit def executionContext = scala.concurrent.ExecutionContext.Implicits.global
       // SKIP-SCALATESTJS,NATIVE-END
-      //SCALATESTJS,NATIVE-ONLY implicit def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+      //SCALATESTJS-ONLY implicit def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
       test("should abort this suite") {
         Future.failed(ex)
       }

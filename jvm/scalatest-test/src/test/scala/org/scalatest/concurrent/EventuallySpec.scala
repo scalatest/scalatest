@@ -22,7 +22,9 @@ import time.{Millis, Millisecond, Span}
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
+// SKIP-SCALATESTJS,NATIVE-START
 import SharedHelpers.serializeRoundtrip
+// SKIP-SCALATESTJS,NATIVE-END
 
 import scala.concurrent.Future
 import org.scalatest.funspec.AsyncFunSpec
@@ -226,6 +228,7 @@ class EventuallySpec extends AsyncFunSpec with Matchers with OptionValues /*with
       count should be > (1)
     }
 
+    // SKIP-SCALATESTJS,NATIVE-START
     it ("should blow up with a TFE that is serializable") {
       val e = intercept[TestFailedException] {
         eventually {
@@ -235,6 +238,7 @@ class EventuallySpec extends AsyncFunSpec with Matchers with OptionValues /*with
       serializeRoundtrip(e)
       succeed
     }
+    // SKIP-SCALATESTJS,NATIVE-END
   }
 
   describe("The eventually construct when work with Future[T]") {
@@ -479,7 +483,7 @@ class EventuallySpec extends AsyncFunSpec with Matchers with OptionValues /*with
     }
     // SKIP-SCALATESTJS,NATIVE-END
 
-    // SKIP-SCALATESTJS,NATIVE-START
+    // SKIP-SCALATESTJS-START
     it("should retry the future function even when exception is thrown during the execution of the function to produce future") {
       var count = 0
       def getValue(): Int = throw new RuntimeException("on purpose")
@@ -501,7 +505,7 @@ class EventuallySpec extends AsyncFunSpec with Matchers with OptionValues /*with
       caught.getCause.getClass.getName should be ("java.lang.RuntimeException")
       caught.getCause.getMessage should be ("on purpose")
     }
-    // SKIP-SCALATESTJS,NATIVE-END
+    // SKIP-SCALATESTJS-END
   }
 }
 

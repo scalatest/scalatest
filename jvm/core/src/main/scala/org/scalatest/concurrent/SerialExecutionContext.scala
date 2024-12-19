@@ -114,8 +114,8 @@ private[scalatest] class SerialExecutionContext extends ExecutionContext {
   private def recRunNow(future: Future[Outcome]): Unit = // Could take a scala.concurrent.duration.Deadline to be used for poll(timeout, timeUnit)
     if (future.isCompleted && queue.size == 0) ()
     else {
-      //SCALATESTJS,NATIVE-ONLY if (!future.isCompleted && queue.size == 0)
-      //SCALATESTJS,NATIVE-ONLY throw new IllegalStateException("Queue is empty while future is not completed, this means you're probably using a wrong ExecutionContext for your task, please double check your Future.")
+      //SCALATESTJS-ONLY if (!future.isCompleted && queue.size == 0)
+      //SCALATESTJS-ONLY throw new IllegalStateException("Queue is empty while future is not completed, this means you're probably using a wrong ExecutionContext for your task, please double check your Future.")
       val task = queue.take() // Note that this will block if queue is empty, alternatively we can use poll(timeout, timeUnit) to deal with deadlines
       task.run()  // TODO: this should abort the suite, let's write a test for that
       recRunNow(future)

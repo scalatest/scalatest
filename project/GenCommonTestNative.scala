@@ -91,7 +91,8 @@ object GenCommonTestNative {
         "BookPropertyMatchers.scala",
         "EmptyMocks.scala",
         "FileMocks.scala",
-        "StringFixture.scala"
+        "StringFixture.scala",
+        "TestConcurrentDistributor.scala"
       ), targetDir) ++
     copyFiles("jvm/common-test/src/main/scala/org/scalatest/path", "org/scalatest/path",
       List("ExampleLikeSpecs.scala"), targetDir)

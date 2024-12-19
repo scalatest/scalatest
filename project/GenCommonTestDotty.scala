@@ -135,6 +135,8 @@ object GenCommonTestDotty {
       destFile
     }
   }
+  def copyDirNative(sourceDirName: String, packageDirName: String, targetDir: File, skipList: List[String]): Seq[File] = 
+    copyDirJS(sourceDirName, packageDirName, targetDir, skipList)
 
   def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyDir("jvm/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir, 
@@ -157,6 +159,17 @@ object GenCommonTestDotty {
     copyDirJS("dotty/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++
     copyDirJS("jvm/common-test/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++ 
     copyDirJS("js/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty)
+  }
+  
+  def genMainNative(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    copyDirNative("jvm/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir,
+      List(
+        "LineNumberHelper.scala", 
+        "LineNumberMacro.scala", 
+      )
+    ) ++
+    copyDirNative("dotty/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++
+    copyDirNative("jvm/common-test/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) 
   }
 
   /*copyFiles("jvm/common-test/src/main/scala/org/scalatest", "org/scalatest",

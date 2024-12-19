@@ -381,12 +381,9 @@ object GenScalaTestDotty {
         "Shell.scala",                      // Not supported on scala-native
         "run.scala",                        // Not supported on scala-native
         "SuiteRerunner.scala",              // Not supported on scala-native
-        "JavaClassesWrappers.scala",        // Re-implemented in scala-native
         "DispatchReporter.scala"            // Not supported on scala-native
       ), 
-      "org/scalatest/concurrent" -> List(
-        "SleepHelper.scala"
-      ), 
+      "org/scalatest/concurrent" -> List.empty,
       "org/scalatest/diagrams" -> List(
         "Diagrams.scala", 
         "DiagramsMacro.scala"
@@ -498,7 +495,6 @@ object GenScalaTestDotty {
     copyDir("dotty/core/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++
     copyDir("dotty/core/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDir("native/core/src/main/scala/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++ 
-    copyDir("native/core/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, List.empty) ++ 
     copyDir("native/core/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, List.empty) ++ 
     copyDir("native/core/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++ 
     copyDirNative("jvm/core/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++ 
@@ -549,7 +545,6 @@ object GenScalaTestDotty {
         "SuiteParam.scala",
         "SuiteResult.scala",
         "SuiteResultHolder.scala",
-        //"SuiteRunner.scala",
         "TestSpec.scala",
         "XmlReporter.scala",
         "XmlSocketReporter.scala"
@@ -1064,24 +1059,9 @@ object GenScalaTestDotty {
     copyDirNative("dotty/scalatest-test/src/test/scala/org/scalatest/matchers/must", "org/scalatest/matchers/must", targetDir, List.empty) ++
     copyDirNative("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, 
       List(
-        "AbstractPatienceConfigurationSpec.scala", 
-        "WaitersSpec.scala",    // skipped because Waiters not supported.
-        "AsyncAssertionsSpec.scala",    // skipped because AsyncAssertions (deprecated name for Waiters) not supported.
-        "ConductorFixtureSuite.scala",  // skipped because Conductors not supported.
-        "ConductorMethodsSuite.scala",   // skipped because Conductors not supported.
-        "ConductorSuite.scala",   // skipped because Conductors not supported.
-        "ConductorFixtureDeprecatedSuite.scala",  // skipped because Conductors not supported.
-        "ConductorMethodsDeprecatedSuite.scala",   // skipped because Conductors not supported.
-        "ConductorDeprecatedSuite.scala",   // skipped because Conductors not supported.
-        "EventuallySpec.scala",   // skipped because Eventually not supported.
-        "IntegrationPatienceSpec.scala",  // skipped because depends on Eventually
-        "DeprecatedIntegrationPatienceSpec.scala",
-        "JavaFuturesSpec.scala",      // skipped because depends on java futures
-        "TestThreadsStartingCounterSpec.scala",   // skipped because depends on Conductors
-        "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
-        "TimeoutsSpec.scala",            // skipped because Timeouts not supported.
-        "UltimatelySpec.scala",   // skipped because Eventually not supported.
-        "ScalaFuturesSpec.scala"
+        // requires SelectableChannel
+        "TimeLimitsSpec.scala", 
+        "AbstractPatienceConfigurationSpec.scala" 
       )
     ) ++
     copyDirNative("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++

@@ -1418,6 +1418,11 @@ private[scalatest] object Suite {
 
   def anExceptionThatShouldCauseAnAbort(throwable: Throwable): Boolean =
     throwable match {
+      // Would never occour in Scala.js / Scala Native but is frequently used in unit tests
+      case _: VirtualMachineError => true
+      // SKIP-SCALATESTJS-START
+      case _: ThreadDeath => true
+      // SKIP-SCALATESTJS-END
       // SKIP-SCALATESTJS,NATIVE-START
       case _: AnnotationFormatError | 
 /*
@@ -1427,9 +1432,7 @@ private[scalatest] object Suite {
            _: CoderMalfunctionError |
            _: FactoryConfigurationError | 
            _: LinkageError | 
-           _: ThreadDeath | 
            _: TransformerFactoryConfigurationError | 
-           _: VirtualMachineError => true
       // Don't use AWTError directly because it doesn't exist on Android, and a user
       // got ScalaTest to compile under Android.
       case e if e.getClass.getName == "java.awt.AWTError" => true

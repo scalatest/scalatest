@@ -53,7 +53,7 @@ import scala.util.{Try, Success, Failure}
  */
 sealed trait Status { thisStatus =>
 
-  // SKIP-SCALATESTJS,NATIVE-START
+  // SKIP-SCALATESTJS-START
   /**
    * Blocking call that waits until the entity represented by this <code>Status</code> (one test, one suite, or all of
    * a suite's tests or nested suites) has completed, then returns <code>true</code> if no tests failed and no
@@ -97,7 +97,7 @@ sealed trait Status { thisStatus =>
    *            via a ScalaTest event and therefore was installed as an unreported exception on this <code>Status</code>.
    */
   def succeeds(): Boolean
-  // SKIP-SCALATESTJS,NATIVE-END
+  // SKIP-SCALATESTJS-END
 
   /**
    * Non-blocking call that indicates whether the entity represented by this
@@ -113,7 +113,7 @@ sealed trait Status { thisStatus =>
    */
   def isCompleted(): Boolean
 
-  // SKIP-SCALATESTJS,NATIVE-START
+  // SKIP-SCALATESTJS-START
   /**
    * Blocking call that waits until the entity represented by this <code>Status</code> (one test, one suite, or all of
    * a suite's tests or nested suites) has completed, then either returns normally, or if an unreported exception has
@@ -137,7 +137,7 @@ sealed trait Status { thisStatus =>
    *            via a ScalaTest event and therefore was installed as an unreported exception on this <code>Status</code>.
    */
   def waitUntilCompleted(): Unit
-  // SKIP-SCALATESTJS,NATIVE-END
+  // SKIP-SCALATESTJS-END
 
   /**
    * Registers the passed callback function to be executed when this status completes.
@@ -433,14 +433,14 @@ private[scalatest] object Status {
  */
 object SucceededStatus extends Status with Serializable {
 
-  // SKIP-SCALATESTJS,NATIVE-START
+  // SKIP-SCALATESTJS-START
   /**
    * Always returns <code>true</code>.
    * 
    * @return <code>true</code>
    */
   def succeeds() = true
-  // SKIP-SCALATESTJS,NATIVE-END
+  // SKIP-SCALATESTJS-END
 
   /**
    * Always returns <code>true</code>.
@@ -449,12 +449,12 @@ object SucceededStatus extends Status with Serializable {
    */
   def isCompleted() = true
 
-  // SKIP-SCALATESTJS,NATIVE-START
+  // SKIP-SCALATESTJS-START
   /**
    * Always returns immediately.
    */
   def waitUntilCompleted(): Unit = {}
-  // SKIP-SCALATESTJS,NATIVE-END
+  // SKIP-SCALATESTJS-END
 
   /**
    * Executes the passed function immediately on the calling thread.
@@ -476,14 +476,14 @@ object SucceededStatus extends Status with Serializable {
  */
 object FailedStatus extends Status with Serializable {
 
-  // SKIP-SCALATESTJS,NATIVE-START
+  // SKIP-SCALATESTJS-START
   /**
    * Always returns <code>false</code>.
    * 
    * @return <code>true</code>
    */
   def succeeds() = false
-  // SKIP-SCALATESTJS,NATIVE-END
+  // SKIP-SCALATESTJS-END
 
   /**
    * Always returns <code>true</code>.
@@ -492,12 +492,12 @@ object FailedStatus extends Status with Serializable {
    */
   def isCompleted() = true
 
-  // SKIP-SCALATESTJS,NATIVE-START
+  // SKIP-SCALATESTJS-START
   /**
    * Always returns immediately.
    */
   def waitUntilCompleted(): Unit = {}
-  // SKIP-SCALATESTJS,NATIVE-END
+  // SKIP-SCALATESTJS-END
 
   /**
    * Executes the passed function immediately on the calling thread.
@@ -531,16 +531,16 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
     }
   }
 
-  // SKIP-SCALATESTJS,NATIVE-START
+  // SKIP-SCALATESTJS-START
   def succeeds() = {
     waitUntilCompleted()
     synchronized { succeeded }
   }
-  // SKIP-SCALATESTJS,NATIVE-END
+  // SKIP-SCALATESTJS-END
 
   def isCompleted() = latch.getCount == 0L
 
-  // SKIP-SCALATESTJS,NATIVE-START
+  // SKIP-SCALATESTJS-START
   def waitUntilCompleted(): Unit = {
     latch.await()
     unreportedException match {
@@ -548,7 +548,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
       case None => // Do nothing
     }
   }
-  // SKIP-SCALATESTJS,NATIVE-END
+  // SKIP-SCALATESTJS-END
 
   def setFailed(): Unit = {
     synchronized {
@@ -686,7 +686,7 @@ final class StatefulStatus extends Status with Serializable {
     }
   }
 
-  // SKIP-SCALATESTJS,NATIVE-START
+  // SKIP-SCALATESTJS-START
   /**
    * Blocking call that waits until completion, as indicated by an invocation of <code>setCompleted</code> on this instance, then returns <code>false</code> 
    * if <code>setFailed</code> was called on this instance, else returns <code>true</code>.
@@ -697,7 +697,7 @@ final class StatefulStatus extends Status with Serializable {
     waitUntilCompleted()
     synchronized { succeeded }
   }
-  // SKIP-SCALATESTJS,NATIVE-END
+  // SKIP-SCALATESTJS-END
 
   /**
    * Non-blocking call that returns <code>true</code> if <code>setCompleted</code> has been invoked on this instance, <code>false</code> otherwise.
@@ -706,7 +706,7 @@ final class StatefulStatus extends Status with Serializable {
    */
   def isCompleted() = latch.getCount == 0L
 
-  // SKIP-SCALATESTJS,NATIVE-START
+  // SKIP-SCALATESTJS-START
   /**
    * Blocking call that returns only after <code>setCompleted</code> has been invoked on this <code>StatefulStatus</code> instance.
    */
@@ -717,7 +717,7 @@ final class StatefulStatus extends Status with Serializable {
       case None => // Do nothing
     }
   }
-  // SKIP-SCALATESTJS,NATIVE-END
+  // SKIP-SCALATESTJS-END
 
   /**
    * Sets the status to failed without changing the completion status.
@@ -894,7 +894,7 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
   // to the initializeBundle method.
   intializeBundle(statuses, mutex, queue, latch, bundleRef)
 
-  // SKIP-SCALATESTJS,NATIVE-START
+  // SKIP-SCALATESTJS-START
   /**
    * Blocking call that waits until all composite <code>Status</code>es have completed, then returns
    * <code>true</code> only if all of the composite <code>Status</code>es succeeded. If any <code>Status</code>
@@ -906,7 +906,7 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
     latch.await()
     statuses.forall(_.succeeds())
   }
-  // SKIP-SCALATESTJS,NATIVE-END
+  // SKIP-SCALATESTJS-END
 
   /**
    * Non-blocking call to check if the test or suite run is completed, returns <code>true</code> if all composite <code>Status</code>es have completed, 
@@ -920,12 +920,12 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
   // I think that was a fuzzy design if not a buggy one. In this implementation, the latch is the ultimate arbiter
   // of whether the status has completed.
 
-  // SKIP-SCALATESTJS,NATIVE-START
+  // SKIP-SCALATESTJS-START
   /**
    * Blocking call that returns only after all composite <code>Status</code>s have completed.
    */
   def waitUntilCompleted(): Unit = latch.await()
-  // SKIP-SCALATESTJS,NATIVE-END
+  // SKIP-SCALATESTJS-END
 
   /**
    * Registers the passed function to be executed when this status completes.

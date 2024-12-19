@@ -993,9 +993,9 @@ object SharedHelpers extends Assertions with LineNumberHelper {
 
   //##################################
 
-  // SKIP-SCALATESTJS,NATIVE-START
+  // SKIP-SCALATESTJS-START
   def javaMapEntry[K, V](key: K, value: V): java.util.Map.Entry[K, V] = org.scalatest.Entry(key, value)
-  // SKIP-SCALATESTJS,NATIVE-END
+  // SKIP-SCALATESTJS-END
 
   def indexElementEqual[K, V](itr: java.util.Iterator[java.util.Map.Entry[K, V]], xs: java.util.Map[K, V], right: java.util.Map.Entry[K, V]): Array[String] =
     indexElementForJavaIterator[K, V](itr, xs, (e: java.util.Map.Entry[K, V]) => e.getKey == right.getKey && e.getValue == right.getValue)
@@ -1190,7 +1190,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
       ""
   }
 
-  // SKIP-SCALATESTJS,NATIVE-START
+  // SKIP-SCALATESTJS-START
   private def succeededIndexesInJavaMap[K, V](xs: java.util.Map[K, V], filterFun: java.util.Map.Entry[K, V] => Boolean): String = {
     import collection.JavaConverters._
     val passedList = xs.asScala.toList.filter(e => filterFun(org.scalatest.Entry(e._1, e._2))).toList.map(_._1)
@@ -1201,7 +1201,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     else
       ""
   }
-  // SKIP-SCALATESTJS,NATIVE-END
+  // SKIP-SCALATESTJS-END
 
   private def failEarlySucceededIndexes[T](xs: Iterable[T], filterFun: T => Boolean, maxSucceed: Int): String = {
     xs match {
@@ -1235,7 +1235,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
       ""
   }
 
-  // SKIP-SCALATESTJS,NATIVE-START
+  // SKIP-SCALATESTJS-START
   private def failEarlySucceededIndexesInJavaMap[K, V](xs: java.util.Map[K, V], filterFun: java.util.Map.Entry[K, V] => Boolean, maxSucceed: Int): String = {
     import collection.JavaConverters._
     val passedList = xs.asScala.toList.filter(e => filterFun(org.scalatest.Entry(e._1, e._2))).take(maxSucceed).toList.map(_._1)
@@ -1246,7 +1246,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     else
       ""
   }
-  // SKIP-SCALATESTJS,NATIVE-END
+  // SKIP-SCALATESTJS-END
 
   def succeededIndexesEqualBoolean[T](xs: Iterable[T], value: Boolean): String =
     succeededIndexes(xs, (e: T) => value)
@@ -1260,13 +1260,13 @@ object SharedHelpers extends Assertions with LineNumberHelper {
   def succeededIndexesNotEqual[T](xs: Iterable[T], value: T): String =
     succeededIndexes(xs, (e: T) => e != value)
 
-  // SKIP-SCALATESTJS,NATIVE-START
+  // SKIP-SCALATESTJS-START
   def succeededIndexesEqual[K, V](xs: java.util.Map[K, V], value: java.util.Map.Entry[K, V]): String =
     succeededIndexesInJavaMap(xs, (e: java.util.Map.Entry[K, V]) => e.getKey == value.getKey && e.getValue == value.getValue)
 
   def succeededIndexesNotEqual[K, V](xs: java.util.Map[K, V], value: java.util.Map.Entry[K, V]): String =
     succeededIndexesInJavaMap(xs, (e: java.util.Map.Entry[K, V]) => e.getKey != value.getKey || e.getValue != value.getValue)
-  // SKIP-SCALATESTJS,NATIVE-END
+  // SKIP-SCALATESTJS-END
 
   def succeededIndexesLessThanEqual(xs: Iterable[Int], value: Int): String =
     succeededIndexes(xs, (e: Int) => e <= value)
@@ -1544,7 +1544,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
 
   //################################################
 
-  // SKIP-SCALATESTJS,NATIVE-START
+  // SKIP-SCALATESTJS-START
   def failEarlySucceededIndexesEqualBoolean[T](xs: java.util.Collection[T], value: Boolean, maxSucceed: Int): String =
     failEarlySucceededIndexesInJavaCol(xs, (e: T) => value, maxSucceed)
 
@@ -1611,7 +1611,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
   def failEarlySucceededIndexesNotInclude(xs: java.util.Collection[String], value: String, maxSucceed: Int): String =
     failEarlySucceededIndexesInJavaCol(xs, (e: String) => e.indexOf(value) < 0, maxSucceed)
 
-  // SKIP-SCALATESTJS,NATIVE-END
+  // SKIP-SCALATESTJS-END
 
   //################################################
 

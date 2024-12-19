@@ -73,7 +73,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should blow up with TestFailedException when the task does not response interrupt request and pass after the timeout") {
         a[TestFailedException] should be thrownBy {
           failAfter(timeout = Span(100, Millis)) {
@@ -89,7 +89,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
           }
         }
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       it("should not catch exception thrown from the test") {
         an[InterruptedException] should be thrownBy {
@@ -100,7 +100,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should set the exception thrown from the test after timeout as cause of TestFailedException") {
         val caught = the[TestFailedException] thrownBy {
           failAfter(Span(100, Millis)) {
@@ -183,7 +183,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         drag = false
         succeed
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       it("should wait for the test to finish when DoNotSignal.") {
         var x = 0
@@ -196,7 +196,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         x should be(1)
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should close a Selector connection via SelectorSignaler when the timeout is reached") {
         val selector = Selector.open()
         val ssChannel = ServerSocketChannel.open()
@@ -243,7 +243,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         drag = false
         succeed
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
     }
 
@@ -658,7 +658,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         assert(caught.getCause().getClass === classOf[IllegalArgumentException])
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should close Socket connection via SocketSignaler when timeout reached") {
         val serverSocket = new ServerSocket(0)
         @volatile
@@ -722,7 +722,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         drag = false
         succeed
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       it("should wait for the test to finish when DoNotSignal is used.") {
         var x = 0
@@ -735,7 +735,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         x should be(1)
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should close Selector connection via SelectorSignaler when timeout reached") {
         val selector = Selector.open()
         val ssChannel = ServerSocketChannel.open()
@@ -782,7 +782,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         drag = false
         succeed
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
     }
 
@@ -1177,7 +1177,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should blow up with TestCanceledException when the task does not response interrupt request and pass after the timeout") {
         a[TestCanceledException] should be thrownBy {
           cancelAfter(timeout = Span(100, Millis)) {
@@ -1194,7 +1194,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
           }
         }
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       it("should not catch exception thrown from the test") {
         an[InterruptedException] should be thrownBy {
@@ -1205,7 +1205,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should set the exception thrown from the test after timeout as cause of TestFailedException") {
         val caught = the[TestCanceledException] thrownBy {
           cancelAfter(Span(100, Millis)) {
@@ -1289,7 +1289,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         drag = false
         succeed
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       it("should wait for the test to finish when DoNotSignal.") {
         var x = 0
@@ -1302,7 +1302,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         x should be(1)
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should close a Selector connection via SelectorSignaler when the timeout is reached") {
         val selector = Selector.open()
         val ssChannel = ServerSocketChannel.open()
@@ -1349,7 +1349,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         drag = false
         succeed
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
     }
 
   }
