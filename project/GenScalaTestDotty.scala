@@ -277,7 +277,8 @@ object GenScalaTestDotty {
       "org/scalatest/matchers" -> List(
         "Matcher.scala",           // Re-implemented with new macro
         "MatchPatternMacro.scala", // Re-implemented with new macro
-        "TypeMatcherMacro.scala"   // Re-implemented with new macro
+        "TypeMatcherMacro.scala",   // Re-implemented with new macro
+        "MatchPatternHelper.scala"  // Re-implemented with Matchable
       ), 
       "org/scalatest/matchers/dsl" -> List(
         "BeWord.scala", 
@@ -341,7 +342,8 @@ object GenScalaTestDotty {
       "org/scalatest/matchers" -> List(
         "Matcher.scala",           // Re-implemented with new macro
         "MatchPatternMacro.scala", // Re-implemented with new macro
-        "TypeMatcherMacro.scala"   // Re-implemented with new macro
+        "TypeMatcherMacro.scala",  // Re-implemented with new macro
+        "MatchPatternHelper.scala"  // Re-implemented with Matchable
       ), 
       "org/scalatest/matchers/dsl" -> List(
         "BeWord.scala", 
@@ -405,7 +407,8 @@ object GenScalaTestDotty {
       "org/scalatest/matchers" -> List(
         "Matcher.scala",           // Re-implemented with new macro
         "MatchPatternMacro.scala", // Re-implemented with new macro
-        "TypeMatcherMacro.scala"   // Re-implemented with new macro
+        "TypeMatcherMacro.scala",  // Re-implemented with new macro
+        "MatchPatternHelper.scala"  // Re-implemented with Matchable
       ), 
       "org/scalatest/matchers/dsl" -> List(
         "BeWord.scala", 

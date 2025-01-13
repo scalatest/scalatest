@@ -24,7 +24,7 @@ private[scalatest] object MatchPatternMacro {
 //   /**
 //    * Check the case definition AST, raise an compiler error if the body is not empty.
 //    */
-   def checkCaseDefinitions(expr: Expr[PartialFunction[Any, _]])(using quotes: Quotes): Unit = {
+   def checkCaseDefinitions(expr: Expr[PartialFunction[Matchable, _]])(using quotes: Quotes): Unit = {
      import quotes.reflect._
      
      // Check if it is a default case
@@ -51,7 +51,7 @@ private[scalatest] object MatchPatternMacro {
    }
 
   // Do checking on case definition and generate AST that returns a match pattern matcher
-  def matchPatternMatcher(right: Expr[PartialFunction[Any, _]])(using Quotes): Expr[Matcher[Any]] = {
+  def matchPatternMatcher(right: Expr[PartialFunction[Matchable, _]])(using Quotes): Expr[Matcher[Any]] = {
     import quotes.reflect._
     
     checkCaseDefinitions(right)
@@ -59,7 +59,7 @@ private[scalatest] object MatchPatternMacro {
     '{ MatchPatternHelper.matchPatternMatcher($right) }
   }
 
-  def notMatchPatternMatcher(right: Expr[PartialFunction[Any, _]])(using Quotes): Expr[Matcher[Any]] = {
+  def notMatchPatternMatcher(right: Expr[PartialFunction[Matchable, _]])(using Quotes): Expr[Matcher[Any]] = {
     import quotes.reflect._
     
     checkCaseDefinitions(right)
@@ -72,19 +72,19 @@ private[scalatest] object MatchPatternMacro {
    *
    * org.scalatest.matchers.MatchPatternHelper.checkMatchPattern(left, right)
    */
-  def matchPattern(left: Expr[ResultOfNotWordForAny[_]], right: Expr[PartialFunction[Any, _]])(using Quotes): Expr[Unit] = {
+  def matchPattern(left: Expr[ResultOfNotWordForAny[_]], right: Expr[PartialFunction[Matchable, _]])(using Quotes): Expr[Unit] = {
     checkCaseDefinitions(right)
 
     '{ MatchPatternHelper.checkMatchPattern($left, $right) }
   }
 
-  def andNotMatchPatternMatcher[T:Type](self: Expr[Matcher[T]#AndNotWord], right: Expr[PartialFunction[Any, _]])(using Quotes): Expr[Matcher[T]] = {
+  def andNotMatchPatternMatcher[T:Type](self: Expr[Matcher[T]#AndNotWord], right: Expr[PartialFunction[Matchable, _]])(using Quotes): Expr[Matcher[T]] = {
     checkCaseDefinitions(right)
     val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher($right) }
     '{ ($self).owner.and($notMatcher) }
   }
 
-  def orNotMatchPatternMatcher[T:Type](self: Expr[Matcher[T]#OrNotWord], right: Expr[PartialFunction[Any, _]])(using Quotes): Expr[Matcher[T]] = {
+  def orNotMatchPatternMatcher[T:Type](self: Expr[Matcher[T]#OrNotWord], right: Expr[PartialFunction[Matchable, _]])(using Quotes): Expr[Matcher[T]] = {
     checkCaseDefinitions(right)
     val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher($right) }
     '{ ($self).owner.or($notMatcher) }
