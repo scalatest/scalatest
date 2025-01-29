@@ -19,6 +19,7 @@ import org.scalactic.{Resources => _, FailureMessages => _, _}
 import Requirements._
 
 import scala.reflect.ClassTag
+import scala.util.control.NonFatal
 import Assertions.areEqualComparingArraysStructurally
 import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.StackDepthException.toExceptionFunction
@@ -1153,7 +1154,7 @@ trait Assertions extends TripleEquals  {
    * </p>
    *
    * @param f a block of code, which if it completes abruptly, should trigger a <code>TestPendingException</code> 
-   * @throws TestPendingException if the passed block of code completes abruptly with an <code>Exception</code> or <code>AssertionError</code>
+   * @throws TestPendingException if the passed block of code completes abruptly with a <code>Throwable</code>
    */
   def pendingUntilFixed(f: => Unit)(implicit pos: source.Position): Assertion with PendingStatement = {
     val isPending =
@@ -1162,8 +1163,7 @@ trait Assertions extends TripleEquals  {
         false
       }
       catch {
-        case _: Exception => true
-        case _: AssertionError => true
+        case NonFatal(_) => true
       }
       if (isPending)
         throw new TestPendingException
