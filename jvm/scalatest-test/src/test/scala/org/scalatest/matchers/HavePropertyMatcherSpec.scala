@@ -31,10 +31,7 @@ class HavePropertyMatcherSpec extends AnyFunSpec {
       }
 
       it("should have pretty toString") {
-        // SKIP-SCALATESTNATIVE-START
         havePropertyMatcher.toString should be ("HavePropertyMatcher[java.lang.String, int](java.lang.String => HavePropertyMatchResult[int])")
-        // SKIP-SCALATESTNATIVE-END
-        //SCALATESTNATIVE-ONLY havePropertyMatcher.toString should be ("HavePropertyMatcher[java.lang.String, scala.scalanative.runtime.PrimitiveInt](java.lang.String => HavePropertyMatchResult[scala.scalanative.runtime.PrimitiveInt])")
       }
 
     }
