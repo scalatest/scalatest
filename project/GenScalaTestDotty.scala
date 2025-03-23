@@ -492,11 +492,11 @@ object GenScalaTestDotty {
       ))
 
   def genScalaNative(targetDir: File, version: String, scalaVersion: String): Seq[File] =
+    copyDir("native/core/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++ 
     copyDir("dotty/core/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++
     copyDir("dotty/core/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDir("native/core/src/main/scala/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++ 
     copyDir("native/core/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, List.empty) ++ 
-    copyDir("native/core/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++ 
     copyDirNative("jvm/core/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++ 
     copyDirNative("jvm/core/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, 
       List(

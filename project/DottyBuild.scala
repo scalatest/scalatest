@@ -371,8 +371,8 @@ trait DottyBuild { this: BuildCommons =>
       libraryDependencies += ("org.scala-native" %%% "test-interface" % nativeVersion),
       packageManagedSources,
       Compile / sourceGenerators += Def.task {
-        GenModulesDotty.genScalaTestCoreNative((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
         GenScalaTestDotty.genScalaNative((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
+        GenModulesDotty.genScalaTestCoreNative((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
         GenVersions.genScalaTestVersions((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++
         ScalaTestGenResourcesJSVM.genResources((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++
         ScalaTestGenResourcesJSVM.genFailureMessages((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value)  ++
