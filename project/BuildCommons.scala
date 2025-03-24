@@ -11,7 +11,7 @@ import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 trait BuildCommons {
 
   def scalaVersionsSettings: Seq[Setting[_]] = Seq(
-    crossScalaVersions := Seq("2.13.15", "2.12.20", "2.11.12"), 
+    crossScalaVersions := Seq("2.13.16", "2.12.20", "2.11.12"), 
     scalaVersion := crossScalaVersions.value.head,
   )
 
