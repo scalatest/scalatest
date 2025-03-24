@@ -1432,7 +1432,7 @@ private[scalatest] object Suite {
            _: CoderMalfunctionError |
            _: FactoryConfigurationError | 
            _: LinkageError | 
-           _: TransformerFactoryConfigurationError | 
+           _: TransformerFactoryConfigurationError => true
       // Don't use AWTError directly because it doesn't exist on Android, and a user
       // got ScalaTest to compile under Android.
       case e if e.getClass.getName == "java.awt.AWTError" => true
