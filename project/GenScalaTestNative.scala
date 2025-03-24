@@ -142,7 +142,6 @@ object GenScalaTestNative {
         //"AnsiColor.scala",
         "AnsiReset.scala",
         "ColorBar.scala",
-        "ConcurrentDistributor.scala",
         "DashboardReporter.scala",
         "DiscoverySuite.scala",
         "Durations.scala",
@@ -202,26 +201,7 @@ object GenScalaTestNative {
       "org/scalatest/prop" -> List.empty, 
       "org/scalatest/propspec" -> List.empty,
       "org/scalatest/wordspec" -> List.empty,
-      "org/scalatest/concurrent" -> (List(
-        "Waiters.scala",        // skipeed because doesn't really make sense on js's single-thread environment.
-        "Conductors.scala",             // skipped because depends on PimpedReadWriteLock
-        "ConductorFixture.scala",       // skipped because depends on Conductors
-        "ConductorMethods.scala",       // skipped because depends on Conductors
-        "DoNotInterrupt.scala",         // skipped because no practical way to interrupt in js.
-        "Eventually.scala",             // skipped because js is single thread and does not share memory.
-        "Interruptor.scala",            // skipped because no practical way to interrupt in js.
-        "JavaFutures.scala",            // skipped because depends on java futures.
-        "PimpedReadWriteLock.scala",    // skipped because use java concurrent classes
-        "PimpedThreadGroup.scala",      // skipped because doesn't really make sense under js's single-threaded environment.
-        "SelectorInterruptor.scala",    // skipped because it is for java selector
-        "SleepHelper.scala",            // skipped because scalatest.js has its own version
-        "SocketInterruptor.scala",       // skipped because it is for java socket.
-        "TestThreadsStartingCounter.scala",    // skipped because doesn't really make sense under js's single-threaded environment.
-        "ThreadInterruptor.scala",          // skipped because no interrupt in js.
-        "DeprecatedTimeLimitedTests.scala",       // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
-        "Timeouts.scala",               // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
-        "TimeoutTask.scala"            // skipped because timeout is not supported.,
-      )),
+      "org/scalatest/concurrent" -> List.empty,
       "org/scalatest/path" -> List.empty, 
       "org/scalatest/tagobjects" -> List(
         "ChromeBrowser.scala",  // skipped because selenium not supported.
@@ -235,8 +215,8 @@ object GenScalaTestNative {
     )
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    //copyStartsWithFiles("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", "Async", targetDir) ++
-    //copyFiles("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", List("FutureOutcomeSpec.scala"), targetDir)
+    copyStartsWithFiles("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", "Async", targetDir) ++
+    copyFiles("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", List("FutureOutcomeSpec.scala"), targetDir) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
       List(
         "AnMatcherSpec.scala",
@@ -561,25 +541,12 @@ object GenScalaTestNative {
         "WordSpecMixedInMatchersSpec.scala",
         "WordSpecSpec.scala"
       )) ++
-    // Invalid LLVM: "error: value doesn't match function result type 'void' ret i8* %_38"
-    // copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
-    //   List(
-    //     "WaitersSpec.scala",    // skipped because Waiters not supported.
-    //     "AsyncAssertionsSpec.scala",    // skipped because AsyncAssertions (deprecated name for Waiters) not supported.
-    //     "ConductorFixtureSuite.scala",  // skipped because Conductors not supported.
-    //     "ConductorMethodsSuite.scala",   // skipped because Conductors not supported.
-    //     "ConductorSuite.scala",   // skipped because Conductors not supported.
-    //     "ConductorFixtureDeprecatedSuite.scala",  // skipped because Conductors not supported.
-    //     "ConductorMethodsDeprecatedSuite.scala",   // skipped because Conductors not supported.
-    //     "ConductorDeprecatedSuite.scala",   // skipped because Conductors not supported.
-    //     "EventuallySpec.scala",   // skipped because Eventually not supported.
-    //     "IntegrationPatienceSpec.scala",  // skipped because depends on Eventually
-    //     "DeprecatedIntegrationPatienceSpec.scala",
-    //     "JavaFuturesSpec.scala",      // skipped because depends on java futures
-    //     "TestThreadsStartingCounterSpec.scala",   // skipped because depends on Conductors
-    //     "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
-    //     "TimeoutsSpec.scala"            // skipped because Timeouts not supported.
-    //   )) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
+      List(
+        // requires SelectableChannel
+        "TimeLimitsSpec.scala", 
+        "AbstractPatienceConfigurationSpec.scala" 
+      )) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
@@ -594,19 +561,14 @@ object GenScalaTestNative {
         "TestLocationMethodTestNGSuite.scala",
         "LocationMethodSuiteProp.scala"
       )) ++
-    // Invalid LLVM: "error: value doesn't match function result type 'void' ret i8* %_16"
-    // copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
         "SpecSpec.scala",     // skipped because depends on java reflections
         "SuiteSpec.scala"    // skipped because depends on java reflections
       )) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir,
-      List(
-        "AsyncGeneratorDrivenPropertyChecksSpec.scala"
-      )
-    ) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++

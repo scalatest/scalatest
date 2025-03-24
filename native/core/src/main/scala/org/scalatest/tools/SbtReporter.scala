@@ -39,7 +39,7 @@ private class SbtReporter(suiteId: String, fullyQualifiedName: String, fingerpri
   private def getOptionalThrowable(throwable: Option[Throwable]): OptionalThrowable =
     if (throwable.isDefined) {
       // throwing the original throwable causes the program to crash
-      new OptionalThrowable(new Throwable(""))
+      new OptionalThrowable(throwable.get)
     } else {
       new OptionalThrowable()
     }

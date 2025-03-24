@@ -160,11 +160,11 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         assert(caught3.getMessage === "Array(1, 2) contained element 2, and Array(1, 2) contained element 2")
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should work on parallel form") {
         Array(1, 2).par should contain (2)
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.immutable.Set ") {
@@ -290,11 +290,11 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         assert(caught3.getMessage === "Set(1, 2) contained element 2, and Set(1, 2) contained element 2")
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should work on parallel form") {
         Set(1, 2).par should contain (2)
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.mutable.Set ") {
@@ -431,11 +431,11 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         assert(caught3.getMessage === s"${set3.toString()} contained element 2, and ${set3.toString()} contained element 2")
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should work on parallel form") {
         mutable.Set(1, 2).par should contain (2)
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.Set ") {
@@ -563,11 +563,11 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         assert(caught3.getMessage === "Set(1, 2) contained element 2, and Set(1, 2) contained element 2")
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should work on parallel form") {
         set.par should contain (2)
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.immutable.HashSet ") {
@@ -695,11 +695,11 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         assert(caught3.getMessage === s"${HashSet(1, 2).toString()} contained element 2, and ${HashSet(1, 2).toString()} contained element 2")
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should work on parallel form") {
         HashSet(1, 2).par should contain (2)
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.mutable.HashSet ") {
@@ -836,11 +836,11 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         assert(caught3.getMessage === s"${set3.toString()} contained element 2, and " + set3 + " contained element 2")
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should work on parallel form") {
         mutable.HashSet(1, 2).par should contain (2)
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
     }
 
     describe("on List") {
@@ -973,11 +973,11 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         assert(caught3.getMessage === "List(1, 2) contained element 2, and List(1, 2) contained element 2")
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should work on parallel form") {
         List(1, 2).par should contain (2)
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
     }
 
     describe("on Vector") {
@@ -1110,14 +1110,14 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         assert(caught3.getMessage === "Vector(1, 2) contained element 2, and Vector(1, 2) contained element 2")
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should work on parallel form") {
         Vector(1, 2).par should contain (2)
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
     }
 
-    // SKIP-SCALATESTJS,NATIVE-START
+    // SKIP-SCALATESTJS-START
     describe("on java.util.List") {
 
       val javaList: java.util.List[Int] = new java.util.ArrayList
@@ -1246,7 +1246,7 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         assert(caught3.getMessage === "[1, 2] contained element 2, and [1, 2] contained element 2")
       }
     }
-    // SKIP-SCALATESTJS,NATIVE-END
+    // SKIP-SCALATESTJS-END
 
     describe("on scala.collection.immutable.Map ") {
 
@@ -1383,11 +1383,11 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2), and Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should work on parallel form") {
         Map("one" -> 1, "two" -> 2).par should contain ("two" -> 2)
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.mutable.Map ") {
@@ -1538,11 +1538,11 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained element (\"two\", 2), and " + decorateToStringValue(prettifier, map3) + " contained element (\"two\", 2)")
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should work on parallel form") {
         mutable.Map("one" -> 1, "two" -> 2).par should contain ("two" -> 2)
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.Map ") {
@@ -1682,11 +1682,11 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2), and Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should work on parallel form") {
         map.par should contain ("two" -> 2)
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.immutable.HashMap ") {
@@ -1826,11 +1826,11 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         assert(caught3.getMessage === (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (\"two\", 2), and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (\"two\", 2)"))
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should work on parallel form") {
         HashMap("one" -> 1, "two" -> 2).par should contain ("two" -> 2)
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
     }
 
     describe("on scala.collection.mutable.HashMap ") {
@@ -1981,14 +1981,14 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained element (\"two\", 2), and " + decorateToStringValue(prettifier, map3) + " contained element (\"two\", 2)")
       }
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       it("should work on parallel form") {
         mutable.HashMap("one" -> 1, "two" -> 2).par should contain ("two" -> 2)
       }
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
     }
 
-    // SKIP-SCALATESTJS,NATIVE-START
+    // SKIP-SCALATESTJS-START
     describe("on java.util.Set") {
 
       val javaSet: java.util.Set[Int] = new java.util.HashSet
@@ -2132,7 +2132,7 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         // assert(caught3.getMessage === "[2, 1] contained element 2, and [2, 1] contained element 2")
       }
     }
-    // SKIP-SCALATESTJS,NATIVE-END
+    // SKIP-SCALATESTJS-END
 
 /*
     I'm just not going to support this for now. Let them do whatever, and when someone

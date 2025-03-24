@@ -181,7 +181,7 @@ class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with S
         caught.failedCodeFileName.value should be ("ScalaFuturesSpec.scala")
       }
 
-      // SKIP-SCALATESTJS-START
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should eventually blow up with a serialized TestFailedException") {
         val objectOutputStream: ObjectOutputStream = new ObjectOutputStream(new ByteArrayOutputStream())
         val caught = the [TestFailedException] thrownBy {
@@ -190,7 +190,7 @@ class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with S
 
         noException should be thrownBy objectOutputStream.writeObject(caught)
       }
-      // SKIP-SCALATESTJS-END
+      // SKIP-SCALATESTJS,NATIVE-END
 
       it("should provide the correct stack depth") {
         val caught1 = the [TestFailedException] thrownBy {

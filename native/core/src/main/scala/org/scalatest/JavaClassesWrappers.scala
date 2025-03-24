@@ -16,56 +16,49 @@
 package org.scalatest
 
 import collection.JavaConverters._
-import java.util.concurrent.atomic.AtomicReference
 import org.scalactic.ColCompatHelper.Iterable
+import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.ScheduledFuture
 
 private[scalatest] class ConcurrentLinkedQueue[T] extends Serializable {
 
-  private final val queue = new scala.collection.mutable.ListBuffer[T]
+  private final val queue = new java.util.concurrent.ConcurrentLinkedQueue[T]
 
   def add(ele: T): Unit = {
-    queue += ele
+    queue.add(ele)
   }
 
-  def iterator: Iterator[T] = queue.iterator
+  def iterator: Iterator[T] = queue.iterator.asScala
 
   def isEmpty: Boolean = queue.isEmpty
 
-  def asScala: Iterable[T] = queue
+  def asScala: Iterable[T] = queue.asScala
 
-  def poll: T = queue.remove(0)
+  def poll: T = queue.poll()
 }
 
 private[scalatest] class LinkedBlockingQueue[T] extends Serializable {
 
-  private final val queue = new scala.collection.mutable.ListBuffer[T]
+  private final val queue = new java.util.concurrent.LinkedBlockingQueue[T]
 
-  def put(ele: T): Unit = queue += ele
+  def put(ele: T): Unit = queue.put(ele)
 
-  def take(): T = queue.remove(0)
+  def take(): T = queue.take
 
   def size: Int = queue.size
 }
 
 private[scalatest] class CountDownLatch(count: Int) {
 
-  private var currentCount: Long = count
+  private final val latch = new java.util.concurrent.CountDownLatch(count)
 
-  def countDown(): Unit = {
-    currentCount =
-      if (currentCount > 0)
-        currentCount - 1
-      else
-        0
-  }
+  def countDown(): Unit = latch.countDown()
 
-  def getCount: Long = currentCount
+  def getCount: Long = latch.getCount
 
-  def await(): Unit =
-    if (currentCount == 0)
-      return
-    else
-      throw new UnsupportedOperationException("Scala.js is single-threaded!")
+  def await(): Unit = latch.await()
 }
 
 private[scalatest] object NameTransformer {
@@ -75,43 +68,37 @@ private[scalatest] object NameTransformer {
 }
 
 private[scalatest] trait TimerTask extends Runnable {
-  // var timerTaskRef: Option[java.util.TimerTask] = None
+
+  private[scalatest] val cancelation: AtomicReference[Option[ScheduledFuture[_]]] = new AtomicReference(None)
 
   def run(): Unit
 
   def cancel(): Unit = {
-    // timerTaskRef.foreach(_.cancel())
+    cancelation.get() match {
+      case Some(computation) => computation.cancel(true)
+      case None =>
+    }
   }
+
 }
 
 private[scalatest] class Timer {
-
-  // val timer = new java.util.Timer
-
+  private val sh = Executors.newSingleThreadScheduledExecutor()
+  
   def schedule(task: TimerTask, delay: Long): Unit = {
-    // val javaTimerTask = new java.util.TimerTask {
-    //   def run(): Unit = {
-    //     task.run()
-    //   }
-    // }
-    //
-    // task.timerTaskRef = Some(javaTimerTask)
-    // timer.schedule(javaTimerTask, delay)
+     task.cancelation.set(Some(
+      sh.schedule(task, delay, TimeUnit.MILLISECONDS)
+     )) 
   }
 
   def schedule(task: TimerTask, delay: Long, period: Long): Unit = {
-    // val javaTimerTask = new java.util.TimerTask {
-    //   def run(): Unit = {
-    //     task.run()
-    //   }
-    // }
-    //
-    // task.timerTaskRef = Some(javaTimerTask)
-    // timer.schedule(javaTimerTask, delay, period)
+    task.cancelation.set(Some(
+      sh.scheduleAtFixedRate(task, delay, period, TimeUnit.MILLISECONDS)
+     )) 
   }
 
   def cancel(): Unit = {
-    // timer.cancel()
+    sh.shutdownNow()
   }
 
 }

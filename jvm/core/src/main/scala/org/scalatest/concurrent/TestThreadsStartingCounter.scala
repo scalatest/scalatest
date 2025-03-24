@@ -35,6 +35,7 @@ import java.util.concurrent.CountDownLatch
  * will only call waitUntilAllTestThreadsHaveStarted once, so it won't matter. - bv
  */
 private[concurrent] class TestThreadsStartingCounter {
+  @volatile
   private var count: Int = 0
   private val latch = new CountDownLatch(1)
   def increment(): Unit = {

@@ -16,7 +16,7 @@
 package org.scalatest.tools
 
 import org.scalatest.Tracker
-import org.scalatest.events.Summary
+import org.scalatest.events.{Summary, ExceptionalEvent}
 import sbt.testing.{Framework => BaseFramework, Event => SbtEvent, Status => SbtStatus, _}
 
 import scala.scalanative.reflect.Reflect
@@ -133,14 +133,14 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
 
   def done(): String = {
     val duration = Platform.currentTime - runStartTime
-    val summary = new Summary(summaryCounter.testsSucceededCount, summaryCounter.testsFailedCount, summaryCounter.testsIgnoredCount, summaryCounter.testsPendingCount,
-      summaryCounter.testsCanceledCount, summaryCounter.suitesCompletedCount, summaryCounter.suitesAbortedCount, summaryCounter.scopesPendingCount)
+    val summary = new Summary(summaryCounter.testsSucceededCount.get(), summaryCounter.testsFailedCount.get(), summaryCounter.testsIgnoredCount.get(), summaryCounter.testsPendingCount.get(),
+      summaryCounter.testsCanceledCount.get(), summaryCounter.suitesCompletedCount.get(), summaryCounter.suitesAbortedCount.get(), summaryCounter.scopesPendingCount.get())
     val fragments: Vector[Fragment] =
       StringReporter.summaryFragments(
         true,
         Some(duration),
         Some(summary),
-        Vector.empty ++ summaryCounter.reminderEventsQueue,
+        summaryCounter.reminderEventsQueue.toArray(Array.empty[ExceptionalEvent]).toVector,
         presentAllDurations,
         presentReminder,
         presentReminderWithShortStackTraces,

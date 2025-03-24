@@ -17,45 +17,46 @@ package org.scalatest.tools
 
 import org.scalatest.events.ExceptionalEvent
 import scala.collection.mutable.ListBuffer
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.LinkedBlockingQueue
 
 private[tools] class SummaryCounter {
-  // scala.js is thread-safe
-  var testsSucceededCount, testsFailedCount, testsIgnoredCount, testsPendingCount, testsCanceledCount, suitesCompletedCount, suitesAbortedCount, scopesPendingCount = 0
-  val reminderEventsQueue = new ListBuffer[ExceptionalEvent]
+  val testsSucceededCount, testsFailedCount, testsIgnoredCount, testsPendingCount, testsCanceledCount, suitesCompletedCount, suitesAbortedCount, scopesPendingCount = new AtomicInteger
+  val reminderEventsQueue = new LinkedBlockingQueue[ExceptionalEvent]
 
   def incrementTestsSucceededCount(): Unit = {
-    testsSucceededCount = testsSucceededCount + 1
+    testsSucceededCount.incrementAndGet()
   }
 
   def incrementTestsFailedCount(): Unit = {
-    testsFailedCount = testsFailedCount + 1
+    testsFailedCount.incrementAndGet()
   }
 
   def incrementTestsIgnoredCount(): Unit = {
-    testsIgnoredCount = testsIgnoredCount + 1
+    testsIgnoredCount.incrementAndGet()
   }
 
   def incrementTestsPendingCount(): Unit = {
-    testsPendingCount = testsPendingCount + 1
+    testsPendingCount.incrementAndGet()
   }
 
   def incrementTestsCanceledCount(): Unit = {
-    testsCanceledCount = testsCanceledCount + 1
+    testsCanceledCount.incrementAndGet()
   }
 
   def incrementSuitesCompletedCount(): Unit = {
-    suitesCompletedCount = suitesCompletedCount + 1
+    suitesCompletedCount.incrementAndGet()
   }
 
   def incrementSuitesAbortedCount(): Unit = {
-    suitesAbortedCount = suitesAbortedCount + 1
+    suitesAbortedCount.incrementAndGet()
   }
 
   def incrementScopesPendingCount(): Unit = {
-    scopesPendingCount = scopesPendingCount + 1
+    scopesPendingCount.incrementAndGet()
   }
 
   def recordReminderEvents(events: ExceptionalEvent): Unit = {
-    reminderEventsQueue += events
+    reminderEventsQueue.put(events)
   }
 }
