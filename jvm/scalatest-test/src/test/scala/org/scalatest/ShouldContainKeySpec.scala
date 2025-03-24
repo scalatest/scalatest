@@ -868,7 +868,6 @@ class ShouldContainKeySpec extends AnyFunSpec with ReturnsNormallyThrowsAssertio
       }
     }
 
-    // SKIP-SCALATESTJS-START
     describe("on java.util.Map") {
 
       val javaMap: java.util.Map[String, Int] = new java.util.HashMap
@@ -1034,6 +1033,5 @@ class ShouldContainKeySpec extends AnyFunSpec with ReturnsNormallyThrowsAssertio
         e.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"\\u0000test\"=\"test\""))
       }
     }
-    // SKIP-SCALATESTJS-END
   }
 }

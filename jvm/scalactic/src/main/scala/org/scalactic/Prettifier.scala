@@ -157,9 +157,7 @@ private[scalactic] class DefaultPrettifier extends Prettifier {
           ColCompatHelper.className(i) + "(" + i.toIterator.map { 
             case (key, value) if className.contains("Map") => prettify(key, processed + i) + " -> " + prettify(value, processed + i)
             case other => prettify(other, processed + i) 
-          }.mkString(", ") + ")" // toIterator is needed for consistent ordering
-                      
-      // SKIP-SCALATESTJS-START
+          }.mkString(", ") + ")" // toIterator is needed for consistent ordering                      
       case javaCol: java.util.Collection[_] =>
         // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
         // let's do our best to prettify its element when it is not overriden
@@ -184,7 +182,6 @@ private[scalactic] class DefaultPrettifier extends Prettifier {
         }
         else
           theToString
-      // SKIP-SCALATESTJS,NATIVE-END
       case caseClazz: Product if caseClazz.productArity != 0 =>
         // If the case class's toString starts with .productPrefix its likely the .toString hasn't been
         // overridden so lets use our custom prettifying otherwise we just use .toString.
@@ -266,7 +263,6 @@ private[scalactic] class TruncatingPrettifier(private[scalactic] val sizeLimit: 
           aIterable.mkString
         else
           ColCompatHelper.className(aIterable) + "(" + taken.toIterator.map(prettify(_, processed + aIterable)).mkString(", ") + dotDotDotIfTruncated(truncated) + ")" // toIterator is needed for consistent ordering                
-      // SKIP-SCALATESTJS-START
       case javaCol: java.util.Collection[_] =>
         // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
         // let's do our best to prettify its element when it is not overriden
@@ -293,7 +289,6 @@ private[scalactic] class TruncatingPrettifier(private[scalactic] val sizeLimit: 
         }
         else
           theToString
-      // SKIP-SCALATESTJS,NATIVE-END
       case caseClazz: Product if caseClazz.productArity != 0 =>
         // Unlike in DefaultPrettifier where we check if a custom `.toString` has been overridden, with
         // TruncatingPrettifier the priority is truncating the enclosed data at all costs hence why we always
