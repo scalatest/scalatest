@@ -23,7 +23,10 @@ import org.scalactic.Requirements._
 
 private[scalatest] class SlowpokeDetector(timeout: Long = 60000, out: PrintStream = Console.err) { // Default timeout is 1 minute
 
+  // SKIP-SCALATESTJS-START
   private final val runningTests = new ConcurrentSkipListSet[RunningTest]
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY private final val runningTests = new scala.collection.mutable.TreeSet[RunningTest]
  
   def testStarting(suiteName: String, suiteId: String, testName: String, timeStamp: Long): Unit = {
     requireNonNull(suiteName, suiteId, testName)
