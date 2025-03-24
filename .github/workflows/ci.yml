@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ '8', '21' ]
+        java: [ '8', '24' ]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -39,7 +39,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ '8', '21' ]
+        java: [ '8', '24' ]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -66,7 +66,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ '8', '21' ]
+        java: [ '8', '24' ]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -95,7 +95,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ '8', '21' ]
+        java: [ '8', '24' ]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -124,7 +124,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ '8', '21' ]
+        java: [ '8', '24' ]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -153,7 +153,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ '8', '21' ]
+        java: [ '8', '24' ]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
