@@ -137,11 +137,11 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with Informing with Notifying wit
     * @throws NullArgumentException if <code>testName</code> or any passed test tag is <code>null</code>
     */
   // SKIP-DOTTY-START
-  protected def test(testName: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  protected final def test(testName: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
     testImpl(testName, testTags: _*)(testFun, pos)
   }
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def test(testName: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]): Unit = {
+  //DOTTY-ONLY protected inline def test(testName: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]): Unit = {
   //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => testImpl(testName, testTags: _*)(testFun, pos) }) } 
   //DOTTY-ONLY }
 
@@ -165,11 +165,11 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with Informing with Notifying wit
     * @throws NotAllowedException if <code>testName</code> had been registered previously
     */
   // SKIP-DOTTY-START
-  protected def ignore(testName: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  protected final def ignore(testName: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
     ignoreImpl(testName, testTags: _*)(testFun, pos)
   }
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def ignore(testName: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]): Unit = {
+  //DOTTY-ONLY protected inline def ignore(testName: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]): Unit = {
   //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testName, testTags: _*)(testFun, pos) }) } 
   //DOTTY-ONLY }
 
