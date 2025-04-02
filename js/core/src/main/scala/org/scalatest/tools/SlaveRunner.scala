@@ -133,7 +133,7 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
       }
 
     def createTask(t: TaskDef): Task =
-      new TaskRunner(t, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
+      new TaskRunner(t, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors ++ autoSelectors, t.explicitlySpecified, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
         presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, Some(notifyServer))
 
     (if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct).map(createTask)
@@ -147,7 +147,7 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
 
   def deserializeTask(task: String, deserializer: (String) => TaskDef): Task = {
     val taskDef = deserializer(task)
-    new TaskRunner(taskDef, testClassLoader, tracker, tagsToInclude, tagsToExclude, taskDef.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
+    new TaskRunner(taskDef, testClassLoader, tracker, tagsToInclude, tagsToExclude, taskDef.selectors ++ autoSelectors, taskDef.explicitlySpecified, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
       presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, Some(notifyServer))
   }
 
