@@ -64,7 +64,6 @@ final class TaskRunner(task: TaskDef,
     implicit val execCtx = JSExecutionContext.queue
     val future = executionFuture(eventHandler, loggers)
     future.recover { case t =>
-println("GOT TO THIS RECOVER CALL")
       loggers.foreach(_.trace(t))
     }.onComplete{ _ =>
       continuation(Array.empty)
