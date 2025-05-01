@@ -65,11 +65,11 @@ class DeprecatedBeforeAndAfterAllProp extends AllSuiteProp {
   test("BeforeAndAfterAll should call beforeAll before any test starts, and call afterAll after all tests completed") {
     forAll(examples.filter(_.included)) { suite =>
       if (suite.included) {
-        // SKIP-SCALATESTJS,NATIVE-START
+        // SKIP-SCALATESTJS-START
         val execService = java.util.concurrent.Executors.newFixedThreadPool(2)
         val dist = new TestConcurrentDistributor(execService)
-        // SKIP-SCALATESTJS,NATIVE-END
-        //SCALATESTJS,NATIVE-ONLY val dist = new TestConcurrentDistributor()
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY val dist = new TestConcurrentDistributor()
 
         try {
           val rep = new EventRecordingReporter()
@@ -93,9 +93,9 @@ class DeprecatedBeforeAndAfterAllProp extends AllSuiteProp {
           }
         }
         finally {
-          // SKIP-SCALATESTJS,NATIVE-START
+          // SKIP-SCALATESTJS-START
           execService.shutdown()
-          // SKIP-SCALATESTJS,NATIVE-END
+          // SKIP-SCALATESTJS-END
         }
       }
     }

@@ -84,9 +84,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val rep = new EventRecordingReporter
       val spec = new ExampleSpec
       val status = spec.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
       assert(rep.testStartingEventsReceived.length == 4)
       assert(rep.testSucceededEventsReceived.length == 1)
       assert(rep.testSucceededEventsReceived(0).testName == "Scenario: test 1")
@@ -135,9 +135,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val rep = new EventRecordingReporter
       val spec = new ExampleSpec
       val status = spec.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
       assert(rep.testStartingEventsReceived.length == 4)
       assert(rep.testSucceededEventsReceived.length == 1)
       assert(rep.testSucceededEventsReceived(0).testName == "Scenario: test 1")
@@ -188,9 +188,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       assert(rep.testStartingEventsReceived.length == 3)
       assert(rep.testSucceededEventsReceived.length == 3)
@@ -228,9 +228,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       assert(rep.testStartingEventsReceived.length == 3)
       assert(rep.testSucceededEventsReceived.length == 3)
@@ -431,9 +431,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       assert(rep.testStartingEventsReceived.length == 3)
       assert(rep.testStartingEventsReceived(0).testName == "Scenario: test 1")
@@ -470,9 +470,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       assert(rep.testStartingEventsReceived.length == 3)
       assert(rep.testStartingEventsReceived(0).testName == "Scenario: test 1")
@@ -493,9 +493,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       val infoList = reporter.infoProvidedEventsReceived
 
@@ -517,9 +517,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       val infoList = reporter.infoProvidedEventsReceived
 
@@ -542,9 +542,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       val infoList = reporter.infoProvidedEventsReceived
       assert(infoList.size == 0)
@@ -575,9 +575,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       val infoList = reporter.infoProvidedEventsReceived
       assert(infoList.size == 0)
@@ -600,9 +600,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       val noteList = reporter.noteProvidedEventsReceived
 
@@ -629,9 +629,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       val noteList = reporter.noteProvidedEventsReceived
 
@@ -689,9 +689,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       val noteList = reporter.noteProvidedEventsReceived
       assert(noteList.size == 1)
@@ -715,9 +715,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       val noteList = reporter.noteProvidedEventsReceived
       assert(noteList.size == 1)
@@ -733,9 +733,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       val alertList = reporter.alertProvidedEventsReceived
 
@@ -760,9 +760,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       val alertList = reporter.alertProvidedEventsReceived
 
@@ -822,9 +822,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       val alertList = reporter.alertProvidedEventsReceived
       assert(alertList.size == 1)
@@ -848,9 +848,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       val alertList = reporter.alertProvidedEventsReceived
       assert(alertList.size == 1)
@@ -866,9 +866,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       val markupList = reporter.markupProvidedEventsReceived
 
@@ -892,9 +892,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       val markupList = reporter.markupProvidedEventsReceived
 
@@ -917,9 +917,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       val markupList = reporter.markupProvidedEventsReceived
       assert(markupList.size == 0)
@@ -950,9 +950,9 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
 
       val markupList = reporter.markupProvidedEventsReceived
       assert(markupList.size == 0)
@@ -1049,26 +1049,26 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
 
     it("should allow other execution context to be used") {
 
-      //SCALATESTJS,NATIVE-ONLY var changeMe = false
+      //SCALATESTJS-ONLY var changeMe = false
 
-      //SCALATESTJS,NATIVE-ONLY object CustomTestExecutionContext extends scala.concurrent.ExecutionContextExecutor {
-      //SCALATESTJS,NATIVE-ONLY   override def execute(runnable: Runnable): Unit = {
-      //SCALATESTJS,NATIVE-ONLY     changeMe = true
-      //SCALATESTJS,NATIVE-ONLY     try {
-      //SCALATESTJS,NATIVE-ONLY       runnable.run()
-      //SCALATESTJS,NATIVE-ONLY     } catch {
-      //SCALATESTJS,NATIVE-ONLY       case t: Throwable => reportFailure(t)
-      //SCALATESTJS,NATIVE-ONLY     }
-      //SCALATESTJS,NATIVE-ONLY   }
-      //SCALATESTJS,NATIVE-ONLY   def reportFailure(t: Throwable): Unit =
-      //SCALATESTJS,NATIVE-ONLY     t.printStackTrace()
-      //SCALATESTJS,NATIVE-ONLY }
+      //SCALATESTJS-ONLY object CustomTestExecutionContext extends scala.concurrent.ExecutionContextExecutor {
+      //SCALATESTJS-ONLY   override def execute(runnable: Runnable): Unit = {
+      //SCALATESTJS-ONLY     changeMe = true
+      //SCALATESTJS-ONLY     try {
+      //SCALATESTJS-ONLY       runnable.run()
+      //SCALATESTJS-ONLY     } catch {
+      //SCALATESTJS-ONLY       case t: Throwable => reportFailure(t)
+      //SCALATESTJS-ONLY     }
+      //SCALATESTJS-ONLY   }
+      //SCALATESTJS-ONLY   def reportFailure(t: Throwable): Unit =
+      //SCALATESTJS-ONLY     t.printStackTrace()
+      //SCALATESTJS-ONLY }
 
       class TestSpec extends AsyncFeatureSpecLike {
-        // SKIP-SCALATESTJS,NATIVE-START
+        // SKIP-SCALATESTJS-START
         override implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS,NATIVE-END
-        //SCALATESTJS,NATIVE-ONLY override implicit val executionContext: ExecutionContext = CustomTestExecutionContext
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY override implicit val executionContext: ExecutionContext = CustomTestExecutionContext
         val a = 1
         Feature("feature 1") {
           Scenario("scenario A") {
@@ -1090,14 +1090,14 @@ class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
 
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
+      // SKIP-SCALATESTJS-END
       assert(reporter.scopeOpenedEventsReceived.length == 3)
       assert(reporter.scopeClosedEventsReceived.length == 3)
       assert(reporter.testStartingEventsReceived.length == 3)
       assert(reporter.testSucceededEventsReceived.length == 3)
-      //SCALATESTJS,NATIVE-ONLY assert(changeMe)
+      //SCALATESTJS-ONLY assert(changeMe)
     }
 
   }

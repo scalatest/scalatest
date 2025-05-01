@@ -23,11 +23,11 @@ import org.scalactic.Requirements._
 
 private[scalatest] class SlowpokeDetector(timeout: Long = 60000, out: PrintStream = Console.err) { // Default timeout is 1 minute
 
-  // SKIP-SCALATESTJS,NATIVE-START
+  // SKIP-SCALATESTJS-START
   private final val runningTests = new ConcurrentSkipListSet[RunningTest]
-  // SKIP-SCALATESTJS,NATIVE-END
-  //SCALATESTJS,NATIVE-ONLY private final val runningTests = new scala.collection.mutable.TreeSet[RunningTest]
-
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY private final val runningTests = new scala.collection.mutable.TreeSet[RunningTest]
+ 
   def testStarting(suiteName: String, suiteId: String, testName: String, timeStamp: Long): Unit = {
     requireNonNull(suiteName, suiteId, testName)
     require(timeStamp >= 0, "timeStamp must be >= 0")
@@ -58,10 +58,10 @@ private[scalatest] class SlowpokeDetector(timeout: Long = 60000, out: PrintStrea
   }
 
   def detectSlowpokes(currentTimeStamp: Long): IndexedSeq[Slowpoke] = {
-    // SKIP-SCALATESTJS,NATIVE-START
+    // SKIP-SCALATESTJS-START
     val rts = runningTests.iterator.asScala.toVector
-    // SKIP-SCALATESTJS,NATIVE-END
-    //SCALATESTJS,NATIVE-ONLY val rts = runningTests.iterator.toVector
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val rts = runningTests.iterator.toVector
     val slowTests = rts.filter(currentTimeStamp - _.startTimeStamp > timeout)
     slowTests.sortBy(_.startTimeStamp).map(_.toSlowpoke(currentTimeStamp))
   }

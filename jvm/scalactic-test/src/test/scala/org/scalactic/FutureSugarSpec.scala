@@ -19,7 +19,7 @@ import scala.concurrent.Future
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.concurrent.ExecutionContext.Implicits.global
 // SKIP-SCALATESTJS,NATIVE-END
-//SCALATESTJS,NATIVE-ONLY import org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTJS-ONLY import org.scalatest.concurrent.TestExecutionContext.runNow
 import org.scalatest.concurrent.ScalaFutures
 import exceptions.ValidationFailedException
 import org.scalatest.exceptions.TestFailedException

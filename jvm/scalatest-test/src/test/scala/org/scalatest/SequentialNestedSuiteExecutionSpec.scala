@@ -59,7 +59,7 @@ class SequentialNestedSuiteExecutionSpec extends AnyFunSpec {
         val execService2 = java.util.concurrent.Executors.newFixedThreadPool(2)
         val distributor = new TestConcurrentDistributor(execService)
         // SKIP-SCALATESTJS,NATIVE-END
-        //SCALATESTJS,NATIVE-ONLY val distributor = new TestConcurrentDistributor()
+        //SCALATESTJS-ONLY val distributor = new TestConcurrentDistributor()
 
         try {
           val parStatus = par.run(None, Args(SilentReporter, distributor = Some(distributor)))
@@ -72,7 +72,7 @@ class SequentialNestedSuiteExecutionSpec extends AnyFunSpec {
           // SKIP-SCALATESTJS,NATIVE-START
           val distributor2 = new TestConcurrentDistributor(execService2)
           // SKIP-SCALATESTJS,NATIVE-END
-          //SCALATESTJS,NATIVE-ONLY val distributor2 = new TestConcurrentDistributor()
+          //SCALATESTJS-ONLY val distributor2 = new TestConcurrentDistributor()
 
           val seqStatus = seq.run(None, Args(SilentReporter, distributor = Some(distributor2)))
           assert(seqStatus.isCompleted()) // When a seqential execution returns, the whole thing should be completed already
