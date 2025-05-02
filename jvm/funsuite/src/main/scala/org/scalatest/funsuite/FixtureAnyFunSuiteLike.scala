@@ -140,7 +140,7 @@ trait FixtureAnyFunSuiteLike extends org.scalatest.FixtureTestSuite with Informi
     }
     
     // SKIP-DOTTY-START
-    def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    final def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       applyImpl(testFun: FixtureParam => Any /* Assertion */, pos: source.Position)
     }
     // SKIP-DOTTY-END
@@ -159,7 +159,7 @@ trait FixtureAnyFunSuiteLike extends org.scalatest.FixtureTestSuite with Informi
     }
 
     // SKIP-DOTTY-START
-    def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    final def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       applyImpl(testFun: () => Any /* Assertion */, pos: source.Position)
     }
     // SKIP-DOTTY-END
@@ -183,17 +183,6 @@ trait FixtureAnyFunSuiteLike extends org.scalatest.FixtureTestSuite with Informi
     * @throws NullArgumentException if <code>testName</code> or any passed test tag is <code>null</code>
     */
   protected def test(testName: String, testTags: Tag*): ResultOfTestInvocation = new ResultOfTestInvocation(testName, testTags: _*)
-  /*
-    protected def test(testName: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */) {
-      // SKIP-SCALATESTJS,NATIVE-START
-      val stackDepth = 4
-      val stackDepthAdjustment = -2
-      // SKIP-SCALATESTJS,NATIVE-END
-      //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
-      //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
-      engine.registerTest(testName, org.scalatest.fixture.Transformer(testFun), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "test", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
-    }
-  */
 
   class ResultOfIgnoreInvocation(testName: String, testTags: Tag*) {
     
@@ -208,7 +197,7 @@ trait FixtureAnyFunSuiteLike extends org.scalatest.FixtureTestSuite with Informi
     }
     
     // SKIP-DOTTY-START
-    def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    final def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       applyImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
@@ -227,7 +216,7 @@ trait FixtureAnyFunSuiteLike extends org.scalatest.FixtureTestSuite with Informi
     }
 
     // SKIP-DOTTY-START
-    def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    final def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       applyImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
@@ -252,17 +241,6 @@ trait FixtureAnyFunSuiteLike extends org.scalatest.FixtureTestSuite with Informi
     * @throws NotAllowedException if <code>testName</code> had been registered previously
     */
   protected def ignore(testName: String, testTags: Tag*): ResultOfIgnoreInvocation = new ResultOfIgnoreInvocation(testName, testTags: _*)
-  /*
-    protected def ignore(testName: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */) {
-      // SKIP-SCALATESTJS,NATIVE-START
-      val stackDepth = 4
-      val stackDepthAdjustment = -3
-      // SKIP-SCALATESTJS,NATIVE-END
-      //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
-      //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -7
-      engine.registerIgnoredTest(testName, org.scalatest.fixture.Transformer(testFun), Resources.ignoreCannotAppearInsideATest, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
-    }
-  */
 
   /**
     * An immutable <code>Set</code> of test names. If this <code>FixtureAnyFunSuite</code> contains no tests, this method returns an empty <code>Set</code>.
@@ -413,19 +391,6 @@ trait FixtureAnyFunSuiteLike extends org.scalatest.FixtureTestSuite with Informi
   protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): (FixtureParam => Any /* Assertion */) = {
     fixture => { f; Succeeded }
   }
-
-  /**
-    * Implicitly converts a function that takes no parameters and results in <code>Any</code> to
-    * a function from <code>FixtureParam</code> to <code>Any</code>, to enable no-arg tests to registered
-    * by methods that require a test function that takes a <code>FixtureParam</code>.
-    *
-    * @param fun a function
-    * @return a function of <code>FixtureParam => Any</code>
-    */
-  /*
-    protected implicit def convertNoArgToFixtureFunction(fun: () => Any /* Assertion */): (FixtureParam => Any /* Assertion */) =
-      new NoArgTestWrapper(fun)
-  */
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }
