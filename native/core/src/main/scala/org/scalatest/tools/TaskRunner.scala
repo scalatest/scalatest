@@ -63,7 +63,6 @@ final class TaskRunner(task: TaskDef,
   def execute(eventHandler: EventHandler, loggers: Array[Logger], continuation: (Array[Task]) => Unit): Unit = {
     val future = executionFuture(eventHandler, loggers)
     future.recover { case t =>
-println("GOT TO THIS RECOVER CALL")
       loggers.foreach(_.trace(t))
     }.onComplete{ _ =>
       continuation(Array.empty)
