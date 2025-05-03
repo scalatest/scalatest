@@ -60,6 +60,15 @@ final class TaskRunner(task: TaskDef,
   def tags(): Array[String] = Array.empty
   def taskDef(): TaskDef = task
 
+  def execute(eventHandler: EventHandler, loggers: Array[Logger], continuation: (Array[Task]) => Unit): Unit = {
+    val future = executionFuture(eventHandler, loggers)
+    future.recover { case t =>
+      loggers.foreach(_.trace(t))
+    }.onComplete{ _ =>
+      continuation(Array.empty)
+    }
+  }
+
   def execute(eventHandler: EventHandler, loggers: Array[Logger]): Array[Task] = {
     Await.result(executionFuture(eventHandler, loggers), Duration.Inf)
     Array.empty
