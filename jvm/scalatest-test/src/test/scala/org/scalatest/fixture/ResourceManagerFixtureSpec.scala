@@ -6,6 +6,7 @@ import java.io.{Closeable, IOException}
 import org.scalatest._
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import SharedHelpers.EventRecordingReporter
 
 // Mock closeable resource for testing
 class MockResource(val name: String) extends Closeable {
@@ -136,8 +137,13 @@ class ResourceManagerFixtureSpec extends AnyFunSpec with ResourceManagerFixture 
         MockResource.instancesCreated should be(2)
       }
     }
-    
-    // Run the nested test suite
-    //new LazyResourceTest().run()
+
+    it("should not initialize lazy resources until accessed") { (manager: Using.Manager) =>
+      // Create an instance of the nested test suite
+      val lazyResourceTest = new LazyResourceTest
+      val reporter = new EventRecordingReporter
+      lazyResourceTest.run(None, Args(reporter))
+      reporter.testSucceededEventsReceived.size should be (2)
+    }
   }
 }
