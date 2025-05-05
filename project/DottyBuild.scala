@@ -235,7 +235,7 @@ trait DottyBuild { this: BuildCommons =>
       }.taskValue,
       Compile / sourceGenerators += Def.task {
         GenTable.genMain((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++
-        GenCompatibleClasses.genMain((Compile / sourceManaged).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value)
+        GenCompatibleClasses.genMain((Compile / sourceManaged).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value, true)
         //GenSafeStyles.genMain((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value)
       }.taskValue,
       //scalatestJSDocTaskSetting,
@@ -311,7 +311,8 @@ trait DottyBuild { this: BuildCommons =>
           GenScalaTestDotty.genHtml((Compile / resourceManaged).value, version.value, scalaVersion.value)
       }.taskValue,
       Compile / sourceGenerators += Def.task {
-        GenTable.genMain((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value)
+        GenTable.genMain((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
+        GenCompatibleClasses.genMain((Compile / sourceManaged).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value, false)
         //GenSafeStyles.genMain((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value)
       }.taskValue,
       //scalatestJSDocTaskSetting,
@@ -388,7 +389,8 @@ trait DottyBuild { this: BuildCommons =>
           GenScalaTestDotty.genHtml((Compile / resourceManaged).value, version.value, scalaVersion.value)
       }.taskValue,
       Compile / sourceGenerators += Def.task {
-        GenTable.genMain((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value)
+        GenTable.genMain((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
+        GenCompatibleClasses.genMain((Compile / sourceManaged).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value, false)
         //GenSafeStyles.genMain((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value)
       }.taskValue,
       //scalatestJSDocTaskSetting,

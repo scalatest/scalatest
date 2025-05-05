@@ -4,7 +4,7 @@ object GenCompatibleClasses {
 
   val generatorSource = new File("GenCompatibleClasses.scala")
 
-  def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+  def genMain(targetDir: File, version: String, scalaVersion: String, isJvm: Boolean): Seq[File] = {
     targetDir.mkdirs()
     val listCellRendererClass = Class.forName("javax.swing.ListCellRenderer")
     val isJava7 = listCellRendererClass.getTypeParameters.length > 0
@@ -98,6 +98,7 @@ object GenCompatibleClasses {
         |package org.scalatest
         |package fixture
         |
+        |import java.util.concurrent.atomic.AtomicReference
         |import $usingManagerClass
         |
         |/**
@@ -124,9 +125,9 @@ object GenCompatibleClasses {
         |trait ResourceManagerFixture extends FixtureTestSuite {
         |  override type FixtureParam = Using.Manager
         |
-        |  private var suiteManagerVar: Using.Manager = null
+        |  private val suiteManagerRef: AtomicReference[Option[Using.Manager]] = new AtomicReference(None)
         |
-        |  protected def suiteScoped = Option(suiteManagerVar).getOrElse {
+        |  protected def suiteScoped = suiteManagerRef.get().getOrElse {
         |    throw new IllegalStateException(
         |      "`suiteScoped`` cannot be called from outside a test. " +
         |      "Use a `lazy val` to store Suite-scoped resources in order to defer " +
@@ -141,7 +142,7 @@ object GenCompatibleClasses {
         |
         |  override protected def runTests(testName: Option[String], args: Args): Status =
         |    Using.Manager { manager =>
-        |      suiteManagerVar = manager
+        |      suiteManagerRef.getAndSet(Some(manager))
         |      super.runTests(testName, args)
         |    }.get
         |}
@@ -158,7 +159,10 @@ object GenCompatibleClasses {
       }
     }   
 
-    java6ClassesFiles.toSeq ++ Seq(file, resourceManagerFixtureFile)
+    if (isJvm)
+      java6ClassesFiles.toSeq ++ Seq(file, resourceManagerFixtureFile)
+    else
+      Seq(resourceManagerFixtureFile)  
   }
 
   def genTest(baseTargetDir: File, version: String, scalaVersion: String): Seq[File] = {
@@ -218,7 +222,7 @@ private[org] object CompatParColls {
     val scalaVersion = args(2)
 
     val mainDir = new File(targetDir + "/main/scala/org/scalatest/tools")
-    genMain(mainDir, version, scalaVersion)
+    genMain(mainDir, version, scalaVersion, true) // Always true for isJvm, because ant build does not support Scala.js and native.
   }
 
 }

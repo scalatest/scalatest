@@ -42,7 +42,7 @@ class ResourceManagerFixtureSpec extends AnyFunSpec with ResourceManagerFixture 
   // Test that Using.Manager is properly provided to tests
   describe("ResourceManagerFixture") {
     
-    it("should provide a Using.Manager to each test") { use: Using.Manager =>
+    it("should provide a Using.Manager to each test") { (use: Using.Manager) =>
       // Verify manager is provided and functional
       use should not be null
       
@@ -55,7 +55,7 @@ class ResourceManagerFixtureSpec extends AnyFunSpec with ResourceManagerFixture 
       resourceTracker += (("test-resource", resource.closed))
     }
     
-    it("should automatically close resources after test completion") { use: Using.Manager =>
+    it("should automatically close resources after test completion") { (use: Using.Manager) =>
       // This test verifies the previous resource was closed
       resourceTracker.find(_._1 == "test-resource").map(_._2) should be(Some(true))
       
@@ -67,7 +67,7 @@ class ResourceManagerFixtureSpec extends AnyFunSpec with ResourceManagerFixture 
       resourceTracker += (("test-resource-2", resource2.closed))
     }
     
-    it("should allow suite-scoped resources") { manager: Using.Manager =>
+    it("should allow suite-scoped resources") { (manager: Using.Manager) =>
       // Create a suite-scoped resource using the suiteScoped manager
       val suiteResource = suiteScoped(new MockResource("suite-resource"))
       suiteResource.access() should be("Accessed suite-resource")
@@ -79,7 +79,7 @@ class ResourceManagerFixtureSpec extends AnyFunSpec with ResourceManagerFixture 
       resourceTracker.find(_._1 == "test-resource-2").map(_._2) should be(Some(true))
     }
     
-    it("should handle exceptions gracefully") { use: Using.Manager =>
+    it("should handle exceptions gracefully") { (use: Using.Manager) =>
       // Test that exceptions are properly propagated while still closing resources
       val resource = use(new MockResource("exception-resource"))
       
@@ -116,7 +116,7 @@ class ResourceManagerFixtureSpec extends AnyFunSpec with ResourceManagerFixture 
       // Eager val that will be initialized immediately
       val eagerResource = new MockResource("eager-resource")
       
-      it("should not initialize lazy resources unless accessed") { manager: Using.Manager =>
+      it("should not initialize lazy resources unless accessed") { (manager: Using.Manager) =>
         // At this point, MockResource.instancesCreated should be 1 (just the eager resource)
         MockResource.instancesCreated should be(1)
         
@@ -127,7 +127,7 @@ class ResourceManagerFixtureSpec extends AnyFunSpec with ResourceManagerFixture 
         MockResource.instancesCreated should be(2)
       }
       
-      it("should initialize lazy resources only once") { manager: Using.Manager =>
+      it("should initialize lazy resources only once") { (manager: Using.Manager) =>
         // Accessing the lazy resource multiple times should not create new instances
         lazyResource.access()
         lazyResource.access()
@@ -138,6 +138,6 @@ class ResourceManagerFixtureSpec extends AnyFunSpec with ResourceManagerFixture 
     }
     
     // Run the nested test suite
-    new LazyResourceTest().execute()
+    //new LazyResourceTest().run()
   }
 }
