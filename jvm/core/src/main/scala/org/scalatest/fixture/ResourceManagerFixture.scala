@@ -17,7 +17,7 @@
 package org.scalatest
 package fixture
 
-import scala.util.Using
+import org.scalactic.Using
 
 /**
  * A Trait that facilitates the management of resources that need to be
