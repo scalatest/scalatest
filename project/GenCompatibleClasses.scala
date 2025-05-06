@@ -99,7 +99,7 @@ object GenCompatibleClasses {
         |package fixture
         |
         |import java.util.concurrent.atomic.AtomicReference
-        |import $usingManagerClass
+        |import org.scalactic.Using
         |
         |/**
         | * A Trait that facilitates the management of resources that need to be
@@ -135,16 +135,48 @@ object GenCompatibleClasses {
         |    )
         |  }
         |
-        |  protected def withFixture(test: OneArgTest): Outcome =
+        |  protected def withFixture(test: OneArgTest): Outcome = {
         |    Using.Manager { manager =>
         |      withFixture(test.toNoArgTest(manager))
         |    }.get
+        |  }
         |
         |  override protected def runTests(testName: Option[String], args: Args): Status =
         |    Using.Manager { manager =>
         |      suiteManagerRef.getAndSet(Some(manager))
         |      super.runTests(testName, args)
         |    }.get
+        |}
+        |
+        |trait AsyncResourceManagerFixture extends org.scalatest.FixtureAsyncTestSuite {
+        |  override type FixtureParam = Using.Manager
+        |
+        |  private val suiteManagerRef: AtomicReference[Option[Using.Manager]] = new AtomicReference(None)
+        |
+        |  protected def suiteScoped = suiteManagerRef.get().getOrElse {
+        |    throw new IllegalStateException(
+        |      "`suiteScoped`` cannot be called from outside a test. " +
+        |      "Use a `lazy val` to store Suite-scoped resources in order to defer " +
+        |      "initialization of such resources until the start of a test."
+        |    )
+        |  }
+        |  
+        |  protected def withFixture(test: OneArgAsyncTest): FutureOutcome = {
+        |    val manager = new Using.Manager()
+        |    val futureOutcome = withFixture(test.toNoArgAsyncTest(manager))
+        |    futureOutcome.onCompletedThen { _ =>
+        |      manager.close()
+        |    }
+        |  }
+        |
+        |  override protected def runTests(testName: Option[String], args: Args): Status = {
+        |    val manager = new Using.Manager()
+        |    suiteManagerRef.getAndSet(Some(manager))
+        |    val status = super.runTests(testName, args)
+        |    status.whenCompleted { _ =>
+        |      manager.close()}
+        |    status
+        |  }
         |}
       """.stripMargin
     val resourceManagerFixtureFile = new File(targetDir, "ResourceManagerFixture.scala")

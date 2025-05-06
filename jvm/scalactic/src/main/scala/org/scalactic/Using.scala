@@ -179,7 +179,7 @@ object Using {
     *       }
     *       }}}
     */
-  final class Manager private {
+  final class Manager {
     import Manager._
 
     private var closed = false
@@ -212,22 +212,29 @@ object Using {
           toThrow = t
           null.asInstanceOf[A] // compiler doesn't know `finally` will throw
       } finally {
-        closed = true
-        var rs = resources
-        resources = null // allow GC, in case something is holding a reference to `this`
-        while (rs.nonEmpty) {
-          val resource = rs.head
-          rs = rs.tail
-          try resource.release()
-          catch {
-            case t: Throwable =>
-              if (toThrow == null) toThrow = t
-              else toThrow = preferentiallySuppress(toThrow, t)
-          }
-        }
-        if (toThrow != null) throw toThrow
+        releaseAll(toThrow)
       }
     }
+
+    private def releaseAll(passedIn: Throwable): Unit = {
+      if (closed) throw new IllegalStateException("Manager has already been closed")
+      closed = true
+      var rs = resources
+      resources = null // allow GC, in case something is holding a reference to `this`
+      var toThrow: Throwable = passedIn
+      while (rs.nonEmpty) {
+        val resource = rs.head
+        rs = rs.tail
+        try resource.release()
+        catch { case t: Throwable => 
+          if (toThrow == null) toThrow = t
+          else toThrow = preferentiallySuppress(toThrow, t)
+        }
+      }
+      if (toThrow != null) throw toThrow
+    }
+    /** Closes this manager, releasing all resources registered with it. */
+    def close(): Unit = releaseAll(null)
   }
 
   object Manager {
