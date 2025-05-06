@@ -4,7 +4,7 @@ object GenCompatibleClasses {
 
   val generatorSource = new File("GenCompatibleClasses.scala")
 
-  def genMain(targetDir: File, version: String, scalaVersion: String, isJvm: Boolean): Seq[File] = {
+  def genScalaTestMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     targetDir.mkdirs()
     val listCellRendererClass = Class.forName("javax.swing.ListCellRenderer")
     val isJava7 = listCellRendererClass.getTypeParameters.length > 0
@@ -70,12 +70,81 @@ object GenCompatibleClasses {
         bw.flush()
         bw.close()
       }
-    }   
+    }
 
-    if (isJvm)
-      java6ClassesFiles.toSeq ++ Seq(file)
-    else
-      Seq.empty
+    java6ClassesFiles.toSeq ++ Seq(file)
+  }
+
+  def genScalacticMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    targetDir.mkdirs()
+    val usingCompatFile = new File(targetDir, "UsingCompat.scala")
+    if (!usingCompatFile.exists || generatorSource.lastModified > usingCompatFile.lastModified) {
+      val classDefinitions = 
+        if (ScalaVersionHelper.isStdLibCompat_213(scalaVersion))
+          """type Releasable[-R] = scala.util.Using.Releasable[R]
+             val Releasable = scala.util.Using.Releasable"""
+        else
+          """/** A type class describing how to release a particular type of resource.
+             | *
+             | * A resource is anything which needs to be released, closed, or otherwise cleaned up
+             | * in some way after it is finished being used, and for which waiting for the object's
+             | * garbage collection to be cleaned up would be unacceptable. For example, an instance of
+             | * [[java.io.OutputStream]] would be considered a resource, because it is important to close
+             | * the stream after it is finished being used.
+             | *
+             | * An instance of `Releasable` is needed in order to automatically manage a resource
+             | * with [[Using `Using`]]. An implicit instance is provided for all types extending
+             | * [[java.lang.AutoCloseable]].
+             | *
+             | * @tparam R the type of the resource
+             | */
+             |trait Releasable[-R] {
+             | /** Releases the specified resource. */
+             | def release(resource: R): Unit
+             |}
+             | 
+             |object Releasable {
+             |  // prefer explicit types 2.14
+             |  //implicit val AutoCloseableIsReleasable: Releasable[AutoCloseable] = new Releasable[AutoCloseable] {}
+             |  /** An implicit `Releasable` for [[java.lang.AutoCloseable `AutoCloseable`s]]. */
+             |  implicit object AutoCloseableIsReleasable extends Releasable[AutoCloseable] {
+             |    def release(resource: AutoCloseable): Unit = resource.close()
+             |  }
+             |}"""
+
+      val usingResourceContent = 
+        s"""/*
+        | * Copyright 2001-2025 Artima, Inc.
+        | *
+        | * Licensed under the Apache License, Version 2.0 (the "License");
+        | * you may not use this file except in compliance with the License.
+        | * You may obtain a copy of the License at
+        | *
+        | *     http://www.apache.org/licenses/LICENSE-2.0
+        | *
+        | * Unless required by applicable law or agreed to in writing, software
+        | * distributed under the License is distributed on an "AS IS" BASIS,
+        | * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        | * See the License for the specific language governing permissions and
+        | * limitations under the License.
+        | */
+        |package org.scalactic
+        |
+        |object UsingCompat {
+        |  $classDefinitions
+        |} 
+        """.stripMargin
+
+      val bw = new BufferedWriter(new FileWriter(usingCompatFile))
+      try {
+        bw.write(usingResourceContent)
+      }
+      finally {
+        bw.flush()
+        bw.close()
+      }
+    }
+    Seq(usingCompatFile)
   }
 
   def genTest(baseTargetDir: File, version: String, scalaVersion: String): Seq[File] = {
@@ -135,7 +204,8 @@ private[org] object CompatParColls {
     val scalaVersion = args(2)
 
     val mainDir = new File(targetDir + "/main/scala/org/scalatest/tools")
-    genMain(mainDir, version, scalaVersion, true) // Always true for isJvm, because ant build does not support Scala.js and native.
+    genScalaTestMain(mainDir, version, scalaVersion)
+    genScalacticMain(mainDir, version, scalaVersion)
   }
 
 }

@@ -17,6 +17,7 @@ package org.scalactic
 
 import scala.util.Try
 import scala.util.control.{ControlThrowable, NonFatal}
+import UsingCompat.Releasable
 
 /**
   * This class is ported from the Scala standard library (https://github.com/scala/scala/blob/v2.13.16/src/library/scala/util/Using.scala), and is used to manage resources for Scala 2.11 and 2.12.
@@ -413,33 +414,4 @@ object Using {
         }
       }
     }
-
-  /** A type class describing how to release a particular type of resource.
-    *
-    * A resource is anything which needs to be released, closed, or otherwise cleaned up
-    * in some way after it is finished being used, and for which waiting for the object's
-    * garbage collection to be cleaned up would be unacceptable. For example, an instance of
-    * [[java.io.OutputStream]] would be considered a resource, because it is important to close
-    * the stream after it is finished being used.
-    *
-    * An instance of `Releasable` is needed in order to automatically manage a resource
-    * with [[Using `Using`]]. An implicit instance is provided for all types extending
-    * [[java.lang.AutoCloseable]].
-    *
-    * @tparam R the type of the resource
-    */
-  trait Releasable[-R] {
-    /** Releases the specified resource. */
-    def release(resource: R): Unit
-  }
-
-  object Releasable {
-    // prefer explicit types 2.14
-    //implicit val AutoCloseableIsReleasable: Releasable[AutoCloseable] = new Releasable[AutoCloseable] {}
-    /** An implicit `Releasable` for [[java.lang.AutoCloseable `AutoCloseable`s]]. */
-    implicit object AutoCloseableIsReleasable extends Releasable[AutoCloseable] {
-      def release(resource: AutoCloseable): Unit = resource.close()
-    }
-  }
-
 }
