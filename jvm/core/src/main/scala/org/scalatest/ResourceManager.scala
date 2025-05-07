@@ -36,7 +36,7 @@ import org.scalactic.Using
  * 
  * Example usage:
  * {{{
- * class MySuite extends ResourceManager {
+ * class MySuite extends AnyFunSuite with ResourceManager {
  *   lazy val sharedClient = suiteScoped(new ExpensiveClient)
  *
  *   test("something") {

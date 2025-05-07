@@ -31,7 +31,7 @@ import org.scalactic.Using
  *
  * Example usage:
  * {{{
- * class MySuite extends ResourceManagerFixture {
+ * class MySuite extends AnyFunSuite with ResourceManagerFixture {
  *
  *   test("something") { use =>
  *     val stream = use(getClass().getResourceAsStream("some-resource"))
