@@ -137,14 +137,14 @@ class ResourceManagerFixtureSpec extends AnyFunSpec with Matchers {
   // Test lazy val behavior with resources
   describe("Lazy resource initialization") {
     // Create a class with lazy resources to test
-    class LazyResourceTest extends AnyFunSpec with ResourceManagerFixture with Matchers {
+    class LazyResourceTest extends FixtureAnyFunSpec with ResourceManagerFixture with Matchers {
       // Lazy val that depends on suiteScoped but won't be initialized until accessed
       lazy val lazyResource = suiteScoped(new MockResource("lazy-resource"))
       
       // Eager val that will be initialized immediately
       val eagerResource = new MockResource("eager-resource")
       
-      it("should not initialize lazy resources unless accessed") { (manager: Using.Manager) =>
+      it("should not initialize lazy resources unless accessed") { manager =>
         // At this point, MockResource.instancesCreated should be 1 (just the eager resource)
         MockResource.instancesCreated should be(1)
         
@@ -155,7 +155,7 @@ class ResourceManagerFixtureSpec extends AnyFunSpec with Matchers {
         MockResource.instancesCreated should be(2)
       }
       
-      it("should initialize lazy resources only once") { (manager: Using.Manager) =>
+      it("should initialize lazy resources only once") { manager =>
         // Accessing the lazy resource multiple times should not create new instances
         lazyResource.access()
         lazyResource.access()
@@ -165,7 +165,7 @@ class ResourceManagerFixtureSpec extends AnyFunSpec with Matchers {
       }
     }
 
-    it("should not initialize lazy resources until accessed") { (manager: Using.Manager) =>
+    it("should not initialize lazy resources until accessed") {
       // Create an instance of the nested test suite
       val lazyResourceTest = new LazyResourceTest
       val reporter = new EventRecordingReporter
