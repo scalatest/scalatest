@@ -4,7 +4,7 @@ import org.scalactic.Using
 import scala.util.{Success, Failure}
 import java.io.{Closeable, IOException}
 import org.scalatest._
-import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funspec.{AnyFunSpec, FixtureAnyFunSpec}
 import org.scalatest.matchers.should.Matchers
 import SharedHelpers.EventRecordingReporter
 
@@ -33,77 +33,104 @@ object MockResource {
 }
 
 // Test implementation of ResourceManagerFixture
-class ResourceManagerFixtureSpec extends AnyFunSpec with ResourceManagerFixture with Matchers {
+class ResourceManagerFixtureSpec extends AnyFunSpec with Matchers {
   
   MockResource.resetCounter()
   
-  // A variable to track resource creation/closing across tests
-  private val resourceTracker = collection.mutable.ArrayBuffer.empty[(String, Boolean)]
-  
   // Test that Using.Manager is properly provided to tests
   describe("ResourceManagerFixture") {
-    
-    it("should provide a Using.Manager to each test") { (use: Using.Manager) =>
-      // Verify manager is provided and functional
-      use should not be null
+
+    // A variable to track resource creation/closing across tests
+    val resourceTracker = collection.mutable.ArrayBuffer.empty[MockResource]
+
+    class TestSpec extends FixtureAnyFunSpec with ResourceManagerFixture with Matchers {
+
+      it("should provide a Using.Manager to each test") { use =>
+        // Verify manager is provided and functional
+        use should not be null
+        
+        // Test resource acquisition with the manager
+        val resource = use(new MockResource("test-resource"))
+        resource.access() should be("Accessed test-resource")
+        resource.closed should be(false) // Should not be closed yet within the test
+        
+        // Track this resource
+        resourceTracker += resource
+      }
       
-      // Test resource acquisition with the manager
-      val resource = use(new MockResource("test-resource"))
-      resource.access() should be("Accessed test-resource")
-      resource.closed should be(false) // Should not be closed yet within the test
+      it("should automatically close resources after test completion") { use =>
+        // This test verifies the previous resource was closed
+        resourceTracker.find(_.name == "test-resource").map(_.closed) should be(Some(true))
+        
+        // Create another resource
+        val resource2 = use(new MockResource("test-resource-2"))
+        resource2.access() should be("Accessed test-resource-2")
+        
+        // Track this new resource
+        resourceTracker += resource2
+      }
       
-      // Track this resource
-      resourceTracker += (("test-resource", resource.closed))
-    }
-    
-    it("should automatically close resources after test completion") { (use: Using.Manager) =>
-      // This test verifies the previous resource was closed
-      resourceTracker.find(_._1 == "test-resource").map(_._2) should be(Some(true))
+      it("should allow suite-scoped resources") { manager =>
+        // Create a suite-scoped resource using the suiteScoped manager
+        val suiteResource = suiteScoped(new MockResource("suite-resource"))
+        suiteResource.access() should be("Accessed suite-resource")
+        
+        // Verify the manager from the test parameter and suiteScoped are the same instance
+        suiteScoped should not be theSameInstanceAs (manager)
+        
+        // Verify the test-specific resource from previous test was closed
+        resourceTracker.find(_.name == "test-resource-2").map(_.closed) should be(Some(true))
+        resourceTracker += suiteResource
+      }
       
-      // Create another resource
-      val resource2 = use(new MockResource("test-resource-2"))
-      resource2.access() should be("Accessed test-resource-2")
-      
-      // Track this new resource
-      resourceTracker += (("test-resource-2", resource2.closed))
-    }
-    
-    it("should allow suite-scoped resources") { (manager: Using.Manager) =>
-      // Create a suite-scoped resource using the suiteScoped manager
-      val suiteResource = suiteScoped(new MockResource("suite-resource"))
-      suiteResource.access() should be("Accessed suite-resource")
-      
-      // Verify the manager from the test parameter and suiteScoped are the same instance
-      suiteScoped should be theSameInstanceAs manager
-      
-      // Verify the test-specific resource from previous test was closed
-      resourceTracker.find(_._1 == "test-resource-2").map(_._2) should be(Some(true))
-    }
-    
-    it("should handle exceptions gracefully") { (use: Using.Manager) =>
-      // Test that exceptions are properly propagated while still closing resources
-      val resource = use(new MockResource("exception-resource"))
-      
-      intercept[RuntimeException] {
+      it("should handle exceptions gracefully") { use =>
+        // Test that exceptions are properly propagated while still closing resources
+        val resource = use(new MockResource("exception-resource"))
+
+        resourceTracker += resource
+        
         // This will throw, but resource should still be closed after test
         throw new RuntimeException("Test exception")
       }
+    }
+
+    it("should create a new instance for the test class and for each test, and close them automatically after finishes.") { (use: Using.Manager) =>
+      // Create an instance of the test suite
+      val testSpec = new TestSpec
       
-      // We can't directly verify resource is closed here since this executes before cleanup
-      // But the cleanup happens during fixture management after the test body executes
+      // Run the tests in the suite
+      val reporter = new EventRecordingReporter
+      testSpec.run(None, Args(reporter))
+      
+      // Verify that 3 tests passed
+      reporter.testSucceededEventsReceived.size should be (3)
+      // Verify that 1 test failed (the one with the exception)
+      reporter.testFailedEventsReceived.size should be (1)
+      
+      // Verify that resources were created and closed properly
+      MockResource.instancesCreated should be (4)
+      resourceTracker.length should be (4)
+      resourceTracker.foreach { resource =>
+        resource.closed should be(true)
+      }
     }
   }
   
   // Test that accessing suiteScoped outside tests throws the expected exception
   describe("suiteScoped access") {
-    // This can't be in a test since we're testing the behavior outside a test
-    try {
+    
+    class TestSpec extends FixtureAnyFunSpec with ResourceManagerFixture {
+      // This should throw an exception when accessed outside a test
       val shouldFail = suiteScoped
-      fail("suiteScoped should throw an exception when accessed outside a test")
-    } catch {
-      case e: IllegalStateException => 
-        // Expected behavior
-        e.getMessage should include("`suiteScoped`` cannot be called from outside a test")
+    }
+
+    it("should throw an exception when accessed outside a test") {
+      // Create an instance of the test suite
+      val e = 
+        intercept[IllegalStateException] {
+          new TestSpec
+        }
+      e.getMessage should include("`suiteScoped`` cannot be called from outside a test")
     }
   }
   
