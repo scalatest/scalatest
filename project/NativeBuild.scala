@@ -63,7 +63,8 @@ trait NativeBuild { this: BuildCommons =>
         Def.task {
           GenScalacticNative.genScala((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
           ScalacticGenResourcesJSVM.genFailureMessages((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
-          GenArrayHelper.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value)
+          GenArrayHelper.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++ 
+          GenCompatibleClasses.genScalacticMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       Compile / resourceGenerators += {

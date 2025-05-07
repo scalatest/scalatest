@@ -212,7 +212,8 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         Def.task{
           GenVersions.genScalacticVersions((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           ScalacticGenResourcesJVM.genFailureMessages((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenArrayHelper.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value)
+          GenArrayHelper.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenCompatibleClasses.genScalacticMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       // include the macro classes and resources in the main jar
@@ -519,7 +520,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           ScalaTestGenResourcesJVM.genResources((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++
           ScalaTestGenResourcesJVM.genFailureMessages((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
           GenVersions.genScalaTestVersions((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
-          GenCompatibleClasses.genMain((Compile / sourceManaged).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value) ++ 
+          GenCompatibleClasses.genScalaTestMain((Compile / sourceManaged).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value) ++ 
           GenFactories.genMain((Compile / sourceManaged).value / "org" / "scalatest" / "matchers" / "dsl", version.value, scalaVersion.value) ++ 
           GenMatchers.genMain((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
           GenGen.genMain((Compile / sourceManaged).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value)
@@ -625,7 +626,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
          ScalaTestGenResourcesJVM.genFailureMessages((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
          GenVersions.genScalaTestVersions((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
          GenGen.genMain((Compile / sourceManaged).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
-         GenCompatibleClasses.genMain((Compile / sourceManaged).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value)
+         GenCompatibleClasses.genScalaTestMain((Compile / sourceManaged).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value)
        }.taskValue
       },
       scalatestDocSettings,
@@ -1682,16 +1683,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     val theScalaVersion = scalaVersion.value
 
     GenFactories.genMain(new File(mainTargetDir, "scala/genfactories"), theVersion, theScalaVersion)
-  }
-
-  val genCompatibleClasses = TaskKey[Unit]("gencompcls", "Generate Compatible Classes for Java 6 & 7")
-  val genCompatibleClassesTask = genCompatibleClasses := {
-    val mainTargetDir = (Compile / sourceManaged).value
-    val testTargetDir = (Test / sourceManaged).value
-    val theVersion = version.value
-    val theScalaVersion = scalaVersion.value
-
-    GenCompatibleClasses.genMain(new File(mainTargetDir, "scala/gencompclass"), theVersion, theScalaVersion)
   }
 
   val genVersions = TaskKey[Unit]("genversions", "Generate Versions object")

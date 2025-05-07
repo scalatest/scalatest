@@ -21,7 +21,7 @@ import org.scalactic.Using
 
 /**
  * A trait that facilitates automatic management and cleanup of resources 
- * in tests using `org.scalactic.Using.Manager`.
+ * in asynchronous tests using `org.scalactic.Using.Manager`.
  *
  * This trait provides two `Using.Manager` instances to support different scopes:
  *
@@ -40,24 +40,26 @@ import org.scalactic.Using
  *
  * Example usage:
  * {{{
- * class MySuite extends ResourceManagerFixture {
+ * class MyAsyncSuite extends AsyncResourceManagerFixture {
  *   lazy val sharedClient = suiteScoped(new ExpensiveClient)
  *
- *   test("something") { use =>
+ *   test("something async") { use =>
  *     val connection = use(sharedClient.getConnection())
- *     // Use connection in the test
+ *     Future {
+ *       // Use connection asynchronously
+ *     }
  *   }
  * }
  * }}}
  *
- * @note This trait extends `FixtureTestSuite` and sets `FixtureParam` to `Using.Manager`.
- * @see [[org.scalactic.Using.Manager]] for more details on resource safety and usage patterns.
+ * @note This trait extends `FixtureAsyncTestSuite` and sets `FixtureParam` to `Using.Manager`.
+ * @see [[org.scalactic.Using.Manager]] for details on how resource management is handled safely.
  */
-trait ResourceManagerFixture extends FixtureTestSuite {
-
+trait AsyncResourceManagerFixture extends org.scalatest.FixtureAsyncTestSuite {
   /**
    * The fixture parameter passed to each test, which is an instance of `Using.Manager`.
-   * Resources registered with this manager are automatically released after the test.
+   * Resources registered with this manager are automatically released after all tests in 
+   * the suite finishes execution.
    */
   override type FixtureParam = Using.Manager
 
@@ -66,7 +68,7 @@ trait ResourceManagerFixture extends FixtureTestSuite {
   /**
    * Returns the suite-scoped `Using.Manager` instance.
    *
-   * This manager is valid only during the execution of the test suite. It is intended
+   * This manager is valid only during the execution of test. It is intended
    * for managing shared resources that are reused across multiple tests.
    *
    * This method must be called during test execution, such as from within a `lazy val`
@@ -79,21 +81,30 @@ trait ResourceManagerFixture extends FixtureTestSuite {
   protected def suiteScoped = suiteManagerRef.get().getOrElse {
     throw new IllegalStateException(Resources.suiteScopedCannotBeCalledFromOutsideATest)
   }
-
+  
   /**
-   * Wraps the execution of a single test with a test-scoped `Using.Manager`,
+   * Wraps the execution of a single asynchronous test with a test-scoped `Using.Manager`,
    * which is passed as the fixture parameter.
    *
    * The manager is automatically closed after the test completes, ensuring
-   * all registered resources are properly released.
+   * all registered resources are properly released—even if the test returns a failed or
+   * completed `Future`.
    *
-   * @param test the test function that receives the `Using.Manager`
-   * @return the outcome of the test
+   * @param test the asynchronous test function that receives the `Using.Manager`
+   * @return a `FutureOutcome` representing the result of the test
    */
-  protected def withFixture(test: OneArgTest): Outcome = {
-    Using.Manager { manager =>
-      withFixture(test.toNoArgTest(manager))
-    }.get
+  protected def withFixture(test: OneArgAsyncTest): FutureOutcome = {
+    val manager = new Using.Manager()
+    try {
+      val futureOutcome = withFixture(test.toNoArgAsyncTest(manager))
+      futureOutcome.onCompletedThen { _ =>
+        manager.close()
+      }
+    } catch {
+      case e: Throwable => // When exception is thrown code not within the Future
+        manager.close()
+        throw e
+    }
   }
 
   /**
@@ -107,9 +118,12 @@ trait ResourceManagerFixture extends FixtureTestSuite {
    * @param args the test run arguments
    * @return a `Status` representing the asynchronous result of the test run
    */
-  override protected def runTests(testName: Option[String], args: Args): Status =
-    Using.Manager { manager =>
-      suiteManagerRef.getAndSet(Some(manager))
-      super.runTests(testName, args)
-    }.get
+  override protected def runTests(testName: Option[String], args: Args): Status = {
+    val manager = new Using.Manager()
+    suiteManagerRef.getAndSet(Some(manager))
+    val status = super.runTests(testName, args)
+    status.whenCompleted { _ =>
+      manager.close()}
+    status
+  }
 }
