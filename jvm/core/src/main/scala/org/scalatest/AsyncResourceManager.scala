@@ -15,6 +15,10 @@
  */
 package org.scalatest
 
+
+import java.util.concurrent.atomic.AtomicReference
+import org.scalactic.Using
+
 /**
  * A trait that facilitates automatic management and cleanup of resources 
  * in tests using `org.scalactic.Using.Manager`.
