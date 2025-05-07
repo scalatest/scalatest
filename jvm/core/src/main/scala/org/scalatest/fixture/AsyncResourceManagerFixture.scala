@@ -55,9 +55,15 @@ trait AsyncResourceManagerFixture extends org.scalatest.FixtureAsyncTestSuite {
   
   protected def withFixture(test: OneArgAsyncTest): FutureOutcome = {
     val manager = new Using.Manager()
-    val futureOutcome = withFixture(test.toNoArgAsyncTest(manager))
-    futureOutcome.onCompletedThen { _ =>
-      manager.close()
+    try {
+      val futureOutcome = withFixture(test.toNoArgAsyncTest(manager))
+      futureOutcome.onCompletedThen { _ =>
+        manager.close()
+      }
+    } catch {
+      case e: Throwable => // When exception is thrown code not within the Future
+        manager.close()
+        throw e
     }
   }
 

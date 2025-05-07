@@ -94,7 +94,7 @@ class ResourceManagerFixtureSpec extends AnyFunSpec with Matchers {
       }
     }
 
-    it("should create a new instance for the test class and for each test, and close them automatically after finishes.") { (use: Using.Manager) =>
+    it("should create a new instance for the test class and for each test, and close them automatically after finishes.") {
       // Create an instance of the test suite
       val testSpec = new TestSpec
       
@@ -166,6 +166,7 @@ class ResourceManagerFixtureSpec extends AnyFunSpec with Matchers {
     }
 
     it("should not initialize lazy resources until accessed") {
+      MockResource.resetCounter()
       // Create an instance of the nested test suite
       val lazyResourceTest = new LazyResourceTest
       val reporter = new EventRecordingReporter
