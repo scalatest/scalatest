@@ -46,11 +46,7 @@ trait AsyncResourceManagerFixture extends org.scalatest.FixtureAsyncTestSuite {
   private val suiteManagerRef: AtomicReference[Option[Using.Manager]] = new AtomicReference(None)
 
   protected def suiteScoped = suiteManagerRef.get().getOrElse {
-    throw new IllegalStateException(
-      "`suiteScoped`` cannot be called from outside a test. " +
-      "Use a `lazy val` to store Suite-scoped resources in order to defer " +
-      "initialization of such resources until the start of a test."
-    )
+    throw new IllegalStateException(Resources.suiteScopedCannotBeCalledFromOutsideATest)
   }
   
   protected def withFixture(test: OneArgAsyncTest): FutureOutcome = {
