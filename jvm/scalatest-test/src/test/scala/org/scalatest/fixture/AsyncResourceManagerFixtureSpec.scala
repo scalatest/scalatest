@@ -35,7 +35,7 @@ class AsyncResourceManagerFixtureSpec extends AnyFunSpec with Matchers {
     // A variable to track resource creation/closing across tests
     val resourceTracker = collection.mutable.ArrayBuffer.empty[MockResource]
 
-    class TestSpec extends FixtureAsyncFunSpec with AsyncResourceManagerFixture with Matchers {
+    class TestSpec extends FixtureAsyncFunSpec with AsyncResourceManagerFixture with AsyncResourceManager with Matchers {
 
       it("should provide a Using.Manager to each test, and resource is created in future block") { use =>
         Future {
@@ -177,7 +177,7 @@ class AsyncResourceManagerFixtureSpec extends AnyFunSpec with Matchers {
   // Test that accessing suiteScoped outside tests throws the expected exception
   describe("suiteScoped access") {
     
-    class TestSpec extends FixtureAsyncFunSpec with AsyncResourceManagerFixture {
+    class TestSpec extends FixtureAsyncFunSpec with AsyncResourceManagerFixture with AsyncResourceManager {
       // This should throw an exception when accessed outside a test
       val shouldFail = suiteScoped
     }
@@ -195,7 +195,7 @@ class AsyncResourceManagerFixtureSpec extends AnyFunSpec with Matchers {
   // Test lazy val behavior with resources
   describe("Lazy resource initialization") {
     // Create a class with lazy resources to test
-    class LazyResourceTest extends FixtureAsyncFunSpec with AsyncResourceManagerFixture with Matchers {
+    class LazyResourceTest extends FixtureAsyncFunSpec with AsyncResourceManagerFixture with AsyncResourceManager with Matchers {
       // Lazy val that depends on suiteScoped but won't be initialized until accessed
       lazy val lazyResource = suiteScoped(new MockResource("lazy-resource"))
       
