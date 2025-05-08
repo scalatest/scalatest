@@ -33,7 +33,7 @@ class AsyncResourceManagerFixtureSpec extends AnyFunSpec with Matchers {
     // A variable to track resource creation/closing across tests
     val resourceTracker = collection.mutable.ArrayBuffer.empty[MockResource]
 
-    class TestSpec extends FixtureAsyncFunSpec with AsyncResourceManagerFixture with Matchers {
+    class TestSpec extends FixtureAsyncFunSpec with AsyncResourceManagerFixture with AsyncResourceManager with Matchers {
 
       val resourceTracker = new MockResourceTracker
 
