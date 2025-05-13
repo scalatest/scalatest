@@ -325,7 +325,7 @@ trait NativeBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task {
           GenModulesNative.genScalaTestFeatureSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genFeatureSpec((Compile / sourceManaged).value / "org" / "scalatest" / "featurespec", version.value, scalaVersion.value, true)
+          GenSafeStyles.genFeatureSpec((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "featurespec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -355,7 +355,7 @@ trait NativeBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task {
           GenModulesNative.genScalaTestFlatSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genFlatSpec((Compile / sourceManaged).value / "org" / "scalatest" / "flatspec", version.value, scalaVersion.value, true)
+          GenSafeStyles.genFlatSpec((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "flatspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -385,7 +385,7 @@ trait NativeBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task {
           GenModulesNative.genScalaTestFreeSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
-          GenSafeStyles.genFreeSpec((Compile / sourceManaged).value / "org" / "scalatest" / "freespec", version.value, scalaVersion.value, true)
+          GenSafeStyles.genFreeSpec((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "freespec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -415,7 +415,7 @@ trait NativeBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task {
           GenModulesNative.genScalaTestFunSuite((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
-          GenSafeStyles.genFunSuite((Compile / sourceManaged).value / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, true)
+          GenSafeStyles.genFunSuite((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -445,7 +445,7 @@ trait NativeBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task {
           GenModulesNative.genScalaTestFunSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genFunSpec((Compile / sourceManaged).value / "org" / "scalatest" / "funspec", version.value, scalaVersion.value, true)
+          GenSafeStyles.genFunSpec((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "funspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -475,7 +475,7 @@ trait NativeBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task {
           GenModulesNative.genScalaTestPropSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genPropSpec((Compile / sourceManaged).value / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, true)
+          GenSafeStyles.genPropSpec((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -505,7 +505,7 @@ trait NativeBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task {
           GenModulesNative.genScalaTestWordSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genWordSpec((Compile / sourceManaged).value / "org" / "scalatest" / "wordspec", version.value, scalaVersion.value, true)
+          GenSafeStyles.genWordSpec((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "wordspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -593,7 +593,7 @@ trait NativeBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task {
           GenModulesNative.genScalaTestMatchersCore((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
-          GenFactories.genMainJS((Compile / sourceManaged).value / "org" / "scalatest" / "matchers", version.value, scalaVersion.value)
+          GenFactories.genMainJS((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "matchers", version.value, scalaVersion.value)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -652,7 +652,7 @@ trait NativeBuild { this: BuildCommons =>
       moduleName := "scalatest-mustmatchers",
       Compile / sourceGenerators += {
         Def.task {
-          GenMatchers.genMainForScalaJS((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value)
+          GenMatchers.genMainForScalaJS((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
