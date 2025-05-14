@@ -210,9 +210,9 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       console / initialCommands := "import org.scalactic._",
       Compile / sourceGenerators += {
         Def.task{
-          GenVersions.genScalacticVersions((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          ScalacticGenResourcesJVM.genFailureMessages((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenArrayHelper.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value)
+          GenVersions.genScalacticVersions((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJVM.genFailureMessages((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenArrayHelper.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       // include the macro classes and resources in the main jar
@@ -619,13 +619,13 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       },
       Compile / sourceGenerators += {
        Def.task{
-         GenTable.genMain((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++
-         GenConfigMap.genMain((Compile / sourceManaged).value, version.value, scalaVersion.value) ++ 
-         ScalaTestGenResourcesJVM.genResources((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++
-         ScalaTestGenResourcesJVM.genFailureMessages((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
-         GenVersions.genScalaTestVersions((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
-         GenGen.genMain((Compile / sourceManaged).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
-         GenCompatibleClasses.genMain((Compile / sourceManaged).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value)
+         GenTable.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+         GenConfigMap.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++ 
+         ScalaTestGenResourcesJVM.genResources((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+         ScalaTestGenResourcesJVM.genFailureMessages((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++ 
+         GenVersions.genScalaTestVersions((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++ 
+         GenGen.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
+         GenCompatibleClasses.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "tools", version.value, scalaVersion.value)
        }.taskValue
       },
       scalatestDocSettings,
@@ -682,7 +682,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       },
       Compile / sourceGenerators += {
         Def.task {
-          GenSafeStyles.genFeatureSpec((Compile / sourceManaged).value / "org" / "scalatest" / "featurespec", version.value, scalaVersion.value, false)
+          GenSafeStyles.genFeatureSpec((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "featurespec", version.value, scalaVersion.value, false)
         }
       },
       scalatestDocSettings,
@@ -721,7 +721,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       },
       Compile / sourceGenerators += {
         Def.task {
-          GenSafeStyles.genFlatSpec((Compile / sourceManaged).value / "org" / "scalatest" / "flatspec", version.value, scalaVersion.value, false)
+          GenSafeStyles.genFlatSpec((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "flatspec", version.value, scalaVersion.value, false)
         }
       },
       scalatestDocSettings,
@@ -760,7 +760,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       },
       Compile / sourceGenerators += {
         Def.task {
-          GenSafeStyles.genFreeSpec((Compile / sourceManaged).value / "org" / "scalatest" / "freespec", version.value, scalaVersion.value, false)
+          GenSafeStyles.genFreeSpec((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "freespec", version.value, scalaVersion.value, false)
         }
       },
       scalatestDocSettings,
@@ -799,7 +799,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       },
       Compile / sourceGenerators += {
         Def.task {
-          GenSafeStyles.genFunSuite((Compile / sourceManaged).value / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, false)
+          GenSafeStyles.genFunSuite((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, false)
         }
       }, 
       scalatestDocSettings,
@@ -838,7 +838,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }, 
       Compile / sourceGenerators += {
         Def.task {
-          GenSafeStyles.genFunSpec((Compile / sourceManaged).value / "org" / "scalatest" / "funspec", version.value, scalaVersion.value, false)
+          GenSafeStyles.genFunSpec((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "funspec", version.value, scalaVersion.value, false)
         }
       }, 
       scalatestDocSettings,
@@ -877,7 +877,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       },
       Compile / sourceGenerators += {
         Def.task {
-          GenSafeStyles.genPropSpec((Compile / sourceManaged).value / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, false)
+          GenSafeStyles.genPropSpec((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, false)
         }
       }, 
       scalatestDocSettings,
@@ -950,7 +950,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       },
       Compile / sourceGenerators += {
         Def.task {
-          GenSafeStyles.genWordSpec((Compile / sourceManaged).value / "org" / "scalatest" / "wordspec", version.value, scalaVersion.value, false)
+          GenSafeStyles.genWordSpec((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "wordspec", version.value, scalaVersion.value, false)
         }
       }, 
       scalatestDocSettings,
@@ -1057,7 +1057,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       },
       Compile / sourceGenerators += {
        Def.task{
-         GenFactories.genMain((Compile / sourceManaged).value / "org" / "scalatest" / "matchers" / "dsl", version.value, scalaVersion.value)
+         GenFactories.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "matchers" / "dsl", version.value, scalaVersion.value)
        }.taskValue
       },
       scalatestDocSettings,
@@ -1131,7 +1131,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       },
       Compile / sourceGenerators += {
        Def.task{
-         GenMatchers.genMain((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value)
+         GenMatchers.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
        }.taskValue
       },
       scalatestDocSettings,
