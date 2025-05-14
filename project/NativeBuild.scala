@@ -259,7 +259,7 @@ trait NativeBuild { this: BuildCommons =>
           ScalaTestGenResourcesJSVM.genResources((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
           ScalaTestGenResourcesJSVM.genFailureMessages((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
           GenGen.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
-          GenConfigMap.genMain((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value)
+          GenConfigMap.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       },
       javaSourceManaged := target.value / "java",
@@ -276,7 +276,7 @@ trait NativeBuild { this: BuildCommons =>
       },
       Compile / sourceGenerators += {
         Def.task{
-          GenTable.genMainForScalaJS((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value)
+          GenTable.genMainForScalaJS((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
           //GenSafeStyles.genMainForScalaJS((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       },
