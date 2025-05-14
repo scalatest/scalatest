@@ -48,16 +48,16 @@ trait DottyBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task {
           // From scalactic-macro
-          GenScalacticDotty.genMacroScala((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
-          ScalacticGenResourcesJVM.genResources((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenAnyVals.genMain((Compile / sourceManaged).value / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value, true) ++
-          GenEvery.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenColCompatHelper.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenScalacticDotty.genMacroScala((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJVM.genResources((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenAnyVals.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value, true) ++
+          GenEvery.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenColCompatHelper.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
           // end from scalactic-macro
-          GenScalacticDotty.genScala((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
-          GenVersions.genScalacticVersions((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          ScalacticGenResourcesJVM.genFailureMessages((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenArrayHelper.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value)
+          GenScalacticDotty.genScala((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          GenVersions.genScalacticVersions((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJVM.genFailureMessages((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenArrayHelper.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       Compile / resourceGenerators += Def.task {
@@ -104,16 +104,16 @@ trait DottyBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task {
           // From scalactic-macro
-          GenScalacticDotty.genMacroScala((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
-          ScalacticGenResourcesJSVM.genResources((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenAnyVals.genMain((Compile / sourceManaged).value / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value, true) ++
-          GenEvery.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenColCompatHelper.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenScalacticDotty.genMacroScala((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJSVM.genResources((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenAnyVals.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value, true) ++
+          GenEvery.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenColCompatHelper.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
           // end from scalactic-macro
-          GenScalacticDotty.genScalaJS((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
-          GenVersions.genScalacticVersions((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          ScalacticGenResourcesJSVM.genFailureMessages((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenArrayHelper.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value)
+          GenScalacticDotty.genScalaJS((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          GenVersions.genScalacticVersions((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJSVM.genFailureMessages((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenArrayHelper.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       Compile / resourceGenerators += Def.task {
@@ -160,16 +160,16 @@ trait DottyBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task {
           // From scalactic-macro
-          GenScalacticDotty.genMacroScala((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
-          ScalacticGenResourcesJSVM.genResources((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenAnyVals.genMain((Compile / sourceManaged).value / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value, true) ++
-          GenEvery.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenColCompatHelper.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenScalacticDotty.genMacroScala((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJSVM.genResources((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenAnyVals.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value, true) ++
+          GenEvery.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenColCompatHelper.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
           // end from scalactic-macro
-          GenScalacticDotty.genScalaNative((Compile / sourceManaged).value, version.value, scalaVersion.value) ++ 
-          GenVersions.genScalacticVersions((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          ScalacticGenResourcesJSVM.genFailureMessages((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenArrayHelper.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value)
+          GenScalacticDotty.genScalaNative((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
+          GenVersions.genScalacticVersions((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJSVM.genFailureMessages((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenArrayHelper.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       Compile / resourceGenerators += Def.task {
