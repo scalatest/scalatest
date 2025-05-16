@@ -98,6 +98,19 @@ object BooleanMacro {
           }
         }.asExprOf[Bool]
 
+      case Apply(Apply(TypeApply(sel @ Select(lhs, op @ ("===" | "!==")), targs), rhs :: Nil), implicitArgs) =>
+        let(Symbol.spliceOwner, lhs) { left =>
+          let(Symbol.spliceOwner, rhs) { right =>
+            let(Symbol.spliceOwner, lhs.select(sel.symbol).appliedToTypeTrees(targs).appliedTo(right).appliedToArgs(implicitArgs)) { result =>
+              val l = left.asExpr
+              val r = right.asExpr
+              val b = result.asExprOf[Boolean]
+              val code = '{ Bool.binaryMacroBool($l, ${ Expr(op) }, $r, $b, $prettifier) }
+              code.asTerm
+            }
+          }
+        }.asExprOf[Bool]
+
       case Apply(sel @ Select(lhs, op), rhs :: Nil) =>
         def binaryDefault =
           if (isByNameMethodType(sel.tpe)) defaultCase
