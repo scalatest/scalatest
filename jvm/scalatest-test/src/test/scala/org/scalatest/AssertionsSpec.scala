@@ -683,66 +683,6 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
-    it("should do nothing when is used to check a === 3 with TripleEquals") {
-      import org.scalactic.TripleEquals._
-      assert(a === 3)
-    }
-
-    it("should throw TestFailedException with correct message and stack depth when is used to check a === 5 with TripleEquals") {
-      import org.scalactic.TripleEquals._
-      val e = intercept[TestFailedException] {
-        assert(a === 5)
-      }
-      assert(e.message === Some(didNotEqual(3, 5)))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
-    }
-
-    it("should do nothing when is used to check 3 === a with TripleEquals") {
-      import org.scalactic.TripleEquals._
-      assert(3 === a)
-    }
-
-    it("should throw TestFailedException with correct message and stack depth when is used to check 5 === a with TripleEquals") {
-      import org.scalactic.TripleEquals._
-      val e = intercept[TestFailedException] {
-        assert(5 === a)
-      }
-      assert(e.message === Some(didNotEqual(5, 3)))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
-    }
-
-    it("should do nothing when is used to check a === 3 with TypeCheckedTripleEquals") {
-      import org.scalactic.TypeCheckedTripleEquals._
-      assert(a === 3)
-    }
-
-    it("should throw TestFailedException with correct message and stack depth when is used to check a === 5 with TypeCheckedTripleEquals") {
-      import org.scalactic.TypeCheckedTripleEquals._
-      val e = intercept[TestFailedException] {
-        assert(a === 5)
-      }
-      assert(e.message === Some(didNotEqual(3, 5)))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
-    }
-
-    it("should do nothing when is used to check 3 === a with TypeCheckedTripleEquals") {
-      import org.scalactic.TypeCheckedTripleEquals._
-      assert(3 === a)
-    }
-
-    it("should throw TestFailedException with correct message and stack depth when is used to check 5 === a with TypeCheckedTripleEquals ") {
-      import org.scalactic.TypeCheckedTripleEquals._
-      val e = intercept[TestFailedException] {
-        assert(5 === a)
-      }
-      assert(e.message === Some(didNotEqual(5, 3)))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
-    }
-
     it("should do nothing when is used to check a !== 5") {
       assert(a !== 5)
     }
@@ -761,66 +701,6 @@ class AssertionsSpec extends AnyFunSpec {
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check 3 !== a") {
-      val e = intercept[TestFailedException] {
-        assert(3 !== a)
-      }
-      assert(e.message === Some(equaled(3, 3)))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
-    }
-
-    it("should do nothing when is used to check a !== 5 using TripleEquals") {
-      import org.scalactic.TripleEquals._
-      assert(a !== 5)
-    }
-
-    it("should throw TestFailedException with correct message and stack depth when is used to check a !== 3 using TripleEquals") {
-      import org.scalactic.TripleEquals._
-      val e = intercept[TestFailedException] {
-        assert(a !== 3)
-      }
-      assert(e.message === Some(equaled(3, 3)))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
-    }
-
-    it("should do nothing when is used to check 5 !== a using TripleEquals") {
-      import org.scalactic.TripleEquals._
-      assert(5 !== a)
-    }
-
-    it("should throw TestFailedException with correct message and stack depth when is used to check 3 !== a using TripleEquals") {
-      import org.scalactic.TripleEquals._
-      val e = intercept[TestFailedException] {
-        assert(3 !== a)
-      }
-      assert(e.message === Some(equaled(3, 3)))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
-    }
-
-    it("should do nothing when is used to check a !== 5 using TypeCheckedTripleEquals") {
-      import org.scalactic.TypeCheckedTripleEquals._
-      assert(a !== 5)
-    }
-
-    it("should throw TestFailedException with correct message and stack depth when is used to check a !== 3 using TypeCheckedTripleEquals") {
-      import org.scalactic.TypeCheckedTripleEquals._
-      val e = intercept[TestFailedException] {
-        assert(a !== 3)
-      }
-      assert(e.message === Some(equaled(3, 3)))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
-    }
-
-    it("should do nothing when is used to check 5 !== a using TypeCheckedTripleEquals") {
-      import org.scalactic.TypeCheckedTripleEquals._
-      assert(5 !== a)
-    }
-
-    it("should throw TestFailedException with correct message and stack depth when is used to check 3 !== a using TypeCheckedTripleEquals") {
-      import org.scalactic.TypeCheckedTripleEquals._
       val e = intercept[TestFailedException] {
         assert(3 !== a)
       }
@@ -2285,66 +2165,6 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
-    it("should do nothing when is used to check a === 3 using TripleEquals") {
-      import org.scalactic.TripleEquals._
-      assert(a === 3, "dude")
-    }
-
-    it("should throw TestFailedException with correct message and stack depth when is used to check a === 5 using TripleEquals") {
-      import org.scalactic.TripleEquals._
-      val e = intercept[TestFailedException] {
-        assert(a === 5, "dude")
-      }
-      assert(e.message === Some(didNotEqual(3, 5) + " dude"))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
-    }
-
-    it("should do nothing when is used to check 3 === a using TripleEquals") {
-      import org.scalactic.TripleEquals._
-      assert(3 === a, ", dude")
-    }
-
-    it("should throw TestFailedException with correct message and stack depth when is used to check 5 === a using TripleEquals") {
-      import org.scalactic.TripleEquals._
-      val e = intercept[TestFailedException] {
-        assert(5 === a, ", dude")
-      }
-      assert(e.message === Some(didNotEqual(5, 3) + ", dude"))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
-    }
-
-    it("should do nothing when is used to check a === 3 using TypeCheckedTripleEquals") {
-      import org.scalactic.TypeCheckedTripleEquals._
-      assert(a === 3, "dude")
-    }
-
-    it("should throw TestFailedException with correct message and stack depth when is used to check a === 5 using TypeCheckedTripleEquals") {
-      import org.scalactic.TypeCheckedTripleEquals._
-      val e = intercept[TestFailedException] {
-        assert(a === 5, "dude")
-      }
-      assert(e.message === Some(didNotEqual(3, 5) + " dude"))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
-    }
-
-    it("should do nothing when is used to check 3 === a using TypeCheckedTripleEquals") {
-      import org.scalactic.TypeCheckedTripleEquals._
-      assert(3 === a, ", dude")
-    }
-
-    it("should throw TestFailedException with correct message and stack depth when is used to check 5 === a using TypeCheckedTripleEquals") {
-      import org.scalactic.TypeCheckedTripleEquals._
-      val e = intercept[TestFailedException] {
-        assert(5 === a, ", dude")
-      }
-      assert(e.message === Some(didNotEqual(5, 3) + ", dude"))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
-    }
-
     it("should do nothing when is used to check a !== 5") {
       assert(a !== 5, ". dude")
     }
@@ -2363,66 +2183,6 @@ class AssertionsSpec extends AnyFunSpec {
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check 3 !== a") {
-      val e = intercept[TestFailedException] {
-        assert(3 !== a, "; dude")
-      }
-      assert(e.message === Some(equaled(3, 3) + "; dude"))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
-    }
-
-    it("should do nothing when is used to check a !== 5 using TripleEquals") {
-      import org.scalactic.TripleEquals._
-      assert(a !== 5, ". dude")
-    }
-
-    it("should throw TestFailedException with correct message and stack depth when is used to check a !== 3 using TripleEquals") {
-      import org.scalactic.TripleEquals._
-      val e = intercept[TestFailedException] {
-        assert(a !== 3, ". dude")
-      }
-      assert(e.message === Some(equaled(3, 3) + ". dude"))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
-    }
-
-    it("should do nothing when is used to check 5 !== a using TripleEquals") {
-      import org.scalactic.TripleEquals._
-      assert(5 !== a, "; dude")
-    }
-
-    it("should throw TestFailedException with correct message and stack depth when is used to check 3 !== a using TripleEquals") {
-      import org.scalactic.TripleEquals._
-      val e = intercept[TestFailedException] {
-        assert(3 !== a, "; dude")
-      }
-      assert(e.message === Some(equaled(3, 3) + "; dude"))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
-    }
-
-    it("should do nothing when is used to check a !== 5 using TypeCheckedTripleEquals") {
-      import org.scalactic.TypeCheckedTripleEquals._
-      assert(a !== 5, ". dude")
-    }
-
-    it("should throw TestFailedException with correct message and stack depth when is used to check a !== 3 using TypeCheckedTripleEquals") {
-      import org.scalactic.TypeCheckedTripleEquals._
-      val e = intercept[TestFailedException] {
-        assert(a !== 3, ". dude")
-      }
-      assert(e.message === Some(equaled(3, 3) + ". dude"))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
-    }
-
-    it("should do nothing when is used to check 5 !== a using TypeCheckedTripleEquals") {
-      import org.scalactic.TypeCheckedTripleEquals._
-      assert(5 !== a, "; dude")
-    }
-
-    it("should throw TestFailedException with correct message and stack depth when is used to check 3 !== a using TypeCheckedTripleEquals") {
-      import org.scalactic.TypeCheckedTripleEquals._
       val e = intercept[TestFailedException] {
         assert(3 !== a, "; dude")
       }
