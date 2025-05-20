@@ -6267,13 +6267,135 @@ class AssertionsSpec extends AnyFunSpec {
     }
   }
 
+  describe("assertTypeError method ") {
+
+    describe("when work with string literal") {
+
+      it("should do nothing when type check failed") {
+        assertTypeError("val a: String = 1")
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when type check passed") {
+        val e = intercept[TestFailedException] {
+          assertTypeError("val a = 1")
+        }
+        assert(e.message == Some(Resources.expectedTypeErrorButGotNone("val a = 1")))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when parse failed") {
+        val e = intercept[TestFailedException] {
+          assertTypeError("println(\"test)")
+        }
+        val errMsg = Resources.expectedTypeErrorButGotParseError("", "")
+        assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
+        assert(e.message.get.indexOf("println(\"test)") >= 0)
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
+      }
+      
+      it("should do nothing when used with 'val i: Int = null'") {
+        assertTypeError("val i: Int = null")
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when the code compiles with implicit view in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val e = intercept[TestFailedException] {
+          assertTypeError("arrayList.asScala")
+        }
+        assert(e.message == Some(Resources.expectedTypeErrorButGotNone("arrayList.asScala")))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+      }
+    }
+
+    describe("when used with triple quotes string literal with stripMargin") {
+
+      it("should do nothing when type check failed") {
+        assertTypeError(
+          """
+            |val a: String = 2
+            |""".stripMargin
+        )
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when type check passed") {
+        val e = intercept[TestFailedException] {
+          assertTypeError(
+            """
+              |val a = 1
+              |""".stripMargin
+          )
+        }
+        assert(e.message == Some(Resources.expectedTypeErrorButGotNone("" + Prettifier.lineSeparator + "val a = 1" + Prettifier.lineSeparator + "")))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
+      }
+      
+      it("should throw TestFailedException with correct message and stack depth when parse failed ") {
+        val e = intercept[TestFailedException] {
+          assertTypeError(
+            """
+              |println("test)
+              |""".stripMargin
+          )
+        }
+        val errMsg = Resources.expectedTypeErrorButGotParseError("", "")
+        assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
+        assert(e.message.get.indexOf("println(\"test)") >= 0, "error message was: " + e.message.get)
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
+      }
+      
+      it("should do nothing when used with 'val i: Int = null'") {
+        assertTypeError(
+          """
+            |val i: Int = null
+            |""".stripMargin
+        )
+      }
+      it("should throw TestFailedException with correct message and stack depth when the code compiles with implicit view in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val e = intercept[TestFailedException] {
+          assertTypeError(
+            """
+              |arrayList.asScala
+              |""".stripMargin
+          )
+        }
+        assert(e.message == Some(Resources.expectedTypeErrorButGotNone(Prettifier.lineSeparator + "arrayList.asScala" + Prettifier.lineSeparator)))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
+      }
+    }
+    it("should result in type Assertion and, on success, return the Succeeded value") {
+      assert(assertTypeError("val x: String = 1") eq Succeeded)
+    }
+  }
+
   describe("assertOnTypeError method ") {
 
     describe("when work with string literal") {
 
       it("should do nothing when type check failed with a good error message") {
         assertOnTypeError("val a: String = 1"){ msg =>
+          // SKIP-DOTTY-START
           assert(msg.contains("type mismatch") && msg.contains("String") && msg.contains("Int"))
+          // SKIP-DOTTY-END
+          //DOTTY-ONLY assert(msg.contains("Found:    (1 : Int)") && msg.contains("Required: String"))
         }
 
         assertOnTypeError("implicitly[Int =:= String]") { typeError =>
@@ -6313,7 +6435,10 @@ class AssertionsSpec extends AnyFunSpec {
       
       it("should do nothing when used with 'val i: Int = null'") {
         assertOnTypeError("val i: Int = null") { msg =>
+          // SKIP-DOTTY-START
           assert(msg.contains("an expression of type Null is ineligible for implicit conversion"))
+          // SKIP-DOTTY-END
+          //DOTTY-ONLY assert(msg.contains("Found:    Null") && msg.contains("Required: Int"))
         }
       }
 
@@ -6364,7 +6489,10 @@ class AssertionsSpec extends AnyFunSpec {
         }
         assert(e.message == Some(Resources.expectedTypeErrorButGotNone("" + Prettifier.lineSeparator + "val a = 1" + Prettifier.lineSeparator + "")))
         assert(e.failedCodeFileName === (Some(fileName)))
-        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+        // SKIP-DOTTY-START
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 5)))
+        // SKIP-DOTTY-END
+        //DOTTY-ONLY assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
       
       it("should throw TestFailedException with correct message and stack depth when parse failed ") {
@@ -6379,7 +6507,10 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
         assert(e.message.get.indexOf("println(\"test)") >= 0, "error message was: " + e.message.get)
         assert(e.failedCodeFileName === (Some(fileName)))
-        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
+        // SKIP-DOTTY-START
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 7)))
+        // SKIP-DOTTY-END
+        //DOTTY-ONLY assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
       
       it("should do nothing when used with 'val i: Int = null'") {
@@ -6406,7 +6537,10 @@ class AssertionsSpec extends AnyFunSpec {
         }
         assert(e.message == Some(Resources.expectedTypeErrorButGotNone(Prettifier.lineSeparator + "arrayList.asScala" + Prettifier.lineSeparator)))
         assert(e.failedCodeFileName === (Some(fileName)))
-        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+        // SKIP-DOTTY-START
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 5)))
+        // SKIP-DOTTY-END
+        //DOTTY-ONLY assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
     }
     it("should result in type Assertion and, on success, return the provided assertion") {
