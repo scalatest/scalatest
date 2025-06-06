@@ -13,15 +13,11 @@ Official Website: http://www.scalatest.org/
 
 [![Sponsor ScalaTest](https://img.shields.io/badge/sponsor-scalatest-ff69b4?logo=github-sponsors)](https://github.com/sponsors/scalatest)
 
-ScalaTest has been helping Scala developers write expressive and reliable tests for over a decade. If you or your company rely on ScalaTest, please consider supporting its continued development.
+ScalaTest has been a cornerstone of testing in the Scala ecosystem for over 17 years. It’s trusted by countless developers and teams to write expressive, flexible, and robust tests. We’ve always believed in keeping ScalaTest free and open source, but maintaining a tool used so widely takes time, care, and ongoing effort.
 
-Your sponsorship helps us:
-- Add new features like built-in generators and better DSLs
-- Maintain compatibility with Scala 2, Scala 3, Scala.js, and Scala Native
-- Improve documentation, tooling, and test ergonomics
-- Ensure timely issue triage and pull request reviews
+If ScalaTest has saved you time, helped you ship better software, or become a key part of your development workflow, please consider supporting our work. Your sponsorship helps us dedicate time to fixing bugs, improving documentation, adding new features, and keeping ScalaTest reliable for the entire community.
 
-👉 [Become a sponsor for ScalaTest](https://github.com/sponsors/scalatest) to help keep Scala’s most trusted testing library thriving!
+👉 [Become a sponsor for ScalaTest](https://github.com/sponsors/scalatest) to help keep Scala’s most widely used testing library thriving!
 
 Using ScalaTest
 ---------------
