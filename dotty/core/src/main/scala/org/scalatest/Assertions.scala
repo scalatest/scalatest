@@ -667,6 +667,45 @@ trait Assertions extends TripleEquals  {
   }
 
   /**
+   * Asserts that a given string snippet of code does not pass the Scala type checker and the error message
+   * passes the given assertion, failing if the given snippet does not pass the Scala parser.
+   *
+   * <p>
+   * Often when creating libraries you may wish to ensure that certain arrangements of code that
+   * represent potential &ldquo;user errors&rdquo; do not compile, so that your library is more error resistant.
+   * ScalaTest's <code>Assertions</code> trait includes the following syntax for that purpose:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * assertOnTypeError("val a: String = 1") { errorMessage => assert(errorMessage.contains("type mismatch")) }
+   * </pre>
+   *
+   * <p>
+   * Although <code>assertOnTypeError</code> is implemented with a macro that determines at compile time whether
+   * the snippet of code represented by the passed string type checks, errors (<em>i.e.</em>,
+   * snippets of code that <em>do</em> type check) are reported as test failures at runtime.
+   * </p>
+   *
+   * <p>
+   * The difference between <code>assertOnTypeError</code> and <code>assertTypeError</code> is
+   * that <code>assertOnTypeError</code> takes an additional check for inspecting the type error message.
+   * This can help to ensure that the snippet fails for the expected reason. For example,
+   * <pre class="stHighlight">
+   * assertOnTypeError("implicitly[A =:= B]") { errorMessage => assert(errorMessage.contains("Cannot prove that A =:= B")) }
+   * </pre>
+   * succeeds only when the compiler cannot resolve the implicit for <code>A =:= B</code> and fails for all
+   * other type errors such as <code>A</code> not being found. Technically, <code>assertTypeError(snippet)</code>
+   * is equivalent to <code>assertOnTypeError(snipped)(_ => succeed)</code>.
+   * </p>
+   *
+   * @param code the snippet of code that should not type check
+   * @param assertion the assertion on the type error message
+   */
+  transparent inline def assertOnTypeError(inline code: String)(inline assertion: String => Assertion): Assertion = {
+    ${ CompileMacro.assertOnTypeErrorImpl('code, '{typeCheckErrors(code)})('{assertion}) }
+  }
+
+  /**
    * Asserts that a given string snippet of code does not pass either the Scala parser or type checker.
    *
    * <p>

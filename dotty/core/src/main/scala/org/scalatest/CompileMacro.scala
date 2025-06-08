@@ -38,8 +38,11 @@ object CompileMacro {
     }
   }
 
+  def assertTypeErrorImpl(self: Expr[_], typeChecked: Expr[List[Error]])(using Quotes): Expr[Assertion] = 
+    assertOnTypeErrorImpl(self, typeChecked)('{ _ => Succeeded })
+
   // parse and type check a code snippet, generate code to throw TestFailedException when type check passes or parse error
-  def assertTypeErrorImpl(self: Expr[_], typeChecked: Expr[List[Error]])(using Quotes): Expr[Assertion] = {
+  def assertOnTypeErrorImpl(self: Expr[_], typeChecked: Expr[List[Error]])(assertion: Expr[String => Assertion])(using Quotes): Expr[Assertion] = {
 
     import quotes.reflect._
 
@@ -52,7 +55,7 @@ object CompileMacro {
       }
 
       errors match {
-        case Error(_, _, _, ErrorKind.Typer) :: _ => '{ Succeeded }
+        case Error(msg, _, _, ErrorKind.Typer) :: _ => '{ $assertion(${Expr(msg)}) }
         case Error(msg, _, _, ErrorKind.Parser) :: _ => '{
           val messageExpr = Resources.expectedTypeErrorButGotParseError(${ Expr(msg) }, ${ Expr(code) })
           ${
