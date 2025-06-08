@@ -56,13 +56,13 @@ object GenModulesDotty {
 
   def genModuleFiles(moduleName: String, targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Seq[File] = 
     moduleName match {
-      case "featurespec" => GenSafeStyles.genFeatureSpec(new File(targetDir.getAbsolutePath + "/org/scalatest/" + moduleName), version, scalaVersion, scalaJS)
-      case "flatspec" => GenSafeStyles.genFlatSpec(new File(targetDir.getAbsolutePath + "/org/scalatest/" + moduleName), version, scalaVersion, scalaJS)
-      case "freespec" => GenSafeStyles.genFreeSpec(new File(targetDir.getAbsolutePath + "/org/scalatest/" + moduleName), version, scalaVersion, scalaJS)
-      case "funsuite" => GenSafeStyles.genFunSuite(new File(targetDir.getAbsolutePath + "/org/scalatest/" + moduleName), version, scalaVersion, scalaJS)
-      case "funspec" => GenSafeStyles.genFunSpec(new File(targetDir.getAbsolutePath + "/org/scalatest/" + moduleName), version, scalaVersion, scalaJS)
-      case "propspec" => GenSafeStyles.genPropSpec(new File(targetDir.getAbsolutePath + "/org/scalatest/" + moduleName), version, scalaVersion, scalaJS)
-      case "wordspec" => GenSafeStyles.genWordSpec(new File(targetDir.getAbsolutePath + "/org/scalatest/" + moduleName), version, scalaVersion, scalaJS)
+      case "featurespec" => GenSafeStyles.genFeatureSpec(new File(targetDir.getAbsolutePath + "/scala/org/scalatest/" + moduleName), version, scalaVersion, scalaJS)
+      case "flatspec" => GenSafeStyles.genFlatSpec(new File(targetDir.getAbsolutePath + "/scala/org/scalatest/" + moduleName), version, scalaVersion, scalaJS)
+      case "freespec" => GenSafeStyles.genFreeSpec(new File(targetDir.getAbsolutePath + "/scala/org/scalatest/" + moduleName), version, scalaVersion, scalaJS)
+      case "funsuite" => GenSafeStyles.genFunSuite(new File(targetDir.getAbsolutePath + "/scala/org/scalatest/" + moduleName), version, scalaVersion, scalaJS)
+      case "funspec" => GenSafeStyles.genFunSpec(new File(targetDir.getAbsolutePath + "/scala/org/scalatest/" + moduleName), version, scalaVersion, scalaJS)
+      case "propspec" => GenSafeStyles.genPropSpec(new File(targetDir.getAbsolutePath + "/scala/org/scalatest/" + moduleName), version, scalaVersion, scalaJS)
+      case "wordspec" => GenSafeStyles.genWordSpec(new File(targetDir.getAbsolutePath + "/scala/org/scalatest/" + moduleName), version, scalaVersion, scalaJS)
       case _ => Seq.empty[File]
     }
   
@@ -70,7 +70,7 @@ object GenModulesDotty {
     GenScalaTestDotty.genScalaPackages
       .filter { case (packagePath, _) => packagePaths.contains(packagePath) }
       .flatMap { case (packagePath, skipList) =>
-        GenScalaTestDotty.copyDir(s"jvm/$moduleDirName/src/main/scala/" + packagePath, packagePath, targetDir, skipList) ++ 
+        GenScalaTestDotty.copyDir(s"jvm/$moduleDirName/src/main/scala/" + packagePath, packagePath, new File(targetDir, "scala"), skipList) ++ 
         genModuleFiles(moduleDirName, targetDir, version, scalaVersion, false)
       }.toList
   }
@@ -100,7 +100,7 @@ object GenModulesDotty {
     GenScalaTestDotty.genScalaPackagesJS
       .filter { case (packagePath, _) => packagePaths.contains(packagePath) }
       .flatMap { case (packagePath, skipList) =>
-        GenScalaTestDotty.copyDirJS(s"jvm/$moduleDirName/src/main/scala/" + packagePath, packagePath, targetDir, skipList) ++ 
+        GenScalaTestDotty.copyDirJS(s"jvm/$moduleDirName/src/main/scala/" + packagePath, packagePath, new File(targetDir, "scala"), skipList) ++ 
         genModuleFiles(moduleDirName, targetDir, version, scalaVersion, true)
       }.toList
   }
@@ -111,7 +111,8 @@ object GenModulesDotty {
     GenScalaTestDotty.genScalaPackagesNative
       .filter { case (packagePath, _) => packagePaths.contains(packagePath) }
       .flatMap { case (packagePath, skipList) =>
-        GenScalaTestDotty.copyDirNative(s"jvm/$moduleDirName/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+        GenScalaTestDotty.copyDirNative(s"jvm/$moduleDirName/src/main/scala/" + packagePath, packagePath, new File(targetDir, "scala"), skipList) ++
+        genModuleFiles(moduleDirName, targetDir, version, scalaVersion, false)
       }.toList
   }
 
