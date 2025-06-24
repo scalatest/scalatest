@@ -287,5 +287,5 @@ trait FixtureAsyncTestSuite extends org.scalatest.FixtureSuite with org.scalates
    * @param test the <code>OneArgAsyncTest</code> to invoke, passing in a fixture
    * @return an instance of <code>FutureOutcome</code>
    */
-  def withFixture(test: OneArgAsyncTest): FutureOutcome
+  protected def withFixture(test: OneArgAsyncTest): FutureOutcome
 }
