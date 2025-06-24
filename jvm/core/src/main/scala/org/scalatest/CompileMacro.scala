@@ -66,11 +66,17 @@ private[scalatest] object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to throw TestFailedException when type check passes or parse error
-  def assertTypeErrorImpl(c: Context)(code: c.Expr[String])(pos: c.Expr[source.Position]): c.Expr[Assertion] = {
+  def assertTypeErrorImpl(c: Context)(code: c.Expr[String])(pos: c.Expr[source.Position]): c.Expr[Assertion] =
+    assertOnTypeErrorImpl(c)(code)({
+      c.universe.reify((_: String) => Succeeded: Assertion)
+    })(pos)
+
+  // parse and type check a code snippet, generate code to throw TestFailedException when type check passes or parse error and otherwise evaluate the given assertion on the type error message
+  def assertOnTypeErrorImpl(c: Context)(code: c.Expr[String])(assertion: c.Expr[String => Assertion])(pos: c.Expr[source.Position]): c.Expr[Assertion] = {
     import c.universe._
 
     // extract code snippet
-    val codeStr = getCodeStringFromCodeExpression(c)("assertNoTypeError", code)
+    val codeStr = getCodeStringFromCodeExpression(c)("assertOnTypeError", code)
 
     try {
       val tree = c.parse("{ "+codeStr+" }")
@@ -84,15 +90,15 @@ private[scalatest] object CompileMacro {
       }
       else {
         reify {
-          // statement such as val i: Int = null, compile fails as expected, generate code to return Succeeded
-          Succeeded
+          // statement such as val i: Int = null, compile fails as expected, call the given assertion with an appropriate error message
+          assertion.splice("an expression of type Null is ineligible for implicit conversion")
         }
       }
     } catch {
       case e: TypecheckException =>
+        val errorMessage = c.Expr[String](q"${e.msg}")
         reify {
-          // type check failed as expected, generate code to return Succeeded
-          Succeeded
+          assertion.splice(errorMessage.splice)
         }
       case e: ParseException =>
         // parse error, generate code to throw TestFailedException
