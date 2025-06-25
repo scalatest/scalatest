@@ -80,7 +80,7 @@ package org.scalactic
  *
  * <p>
  * <em>Note: The <code>Equality</code> type class was inspired in part by the <code>Equal</code> type class of the 
- * <a href="http://code.google.com/p/scalaz/" target="_blank"><code>scalaz</code></a> project.</em>
+ * <a href="https://github.com/scalaz/scalaz/" target="_blank"><code>scalaz</code></a> project.</em>
  * </p>
  *
  * @tparam A the type whose equality is being customized
