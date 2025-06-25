@@ -489,7 +489,7 @@ private[scalatest] object StringReporter {
           }
         }
         else simpleFileNameApproach(stackDepth.failedCodeFileNameAndLineNumberString)
-      case None => stringToPrint
+      case _ => stringToPrint
     }
   }
 
