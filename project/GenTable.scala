@@ -2651,7 +2651,7 @@ $columnsOfTwos$
 
   def genMain(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
-
+    println("###########################dir: " + dir.getAbsolutePath)
     val propDir = new File(dir, "prop")
     propDir.mkdirs()
 

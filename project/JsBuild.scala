@@ -61,10 +61,10 @@ trait JsBuild { this: BuildCommons =>
       moduleName := "scalactic",
       Compile / sourceGenerators += {
         Def.task {
-          GenScalacticJS.genScala((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
-          ScalacticGenResourcesJSVM.genFailureMessages((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenArrayHelper.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++ 
-          GenCompatibleClasses.genScalacticMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value)
+          GenScalacticJS.genScala((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJSVM.genFailureMessages((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenArrayHelper.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++ 
+          GenCompatibleClasses.genScalacticMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       Compile / resourceGenerators += {
@@ -538,7 +538,7 @@ trait JsBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task {
           GenModulesJS.genScalaTestFeatureSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genFeatureSpec((Compile / sourceManaged).value / "org" / "scalatest" / "featurespec", version.value, scalaVersion.value, true)
+          GenSafeStyles.genFeatureSpec((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "featurespec", version.value, scalaVersion.value, true)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
@@ -572,7 +572,7 @@ trait JsBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task {
           GenModulesJS.genScalaTestFlatSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
-          GenSafeStyles.genFlatSpec((Compile / sourceManaged).value / "org" / "scalatest" / "flatspec", version.value, scalaVersion.value, true)
+          GenSafeStyles.genFlatSpec((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "flatspec", version.value, scalaVersion.value, true)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
@@ -606,7 +606,7 @@ trait JsBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task {
           GenModulesJS.genScalaTestFreeSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
-          GenSafeStyles.genFreeSpec((Compile / sourceManaged).value / "org" / "scalatest" / "freespec", version.value, scalaVersion.value, true)
+          GenSafeStyles.genFreeSpec((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "freespec", version.value, scalaVersion.value, true)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
@@ -640,7 +640,7 @@ trait JsBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task {
           GenModulesJS.genScalaTestFunSuite((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genFunSuite((Compile / sourceManaged).value / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, true)
+          GenSafeStyles.genFunSuite((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, true)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
@@ -674,7 +674,7 @@ trait JsBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task {
           GenModulesJS.genScalaTestFunSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genFunSpec((Compile / sourceManaged).value / "org" / "scalatest" / "funspec", version.value, scalaVersion.value, true)
+          GenSafeStyles.genFunSpec((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "funspec", version.value, scalaVersion.value, true)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
@@ -708,7 +708,7 @@ trait JsBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task {
           GenModulesJS.genScalaTestPropSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genPropSpec((Compile / sourceManaged).value / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, true)
+          GenSafeStyles.genPropSpec((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, true)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
@@ -742,7 +742,7 @@ trait JsBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task {
           GenModulesJS.genScalaTestWordSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genWordSpec((Compile / sourceManaged).value / "org" / "scalatest" / "wordspec", version.value, scalaVersion.value, true)
+          GenSafeStyles.genWordSpec((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "wordspec", version.value, scalaVersion.value, true)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
