@@ -18,7 +18,6 @@ package org.scalatest
 
 import java.util.concurrent.atomic.AtomicReference
 import org.scalactic.Using
-import scala.tools.nsc.doc.html.HtmlTags.U
 
 /**
  * A trait that facilitates automatic management and cleanup of resources 
