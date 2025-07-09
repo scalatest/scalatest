@@ -47,7 +47,7 @@ import org.scalactic.Using
  * @note This trait extends `FixtureAsyncTestSuite` and sets `FixtureParam` to `Using.Manager`.
  * @see [[org.scalactic.Using.Manager]] for details on how resource management is handled safely.
  */
-trait AsyncResourceManagerFixture extends org.scalatest.FixtureAsyncTestSuite {
+trait AsyncResourceManagerFixture { this: FixtureAsyncTestSuite =>
   /**
    * The fixture parameter passed to each test, which is an instance of `Using.Manager`.
    * Resources registered with this manager are automatically released after the test.
