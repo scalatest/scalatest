@@ -44,7 +44,7 @@ import org.scalactic.Using
  * @note This trait extends `FixtureTestSuite` and sets `FixtureParam` to `Using.Manager`.
  * @see [[org.scalactic.Using.Manager]] for more details on resource safety and usage patterns.
  */
-trait ResourceManagerFixture extends FixtureTestSuite {
+trait ResourceManagerFixture { this: FixtureTestSuite =>
 
   /**
    * The fixture parameter passed to each test, which is an instance of `Using.Manager`.
@@ -67,5 +67,4 @@ trait ResourceManagerFixture extends FixtureTestSuite {
       withFixture(test.toNoArgTest(manager))
     }.get
   }
-
 }

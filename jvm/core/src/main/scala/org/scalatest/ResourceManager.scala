@@ -46,7 +46,8 @@ import org.scalactic.Using
  * }
  * }}}
  */
-trait ResourceManager extends Suite {
+trait ResourceManager extends SuiteMixin { this: Suite =>
+
   private val suiteManagerRef: AtomicReference[Option[Using.Manager]] = new AtomicReference(None)
 
   /**
@@ -62,7 +63,7 @@ trait ResourceManager extends Suite {
    * @throws IllegalStateException if called outside of test execution
    * @return the shared `Using.Manager` instance for the test suite
    */
-  protected def suiteScoped = suiteManagerRef.get().getOrElse {
+  protected def suiteScoped: Using.Manager = suiteManagerRef.get().getOrElse {
     throw new IllegalStateException(Resources.suiteScopedCannotBeCalledFromOutsideATest)
   }
 
@@ -77,7 +78,7 @@ trait ResourceManager extends Suite {
    * @param args the test run arguments
    * @return a `Status` representing the asynchronous result of the test run
    */
-  override protected def runTests(testName: Option[String], args: Args): Status =
+  abstract override protected def runTests(testName: Option[String], args: Args): Status =
     Using.Manager { manager =>
       suiteManagerRef.getAndSet(Some(manager))
       super.runTests(testName, args)
