@@ -18,6 +18,7 @@ package org.scalatest
 
 import java.util.concurrent.atomic.AtomicReference
 import org.scalactic.Using
+import scala.tools.nsc.doc.html.HtmlTags.U
 
 /**
  * A trait that facilitates automatic management and cleanup of resources 
@@ -50,7 +51,8 @@ import org.scalactic.Using
  * }}}
  */
 
-trait AsyncResourceManager extends AsyncTestSuite {
+trait AsyncResourceManager extends AsyncTestSuiteMixin { this: AsyncTestSuite =>
+
   private val suiteManagerRef: AtomicReference[Option[Using.Manager]] = new AtomicReference(None)
   /**
    * Returns the suite-scoped `Using.Manager` instance.
@@ -65,7 +67,7 @@ trait AsyncResourceManager extends AsyncTestSuite {
    * @throws IllegalStateException if called outside of test execution
    * @return the shared `Using.Manager` instance for the test suite
    */
-  protected def suiteScoped = suiteManagerRef.get().getOrElse {
+  protected def suiteScoped: Using.Manager = suiteManagerRef.get().getOrElse {
     throw new IllegalStateException(Resources.suiteScopedCannotBeCalledFromOutsideATest)
   }
   
@@ -80,7 +82,7 @@ trait AsyncResourceManager extends AsyncTestSuite {
    * @param args the test run arguments
    * @return a `Status` representing the asynchronous result of the test run
    */
-  override protected def runTests(testName: Option[String], args: Args): Status = {
+  abstract override protected def runTests(testName: Option[String], args: Args): Status = {
     val manager = new Using.Manager()
     suiteManagerRef.getAndSet(Some(manager))
     val status = super.runTests(testName, args)
@@ -88,5 +90,4 @@ trait AsyncResourceManager extends AsyncTestSuite {
       manager.close()}
     status
   }
-
 }
