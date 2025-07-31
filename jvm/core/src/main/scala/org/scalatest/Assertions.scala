@@ -716,6 +716,7 @@ trait Assertions extends TripleEquals  {
    * function. If the function throws an exception that's an instance of the specified type,
    * this method returns that exception. Else, whether the passed function returns normally
    * or completes abruptly with a different exception, this method throws <code>TestFailedException</code>.
+   * If the type parameter is left to the type inferencer, any Exception will be caught.
    *
    * <p>
    * Note that the type specified as this method's type parameter may represent any subtype of
@@ -743,7 +744,7 @@ trait Assertions extends TripleEquals  {
    * @throws TestFailedException if the passed function does not complete abruptly with an exception
    *    that's an instance of the specified type.
    */
-  def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], pos: source.Position): T = {
+  def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], pos: source.Position): T with Exception = {
     val clazz = classTag.runtimeClass
     val caught = try {
       f
@@ -751,7 +752,7 @@ trait Assertions extends TripleEquals  {
     }
     catch {
       case u: Throwable => {
-        if (!clazz.isAssignableFrom(u.getClass)) {
+        if (!clazz.isAssignableFrom(u.getClass) && clazz.getName != "scala.runtime.Nothing$") {
           val s = Resources.wrongException(clazz.getName, u.getClass.getName)
           throw newAssertionFailedException(Some(s), Some(u), pos, Vector.empty)
         }
@@ -764,7 +765,7 @@ trait Assertions extends TripleEquals  {
       case None =>
         val message = Resources.exceptionExpected(clazz.getName)
         throw newAssertionFailedException(Some(message), None, pos, Vector.empty)
-      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
+      case Some(e) => e.asInstanceOf[T with Exception] // We know this cast will succeed, because isAssignableFrom succeeded above
     }
   }
 
@@ -774,6 +775,7 @@ trait Assertions extends TripleEquals  {
    * function. If the function throws an exception that's an instance of the specified type,
    * this method returns <code>Succeeded</code>. Else, whether the passed function returns normally
    * or completes abruptly with a different exception, this method throws <code>TestFailedException</code>.
+   * If the type parameter is left to the type inferencer, any Exception will be caught.
    *
    * <p>
    * Note that the type specified as this method's type parameter may represent any subtype of
@@ -810,7 +812,7 @@ trait Assertions extends TripleEquals  {
       }
       catch {
           case u: Throwable => {
-          if (!clazz.isAssignableFrom(u.getClass)) {
+          if (!clazz.isAssignableFrom(u.getClass) && clazz.getName != "scala.runtime.Nothing$") {
             val s = Resources.wrongException(clazz.getName, u.getClass.getName)
             throw newAssertionFailedException(Some(s), Some(u), pos, Vector.empty)
           }
