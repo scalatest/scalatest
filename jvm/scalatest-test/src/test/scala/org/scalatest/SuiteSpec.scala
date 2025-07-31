@@ -258,6 +258,13 @@ class SuiteSpec extends AnyFunSpec {
 
   describe("A Suite") {
     describe("(when its pendingUntilFixed method is invoked)") {
+      it("should throw TestPendingException if the code block throws a throwable") {
+        intercept[TestPendingException] {
+          pendingUntilFixed {
+            throw new Throwable("Testing pendingUntilFixed")
+          }
+        }
+      }
       it("should throw TestPendingException if the code block throws an exception") {
         intercept[TestPendingException] {
           pendingUntilFixed {
