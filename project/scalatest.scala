@@ -151,7 +151,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   def crossBuildTestLibraryDependencies: sbt.Def.Initialize[Seq[ModuleID]] = Def.setting {
     CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 11)) => Seq("org.scala-lang.modules" %%% "scala-parser-combinators" % "2.1.1")
+      case Some((2, 11)) => Seq("org.scala-lang.modules" %%% "scala-parser-combinators" % "2.2.0")
       case _ => Seq("org.scala-lang.modules" %%% "scala-parser-combinators" % "2.4.0")
     }
   }
