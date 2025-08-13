@@ -1036,7 +1036,7 @@ trait DottyBuild { this: BuildCommons =>
       organization := "org.scalatest",
       moduleName := "scalatest-app",
       //libraryDependencies ++= scalatestJSLibraryDependencies,
-      libraryDependencies += ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion), 
+      libraryDependencies += ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion).cross(CrossVersion.for3Use2_13), 
       // include the scalactic classes and resources in the jar
       Compile / packageBin / mappings ++= (scalacticDottyJS / Compile / packageBin / mappings).value,
       // include the scalactic sources in the source jar
