@@ -247,12 +247,7 @@ trait BuildCommons {
     )    
 
   def nativeCrossBuildLibraryDependencies = Def.setting {
-    CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 10)) => Seq.empty
-      case Some((2, 11)) => Seq(("org.scala-lang.modules" %% "scala-xml" % "1.3.0"))
-      case Some((scalaEpoch, scalaMajor)) if (scalaEpoch == 2 && scalaMajor >= 12) || scalaEpoch == 3 =>
-        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.3.0"))
-    }
+    Seq(("org.scala-lang.modules" %% "scala-xml" % "2.4.0"))
   }    
 
   def sharedTestSettingsNative: Seq[Setting[_]] =
