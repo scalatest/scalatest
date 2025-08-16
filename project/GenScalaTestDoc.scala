@@ -61,8 +61,9 @@ object GenScalaTestDoc {
   }
 
   def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
-    copyDir("jvm/core/src/main/scala/org/scalatest", "org/scalatest/", targetDir, ".scala") ++ 
+    copyDir("jvm/core/src/main/scala/org/scalatest", "org/scalatest", targetDir, ".scala") ++ 
     copyDir("jvm/diagrams/src/main/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, ".scala") ++
+    copyDir("jvm/expectations/src/main/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, ".scala") ++
     copyDir("jvm/featurespec/src/main/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, ".scala") ++
     copyDir("jvm/flatspec/src/main/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir, ".scala") ++ 
     copyDir("jvm/freespec/src/main/scala/org/scalatest/freespec", "org/scalatest/freespec", targetDir, ".scala") ++
