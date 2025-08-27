@@ -247,14 +247,14 @@ trait Expectations {
     * @return a [[Fact]] representing the result of the assertion
     */
   given Conversion[Boolean, Fact] = booleanToFact _
-
+  
   /**
-   * Implicitly converts an [[Expectation]] to an [[Assertion]].
-   *
-   * @param exp the expectation to be converted
-   * @return an [[Assertion]] representing the result of the expectation
-   */
-  implicit def convertExpectationToAssertion(exp: Expectation): Assertion = exp.toAssertion
+  * Converts an [[Expectation]] to an [[Assertion]].
+  *
+  * @param exp the expectation to be converted
+  * @return an [[Assertion]] representing the result of the expectation
+  */
+  given Conversion[Expectation, Assertion] = _.toAssertion
 }
 
 /**
