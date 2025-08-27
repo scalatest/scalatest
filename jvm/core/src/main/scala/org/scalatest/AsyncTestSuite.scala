@@ -278,9 +278,33 @@ trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thi
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Conversion[compatible.Assertion, Future[compatible.Assertion]] = Future.successful(_)
 
-
-  //DOTTY-ONLY implicit def convertTestDataAssertionFunToTestDataFutureAssertionFun(fun: TestData => compatible.Assertion): TestData => Future[compatible.Assertion] = 
-  //DOTTY-ONLY                (testData: TestData) => Future.successful(fun(testData))
+  //DOTTY-ONLY /** 
+  //DOTTY-ONLY   * Provides an implicit conversion from a synchronous test function
+  //DOTTY-ONLY   * to an asynchronous one returning a `Future`.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * This conversion allows a function of type 
+  //DOTTY-ONLY   * `TestData => compatible.Assertion` 
+  //DOTTY-ONLY   * (which produces an assertion result directly)
+  //DOTTY-ONLY   * to be used in places where a function of type 
+  //DOTTY-ONLY   * `TestData => Future[compatible.Assertion]` 
+  //DOTTY-ONLY   * is expected.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * The conversion simply wraps the result of the original function
+  //DOTTY-ONLY   * into a successfully completed `Future` using `Future.successful`.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * ==Example==
+  //DOTTY-ONLY   * {{{
+  //DOTTY-ONLY   *   val syncFun: TestData => compatible.Assertion = td => assert(td.name.nonEmpty)
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   *   // Thanks to this conversion, `syncFun` can be passed
+  //DOTTY-ONLY   *   // to APIs expecting `TestData => Future[compatible.Assertion]`.
+  //DOTTY-ONLY   *   val asyncFun: TestData => Future[compatible.Assertion] = syncFun
+  //DOTTY-ONLY   * }}}
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Conversion[TestData => compatible.Assertion, TestData => Future[compatible.Assertion]] with {
+  //DOTTY-ONLY   def apply(fun: TestData => compatible.Assertion): TestData => Future[compatible.Assertion] =
+  //DOTTY-ONLY     (testData: TestData) => Future.successful(fun(testData))
+  //DOTTY-ONLY }
 
   protected[scalatest] def parallelAsyncTestExecution: Boolean = thisAsyncTestSuite.isInstanceOf[org.scalatest.ParallelTestExecution] ||
       thisAsyncTestSuite.isInstanceOf[org.scalatest.RandomTestOrder]
