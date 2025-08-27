@@ -21,7 +21,7 @@ trait DottyBuild { this: BuildCommons =>
   lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.3.6")
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
-    scalacOptions ++= List("-language:implicitConversions", "-noindent", "-Xprint-suspension")
+    scalacOptions ++= List("-noindent", "-Xprint-suspension")
   )
 
   // https://github.com/sbt/sbt/issues/2205#issuecomment-144375501
