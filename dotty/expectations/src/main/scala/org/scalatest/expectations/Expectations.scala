@@ -227,18 +227,26 @@ trait Expectations {
   transparent inline def expectTypeError(inline code: String)(implicit prettifier: Prettifier): Fact =
     ${ CompileMacro.expectTypeErrorImpl('code, '{typeCheckErrors(code)}, 'prettifier) }
 
-  import scala.language.implicitConversions
+  /**
+    * Converts a boolean expression to a [[Fact]] for assertion purposes, which makes (x > 0) implies expect(x > -1) syntax works
+    *
+    * @param expression the boolean expression to be evaluated
+    * @param prettifier the prettifier used to pretty-print the values
+    * @param pos the source position
+    * @return a [[Fact]] representing the result of the assertion
+    */
+  inline def booleanToFact(expression: Boolean)(using prettifier: Prettifier): Fact =
+    ${ ExpectationsMacro.expect('expression)('prettifier) }
 
   /**
-   * Implicitly converts a boolean expression to a [[Fact]] for assertion purposes, which makes (x &gt; 0) implies expect(x &gt; -1) syntax works
-   *
-   * @param expression the boolean expression to be evaluated
-   * @param prettifier the prettifier used to pretty-print the values
-   * @param pos the source position
-   * @return a [[Fact]] representing the result of the assertion
-   */
-  implicit inline def booleanToFact(expression: Boolean)(implicit prettifier: Prettifier): Fact =
-    ${ ExpectationsMacro.expect('expression)('prettifier) }
+    * Conversion for a boolean expression to a [[Fact]] for assertion purposes, which makes (x > 0) implies expect(x > -1) syntax works
+    *
+    * @param expression the boolean expression to be evaluated
+    * @param prettifier the prettifier used to pretty-print the values
+    * @param pos the source position
+    * @return a [[Fact]] representing the result of the assertion
+    */
+  given Conversion[Boolean, Fact] = booleanToFact _
 
   /**
    * Implicitly converts an [[Expectation]] to an [[Assertion]].
