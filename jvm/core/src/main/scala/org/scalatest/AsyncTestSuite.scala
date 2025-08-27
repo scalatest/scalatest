@@ -17,7 +17,6 @@ package org.scalatest
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
-import scala.language.implicitConversions // To convert Assertion to Future[Assertion]
 import enablers.Futuristic
 
 /*
@@ -249,6 +248,8 @@ trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thi
       )/* fills in executionContext here */
     }
 
+  // SKIP-DOTTY-START 
+  import scala.language.implicitConversions // To convert Assertion to Future[Assertion]
   /**
    * Implicitly converts an <code>Assertion</code> to a <code>Future[Assertion]</code>.
    *
@@ -262,6 +263,21 @@ trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thi
    *     (containing the <code>Succeeded</code> singleton).
    */
   implicit def convertAssertionToFutureAssertion(assertion: compatible.Assertion): Future[compatible.Assertion] = Future.successful(assertion)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Converts an <code>Assertion</code> to a <code>Future[Assertion]</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <p>
+  //DOTTY-ONLY   * This conversion is used to allow synchronous tests to be included along with
+  //DOTTY-ONLY   * asynchronous tests in an <code>AsyncTestSuite</code>. It will be 
+  //DOTTY-ONLY   * </p>
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param assertion the <code>Assertion</code> to convert
+  //DOTTY-ONLY   * @return a <code>Future[Assertion]</code> that has already completed successfully
+  //DOTTY-ONLY   *     (containing the <code>Succeeded</code> singleton).
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Conversion[compatible.Assertion, Future[compatible.Assertion]] = Future.successful(_)
+
 
   //DOTTY-ONLY implicit def convertTestDataAssertionFunToTestDataFutureAssertionFun(fun: TestData => compatible.Assertion): TestData => Future[compatible.Assertion] = 
   //DOTTY-ONLY                (testData: TestData) => Future.successful(fun(testData))
