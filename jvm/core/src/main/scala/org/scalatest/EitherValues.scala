@@ -83,6 +83,7 @@ import org.scalatest.exceptions.TestFailedException
  */
 trait EitherValues extends Serializable {
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
 
   /**
@@ -107,6 +108,55 @@ trait EitherValues extends Serializable {
    * @param either the <code>Either</code> on which to add the <code>value</code> method
    */
   implicit def convertEitherToValuable[L, R](either: Either[L, R])(implicit pos: source.Position): EitherValuable[L, R] = new EitherValuable(either, pos)
+  // SKIP-DOTTY-END
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert <code>LeftProjection</code> to <code>LeftValuable</code>.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @param leftProj the <code>LeftProjection</code> on which to be converted to <code>LeftValuable</code>
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def convertLeftProjectionToValuable[L, R](leftProj: Either.LeftProjection[L, R])(implicit pos: source.Position): LeftValuable[L, R] = new LeftValuable(leftProj, pos)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for <code>LeftProjection</code> that add a <code>value</code> method.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension [L, R](leftProj: Either.LeftProjection[L, R]) {  
+  //DOTTY-ONLY   def value(using pos: source.Position): L = 
+  //DOTTY-ONLY     convertLeftProjectionToValuable(leftProj)(pos).value
+  //DOTTY-ONLY }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert <code>RightProjection</code> to <code>RightValuable</code>.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @param rightProj the <code>RightProjection</code> on which to be converted to <code>RightValuable</code>
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY @deprecated("The .right.value syntax on Either has been deprecated and will be removed in a future version of ScalaTest. Please use .value instead.", "3.2.3")
+  //DOTTY-ONLY def convertRightProjectionToValuable[L, R](rightProj: Either.RightProjection[L, R])(implicit pos: source.Position): RightValuable[L, R] = new RightValuable(rightProj, pos)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for <code>RightProjection</code> that add a <code>value</code> method.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension [L, R](rightProj: Either.RightProjection[L, R]) {
+  //DOTTY-ONLY   @deprecated("The .right.value syntax on Either has been deprecated and will be removed in a future version of ScalaTest. Please use .value instead.", "3.2.3")
+  //DOTTY-ONLY   def value(using pos: source.Position): R = 
+  //DOTTY-ONLY     (new RightValuable(rightProj, pos)).value
+  //DOTTY-ONLY }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert <code>Either</code> to <code>EitherValuable</code>.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @param either the <code>Either</code> on which to be converted to <code>EitherValuable</code>
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def convertEitherToValuable[L, R](either: Either[L, R])(implicit pos: source.Position): EitherValuable[L, R] = new EitherValuable(either, pos)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for <code>Either</code> that add a <code>value</code> method.
+  //DOTTY-ONLY  * This method is right biased and is the equivalent of calling <code>either.right.value</code>.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension [L, R](either: Either[L, R]) {  
+  //DOTTY-ONLY   def value(using pos: source.Position): R = 
+  //DOTTY-ONLY     (new EitherValuable(either, pos)).value
+  //DOTTY-ONLY }
 
   /**
    * Wrapper class that adds a <code>value</code> method to <code>LeftProjection</code>, allowing
