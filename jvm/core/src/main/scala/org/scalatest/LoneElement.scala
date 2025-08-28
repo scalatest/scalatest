@@ -138,7 +138,7 @@ trait LoneElement {
    * @param collection the collection on which to add the <code>loneElement</code> method
    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
-  implicit def convertToCollectionLoneElementWrapper[E, CTC[_]](collection: CTC[E])(using collecting: Collecting[E, CTC[E]], prettifier: Prettifier, pos: source.Position): LoneElementCollectionWrapper[E, CTC] = new LoneElementCollectionWrapper[E, CTC](collection, collecting, prettifier, pos)
+  implicit def convertToCollectionLoneElementWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]], prettifier: Prettifier, pos: source.Position): LoneElementCollectionWrapper[E, CTC] = new LoneElementCollectionWrapper[E, CTC](collection, collecting, prettifier, pos)
   // SKIP-DOTTY-END
 
   //DOTTY-ONLY /**
