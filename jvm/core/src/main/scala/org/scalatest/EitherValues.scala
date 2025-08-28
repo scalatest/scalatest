@@ -120,8 +120,8 @@ trait EitherValues extends Serializable {
   //DOTTY-ONLY /**
   //DOTTY-ONLY  * Extension methods for <code>LeftProjection</code> that add a <code>value</code> method.
   //DOTTY-ONLY  */
-  //DOTTY-ONLY extension [L, R](leftProj: Either.LeftProjection[L, R]) {  
-  //DOTTY-ONLY   def value(using pos: source.Position): L = 
+  //DOTTY-ONLY extension [L, R](leftProj: Either.LeftProjection[L, R])(using pos: source.Position) {  
+  //DOTTY-ONLY   def value: L = 
   //DOTTY-ONLY     convertLeftProjectionToValuable(leftProj)(pos).value
   //DOTTY-ONLY }
 
@@ -136,9 +136,9 @@ trait EitherValues extends Serializable {
   //DOTTY-ONLY /**
   //DOTTY-ONLY  * Extension methods for <code>RightProjection</code> that add a <code>value</code> method.
   //DOTTY-ONLY  */
-  //DOTTY-ONLY extension [L, R](rightProj: Either.RightProjection[L, R]) {
+  //DOTTY-ONLY extension [L, R](rightProj: Either.RightProjection[L, R])(using pos: source.Position) {
   //DOTTY-ONLY   @deprecated("The .right.value syntax on Either has been deprecated and will be removed in a future version of ScalaTest. Please use .value instead.", "3.2.3")
-  //DOTTY-ONLY   def value(using pos: source.Position): R = 
+  //DOTTY-ONLY   def value: R = 
   //DOTTY-ONLY     (new RightValuable(rightProj, pos)).value
   //DOTTY-ONLY }
 
@@ -153,8 +153,8 @@ trait EitherValues extends Serializable {
   //DOTTY-ONLY  * Extension methods for <code>Either</code> that add a <code>value</code> method.
   //DOTTY-ONLY  * This method is right biased and is the equivalent of calling <code>either.right.value</code>.
   //DOTTY-ONLY  */
-  //DOTTY-ONLY extension [L, R](either: Either[L, R]) {  
-  //DOTTY-ONLY   def value(using pos: source.Position): R = 
+  //DOTTY-ONLY extension [L, R](either: Either[L, R])(using pos: source.Position) {  
+  //DOTTY-ONLY   def value: R = 
   //DOTTY-ONLY     (new EitherValuable(either, pos)).value
   //DOTTY-ONLY }
 
