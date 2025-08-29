@@ -97,6 +97,7 @@ protected[scalatest] class MandarinOrangeStepwise(suites: Suite*) extends Stepwi
 
 // SKIP-SCALATESTJS,NATIVE-START
 import PrivateMethodTester._
+//DOTTY-ONLY import PrivateMethodTester.given_Conversion_AnyRef_Invoker
 // SKIP-SCALATESTJS,NATIVE-END
 
 class SuiteSpec extends AnyFunSpec {
