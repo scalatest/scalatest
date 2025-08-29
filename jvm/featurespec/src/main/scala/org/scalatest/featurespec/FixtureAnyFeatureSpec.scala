@@ -20,6 +20,8 @@ import org.scalatest._
 /**
  * A sister class to <code>org.scalatest.featurespec.AnyFeatureSpec</code> that can pass a fixture object into its tests.
  *
+ * The expected type of a test in this class is <code>Fixture => Any</code>.
+ *
  * <table><tr><td class="usage">
  * <strong>Recommended Usage</strong>:
  * Use class <code>FixtureAnyFeatureSpec</code> in situations for which <a href="AnyFeatureSpec.html"><code>AnyFeatureSpec</code></a>

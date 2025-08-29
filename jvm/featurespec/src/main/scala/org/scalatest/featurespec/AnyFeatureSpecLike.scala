@@ -24,6 +24,8 @@ import org.scalatest.exceptions._
  * Implementation trait for class <code>AnyFeatureSpec</code>, which represents
  * a suite of tests in which each test represents one <em>scenario</em> of a
  * <em>feature</em>.
+ *
+ * The expected type of a test in this trait is <code>Any</code>.
  * 
  * <p>
  * <a href="AnyFeatureSpec.html"><code>AnyFeatureSpec</code></a> is a class, not a

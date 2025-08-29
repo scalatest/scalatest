@@ -21,6 +21,8 @@ import org.scalatest.Suite
  * Enables testing of asynchronous code without blocking,
  * using a style consistent with traditional <code>AnyFeatureSpec</code> tests.
  *
+ * The expected type of a test in this class is <code>Future[Assertion]</code>.
+ *
  * <table><tr><td class="usage">
  * <strong>Recommended Usage</strong>:
  * <code>AsyncFeatureSpec</code> is intended to enable users of <a href="AnyFeatureSpec.html"><code>AnyFeatureSpec</code></a>

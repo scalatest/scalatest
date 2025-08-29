@@ -18,6 +18,8 @@ package org.scalatest.featurespec
 /**
  * A sister class to <code>org.scalatest.featurespec.AsyncFeatureSpec</code> that can pass a fixture object into its tests.
  *
+ * The expected type of a test in this class is <code>Fixture => Future[Assertion]</code>.
+ *
  * <table><tr><td class="usage">
  * <strong>Recommended Usage</strong>:
  * Use class <code>FixtureAsyncFeatureSpec</code> in situations for which <a href="AsyncFeatureSpec.html"><code>AsyncFeatureSpec</code></a>

@@ -29,6 +29,7 @@ object GenSafeStyles {
         .replaceAllLiterally("Resources.concurrentFixtureSafe" + traitName + "Mod", "Resources.concurrentFixture" + traitName + "Mod")
         .replaceAllLiterally("@Finders(Array(\"org.scalatest.finders.Safe" + traitName + "Finder\"))", "@Finders(Array(\"org.scalatest.finders." + traitName + "Finder\"))")
         .replaceAllLiterally("SafeTestRegistrationClosedException", "TestRegistrationClosedException")
+        .replaceAll("The expected type of a test in this (class|trait) is <code>(Fixture => )?Any</code>\\.", "The expected type of a test in this $1 is <code>$2Assertion</code>.")
 
   def translateTestLine(traitName: String)(line: String): String =
     line.replaceAllLiterally(traitName, traitName.drop(3))
