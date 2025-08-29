@@ -143,7 +143,9 @@ sealed abstract class Outcome extends Product with Serializable {
  */
 object Outcome {
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   /**
    * Enables collections of <code>Outcome</code>s to be flattened into a collections of contained exceptions.
@@ -217,6 +219,7 @@ object Outcome {
    *   org.scalatest.exceptions.TestFailedException: 26 did not equal 25)
    * </pre>
    */
+  // SKIP-DOTTY-START 
   implicit def convertOutcomeToIterator(outcome: Outcome): Iterator[Throwable] =
     outcome match {
       case Exceptional(ex) => // Return an iterator with one Throwable in it
@@ -235,6 +238,35 @@ object Outcome {
           def next(): Throwable = throw new NoSuchElementException
         }
     }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given Conversion[Outcome, Iterator[Throwable]] with {
+  //DOTTY-ONLY   def apply(outcome: Outcome): Iterator[Throwable] = convertOutcomeToIterator(outcome)
+  //DOTTY-ONLY }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Converts an <code>Outcome</code> to an iterator over its contained exceptions, if any.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @param outcome the <code>Outcome</code> to convert
+  //DOTTY-ONLY  * @return an iterator over the contained exceptions, or an empty iterator if none exist
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def convertOutcomeToIterator(outcome: Outcome): Iterator[Throwable] =
+  //DOTTY-ONLY   outcome match {
+  //DOTTY-ONLY     case Exceptional(ex) => // Return an iterator with one Throwable in it
+  //DOTTY-ONLY       new Iterator[Throwable] {
+  //DOTTY-ONLY         private var spent: Boolean = false
+  //DOTTY-ONLY         def hasNext: Boolean = !spent
+  //DOTTY-ONLY         def next(): Throwable =
+  //DOTTY-ONLY           if (!spent) {
+  //DOTTY-ONLY             spent = true
+  //DOTTY-ONLY             ex
+  //DOTTY-ONLY          } else throw new NoSuchElementException
+  //DOTTY-ONLY       }
+  //DOTTY-ONLY     case _ => // Return an empty iterator
+  //DOTTY-ONLY       new Iterator[Throwable] {
+  //DOTTY-ONLY         def hasNext: Boolean = false
+  //DOTTY-ONLY         def next(): Throwable = throw new NoSuchElementException
+  //DOTTY-ONLY       }
+  //DOTTY-ONLY   }
 }
 
 /**
