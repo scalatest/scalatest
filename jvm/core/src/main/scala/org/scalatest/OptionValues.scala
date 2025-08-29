@@ -80,6 +80,7 @@ import org.scalatest.exceptions.TestFailedException
  */
 trait OptionValues {
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
 
   /**
@@ -88,6 +89,22 @@ trait OptionValues {
    * @param opt the <code>Option</code> on which to add the <code>value</code> method
    */
   implicit def convertOptionToValuable[T](opt: Option[T])(implicit pos: source.Position): OptionValuable[T] = new OptionValuable(opt, pos)
+  // SKIP-DOTTY-END
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert <code>Option</code> to <code>OptionValuable</code>.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @param opt the <code>Option</code> to convert
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def convertOptionToValuable[T](opt: Option[T])(implicit pos: source.Position): OptionValuable[T] = new OptionValuable(opt, pos)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension method for <code>Option</code> that add a <code>value</code> method.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension [T](opt: Option[T])(using pos: source.Position) {
+  //DOTTY-ONLY   def value: T =
+  //DOTTY-ONLY     convertOptionToValuable(opt)(pos).value
+  //DOTTY-ONLY }
 
   /**
    * Wrapper class that adds a <code>value</code> method to <code>Option</code>, allowing

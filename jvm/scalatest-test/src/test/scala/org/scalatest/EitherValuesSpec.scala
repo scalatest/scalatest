@@ -19,8 +19,6 @@ package org.scalatest
 import java.io.{ObjectOutputStream, ByteArrayOutputStream}
 // SKIP-SCALATESTJS-END
 
-import org.scalatest.EitherValues._
-import org.scalatest.OptionValues._
 import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.funspec.AnyFunSpec
@@ -30,7 +28,7 @@ import org.scalatest.matchers.should.Matchers._
 import SharedHelpers.serializeRoundtrip
 // SKIP-SCALATESTJS,NATIVE-END
 
-class EitherValuesSpec extends AnyFunSpec {
+class EitherValuesSpec extends AnyFunSpec with EitherValues with OptionValues {
   describe("values on Either") {
 
     it("should return the left value inside an either if left.value is defined") {
