@@ -17,8 +17,6 @@ import com.typesafe.tools.mima.plugin.MimaKeys.{mimaPreviousArtifacts, mimaCurre
 import com.typesafe.tools.mima.core._
 import com.typesafe.tools.mima.core.ProblemFilters._
 
-import xerial.sbt.Sonatype.autoImport.sonatypePublishToBundle
-
 object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with JsBuild {
 
   // To run gentests
@@ -68,7 +66,8 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     version := releaseVersion,
     scalacOptions ++= Seq("-deprecation"), 
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-    publishTo := sonatypePublishToBundle.value, 
+    ThisBuild / version := releaseVersion, 
+    publishTo := localStaging.value, 
     publishMavenStyle := true,
     Test / publishArtifact := false,
     pomIncludeRepository := { _ => false },
@@ -105,8 +104,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
             <email>cheeseng@amaseng.com</email>
           </developer>
         </developers>
-      ),
-    credentials += getNexusCredentials,
+      )
   )
 
   def sharedSettings: Seq[Setting[_]] = 
@@ -131,9 +129,9 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   def scalaXmlDependency(theScalaVersion: String): Seq[ModuleID] =
     CrossVersion.partialVersion(theScalaVersion) match {
-      case Some((2, 11)) => Seq(("org.scala-lang.modules" %% "scala-xml" % "1.3.0"))
+      case Some((2, 11)) => Seq(("org.scala-lang.modules" %% "scala-xml" % "1.3.1"))
       case Some((scalaEpoch, scalaMajor)) if (scalaEpoch == 2 && scalaMajor >= 12) || scalaEpoch == 3 =>
-        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.1.0"))
+        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.4.0"))
     }
 
   def scalaLibraries(theScalaVersion: String) =
@@ -151,7 +149,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   def crossBuildTestLibraryDependencies: sbt.Def.Initialize[Seq[ModuleID]] = Def.setting {
     CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 11)) => Seq("org.scala-lang.modules" %%% "scala-parser-combinators" % "2.1.1")
+      case Some((2, 11)) => Seq("org.scala-lang.modules" %%% "scala-parser-combinators" % "2.2.0")
       case _ => Seq("org.scala-lang.modules" %%% "scala-parser-combinators" % "2.4.0")
     }
   }
@@ -212,7 +210,8 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         Def.task{
           GenVersions.genScalacticVersions((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
           ScalacticGenResourcesJVM.genFailureMessages((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenArrayHelper.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
+          GenArrayHelper.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenCompatibleClasses.genScalacticMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       // include the macro classes and resources in the main jar
@@ -519,7 +518,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           ScalaTestGenResourcesJVM.genResources((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++
           ScalaTestGenResourcesJVM.genFailureMessages((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
           GenVersions.genScalaTestVersions((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
-          GenCompatibleClasses.genMain((Compile / sourceManaged).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value) ++ 
+          GenCompatibleClasses.genScalaTestMain((Compile / sourceManaged).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value) ++ 
           GenFactories.genMain((Compile / sourceManaged).value / "org" / "scalatest" / "matchers" / "dsl", version.value, scalaVersion.value) ++ 
           GenMatchers.genMain((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
           GenGen.genMain((Compile / sourceManaged).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value)
@@ -625,7 +624,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
          ScalaTestGenResourcesJVM.genFailureMessages((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++ 
          GenVersions.genScalaTestVersions((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++ 
          GenGen.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
-         GenCompatibleClasses.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "tools", version.value, scalaVersion.value)
+         GenCompatibleClasses.genScalaTestMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "tools", version.value, scalaVersion.value)
        }.taskValue
       },
       scalatestDocSettings,
@@ -1682,16 +1681,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     val theScalaVersion = scalaVersion.value
 
     GenFactories.genMain(new File(mainTargetDir, "scala/genfactories"), theVersion, theScalaVersion)
-  }
-
-  val genCompatibleClasses = TaskKey[Unit]("gencompcls", "Generate Compatible Classes for Java 6 & 7")
-  val genCompatibleClassesTask = genCompatibleClasses := {
-    val mainTargetDir = (Compile / sourceManaged).value
-    val testTargetDir = (Test / sourceManaged).value
-    val theVersion = version.value
-    val theScalaVersion = scalaVersion.value
-
-    GenCompatibleClasses.genMain(new File(mainTargetDir, "scala/gencompclass"), theVersion, theScalaVersion)
   }
 
   val genVersions = TaskKey[Unit]("genversions", "Generate Versions object")

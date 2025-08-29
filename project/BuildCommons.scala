@@ -26,8 +26,8 @@ trait BuildCommons {
     )
   }    
   
-  val releaseVersion = "3.3.0-alpha.1"
-  val previousReleaseVersion = "3.2.18"
+  val releaseVersion = "3.3.0"
+  val previousReleaseVersion = "3.2.19"
 
   val plusJUnitVersion = "3.3.0.0-alpha.1"
   val plusTestNGVersion = "3.3.0.0-alpha.1"
@@ -247,12 +247,7 @@ trait BuildCommons {
     )    
 
   def nativeCrossBuildLibraryDependencies = Def.setting {
-    CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 10)) => Seq.empty
-      case Some((2, 11)) => Seq(("org.scala-lang.modules" %% "scala-xml" % "1.3.0"))
-      case Some((scalaEpoch, scalaMajor)) if (scalaEpoch == 2 && scalaMajor >= 12) || scalaEpoch == 3 =>
-        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.3.0"))
-    }
+    Seq(("org.scala-lang.modules" %% "scala-xml" % "2.4.0"))
   }    
 
   def sharedTestSettingsNative: Seq[Setting[_]] =

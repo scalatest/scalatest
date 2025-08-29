@@ -57,7 +57,8 @@ trait DottyBuild { this: BuildCommons =>
           GenScalacticDotty.genScala((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
           GenVersions.genScalacticVersions((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
           ScalacticGenResourcesJVM.genFailureMessages((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenArrayHelper.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
+          GenArrayHelper.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++ 
+          GenCompatibleClasses.genScalacticMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       Compile / resourceGenerators += Def.task {
@@ -113,7 +114,8 @@ trait DottyBuild { this: BuildCommons =>
           GenScalacticDotty.genScalaJS((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
           GenVersions.genScalacticVersions((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
           ScalacticGenResourcesJSVM.genFailureMessages((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenArrayHelper.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
+          GenArrayHelper.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++ 
+          GenCompatibleClasses.genScalacticMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       Compile / resourceGenerators += Def.task {
@@ -169,7 +171,8 @@ trait DottyBuild { this: BuildCommons =>
           GenScalacticDotty.genScalaNative((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
           GenVersions.genScalacticVersions((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
           ScalacticGenResourcesJSVM.genFailureMessages((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenArrayHelper.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
+          GenArrayHelper.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++ 
+          GenCompatibleClasses.genScalacticMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       Compile / resourceGenerators += Def.task {
@@ -235,7 +238,7 @@ trait DottyBuild { this: BuildCommons =>
       }.taskValue,
       Compile / sourceGenerators += Def.task {
         GenTable.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-        GenCompatibleClasses.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "tools", version.value, scalaVersion.value)
+        GenCompatibleClasses.genScalaTestMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "tools", version.value, scalaVersion.value)
         //GenSafeStyles.genMain((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value)
       }.taskValue,
       //scalatestJSDocTaskSetting,
@@ -290,7 +293,7 @@ trait DottyBuild { this: BuildCommons =>
       console / initialCommands := """|import org.scalatest._
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
-      libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.1.0", 
+      libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.4.0", 
       libraryDependencies ++= scalatestJSLibraryDependencies.value, 
       packageManagedSources,
       Compile / sourceGenerators += Def.task {
@@ -366,7 +369,7 @@ trait DottyBuild { this: BuildCommons =>
       console / initialCommands := """|import org.scalatest._
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
-      libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.3.0",
+      libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.4.0",
       libraryDependencies += ("org.scala-native" %%% "test-interface" % nativeVersion),
       packageManagedSources,
       Compile / sourceGenerators += Def.task {
@@ -1033,7 +1036,7 @@ trait DottyBuild { this: BuildCommons =>
       organization := "org.scalatest",
       moduleName := "scalatest-app",
       //libraryDependencies ++= scalatestJSLibraryDependencies,
-      libraryDependencies += ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion), 
+      libraryDependencies += ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion).cross(CrossVersion.for3Use2_13), 
       // include the scalactic classes and resources in the jar
       Compile / packageBin / mappings ++= (scalacticDottyJS / Compile / packageBin / mappings).value,
       // include the scalactic sources in the source jar

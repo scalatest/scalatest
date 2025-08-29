@@ -63,7 +63,8 @@ trait JsBuild { this: BuildCommons =>
         Def.task {
           GenScalacticJS.genScala((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
           ScalacticGenResourcesJSVM.genFailureMessages((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenArrayHelper.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
+          GenArrayHelper.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++ 
+          GenCompatibleClasses.genScalacticMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       Compile / resourceGenerators += {

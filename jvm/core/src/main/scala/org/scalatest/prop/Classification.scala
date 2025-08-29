@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2024 Artima, Inc.
+ * Copyright 2001-2025 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,34 +18,30 @@ package org.scalatest.prop
 import org.scalactic.anyvals.{PosInt,PosZInt}
 
 /**
-  * The results of a call to [[CommonGenerators.classify]].
+  * Represents the result of [[CommonGenerators.classify]], showing how generated values are distributed into buckets.
   *
-  * The `classify` function takes a [[PartialFunction]] and a [[Generator]], and organizes the values created
-  * by the Generator based on the PartialFunction. It returns this data structure, which describes
-  * how many of the values fall into each bucket.
+  * The `classify` function organizes values from a [[Generator]] using a [[PartialFunction]], counting how many fall into each bucket.
+  * If some values are not covered by the PartialFunction, [[totals]] will not include them, and the sum of [[totals]] may be less than [[totalGenerated]].
   *
-  * If the PartialFunction did not cover all the possible generated values, then the [[totals]] field will
-  * not include the others, and the numbers in [[totals]] will add up to less than [[totalGenerated]].
-  *
-  * @param totalGenerated How many values were actually created by the Generator overall.
-  * @param totals For each of the buckets defined in the PartialFunction, how many values belonged in each one.
+  * @param totalGenerated Total number of values generated.
+  * @param totals Map of bucket name to count of values in that bucket.
   */
 case class Classification(val totalGenerated: PosInt, val totals: Map[String, PosZInt]) {
 
   /**
-    * For each bucket, what fraction of the generated values fell into it?
+    * Returns the fraction of generated values in each bucket.
     *
-    * @return The exact proportion of the values fell into each bucket.
+    * @return Map of bucket name to proportion (0.0 to 1.0).
     */
   def portions: Map[String, Double] =
     totals.mapValues(count => count.toDouble / totalGenerated.toDouble).toMap
 
   /**
-    * For each bucket, what percentage of the generated values fell into it?
+    * Returns the percentage of generated values in each bucket (rounded to integer).
     *
-    * This is essentially a lower-precision but easier-to-understand variant of [[portions]].
+    * Easier to interpret than [[portions]].
     *
-    * @return The approximate proportion of the values fell into each bucket.
+    * @return Map of bucket name to percentage (0 to 100).
     */
   def percentages: Map[String, PosZInt] =
     (totals mapValues { count =>

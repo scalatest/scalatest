@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2024 Artima, Inc.
+ * Copyright 2001-2025 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,6 +89,19 @@ object BooleanMacro {
         let(Symbol.spliceOwner, lhs) { left =>
           let(Symbol.spliceOwner, rhs) { right =>
             let(Symbol.spliceOwner, qual.appliedTo(left).select(sel.symbol).appliedTo(right)) { result =>
+              val l = left.asExpr
+              val r = right.asExpr
+              val b = result.asExprOf[Boolean]
+              val code = '{ Bool.binaryMacroBool($l, ${ Expr(op) }, $r, $b, $prettifier) }
+              code.asTerm
+            }
+          }
+        }.asExprOf[Bool]
+
+      case Apply(Apply(TypeApply(sel @ Select(lhs, op @ ("===" | "!==")), targs), rhs :: Nil), implicitArgs) =>
+        let(Symbol.spliceOwner, lhs) { left =>
+          let(Symbol.spliceOwner, rhs) { right =>
+            let(Symbol.spliceOwner, lhs.select(sel.symbol).appliedToTypeTrees(targs).appliedTo(right).appliedToArgs(implicitArgs)) { result =>
               val l = left.asExpr
               val r = right.asExpr
               val b = result.asExprOf[Boolean]

@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2024 Artima, Inc.
+ * Copyright 2001-2025 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -656,10 +656,6 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
-
-    // TripleEquals tests
-    // currently these tests are not calling TripleEquals's === and !== yet, import org.scalactic.TripleEquals does not seems to work
-    // Should make Assertions to extend TripleEquals instead of LegacyTripleEquals instead.
 
     it("should do nothing when is used to check a === 3") {
       assert(a === 3)
@@ -2142,10 +2138,6 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
-
-    // TripleEquals tests
-    // currently these tests are not calling TripleEquals's === and !== yet, import org.scalactic.TripleEquals does not seems to work
-    // Should make Assertions to extend TripleEquals instead of LegacyTripleEquals instead.
 
     it("should do nothing when is used to check a === 3") {
       assert(a === 3, "dude")
