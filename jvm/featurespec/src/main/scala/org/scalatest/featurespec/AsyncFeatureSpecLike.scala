@@ -31,6 +31,8 @@ import scala.util.Try
  * a suite of tests in which each test represents one <em>scenario</em> of a
  * <em>feature</em>.
  *
+ * The expected type of a test in this trait is <code>Future[Assertion]</code>.
+ *
  * <p>
  * <a href="AsyncFeatureSpec.html"><code>AsyncFeatureSpec</code></a> is a class, not a
  * trait, to minimize compile time given there is a slight compiler overhead to
