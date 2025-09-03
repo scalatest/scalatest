@@ -459,7 +459,7 @@ object Eventually extends Eventually {
   //DOTTY-ONLY def callRetry[T](retrying: Retrying[T], timeout: Span, interval: Span, pos: source.Position, fun: => T): T = 
   //DOTTY-ONLY   retrying.retry(timeout, interval, pos)(fun)
 
-  //DOTTY-ONLY import scala.quoted._
+  //DOTTY-ONLY import scala.quoted.*
   //DOTTY-ONLY private[scalatest] def eventuallyMacro[T](timeout: Expr[Span], interval: Expr[Span], fun: Expr[T], retrying: Expr[Retrying[T]])(using quotes: Quotes, typeT: Type[T]): Expr[T] = {
   //DOTTY-ONLY   source.Position.withPosition[T]('{(pos: source.Position) => callRetry(${retrying}, ${timeout}, ${interval}, pos, ${fun}) })
   //DOTTY-ONLY }

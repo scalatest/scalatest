@@ -17,7 +17,7 @@ package org.scalatest.matchers
 
 import org.scalatest.Resources
 import org.scalatest.matchers.dsl.ResultOfNotWordForAny
-import scala.quoted._
+import scala.quoted.*
 
 private[scalatest] object MatchPatternMacro {
 
@@ -25,7 +25,7 @@ private[scalatest] object MatchPatternMacro {
 //    * Check the case definition AST, raise an compiler error if the body is not empty.
 //    */
    def checkCaseDefinitions(expr: Expr[PartialFunction[Matchable, _]])(using quotes: Quotes): Unit = {
-     import quotes.reflect._
+     import quotes.reflect.*
      
      // Check if it is a default case
      def defaultCase(t: Tree): Boolean =
@@ -52,7 +52,7 @@ private[scalatest] object MatchPatternMacro {
 
   // Do checking on case definition and generate AST that returns a match pattern matcher
   def matchPatternMatcher(right: Expr[PartialFunction[Matchable, _]])(using Quotes): Expr[Matcher[Any]] = {
-    import quotes.reflect._
+    import quotes.reflect.*
     
     checkCaseDefinitions(right)
 
@@ -60,7 +60,7 @@ private[scalatest] object MatchPatternMacro {
   }
 
   def notMatchPatternMatcher(right: Expr[PartialFunction[Matchable, _]])(using Quotes): Expr[Matcher[Any]] = {
-    import quotes.reflect._
+    import quotes.reflect.*
     
     checkCaseDefinitions(right)
 

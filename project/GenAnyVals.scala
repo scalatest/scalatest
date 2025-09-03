@@ -32,7 +32,7 @@ object GenAnyVals {
              |  def apply(value: Expr[$primitiveTypeName])(using Quotes): Expr[$typeName] = {
              |    val notValidMsg = Resources.notValid$typeName
              |    val notLiteralMsg = Resources.notLiteral$typeName
-             |    import quotes.reflect._
+             |    import quotes.reflect.*
              |    ensureValid${primitiveTypeName}Literal(value, notValidMsg, notLiteralMsg)(isValid)
              |    '{ $typeName.ensuringValid($$value) }
              |  }
@@ -650,7 +650,7 @@ object GenAnyVals {
 
   def importsForMacro(dotty: Boolean): String =
     if (dotty)
-      "import scala.quoted._"
+      "import scala.quoted.*"
     else
       "import scala.reflect.macros.whitebox.Context"
 

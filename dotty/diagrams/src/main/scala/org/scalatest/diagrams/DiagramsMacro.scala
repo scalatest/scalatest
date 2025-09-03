@@ -16,14 +16,14 @@
 package org.scalatest.diagrams
 
 import org.scalactic._
-import scala.quoted._
+import scala.quoted.*
 import org.scalatest.Assertions
 import org.scalatest.compatible.Assertion
 
 object DiagramsMacro {
   // Transform the input expression by parsing out the anchor and generate expression that can support diagram rendering
   def parse(using Quotes)(expr: quotes.reflect.Term): quotes.reflect.Term = {
-    import quotes.reflect._
+    import quotes.reflect.*
     import util._
     import ValDef.let
 
@@ -238,7 +238,7 @@ object DiagramsMacro {
     helper: Expr[(DiagrammedExpr[Boolean], Any, String, source.Position) => Assertion],
     condition: Expr[Boolean], pos: Expr[source.Position], clue: Expr[Any], sourceText: String
   )(using Quotes): Expr[Assertion] = {
-    import quotes.reflect._
+    import quotes.reflect.*
     val diagExpr = parse(condition.asTerm.underlyingArgument).asExprOf[DiagrammedExpr[Boolean]]
     '{ $helper($diagExpr, $clue, ${Expr(sourceText)}, $pos) }
   }

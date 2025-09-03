@@ -15,8 +15,8 @@
  */
 package org.scalatest
 
-import org.scalactic._
-import scala.quoted._
+import org.scalactic.*
+import scala.quoted.*
 import org.scalatest.compatible.Assertion
 
 /**

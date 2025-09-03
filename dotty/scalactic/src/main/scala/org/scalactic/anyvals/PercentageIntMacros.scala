@@ -15,9 +15,9 @@
 */
 package org.scalactic.anyvals
 
-import scala.quoted._
+import scala.quoted.*
 
-import CompileTimeAssertions._
+import CompileTimeAssertions.*
 
 object PercentageIntMacro {
 

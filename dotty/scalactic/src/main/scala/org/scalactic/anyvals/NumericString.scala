@@ -51,8 +51,8 @@ import org.scalactic.{Or, Good, Bad}
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; import anyvals._
- * import anyvals._
+ * scala&gt; import anyvals.*
+ * import anyvals.*
  *
  * scala&gt; NumericString("42")
  * res0: org.scalactic.anyvals.NumericString = NumericString(42)
@@ -1744,7 +1744,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *  in the order they appear.
    */
   def r(groupNames: String*): Regex =
-    value.r(groupNames:_*)
+    value.r(groupNames*)
 
   /** You can follow a `NumericString` with `.r`, turning it
    * into a `Regex`.

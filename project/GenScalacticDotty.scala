@@ -28,7 +28,9 @@ object GenScalacticDotty {
     else if (line.trim.startsWith("//DOTTY-ONLY "))
       line.substring(line.indexOf("//DOTTY-ONLY ") + 13)
     else
-      line
+      line.replaceAll("""import ([\w\.]+)\._""", """import $1.*""")
+          .replace(": _*", "*")
+          .replace("uncheckedVariance => uV", "uncheckedVariance as uV")
 
   private def rewrite213(line: String): String =
     line.replaceAllLiterally("final def startsWith(that: GenSeq[Char]): Boolean = theString.startsWith(that)", "final def startsWith(that: GenSeq[Char]): Boolean = theString.startsWith(that.mkString)")

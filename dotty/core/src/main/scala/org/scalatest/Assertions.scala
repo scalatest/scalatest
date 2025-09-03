@@ -15,8 +15,8 @@
  */
 package org.scalatest
 
-import org.scalactic._
-import Requirements._
+import org.scalactic.*
+import Requirements.*
 
 import scala.reflect.ClassTag
 import Assertions.NormalResult
@@ -26,7 +26,7 @@ import org.scalatest.exceptions.StackDepthException.toExceptionFunction
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
 import org.scalactic.anyvals.NonEmptyArray
-import scala.quoted._
+import scala.quoted.*
 import scala.compiletime.testing.{typeChecks, typeCheckErrors}
 import org.scalatest.compatible.Assertion
 import ArrayHelper.deep
@@ -73,7 +73,7 @@ import ArrayHelper.deep
  * For example, given the same code as above but using ScalaTest assertions:
  *
  * <pre class="stHighlight">
- * import org.scalatest.Assertions._
+ * import org.scalatest.Assertions.*
  * val left = 2
  * val right = 1
  * assert(left == right)
@@ -893,11 +893,11 @@ trait Assertions extends TripleEquals  {
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; import org.scalatest._
-   * import org.scalatest._
+   * scala&gt; import org.scalatest.*
+   * import org.scalatest.*
    *
-   * scala&gt; import Matchers._
-   * import Matchers._
+   * scala&gt; import Matchers.*
+   * import Matchers.*
    *
    * scala&gt; val x = 12
    * a: Int = 12
@@ -1392,8 +1392,8 @@ trait Assertions extends TripleEquals  {
  * Type in expressions to have them evaluated.
  * Type :help for more information.
  * &nbsp;
- * scala&gt; import org.scalatest.Assertions._
- * import org.scalatest.Assertions._
+ * scala&gt; import org.scalatest.Assertions.*
+ * import org.scalatest.Assertions.*
  * &nbsp;
  * scala&gt; assert(1 === 2)
  * org.scalatest.TestFailedException: 1 did not equal 2
@@ -1424,7 +1424,7 @@ trait Assertions extends TripleEquals  {
  * @author Bill Venners
  */
 object Assertions extends Assertions {
-  import scala.quoted._
+  import scala.quoted.*
 
   def stripMarginImpl(x: Expr[String], c: Expr[Char])(using Quotes): Expr[String] = x.value match {
     case Some(str) => Expr(new scala.collection.immutable.StringOps(str).stripMargin(c.value.getOrElse('|')))

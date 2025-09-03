@@ -24,6 +24,14 @@ object GenTable {
 
   val generatorSource = new File("GenTable.scala")
 
+  def replaceForScala3(content: String, scalaVersion: String): String = 
+    if (scalaVersion.startsWith("3."))
+      content.replaceAll("""import ([\w\.]+)\._""", """import $1.*""")
+             .replace(": _*", "*")
+             .replaceAll("""Resources\.(\w+) _,""", """Resources.$1,""")
+    else
+      content        
+
 val scaladocForTableFor1VerbatimString = """
 /**
  * A table with 1 column.
@@ -1381,12 +1389,15 @@ $columnsOfTwos$
         val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
         st.setAttribute("year", thisYear);
         bw.write(st.toString)
-        val imports = new org.antlr.stringtemplate.StringTemplate(importsForTableForNTemplate)
+        val imports = new org.antlr.stringtemplate.StringTemplate(replaceForScala3(importsForTableForNTemplate, scalaVersion))
         bw.write(imports.toString)
         val alpha = "abcdefghijklmnopqrstuv"
         for (i <- 1 to 22) {
           val st = new org.antlr.stringtemplate.StringTemplate(
-            (if (i == 1) scaladocForTableFor1VerbatimString else tableScaladocTemplate) + tableTemplate(scalaVersion)
+            replaceForScala3(
+              (if (i == 1) scaladocForTableFor1VerbatimString else tableScaladocTemplate) + tableTemplate(scalaVersion), 
+              scalaVersion
+            )  
           )
           val alphaLower = alpha.take(i).mkString(", ")
           val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
@@ -1428,7 +1439,7 @@ $columnsOfTwos$
     Seq(targetFile)
   }
 
-  def genPropertyChecks(targetDir: File): Seq[File] = {
+  def genPropertyChecks(targetDir: File, scalaVersion: String): Seq[File] = {
     val filename = "TableDrivenPropertyChecks.scala"
     val targetFile = new File(targetDir, filename)
 
@@ -1439,10 +1450,10 @@ $columnsOfTwos$
         val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
         st.setAttribute("year", thisYear);
         bw.write(st.toString)
-        bw.write(propertyCheckPreamble)
+        bw.write(replaceForScala3(propertyCheckPreamble, scalaVersion))
         val alpha = "abcdefghijklmnopqrstuv"
         for (i <- 1 to 22) {
-          val st = new org.antlr.stringtemplate.StringTemplate(propertyCheckForAllTemplate)
+          val st = new org.antlr.stringtemplate.StringTemplate(replaceForScala3(propertyCheckForAllTemplate, scalaVersion))
           val alphaLower = alpha.take(i).mkString(", ")
           val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
           val strings = List.fill(i)("String").mkString(", ")
@@ -1495,7 +1506,7 @@ $columnsOfTwos$
 
   }
 
-  def genTables(targetDir: File): Seq[File] = {
+  def genTables(targetDir: File, scalaVersion: String): Seq[File] = {
 
     val targetFile = new File(targetDir, "Tables.scala")
 
@@ -1509,7 +1520,7 @@ $columnsOfTwos$
         bw.write(tableObjectPreamble)
         val alpha = "abcdefghijklmnopqrstuv"
         for (i <- 1 to 22) {
-          val st = new org.antlr.stringtemplate.StringTemplate(tableObjectApplyTemplate)
+          val st = new org.antlr.stringtemplate.StringTemplate(replaceForScala3(tableObjectApplyTemplate, scalaVersion))
           val alphaLower = alpha.take(i).mkString(", ")
           val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
           val strings = List.fill(i)("String").mkString(", ")
@@ -1533,7 +1544,7 @@ $columnsOfTwos$
     Seq(targetFile)
   }
 
-  def genTableAsserting(targetDir: File, scalaJS: Boolean): Seq[File] = {
+  def genTableAsserting(targetDir: File, scalaJS: Boolean, scalaVersion: String): Seq[File] = {
 
     val doForAllMethodTemplate: String =
       """/**
@@ -1552,7 +1563,7 @@ $columnsOfTwos$
     def doForAllMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
 
-      val st = new org.antlr.stringtemplate.StringTemplate(doForAllMethodTemplate)
+      val st = new org.antlr.stringtemplate.StringTemplate(replaceForScala3(doForAllMethodTemplate, scalaVersion))
       val alphaLower = alpha.take(i).mkString(", ")
       val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
       val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
@@ -1763,7 +1774,7 @@ $columnsOfTwos$
 
       val alpha = "abcdefghijklmnopqrstuv"
 
-      val st = new org.antlr.stringtemplate.StringTemplate(implTemplate)
+      val st = new org.antlr.stringtemplate.StringTemplate(replaceForScala3(implTemplate, scalaVersion))
       val alphaLower = alpha.take(i).mkString(", ")
       val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
       val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
@@ -1812,7 +1823,7 @@ $columnsOfTwos$
     def doForEveryMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
 
-      val st = new org.antlr.stringtemplate.StringTemplate(doForEveryMethodTemplate)
+      val st = new org.antlr.stringtemplate.StringTemplate(replaceForScala3(doForEveryMethodTemplate, scalaVersion))
       val alphaLower = alpha.take(i).mkString(", ")
       val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
       val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
@@ -1864,7 +1875,7 @@ $columnsOfTwos$
 
       val alpha = "abcdefghijklmnopqrstuv"
 
-      val st = new org.antlr.stringtemplate.StringTemplate(forEveryImplTemplate)
+      val st = new org.antlr.stringtemplate.StringTemplate(replaceForScala3(forEveryImplTemplate, scalaVersion))
       val alphaLower = alpha.take(i).mkString(", ")
       val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
       val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
@@ -1918,7 +1929,7 @@ $columnsOfTwos$
     def doExistsMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
 
-      val st = new org.antlr.stringtemplate.StringTemplate(doExistsMethodTemplate)
+      val st = new org.antlr.stringtemplate.StringTemplate(replaceForScala3(doExistsMethodTemplate, scalaVersion))
       val alphaLower = alpha.take(i).mkString(", ")
       val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
       val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
@@ -1970,7 +1981,7 @@ $columnsOfTwos$
 
       val alpha = "abcdefghijklmnopqrstuv"
 
-      val st = new org.antlr.stringtemplate.StringTemplate(forEveryImplTemplate)
+      val st = new org.antlr.stringtemplate.StringTemplate(replaceForScala3(forEveryImplTemplate, scalaVersion))
       val alphaLower = alpha.take(i).mkString(", ")
       val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
       val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
@@ -2508,7 +2519,7 @@ $columnsOfTwos$
         val existsMethods = (for (i <- 1 to 22) yield doExistsMethod(i)).mkString("\n\n")
         val existsMethodImpls = (for (i <- 1 to 22) yield doExistsMethodImpl(i, doExistsMethodTemplate)).mkString("\n\n")
         val asyncExistsMethodImpls = (for (i <- 1 to 22) yield doExistsMethodImpl(i, asyncDoExistsMethodTemplate)).mkString("\n\n")
-        val st = new org.antlr.stringtemplate.StringTemplate(mainTemplate)
+        val st = new org.antlr.stringtemplate.StringTemplate(replaceForScala3(mainTemplate, scalaVersion))
         st.setAttribute("forAllMethods", forAllMethods)
         st.setAttribute("forAllMethodImpls", forAllMethodImpls)
         st.setAttribute("asyncForAllMethodImpls", asyncForAllMethodImpls)
@@ -2651,7 +2662,6 @@ $columnsOfTwos$
 
   def genMain(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
-    println("###########################dir: " + dir.getAbsolutePath)
     val propDir = new File(dir, "prop")
     propDir.mkdirs()
 
@@ -2659,17 +2669,17 @@ $columnsOfTwos$
     enablersDir.mkdirs()
 
     genTableForNs(propDir, scalaVersion, false) ++
-    genPropertyChecks(propDir) ++
-    genTables(propDir) ++
-    genTableAsserting(enablersDir, false)
+    genPropertyChecks(propDir, scalaVersion) ++
+    genTables(propDir, scalaVersion) ++
+    genTableAsserting(enablersDir, false, scalaVersion)
   }
 
   def genMainForScalaJS(dir: File, version: String, scalaVersion: String): Seq[File] = {
     dir.mkdirs()
     genTableForNs(dir, scalaVersion, true) ++
-    genPropertyChecks(dir) ++
-    genTables(dir) ++
-    genTableAsserting(dir, true)
+    genPropertyChecks(dir, scalaVersion) ++
+    genTables(dir, scalaVersion) ++
+    genTableAsserting(dir, true, scalaVersion)
   }
 
   def genTest(dir: File, version: String, scalaVersion: String): Seq[File] = {

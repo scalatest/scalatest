@@ -176,7 +176,14 @@ object GenColCompatHelper {
           |
         """.stripMargin
     Seq(
-      writeFile(new File(targetDir,"ColCompatHelper.scala"), content)
+      writeFile(
+        new File(targetDir,"ColCompatHelper.scala"), 
+        if (scalaVersion.startsWith("3."))
+          content.replace(": _*", "*")
+                 .replace("uncheckedVariance => uV", "uncheckedVariance as uV")
+        else
+          content
+      )
     )
   }
 

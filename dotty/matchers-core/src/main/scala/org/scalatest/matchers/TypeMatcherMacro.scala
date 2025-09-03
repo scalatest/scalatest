@@ -21,13 +21,13 @@ import org.scalatest.matchers.dsl.{ResultOfAnTypeInvocation, MatcherWords, Resul
 // import org.scalactic.Prettifier
 // import org.scalatest.{UnquotedString, Resources, Suite, FailureMessages, Assertions}
 
-import scala.quoted._
+import scala.quoted.*
 
 object TypeMatcherMacro {
 
 //   // Check that no type parameter is specified, if any does, give a friendly compiler warning.
   def checkTypeParameter(using Quotes)(tree: quotes.reflect.Term, methodName: String): Unit = {
-    import quotes.reflect._
+    import quotes.reflect.*
 
     // TODO#Macros: Select lack unapply
     /*
@@ -49,7 +49,7 @@ object TypeMatcherMacro {
 
   // Do checking on type parameter and generate AST that create a 'a type' matcher
   def aTypeMatcherImpl(aType: Expr[ResultOfATypeInvocation[_]])(using Quotes): Expr[Matcher[Any]] = {
-    import quotes.reflect._
+    import quotes.reflect.*
 
     // check type parameter
     checkTypeParameter(aType.asTerm, "a")
@@ -64,7 +64,7 @@ object TypeMatcherMacro {
 
   // Do checking on type parameter and generate AST that create a 'an type' matcher
   def anTypeMatcherImpl(anType: Expr[ResultOfAnTypeInvocation[_]])(using Quotes): Expr[Matcher[Any]] = {
-    import quotes.reflect._
+    import quotes.reflect.*
 
     // check type parameter
     checkTypeParameter(anType.asTerm, "an")
@@ -79,7 +79,7 @@ object TypeMatcherMacro {
 
   // Do checking on type parameter and generate AST that create a negated 'a type' matcher
   def notATypeMatcher(aType: Expr[ResultOfATypeInvocation[_]])(using Quotes): Expr[Matcher[Any]] = {
-    import quotes.reflect._
+    import quotes.reflect.*
 
     // check type parameter
     checkTypeParameter(aType.asTerm, "a")
@@ -94,7 +94,7 @@ object TypeMatcherMacro {
 
   // Do checking on type parameter and generate AST that create a negated 'an type' matcher
   def notAnTypeMatcher(anType: Expr[ResultOfAnTypeInvocation[_]])(using Quotes): Expr[Matcher[Any]] = {
-    import quotes.reflect._
+    import quotes.reflect.*
 
     // check type parameter
     checkTypeParameter(anType.asTerm, "an")
@@ -206,7 +206,7 @@ object TypeMatcherMacro {
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.assertATypeShouldBeTrue
   def assertATypeShouldBeTrueImpl(self: Expr[ResultOfNotWordForAny[_]], aType: Expr[ResultOfATypeInvocation[_]])(using Quotes): Expr[org.scalatest.Assertion] = {
-    import quotes.reflect._
+    import quotes.reflect.*
     checkTypeParameter(aType.asTerm, "a")
     '{
       TypeMatcherHelper.assertATypeShouldBeTrue(($self).left, $aType, ($self).shouldBeTrue, ($self).prettifier, ($self).pos)
@@ -215,7 +215,7 @@ object TypeMatcherMacro {
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.assertAnTypeShouldBeTrue
   def assertAnTypeShouldBeTrueImpl(self: Expr[ResultOfNotWordForAny[_]], anType: Expr[ResultOfAnTypeInvocation[_]])(using Quotes): Expr[org.scalatest.Assertion] = {
-    import quotes.reflect._
+    import quotes.reflect.*
     checkTypeParameter(anType.asTerm, "an")
     '{
       TypeMatcherHelper.assertAnTypeShouldBeTrue(($self).left, $anType, ($self).shouldBeTrue, ($self).prettifier, ($self).pos)

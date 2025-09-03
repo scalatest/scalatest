@@ -21,8 +21,8 @@ import Suite.indentLines
 import enablers.Collecting
 import scala.language.higherKinds
 import enablers.InspectorAsserting
-import org.scalactic._
-import org.scalatest.exceptions._
+import org.scalactic.*
+import org.scalatest.exceptions.*
 
 /**
  * Provides nestable <em>inspector methods</em> (or just <em>inspectors</em>) that enable assertions to be made about collections.
@@ -33,14 +33,14 @@ import org.scalatest.exceptions._
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; import org.scalatest._
- * import org.scalatest._
+ * scala&gt; import org.scalatest.*
+ * import org.scalatest.*
  *
- * scala&gt; import Assertions._
- * import Assertions._
+ * scala&gt; import Assertions.*
+ * import Assertions.*
  *
- * scala&gt; import Inspectors._
- * import Inspectors._
+ * scala&gt; import Inspectors.*
+ * import Inspectors.*
  *
  * scala&gt; val xs = List(1, 2, 3, 4, 5)
  * xs: List[Int] = List(1, 2, 3, 4, 5)
@@ -53,8 +53,8 @@ import org.scalatest.exceptions._
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; import Matchers._
- * import Matchers._
+ * scala&gt; import Matchers.*
+ * import Matchers.*
  *
  * scala&gt; forAll (xs) { x =&gt; x should be &gt; 0 }
  * </pre>
@@ -172,19 +172,19 @@ import org.scalatest.exceptions._
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; import org.scalatest._
- * import org.scalatest._
+ * scala&gt; import org.scalatest.*
+ * import org.scalatest.*
  * 
- * scala&gt; import Inspectors._
- * import Inspectors._
+ * scala&gt; import Inspectors.*
+ * import Inspectors.*
  * 
- * scala&gt; import Matchers._
- * import Matchers._
+ * scala&gt; import Matchers.*
+ * import Matchers.*
  * 
  * scala&gt; forAll (Array(1, 2, 3)) { e =&gt; e should be &lt; 5 }
  * 
- * scala&gt; import collection.JavaConverters._
- * import collection.JavaConverters._
+ * scala&gt; import collection.JavaConverters.*
+ * import collection.JavaConverters.*
  * 
  * scala&gt; val js = List(1, 2, 3).asJava
  * js: java.util.List[Int] = [1, 2, 3]
@@ -638,7 +638,7 @@ trait Inspectors {
  */
 object Inspectors extends Inspectors {
 
-  import scala.quoted._
+  import scala.quoted.*
 
   def forAllImpl[E, C[_], ASSERTION, RESULT](xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
     asserting.forAll(collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)

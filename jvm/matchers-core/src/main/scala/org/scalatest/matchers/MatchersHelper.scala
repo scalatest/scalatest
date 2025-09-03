@@ -356,7 +356,7 @@ private[scalatest] object MatchersHelper {
     }
   }
 
-  //DOTTY-ONLY import scala.quoted._
+  //DOTTY-ONLY import scala.quoted.*
   //DOTTY-ONLY def checkThrownByMacro(clazz: Expr[Class[_]], thrownBy: Expr[ResultOfThrownByApplication])(using quotes: Quotes): Expr[Assertion] = {
   //DOTTY-ONLY   source.Position.withPosition[Assertion]('{(pos: source.Position) => checkThrownBy(${clazz}, ${thrownBy}, pos) })
   //DOTTY-ONLY }

@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-import scala.quoted._
+import scala.quoted.*
 
 /**
  * Case class that stores the name and value of a variable or expression.
@@ -48,8 +48,8 @@ final case class Snapshot(name: String, value: Any) {
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; import Snapshots._
- * import Snapshots._
+ * scala&gt; import Snapshots.*
+ * import Snapshots.*
  *
  * scala&gt; snap(a, b, c, d, e, f)
  * res3: org.scalactic.SnapshotSeq = a was 1, b was 2, c was 3, d was 4, e was null, f was null
@@ -192,7 +192,7 @@ final class SnapshotSeq(underlying: collection.immutable.IndexedSeq[Snapshot]) e
 }
 
 object SnapshotSeq {
-  def apply(snapshots: Snapshot*): SnapshotSeq = new SnapshotSeq(Vector(snapshots: _*))
+  def apply(snapshots: Snapshot*): SnapshotSeq = new SnapshotSeq(Vector(snapshots*))
 }
 
 /**
@@ -205,8 +205,8 @@ object SnapshotSeq {
  * Welcome to Scala 2.13.6 (OpenJDK 64-Bit Server VM, Java yyy).
  * Type in expressions for evaluation. Or try :help.
  * &nbsp;
- * scala&gt; import org.scalactic.Snapshots._
- * import org.scalatest.Snapshots._
+ * scala&gt; import org.scalactic.Snapshots.*
+ * import org.scalatest.Snapshots.*
  * &nbsp;
  * scala&gt; val a = 8
  * a: Int = 8
@@ -220,7 +220,7 @@ object Snapshots extends Snapshots
 object SnapshotsMacro {
 
   def snap(expressions: Expr[Seq[Any]])(using Quotes): Expr[SnapshotSeq] = {
-    import quotes.reflect._
+    import quotes.reflect.*
 
     def liftSeq(args: Seq[Expr[Snapshot]]): Expr[Seq[Snapshot]] = args match {
       case x :: xs  => '{ ($x) +: ${ liftSeq(xs) }  }
@@ -238,6 +238,6 @@ object SnapshotsMacro {
     }
 
     val argumentsS: Expr[Seq[Snapshot]] = liftSeq(snapshots)
-    '{ SnapshotSeq($argumentsS : _*) }
+    '{ SnapshotSeq($argumentsS*) }
   }
 }

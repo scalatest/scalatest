@@ -15,8 +15,8 @@
  */
 package org.scalatest.enablers
 
-import org.scalatest._
-import org.scalatest.exceptions._
+import org.scalatest.*
+import org.scalatest.exceptions.*
 import org.scalactic.{source, Prettifier}
 import scala.annotation.tailrec
 import org.scalactic.ColCompatHelper.Iterable
@@ -84,7 +84,7 @@ abstract class UnitInspectorAsserting {
    */
   abstract class InspectorAssertingImpl[T, R] extends InspectorAsserting[T, R] {
 
-    import InspectorAsserting._
+    import InspectorAsserting.*
 
     // Inherit Scaladoc for now. See later if can just make this implementation class private[scalatest].
     def forAll[E](xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): R = {

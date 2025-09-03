@@ -1,6 +1,6 @@
 package org.scalatest
 
-import scala.quoted._
+import scala.quoted.*
 
 private[scalatest] trait LineNumberHelper {
   inline def thisLineNumber = ${ LineNumberMacro.thisLineNumberImpl }
