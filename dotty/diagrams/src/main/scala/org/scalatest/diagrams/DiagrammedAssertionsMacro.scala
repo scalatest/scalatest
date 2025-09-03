@@ -15,7 +15,7 @@
  */
 package org.scalatest.diagrams
 
-import scala.quoted._
+import scala.quoted.*
 import org.scalactic._
 import org.scalatest._
 

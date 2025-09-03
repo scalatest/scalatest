@@ -293,7 +293,7 @@ object TimeLimits extends TimeLimits {
     )
   }
 
-  //DOTTY-ONLY import scala.quoted._
+  //DOTTY-ONLY import scala.quoted.*
 
   //DOTTY-ONLY private[concurrent] def failAfterMacro[T](timeout: Expr[Span], signaler: Expr[Signaler], prettifier: Expr[Prettifier], fun: Expr[T], timed: Expr[Timed[T]])(using quotes: Quotes, typeT: Type[T]): Expr[T] = {
   //DOTTY-ONLY   source.Position.withPosition[T]('{(pos: source.Position) => failAfterImpl(${timeout}, ${signaler}, ${prettifier}, Some(pos), getStackDepthFun(pos))(${fun})(${timed}) })
@@ -318,7 +318,7 @@ object TimeLimits extends TimeLimits {
     )
   }
 
-  //DOTTY-ONLY import scala.quoted._
+  //DOTTY-ONLY import scala.quoted.*
 
   //DOTTY-ONLY private[concurrent] def cancelAfterMacro[T](timeout: Expr[Span], signaler: Expr[Signaler], prettifier: Expr[Prettifier], fun: Expr[T], timed: Expr[Timed[T]])(using quotes: Quotes, typeT: Type[T]): Expr[T] = {
   //DOTTY-ONLY   source.Position.withPosition[T]('{(pos: source.Position) => cancelAfterImpl(${timeout}, ${signaler}, ${prettifier}, Some(pos), getStackDepthFun(pos))(${fun})(${timed}) })

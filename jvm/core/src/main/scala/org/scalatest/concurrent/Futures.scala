@@ -478,7 +478,7 @@ trait Futures extends PatienceConfiguration {
     private[concurrent] def futureValueImpl(pos: source.Position)(implicit config: PatienceConfig): T
   }
 
-  //DOTTY-ONLY import scala.quoted._
+  //DOTTY-ONLY import scala.quoted.*
 
   /**
    * Queries the passed future repeatedly until it either is ready, or a configured maximum
@@ -621,7 +621,7 @@ object Futures extends Futures {
     fun(result)
   }
 
-  //DOTTY-ONLY import scala.quoted._
+  //DOTTY-ONLY import scala.quoted.*
 
   //DOTTY-ONLY final def workaroundWhenReadyImpl[T, U](futures: Futures)(future: Futures#FutureConcept[T], fun: T => U, timeout: Span, interval: Span, pos: source.Position): U = 
   //DOTTY-ONLY   whenReadyImpl(futures)(future.asInstanceOf[futures.FutureConcept[T]], fun, timeout, interval, pos)

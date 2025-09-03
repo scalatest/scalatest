@@ -169,12 +169,20 @@ trait AppendedClues {
     }
   }
 
+  // SKIP-DOTTY-START 
   import scala.language.implicitConversions
 
   /**
    * Implicit conversion that allows clues to be place after a block of code.
    */
   implicit def convertToClueful[T](fun: => T): Clueful[T] = new Clueful(fun)
+  // SKIP-DOTTY-END 
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY * Extension method that allows clues to be placed after a block of code.
+  //DOTTY-ONLY */
+  //DOTTY-ONLY extension [T](fun: => T) {
+  //DOTTY-ONLY   def withClue(clue: Any): T = new Clueful(fun).withClue(clue)
+  //DOTTY-ONLY }
 }
 
 /**

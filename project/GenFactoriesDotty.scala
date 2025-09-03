@@ -2818,7 +2818,7 @@ $endif$
 object MatcherFactory$arity$ {
 
   import scala.language.implicitConversions
-  import scala.quoted._
+  import scala.quoted.*
 
   /**
    * Converts a <code>MatcherFactory$arity$</code> to a <code>Matcher</code>.

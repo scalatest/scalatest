@@ -15,10 +15,10 @@
  */
 package org.scalatest
 
-import org.scalactic._
-import org.scalatest.exceptions._
+import org.scalactic.*
+import org.scalatest.exceptions.*
 
-import scala.quoted._
+import scala.quoted.*
 import scala.compiletime.testing.{Error, ErrorKind}
 
 object CompileMacro {
@@ -44,7 +44,7 @@ object CompileMacro {
   // parse and type check a code snippet, generate code to throw TestFailedException when type check passes or parse error
   def assertOnTypeErrorImpl(self: Expr[_], typeChecked: Expr[List[Error]])(assertion: Expr[String => Assertion])(using Quotes): Expr[Assertion] = {
 
-    import quotes.reflect._
+    import quotes.reflect.*
 
     def checkNotTypeCheck(code: String): Expr[Assertion] = {
       // For some reason `typeChecked.valueOrError` is failing here, so instead we grab
@@ -90,7 +90,7 @@ object CompileMacro {
 
   def expectTypeErrorImpl(self: Expr[_], typeChecked: Expr[List[Error]], prettifier: Expr[Prettifier])(using Quotes): Expr[Fact] = {
     
-    import quotes.reflect._
+    import quotes.reflect.*
     
     def checkNotTypeCheck(code: String): Expr[Fact] = {
       // For some reason `typeChecked.valueOrError` is failing here, so instead we grab
@@ -210,7 +210,7 @@ object CompileMacro {
   // parse and type check a code snippet, generate code to throw TestFailedException when either parse or type check fails.
   def assertCompilesImpl(self: Expr[_], typeChecked: Expr[List[Error]])(using Quotes): Expr[Assertion] = {
 
-    import quotes.reflect._
+    import quotes.reflect.*
 
     def checkCompile(code: String): Expr[Assertion] = {
       // For some reason `typeChecked.valueOrError` is failing here, so instead we grab
@@ -256,7 +256,7 @@ object CompileMacro {
 
   def expectCompilesImpl(self: Expr[_], typeChecked: Expr[List[Error]], prettifier: Expr[Prettifier])(using Quotes): Expr[Fact] = {
     
-    import quotes.reflect._
+    import quotes.reflect.*
 
     def checkCompile(code: String): Expr[Fact] = {
       // For some reason `typeChecked.valueOrError` is failing here, so instead we grab

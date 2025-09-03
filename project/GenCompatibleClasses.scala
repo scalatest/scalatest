@@ -22,7 +22,7 @@ object GenCompatibleClasses {
           val bw = new BufferedWriter(new FileWriter(file))
           try {
             bw.write("package org.scalatest.tools\n")
-            bw.write("import javax.swing._\n")
+            bw.write(if (scalaVersion.startsWith("3.")) "import javax.swing.*\n" else "import javax.swing._\n")
             if (isJava7)
               bw.write(cls + "[EventHolder]")
             else
@@ -44,7 +44,7 @@ object GenCompatibleClasses {
       try {
         bw.write("package org.scalatest.tools\n")
         bw.write("import java.awt.Component\n")
-        bw.write("import javax.swing._\n")
+        bw.write(if (scalaVersion.startsWith("3.")) "import javax.swing.*\n" else "import javax.swing._\n")
         if (isJava7) { // workaround from http://www.scala-lang.org/old/node/10687
           bw.write("private[tools] trait EventHolderListCellRenderer extends ListCellRenderer[EventHolder] {\n")
           bw.write("  private val defaultRenderer: ListCellRenderer[EventHolder] = (new DefaultListCellRenderer()).asInstanceOf[ListCellRenderer[EventHolder]]\n")

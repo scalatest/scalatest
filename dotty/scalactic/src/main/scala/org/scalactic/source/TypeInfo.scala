@@ -15,7 +15,7 @@
  */
 package org.scalactic.source
 
-import scala.quoted._
+import scala.quoted.*
 
 class TypeInfo[T](val name: String)
 

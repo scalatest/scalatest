@@ -16,7 +16,7 @@
 package org.scalatest.expectations
 
 import org.scalactic._
-import scala.quoted._
+import scala.quoted.*
 import org.scalatest.Fact
 
 /**

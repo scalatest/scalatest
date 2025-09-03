@@ -20,14 +20,14 @@ import org.scalatest.{Assertion, Succeeded, Resources}
 import org.scalatest.exceptions.{TestFailedException, StackDepthException}
 import org.scalatest.verbs.{CompileWord, TypeCheckWord}
 
-import scala.quoted._
+import scala.quoted.*
 import scala.compiletime.testing.{Error, ErrorKind}
 
 object CompileMacro {
 
   // check that a code snippet compiles
   def assertCompileImpl[T](self: Expr[T], typeChecked: Expr[List[Error]], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
-    import quotes.reflect._
+    import quotes.reflect.*
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkCompile(code: String): Expr[Assertion] = {
@@ -67,7 +67,7 @@ object CompileMacro {
 
   // check that a code snippet does not compile
   def assertNotCompileImpl[T](self: Expr[T], typeChecked: Expr[Boolean], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
-    import quotes.reflect._
+    import quotes.reflect.*
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkNotCompile(code: String): Expr[Assertion] =
@@ -108,7 +108,7 @@ object CompileMacro {
 
   // check that a code snippet does not type check
   def assertNotTypeCheckImpl(self: Expr[_], typeChecked: Expr[List[Error]], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
-    import quotes.reflect._
+    import quotes.reflect.*
 
     // parse and type check a code snippet
     // generate code to throw TestFailedException if there is a parse error or type checking succeeds

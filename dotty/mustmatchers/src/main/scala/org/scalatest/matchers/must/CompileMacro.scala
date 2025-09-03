@@ -19,7 +19,7 @@ import org.scalactic._
 import org.scalatest.Assertion
 import org.scalatest.verbs.{CompileWord, TypeCheckWord}
 
-import scala.quoted._
+import scala.quoted.*
 import scala.compiletime.testing.Error
 
 object CompileMacro {

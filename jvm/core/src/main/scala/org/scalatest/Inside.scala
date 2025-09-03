@@ -182,7 +182,7 @@ object Inside extends Inside {
     }
   }
 
-  //DOTTY-ONLY import scala.quoted._
+  //DOTTY-ONLY import scala.quoted.*
   //DOTTY-ONLY private[scalatest] def insideMacro[T, U](value: Expr[T])(pf: Expr[PartialFunction[T, U]])(using quotes: Quotes, typeT: Type[T], typeU: Type[U]): Expr[U] = {
   //DOTTY-ONLY   source.Position.withPosition[U]('{(pos: source.Position) => insideWithPos(${value}, ${pf}, pos) })
   //DOTTY-ONLY }

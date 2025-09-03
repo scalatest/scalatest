@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-import scala.quoted._
+import scala.quoted.*
 
 object BooleanMacro {
   // Reference: https://www.scala-lang.org/api/3.0.0/scala/quoted/Quotes$reflectModule.html
@@ -40,9 +40,9 @@ object BooleanMacro {
       "exists") ++ logicOperators
 
   def parse(condition: Expr[Boolean], prettifier: Expr[Prettifier])(using Quotes): Expr[Bool] = {
-    import quotes.reflect._
+    import quotes.reflect.*
     import quotes.reflect.ValDef.let
-    import util._
+    import util.*
 
     def exprStr: String = condition.show
     def defaultCase = '{ Bool.simpleMacroBool($condition, ${Expr(exprStr)}, $prettifier) }

@@ -20,9 +20,9 @@ import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException
 // SKIP-SCALATESTJS,NATIVE-END
 
-import scala.quoted._
+import scala.quoted.*
 
-import CompileTimeAssertions._
+import CompileTimeAssertions.*
 
 object RegexStringMacro {
 
@@ -43,7 +43,7 @@ object RegexStringMacro {
     }
 
   def apply(value: Expr[String])(using Quotes): Expr[RegexString] = {
-    import quotes.reflect._
+    import quotes.reflect.*
 
     val notValidExceptionMsg: String = {
       value.asTerm match {

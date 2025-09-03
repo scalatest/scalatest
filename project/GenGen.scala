@@ -23,6 +23,14 @@ object GenGen {
 
   val generatorSource = new File("GenGen.scala")
 
+  def replaceForScala3(content: String, scalaVersion: String): String = 
+    if (scalaVersion.startsWith("3."))
+      content.replaceAll("""import ([\w\.]+)\._""", """import $1.*""")
+             .replace(": _*", "*")
+             .replaceAll("""Resources\.(\w+) _,""", """Resources.$1,""")
+    else
+      content
+
   val copyrightTemplate = """/*
  * Copyright 2001-$year$ Artima, Inc.
  *
@@ -3482,7 +3490,7 @@ $okayAssertions$
 
   val thisYear = Calendar.getInstance.get(Calendar.YEAR)
 
-  def genPropertyChecks(targetDir: File): Seq[File] = {
+  def genPropertyChecks(targetDir: File, scalaVersion: String): Seq[File] = {
     targetDir.mkdirs()
 
     val targetFile = new File(targetDir, "GeneratorDrivenPropertyChecks.scala")
@@ -3494,7 +3502,7 @@ $okayAssertions$
         val st = new org.antlr.stringtemplate.StringTemplate(copyrightTemplate)
         st.setAttribute("year", thisYear);
         bw.write(st.toString)
-        bw.write(propertyCheckPreamble)
+        bw.write(replaceForScala3(propertyCheckPreamble, scalaVersion))
         val alpha = "abcdefghijklmnopqrstuv"
         for (i <- 1 to 6) {
           val st = new org.antlr.stringtemplate.StringTemplate(propertyCheckForAllTemplate)
@@ -3758,7 +3766,7 @@ $okayAssertions$
   }
 
   def genMain(dir: File, version: String, scalaVersion: String): Seq[File] = {
-    genPropertyChecks(dir) ++
+    genPropertyChecks(dir, scalaVersion) ++
     genGenerators(dir)
   }
 

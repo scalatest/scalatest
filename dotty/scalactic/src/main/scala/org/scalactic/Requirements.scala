@@ -17,7 +17,7 @@ package org.scalactic
 
 import exceptions.NullArgumentException
 
-import scala.quoted._
+import scala.quoted.*
 
 /**
  * Trait that contains <code>require</code>, and <code>requireState</code>, and <code>requireNonNull</code> methods for checking pre-conditions
@@ -59,11 +59,11 @@ import scala.quoted._
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; import org.scalactic._
- * import org.scalactic._
+ * scala&gt; import org.scalactic.*
+ * import org.scalactic.*
  *
- * scala&gt; import Requirements._
- * import Requirements._
+ * scala&gt; import Requirements.*
+ * import Requirements.*
  *
  * scala&gt; require(idx &gt;= 0 &amp;&amp; idx &lt;= length)
  * java.lang.IllegalArgumentException: <strong>6 was greater than or equal to 0, but 6 was not less than or equal to 5</strong>
@@ -255,7 +255,7 @@ object RequirementsMacro {
    * @return transformed expression that performs the requirement check and throw <code>NullArgumentException</code> with rich error message if requirement failed
    */
   def requireNonNull(arguments: Expr[Seq[Any]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using Quotes): Expr[Unit] = {
-    import quotes.reflect._
+    import quotes.reflect.*
 
     def liftSeq(args: Seq[Expr[String]]): Expr[Seq[String]] = args match {
       case x :: xs  => '{ ($x) +: ${ liftSeq(xs) }  }
@@ -308,8 +308,8 @@ object RequirementsMacro {
  * Welcome to Scala 2.13.6 (OpenJDK 64-Bit Server VM, Java yyy).
  * Type in expressions for evaluation. Or try :help.
  * &nbsp;
- * scala&gt; import org.scalactic.Requirements._
- * import org.scalactic.Requirements._
+ * scala&gt; import org.scalactic.Requirements.*
+ * import org.scalactic.Requirements.*
  * &nbsp;
  * scala&gt; val a = 1
  * a: Int = 1

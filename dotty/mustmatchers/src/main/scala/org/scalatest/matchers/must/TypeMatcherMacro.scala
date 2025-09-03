@@ -24,13 +24,13 @@ import org.scalactic.Prettifier
 // import org.scalactic.Prettifier
 // import org.scalatest.{UnquotedString, Resources, Suite, FailureMessages, Assertions}
 
-import scala.quoted._
+import scala.quoted.*
 
 object TypeMatcherMacro {
 
   //   // Check that no type parameter is specified, if any does, give a friendly compiler warning.
   def checkTypeParameter(using Quotes)(tree: quotes.reflect.Term, methodName: String): Unit = {
-    import quotes.reflect._
+    import quotes.reflect.*
 
     // TODO#Macros: Select lack unapply
     /*
@@ -52,7 +52,7 @@ object TypeMatcherMacro {
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAType, used by 'mustBe a [type]' syntax
   def mustBeATypeImpl[T](leftSideValue: Expr[T], aType: Expr[ResultOfATypeInvocation[_]], pos: Expr[Position], prettifier: Expr[Prettifier])(using Quotes, Type[T]): Expr[org.scalatest.Assertion] = {
-    import quotes.reflect._
+    import quotes.reflect.*
     checkTypeParameter(aType.asTerm, "a")
     '{
       org.scalatest.matchers.TypeMatcherHelper.assertAType($leftSideValue, $aType, $prettifier, $pos)
@@ -61,7 +61,7 @@ object TypeMatcherMacro {
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAnType, used by 'mustBe an [type]' syntax
   def mustBeAnTypeImpl[T](leftSideValue: Expr[T], anType: Expr[ResultOfAnTypeInvocation[_]], pos: Expr[Position], prettifier: Expr[Prettifier])(using Quotes, Type[T]): Expr[org.scalatest.Assertion] = {
-    import quotes.reflect._
+    import quotes.reflect.*
     checkTypeParameter(anType.asTerm, "an")
     '{
       org.scalatest.matchers.TypeMatcherHelper.assertAnType($leftSideValue, $anType, $prettifier, $pos)

@@ -18,6 +18,7 @@ import sbt.IO
 
 import scala.io.Source
 import java.io.{File, FileWriter, BufferedWriter}
+import java.nio.file.Files
 
 object GenScalaTestDotty {
 
@@ -27,7 +28,14 @@ object GenScalaTestDotty {
     else if (line.trim.startsWith("//DOTTY-ONLY "))
       line.substring(line.indexOf("//DOTTY-ONLY ") + 13)
     else
-      line
+      line.replaceAll("""import ([\w\.]+)\._""", """import $1.*""")
+          .replaceAll("""import ([^{]*\{[^}]*?)(\w+) => (\w+)([^}]*\})""", """import $1$2 as $3$4""")
+          .replace("as _, _}", "as *, *}")
+          .replace("as SbtFramework, _}", "as SbtFramework, *}")
+          .replace(": _*", "*")
+          .replace(":_*", "*")
+          .replaceAll("""Resources\.(\w+) _,""", """Resources.$1,""")
+          .replace("Framework => SbtFramework, Runner => SbtRunner, Status => SbtStatus, _", "Framework as SbtFramework, Runner as SbtRunner, Status as SbtStatus, *")
 
   private def transformLine(line: String): String =
     uncommentJsExport(line)
@@ -66,7 +74,8 @@ object GenScalaTestDotty {
     else if (line.trim.startsWith("//SCALATESTJS-ONLY "))
       line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19)  
     else
-      line
+      line.replaceAll("""import ([\w\.]+)\._""", """import $1.*""")
+          .replace(": _*", "*")
 
   private def transformLineJS(line: String): String =
     uncommentJsExportJS(line)
@@ -218,8 +227,13 @@ object GenScalaTestDotty {
     val sourceDir = new File(sourceDirName)
     sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName)).map { sourceFile =>
       val destFile = new File(packageDir, sourceFile.getName)
-      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
-        IO.copyFile(sourceFile, destFile)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified) {
+        val mimeType = Files.probeContentType(sourceFile.toPath)
+        if (mimeType.startsWith("image/"))
+          IO.copyFile(sourceFile, destFile) // For image files
+        else
+          copyFile(sourceFile, destFile)
+      }
       destFile
     }
   }

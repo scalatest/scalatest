@@ -16,9 +16,9 @@
 package org.scalactic.anyvals
 
 import org.scalactic.Resources
-import scala.quoted._
+import scala.quoted.*
 
-import CompileTimeAssertions._
+import CompileTimeAssertions.*
 
 object NumericStringMacro {
 
