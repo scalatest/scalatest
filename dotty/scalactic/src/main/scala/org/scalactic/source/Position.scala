@@ -51,7 +51,7 @@ object Position {
   import org.scalactic.Resources
 
   /**
-   * Implicit method, implemented with a macro, that returns the enclosing
+   * Inline given method, implemented with a macro, that returns the enclosing
    * source position where it is invoked.
    *
    * @return the enclosing source position
