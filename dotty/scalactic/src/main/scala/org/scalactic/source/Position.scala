@@ -56,7 +56,7 @@ object Position {
    *
    * @return the enclosing source position
    */
-  implicit inline def here: Position = ${ genPosition }
+  inline given here: Position = ${ genPosition }
 
   private[scalactic] lazy val showScalacticFillFilePathnames: Boolean = 
     Option(System.getenv("SCALACTIC_FILL_FILE_PATHNAMES")) == Some("yes")
