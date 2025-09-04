@@ -39,6 +39,62 @@ import org.scalatest.time.Span
  */
 trait JavaFutures extends Futures {
 
+  private class FutureConceptImpl[T](javaFuture: FutureOfJava[T]) extends FutureConcept[T] {
+    def eitherValue: Option[Either[Throwable, T]] =
+      if (javaFuture.isDone())
+        Some(Right(javaFuture.get))
+      else
+        None
+    def isExpired: Boolean = false // Java Futures don't support the notion of a timeout
+    def isCanceled: Boolean = javaFuture.isCancelled // Two ll's in Canceled. The verbosity of Java strikes again!
+    // TODO: Catch TimeoutException and wrap that in a TFE with ScalaTest's TimeoutException I think.
+    // def awaitAtMost(span: Span): T = javaFuture.get(span.totalNanos, TimeUnit.NANOSECONDS)
+    override private[concurrent] def futureValueImpl(pos: source.Position)(implicit config: PatienceConfig): T = {
+      /*val adjustment =
+        if (methodName == "whenReady")
+          3
+        else
+          0*/
+
+      if (javaFuture.isCancelled)
+        throw new TestFailedException(
+          (_: StackDepthException) => Some(Resources.futureWasCanceled),
+          None,
+          pos
+        )
+      try {
+        javaFuture.get(config.timeout.totalNanos, TimeUnit.NANOSECONDS)
+      }
+      catch {
+        case e: java.util.concurrent.TimeoutException =>
+          throw new TestFailedException(
+            (_: StackDepthException) => Some(Resources.wasNeverReady(1, config.interval.prettyString)),
+            None,
+            pos
+          ) with TimeoutField {
+            val timeout: Span = config.timeout
+          }
+        case e: java.util.concurrent.ExecutionException =>
+          val cause = e.getCause
+          val exToReport = if (cause == null) e else cause 
+          if (anExceptionThatShouldCauseAnAbort(exToReport) || exToReport.isInstanceOf[TestPendingException] || exToReport.isInstanceOf[TestCanceledException]) {
+            throw exToReport
+          }
+          throw new TestFailedException(
+            (_: StackDepthException) => Some {
+              if (exToReport.getMessage == null)
+                Resources.futureReturnedAnException(exToReport.getClass.getName)
+              else
+                Resources.futureReturnedAnExceptionWithMessage(exToReport.getClass.getName, exToReport.getMessage)
+            },
+            Some(exToReport),
+            pos
+          )
+      }
+    }
+  }
+
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
 
   /**
@@ -67,59 +123,15 @@ trait JavaFutures extends Futures {
    * @param javaFuture a <code>java.util.concurrent.Future[T]</code> to convert
    * @return a <code>FutureConcept[T]</code> wrapping the passed <code>java.util.concurrent.Future[T]</code>
    */
-  implicit def convertJavaFuture[T](javaFuture: FutureOfJava[T]): FutureConcept[T] =
-    new FutureConcept[T] {
-      def eitherValue: Option[Either[Throwable, T]] =
-        if (javaFuture.isDone())
-          Some(Right(javaFuture.get))
-        else
-          None
-      def isExpired: Boolean = false // Java Futures don't support the notion of a timeout
-      def isCanceled: Boolean = javaFuture.isCancelled // Two ll's in Canceled. The verbosity of Java strikes again!
-      // TODO: Catch TimeoutException and wrap that in a TFE with ScalaTest's TimeoutException I think.
-      // def awaitAtMost(span: Span): T = javaFuture.get(span.totalNanos, TimeUnit.NANOSECONDS)
-      override private[concurrent] def futureValueImpl(pos: source.Position)(implicit config: PatienceConfig): T = {
-        /*val adjustment =
-          if (methodName == "whenReady")
-            3
-          else
-            0*/
+  implicit def convertJavaFuture[T](javaFuture: FutureOfJava[T]): FutureConcept[T] = new FutureConceptImpl[T](javaFuture)
+  // SKIP-DOTTY-END
 
-        if (javaFuture.isCanceled)
-          throw new TestFailedException(
-            (_: StackDepthException) => Some(Resources.futureWasCanceled),
-            None,
-            pos
-          )
-        try {
-          javaFuture.get(config.timeout.totalNanos, TimeUnit.NANOSECONDS)
-        }
-        catch {
-          case e: java.util.concurrent.TimeoutException =>
-            throw new TestFailedException(
-              (_: StackDepthException) => Some(Resources.wasNeverReady(1, config.interval.prettyString)),
-              None,
-              pos
-            ) with TimeoutField {
-              val timeout: Span = config.timeout
-            }
-          case e: java.util.concurrent.ExecutionException =>
-            val cause = e.getCause
-            val exToReport = if (cause == null) e else cause 
-            if (anExceptionThatShouldCauseAnAbort(exToReport) || exToReport.isInstanceOf[TestPendingException] || exToReport.isInstanceOf[TestCanceledException]) {
-              throw exToReport
-            }
-            throw new TestFailedException(
-              (_: StackDepthException) => Some {
-                if (exToReport.getMessage == null)
-                  Resources.futureReturnedAnException(exToReport.getClass.getName)
-                else
-                  Resources.futureReturnedAnExceptionWithMessage(exToReport.getClass.getName, exToReport.getMessage)
-              },
-              Some(exToReport),
-              pos
-            )
-        }
-      }
-    }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert <code>java.util.concurrent.Future[T]</code> to <code>FutureConcept[T]</code>
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def convertJavaFuture[T](javaFuture: FutureOfJava[T]): FutureConcept[T] = new FutureConceptImpl[T](javaFuture)
+
+  //DOTTY-ONLY given[T]: Conversion[FutureOfJava[T], FutureConcept[T]] with {
+  //DOTTY-ONLY   def apply(javaFuture: FutureOfJava[T]): FutureConcept[T] = new FutureConceptImpl[T](javaFuture)
+  //DOTTY-ONLY }
 }
