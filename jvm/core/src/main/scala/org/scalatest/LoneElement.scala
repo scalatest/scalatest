@@ -77,7 +77,173 @@ import org.scalatest.exceptions._
  */
 trait LoneElement {
 
+  import LoneElement._
+
   import scala.language.higherKinds
+
+  // SKIP-DOTTY-START
+  import scala.language.implicitConversions
+
+  /**
+   * Implicit conversion that adds a <code>loneElement</code> method to any collection type <code>C</code> for which an
+   * implicit <code>Collecting[C]</code> is available.
+   *
+   * @tparam E the element type of the collection on which to add the <code>loneElement</code> method
+   * @tparam CTC the "collection type constructor" for the collection on which to add the <code>loneElement</code> method
+   * @param collection the collection on which to add the <code>loneElement</code> method
+   * @param collecting a typeclass that enables the <code>loneElement</code> syntax
+   */
+  implicit def convertToCollectionLoneElementWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]], prettifier: Prettifier, pos: source.Position): LoneElementCollectionWrapper[E, CTC] = new LoneElementCollectionWrapper[E, CTC](collection, collecting, prettifier, pos)
+  // SKIP-DOTTY-END
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert a collection to <code>LoneElementCollectionWrapper[E, CTC]</code> for which an
+  //DOTTY-ONLY  * implicit <code>Collecting[E, CTC[E]]</code> is available.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @tparam E the element type of the collection to be converted
+  //DOTTY-ONLY  * @tparam CTC the "collection type constructor" for the collection to be converted
+  //DOTTY-ONLY  * @param collection the collection to be converted
+  //DOTTY-ONLY  * @param collecting a typeclass that enables the conversion
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def convertToCollectionLoneElementWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]], prettifier: Prettifier, pos: source.Position): LoneElementCollectionWrapper[E, CTC] = new LoneElementCollectionWrapper[E, CTC](collection, collecting, prettifier, pos)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension to add <code>loneElement</code> method to collections.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @tparam E the element type of the collection on which to add the <code>loneElement</code> method
+  //DOTTY-ONLY  * @tparam CTC the "collection type constructor" for the collection on which to add the <code>loneElement</code> method
+  //DOTTY-ONLY  * @param collection the collection on which to add the <code>loneElement</code> method
+  //DOTTY-ONLY  * @param collecting a typeclass that enables the <code>loneElement</code> syntax
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension [E, CTC[_]](collection: CTC[E])(using collecting: Collecting[E, CTC[E]], prettifier: Prettifier, pos: source.Position) {
+  //DOTTY-ONLY   def loneElement: E = 
+  //DOTTY-ONLY     convertToCollectionLoneElementWrapper[E, CTC](collection)(collecting, prettifier, pos).loneElement
+  //DOTTY-ONLY }
+
+  // SKIP-DOTTY-START
+  /**
+   * Implicit conversion that adds a <code>loneElement</code> method to <code>Map</code> type <code>(K, V)</code> for which an
+   * implicit <code>Collecting[(K, V)]</code> is available.
+   *
+   * @tparam K the key type of the <code>Map</code> on which to add the <code>loneElement</code> method
+   * @tparam V the value type of the <code>Map</code> on which to add the <code>loneElement</code> method
+   * @tparam MAP the "map type constructor" for the map on which to add the <code>loneElement</code> method
+   * @param map the map on which to add the <code>loneElement</code> method
+   * @param collecting a typeclass that enables the <code>loneElement</code> syntax
+   */
+  implicit def convertMapToCollectionLoneElementWrapper[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](map: MAP[K, V])(implicit collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): LoneElementMapWrapper[K, V, MAP] = {
+    new LoneElementMapWrapper[K, V, MAP](map, collecting, prettifier, pos)
+  }
+  // SKIP-DOTTY-END
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert a map to <code>LoneElementMapWrapper[K, V, MAP]</code> for which an
+  //DOTTY-ONLY  * implicit <code>Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]]</code> is available.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @tparam K the key type of the <code>Map</code> on which to convert to <code>LoneElementMapWrapper[K, V, MAP]</code>
+  //DOTTY-ONLY  * @tparam V the value type of the <code>Map</code> on which to convert to <code>LoneElementMapWrapper[K, V, MAP]</code>
+  //DOTTY-ONLY  * @tparam MAP the "map type constructor" for the collection on which to convert to <code>LoneElementMapWrapper[K, V, MAP]</code>
+  //DOTTY-ONLY  * @param map the map on which to convert to <code>LoneElementMapWrapper[K, V, MAP]</code>
+  //DOTTY-ONLY  * @param collecting a typeclass that enables the <code>loneElement</code> syntax
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def convertMapToCollectionLoneElementWrapper[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](map: MAP[K, V])(implicit collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): LoneElementMapWrapper[K, V, MAP] = {
+  //DOTTY-ONLY   new LoneElementMapWrapper[K, V, MAP](map, collecting, prettifier, pos)
+  //DOTTY-ONLY }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension to add <code>loneElement</code> method to <code>Map</code>s.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @tparam K the key type of the <code>Map</code> on which to add the <code>loneElement</code> method
+  //DOTTY-ONLY  * @tparam V the value type of the <code>Map</code> on which to add the <code>loneElement</code> method
+  //DOTTY-ONLY  * @tparam MAP the "map type constructor" for the map on which to add the <code>loneElement</code> method
+  //DOTTY-ONLY  * @param map the map on which to add the <code>loneElement</code> method
+  //DOTTY-ONLY  * @param collecting a typeclass that enables the <code>loneElement</code> syntax
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension [K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](map: MAP[K, V])(using collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position) {
+  //DOTTY-ONLY   def loneElement: (K, V) = 
+  //DOTTY-ONLY     convertMapToCollectionLoneElementWrapper(map)(collecting, prettifier, pos).loneElement
+  //DOTTY-ONLY }
+
+  // SKIP-DOTTY-START
+  /**
+   * Implicit conversion that adds a <code>loneElement</code> method to Java map type <code>Entry[K, V]</code> for which an
+   * implicit <code>Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]</code> is available.
+   *
+   * @tparam K the key type of the Java map on which to add the <code>loneElement</code> method
+   * @tparam V the value type of the Java map on which to add the <code>loneElement</code> method
+   * @tparam MAP the "map type constructor" for the map on which to add the <code>loneElement</code> method
+   * @param map the map on which to add the <code>loneElement</code> method
+   * @param collecting a typeclass that enables the <code>loneElement</code> syntax
+   */
+  implicit def convertJavaMapToCollectionLoneElementWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): LoneElementJavaMapWrapper[K, V, JMAP] = {
+    new LoneElementJavaMapWrapper[K, V, JMAP](jmap, collecting, prettifier, pos)
+  }
+  // SKIP-DOTTY-END
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert Java map type <code>Entry[K, V]</code> for which an implicit <code>Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]</code> is available to
+  //DOTTY-ONLY  * <code>LoneElementJavaMapWrapper[K, V, JMAP]</code>.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @tparam K the key type of the Java map to convert
+  //DOTTY-ONLY  * @tparam V the value type of the Java map to convert
+  //DOTTY-ONLY  * @tparam MAP the "map type constructor" for the map to convert
+  //DOTTY-ONLY  * @param map the map to convert
+  //DOTTY-ONLY  * @param collecting a typeclass that enables the <code>loneElement</code> syntax
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def convertJavaMapToCollectionLoneElementWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): LoneElementJavaMapWrapper[K, V, JMAP] = {
+  //DOTTY-ONLY   new LoneElementJavaMapWrapper[K, V, JMAP](jmap, collecting, prettifier, pos)
+  //DOTTY-ONLY }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension to add <code>loneElement</code> method to Java maps.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @tparam K the key type of the Java map on which to add the <code>loneElement</code> method
+  //DOTTY-ONLY  * @tparam V the value type of the Java map on which to add the <code>loneElement</code> method
+  //DOTTY-ONLY  * @tparam MAP the "map type constructor" for the Java map on which to add the <code>loneElement</code> method
+  //DOTTY-ONLY  * @param map the Java map on which to add the <code>loneElement</code> method
+  //DOTTY-ONLY  * @param collecting a typeclass that enables the <code>loneElement</code> syntax
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension [K, V, JMAP[k, v] <: java.util.Map[k, v]](jmap: JMAP[K, V])(using collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position) {
+  //DOTTY-ONLY   def loneElement: org.scalatest.Entry[K, V] = 
+  //DOTTY-ONLY     convertJavaMapToCollectionLoneElementWrapper(jmap)(collecting, prettifier, pos).loneElement
+  //DOTTY-ONLY }
+
+  // SKIP-DOTTY-START
+  /**
+   * Implicit conversion that adds a <code>loneElement</code> method to String.
+   *
+   * @param s the <code>String</code> to wrap
+   * @param collecting a typeclass that enables the <code>loneElement</code> syntax
+   */
+  implicit def convertToStringLoneElementWrapper(s: String)(implicit prettifier: Prettifier, pos: source.Position): LoneElementStringWrapper =
+    new LoneElementStringWrapper(s, prettifier, pos)
+  // SKIP-DOTTY-END
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert String to <code>LoneElementStringWrapper</code>.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @param s the <code>String</code> to wrap
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def convertToStringLoneElementWrapper(s: String)(implicit prettifier: Prettifier, pos: source.Position): LoneElementStringWrapper =
+  //DOTTY-ONLY   new LoneElementStringWrapper(s, prettifier, pos)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension to add <code>loneElement</code> method to <code>String</code>.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @param s the <code>String</code> to add the <code>loneElement</code> method
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension (s: String)(using prettifier: Prettifier, pos: source.Position) {
+  //DOTTY-ONLY   def loneElement: Char = 
+  //DOTTY-ONLY     convertToStringLoneElementWrapper(s)(prettifier, pos).loneElement
+  //DOTTY-ONLY }
+}
+
+/**
+ * Companion object that facilitates the importing of <code>LoneElement</code> members as 
+ * an alternative to mixing it in. One use case is to import <code>LoneElement</code>'s members so you can use
+ * <code>loneElement</code> in the Scala interpreter.
+ */
+object LoneElement extends LoneElement {
 
   /**
    * Wrapper class that adds a <code>loneElement</code> method to any collection type <code>C</code> for which 
@@ -126,45 +292,6 @@ trait LoneElement {
     }
   }
 
-  // SKIP-DOTTY-START
-  import scala.language.implicitConversions
-
-  /**
-   * Implicit conversion that adds a <code>loneElement</code> method to any collection type <code>C</code> for which an
-   * implicit <code>Collecting[C]</code> is available.
-   *
-   * @tparam E the element type of the collection on which to add the <code>loneElement</code> method
-   * @tparam CTC the "collection type constructor" for the collection on which to add the <code>loneElement</code> method
-   * @param collection the collection on which to add the <code>loneElement</code> method
-   * @param collecting a typeclass that enables the <code>loneElement</code> syntax
-   */
-  implicit def convertToCollectionLoneElementWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]], prettifier: Prettifier, pos: source.Position): LoneElementCollectionWrapper[E, CTC] = new LoneElementCollectionWrapper[E, CTC](collection, collecting, prettifier, pos)
-  // SKIP-DOTTY-END
-
-  //DOTTY-ONLY /**
-  //DOTTY-ONLY  * Convert a collection to <code>LoneElementCollectionWrapper[E, CTC]</code> for which an
-  //DOTTY-ONLY  * implicit <code>Collecting[E, CTC[E]]</code> is available.
-  //DOTTY-ONLY  *
-  //DOTTY-ONLY  * @tparam E the element type of the collection to be converted
-  //DOTTY-ONLY  * @tparam CTC the "collection type constructor" for the collection to be converted
-  //DOTTY-ONLY  * @param collection the collection to be converted
-  //DOTTY-ONLY  * @param collecting a typeclass that enables the conversion
-  //DOTTY-ONLY  */
-  //DOTTY-ONLY def convertToCollectionLoneElementWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]], prettifier: Prettifier, pos: source.Position): LoneElementCollectionWrapper[E, CTC] = new LoneElementCollectionWrapper[E, CTC](collection, collecting, prettifier, pos)
-
-  //DOTTY-ONLY /**
-  //DOTTY-ONLY  * Extension to add <code>loneElement</code> method to collections.
-  //DOTTY-ONLY  *
-  //DOTTY-ONLY  * @tparam E the element type of the collection on which to add the <code>loneElement</code> method
-  //DOTTY-ONLY  * @tparam CTC the "collection type constructor" for the collection on which to add the <code>loneElement</code> method
-  //DOTTY-ONLY  * @param collection the collection on which to add the <code>loneElement</code> method
-  //DOTTY-ONLY  * @param collecting a typeclass that enables the <code>loneElement</code> syntax
-  //DOTTY-ONLY  */
-  //DOTTY-ONLY extension [E, CTC[_]](collection: CTC[E])(using collecting: Collecting[E, CTC[E]], prettifier: Prettifier, pos: source.Position) {
-  //DOTTY-ONLY   def loneElement: E = 
-  //DOTTY-ONLY     convertToCollectionLoneElementWrapper[E, CTC](collection)(collecting, prettifier, pos).loneElement
-  //DOTTY-ONLY }
-
   /**
     * Wrapper class that adds a <code>loneElement</code> method to Map for which
     * an implicit <code>Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]]</code> is available.
@@ -198,50 +325,6 @@ trait LoneElement {
       }
     }
   }
-
-  // SKIP-DOTTY-START
-  /**
-   * Implicit conversion that adds a <code>loneElement</code> method to <code>Map</code> type <code>(K, V)</code> for which an
-   * implicit <code>Collecting[(K, V)]</code> is available.
-   *
-   * @tparam K the key type of the <code>Map</code> on which to add the <code>loneElement</code> method
-   * @tparam V the value type of the <code>Map</code> on which to add the <code>loneElement</code> method
-   * @tparam MAP the "map type constructor" for the map on which to add the <code>loneElement</code> method
-   * @param map the map on which to add the <code>loneElement</code> method
-   * @param collecting a typeclass that enables the <code>loneElement</code> syntax
-   */
-  implicit def convertMapToCollectionLoneElementWrapper[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](map: MAP[K, V])(implicit collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): LoneElementMapWrapper[K, V, MAP] = {
-    new LoneElementMapWrapper[K, V, MAP](map, collecting, prettifier, pos)
-  }
-  // SKIP-DOTTY-END
-
-  //DOTTY-ONLY /**
-  //DOTTY-ONLY  * Convert a map to <code>LoneElementMapWrapper[K, V, MAP]</code> for which an
-  //DOTTY-ONLY  * implicit <code>Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]]</code> is available.
-  //DOTTY-ONLY  *
-  //DOTTY-ONLY  * @tparam K the key type of the <code>Map</code> on which to convert to <code>LoneElementMapWrapper[K, V, MAP]</code>
-  //DOTTY-ONLY  * @tparam V the value type of the <code>Map</code> on which to convert to <code>LoneElementMapWrapper[K, V, MAP]</code>
-  //DOTTY-ONLY  * @tparam MAP the "map type constructor" for the collection on which to convert to <code>LoneElementMapWrapper[K, V, MAP]</code>
-  //DOTTY-ONLY  * @param map the map on which to convert to <code>LoneElementMapWrapper[K, V, MAP]</code>
-  //DOTTY-ONLY  * @param collecting a typeclass that enables the <code>loneElement</code> syntax
-  //DOTTY-ONLY  */
-  //DOTTY-ONLY def convertMapToCollectionLoneElementWrapper[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](map: MAP[K, V])(implicit collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): LoneElementMapWrapper[K, V, MAP] = {
-  //DOTTY-ONLY   new LoneElementMapWrapper[K, V, MAP](map, collecting, prettifier, pos)
-  //DOTTY-ONLY }
-
-  //DOTTY-ONLY /**
-  //DOTTY-ONLY  * Extension to add <code>loneElement</code> method to <code>Map</code>s.
-  //DOTTY-ONLY  *
-  //DOTTY-ONLY  * @tparam K the key type of the <code>Map</code> on which to add the <code>loneElement</code> method
-  //DOTTY-ONLY  * @tparam V the value type of the <code>Map</code> on which to add the <code>loneElement</code> method
-  //DOTTY-ONLY  * @tparam MAP the "map type constructor" for the map on which to add the <code>loneElement</code> method
-  //DOTTY-ONLY  * @param map the map on which to add the <code>loneElement</code> method
-  //DOTTY-ONLY  * @param collecting a typeclass that enables the <code>loneElement</code> syntax
-  //DOTTY-ONLY  */
-  //DOTTY-ONLY extension [K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](map: MAP[K, V])(using collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position) {
-  //DOTTY-ONLY   def loneElement: (K, V) = 
-  //DOTTY-ONLY     convertMapToCollectionLoneElementWrapper(map)(collecting, prettifier, pos).loneElement
-  //DOTTY-ONLY }
 
   /**
    * Wrapper class that adds a <code>loneElement</code> method to Java Map for which
@@ -277,50 +360,6 @@ trait LoneElement {
     }
   }
 
-  // SKIP-DOTTY-START
-  /**
-   * Implicit conversion that adds a <code>loneElement</code> method to Java map type <code>Entry[K, V]</code> for which an
-   * implicit <code>Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]</code> is available.
-   *
-   * @tparam K the key type of the Java map on which to add the <code>loneElement</code> method
-   * @tparam V the value type of the Java map on which to add the <code>loneElement</code> method
-   * @tparam MAP the "map type constructor" for the map on which to add the <code>loneElement</code> method
-   * @param map the map on which to add the <code>loneElement</code> method
-   * @param collecting a typeclass that enables the <code>loneElement</code> syntax
-   */
-  implicit def convertJavaMapToCollectionLoneElementWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): LoneElementJavaMapWrapper[K, V, JMAP] = {
-    new LoneElementJavaMapWrapper[K, V, JMAP](jmap, collecting, prettifier, pos)
-  }
-  // SKIP-DOTTY-END
-
-  //DOTTY-ONLY /**
-  //DOTTY-ONLY  * Convert Java map type <code>Entry[K, V]</code> for which an implicit <code>Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]</code> is available to
-  //DOTTY-ONLY  * <code>LoneElementJavaMapWrapper[K, V, JMAP]</code>.
-  //DOTTY-ONLY  *
-  //DOTTY-ONLY  * @tparam K the key type of the Java map to convert
-  //DOTTY-ONLY  * @tparam V the value type of the Java map to convert
-  //DOTTY-ONLY  * @tparam MAP the "map type constructor" for the map to convert
-  //DOTTY-ONLY  * @param map the map to convert
-  //DOTTY-ONLY  * @param collecting a typeclass that enables the <code>loneElement</code> syntax
-  //DOTTY-ONLY  */
-  //DOTTY-ONLY def convertJavaMapToCollectionLoneElementWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): LoneElementJavaMapWrapper[K, V, JMAP] = {
-  //DOTTY-ONLY   new LoneElementJavaMapWrapper[K, V, JMAP](jmap, collecting, prettifier, pos)
-  //DOTTY-ONLY }
-
-  //DOTTY-ONLY /**
-  //DOTTY-ONLY  * Extension to add <code>loneElement</code> method to Java maps.
-  //DOTTY-ONLY  *
-  //DOTTY-ONLY  * @tparam K the key type of the Java map on which to add the <code>loneElement</code> method
-  //DOTTY-ONLY  * @tparam V the value type of the Java map on which to add the <code>loneElement</code> method
-  //DOTTY-ONLY  * @tparam MAP the "map type constructor" for the Java map on which to add the <code>loneElement</code> method
-  //DOTTY-ONLY  * @param map the Java map on which to add the <code>loneElement</code> method
-  //DOTTY-ONLY  * @param collecting a typeclass that enables the <code>loneElement</code> syntax
-  //DOTTY-ONLY  */
-  //DOTTY-ONLY extension [K, V, JMAP[k, v] <: java.util.Map[k, v]](jmap: JMAP[K, V])(using collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position) {
-  //DOTTY-ONLY   def loneElement: org.scalatest.Entry[K, V] = 
-  //DOTTY-ONLY     convertJavaMapToCollectionLoneElementWrapper(jmap)(collecting, prettifier, pos).loneElement
-  //DOTTY-ONLY }
-
   /**
    * Wrapper class that adds a <code>loneElement</code> method to <code>String</code> for which an
    * implicit <code>Collecting[C]</code> is available.
@@ -352,40 +391,5 @@ trait LoneElement {
     }
   }
 
-  // SKIP-DOTTY-START
-  /**
-   * Implicit conversion that adds a <code>loneElement</code> method to String.
-   *
-   * @param s the <code>String</code> to wrap
-   * @param collecting a typeclass that enables the <code>loneElement</code> syntax
-   */
-  implicit def convertToStringLoneElementWrapper(s: String)(implicit prettifier: Prettifier, pos: source.Position): LoneElementStringWrapper =
-    new LoneElementStringWrapper(s, prettifier, pos)
-  // SKIP-DOTTY-END
-
-  //DOTTY-ONLY /**
-  //DOTTY-ONLY  * Convert String to <code>LoneElementStringWrapper</code>.
-  //DOTTY-ONLY  *
-  //DOTTY-ONLY  * @param s the <code>String</code> to wrap
-  //DOTTY-ONLY  */
-  //DOTTY-ONLY def convertToStringLoneElementWrapper(s: String)(implicit prettifier: Prettifier, pos: source.Position): LoneElementStringWrapper =
-  //DOTTY-ONLY   new LoneElementStringWrapper(s, prettifier, pos)
-
-  //DOTTY-ONLY /**
-  //DOTTY-ONLY  * Extension to add <code>loneElement</code> method to <code>String</code>.
-  //DOTTY-ONLY  *
-  //DOTTY-ONLY  * @param s the <code>String</code> to add the <code>loneElement</code> method
-  //DOTTY-ONLY  */
-  //DOTTY-ONLY extension (s: String)(using prettifier: Prettifier, pos: source.Position) {
-  //DOTTY-ONLY   def loneElement: Char = 
-  //DOTTY-ONLY     convertToStringLoneElementWrapper(s)(prettifier, pos).loneElement
-  //DOTTY-ONLY }
 }
-
-/**
- * Companion object that facilitates the importing of <code>LoneElement</code> members as 
- * an alternative to mixing it in. One use case is to import <code>LoneElement</code>'s members so you can use
- * <code>loneElement</code> in the Scala interpreter.
- */
-object LoneElement extends LoneElement
 
