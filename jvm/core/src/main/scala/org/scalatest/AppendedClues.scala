@@ -102,6 +102,41 @@ import exceptions.ModifiableMessage
  */
 trait AppendedClues {
 
+  import AppendedClues.Clueful
+
+  // SKIP-DOTTY-START 
+  import scala.language.implicitConversions
+
+  /**
+   * Implicit conversion that allows clues to be place after a block of code.
+   */
+  implicit def convertToClueful[T](fun: => T): Clueful[T] = new Clueful(fun)
+  // SKIP-DOTTY-END 
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert a block of code to <code>Clueful</code>.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def convertToClueful[T](fun: => T): Clueful[T] = new Clueful(fun)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension method that allows clues to be placed after a block of code.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension [T](fun: => T) {
+  //DOTTY-ONLY   def withClue(clue: Any): T = new Clueful(fun).withClue(clue)
+  //DOTTY-ONLY }
+}
+
+/**
+ * Companion object that facilitates the importing of <code>AppendedClues</code> members as 
+ * an alternative to mixing it in. One use case is to import <code>AppendedClues</code>
+ * members so you can use them in the Scala interpreter.
+ */
+object AppendedClues extends AppendedClues {
+  private[scalatest] def appendClue(original: String, clue: String): String =
+    clue.toString.headOption match {
+      case Some(firstChar) if firstChar.isWhitespace ||
+          firstChar == '.' || firstChar == ',' || firstChar == ';' => 
+        original + clue
+      case _ => original + " " + clue
+   }
   /**
    * Class that provides a <code>withClue</code> method that appends clue strings to any
    * <a href="exceptions/ModifiableMessage.html"><code>ModifiableMessage</code></a> exception
@@ -167,36 +202,6 @@ trait AppendedClues {
             throw e.asInstanceOf[Throwable] // Safe cast because self type is Throwable, but Dotty is stricter and does not allow this without the cast.
       }
     }
-  }
-
-  // SKIP-DOTTY-START 
-  import scala.language.implicitConversions
-
-  /**
-   * Implicit conversion that allows clues to be place after a block of code.
-   */
-  implicit def convertToClueful[T](fun: => T): Clueful[T] = new Clueful(fun)
-  // SKIP-DOTTY-END 
-  //DOTTY-ONLY /**
-  //DOTTY-ONLY * Extension method that allows clues to be placed after a block of code.
-  //DOTTY-ONLY */
-  //DOTTY-ONLY extension [T](fun: => T) {
-  //DOTTY-ONLY   def withClue(clue: Any): T = new Clueful(fun).withClue(clue)
-  //DOTTY-ONLY }
-}
-
-/**
- * Companion object that facilitates the importing of <code>AppendedClues</code> members as 
- * an alternative to mixing it in. One use case is to import <code>AppendedClues</code>
- * members so you can use them in the Scala interpreter.
- */
-object AppendedClues extends AppendedClues {
-  private[scalatest] def appendClue(original: String, clue: String): String =
-    clue.toString.headOption match {
-      case Some(firstChar) if firstChar.isWhitespace ||
-          firstChar == '.' || firstChar == ',' || firstChar == ';' => 
-        original + clue
-      case _ => original + " " + clue
-   }
+  } 
 }
 
