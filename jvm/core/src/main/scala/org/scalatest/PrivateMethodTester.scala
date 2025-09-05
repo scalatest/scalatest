@@ -2787,6 +2787,7 @@ trait PrivateMethodTester {
     }
   }
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
 
   /**
@@ -2797,6 +2798,19 @@ trait PrivateMethodTester {
    * @throws NullArgumentException if <code>target</code> is <code>null</code>.
    */
   implicit def anyRefToInvoker(target: AnyRef): Invoker = new Invoker(target)
+  // SKIP-DOTTY-END
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert <code>AnyRef</code> to <code>Invoker</code>.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @param target the target object on which to invoke a private method.
+  //DOTTY-ONLY  * @throws NullArgumentException if <code>target</code> is <code>null</code>.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def anyRefToInvoker(target: AnyRef): Invoker = new Invoker(target)
+
+  //DOTTY-ONLY given Conversion[AnyRef, Invoker] with {
+  //DOTTY-ONLY   def apply(target: AnyRef): Invoker = anyRefToInvoker(target)
+  //DOTTY-ONLY }
 }
 
 /**

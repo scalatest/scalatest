@@ -16,6 +16,7 @@
 package org.scalatest
 
 import PrivateMethodTester._
+//DOTTY-ONLY import PrivateMethodTester.given_Conversion_AnyRef_Invoker
 import org.scalatest.funspec.AnyFunSpec
 
 class PrivateMethodTesterSpec extends AnyFunSpec {

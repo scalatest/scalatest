@@ -89,6 +89,9 @@ import org.scalatest.exceptions.TestFailedException
  */
 trait TryValues extends Serializable {
 
+  import TryValues.SuccessOrFailure
+
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
 
   /**
@@ -97,7 +100,31 @@ trait TryValues extends Serializable {
    * @param theTry the <code>Try</code> to which to add the <code>success</code> and <code>failure</code> methods
    */
   implicit def convertTryToSuccessOrFailure[T](theTry: Try[T])(implicit pos: source.Position): SuccessOrFailure[T] = new SuccessOrFailure(theTry, pos)
+  // SKIP-DOTTY-END
 
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert <code>Try[T]</code> to <code>SuccessOrFailure[T]</code>
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def convertTryToSuccessOrFailure[T](theTry: Try[T])(implicit pos: source.Position): SuccessOrFailure[T] = new SuccessOrFailure(theTry, pos)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension that adds a <code>failure</code> and <code>success</code> method to <code>Try</code>.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @param theTry the <code>Try[T]</code> on which to add the <code>failure</code> and <code>success</code> methods
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension [A, B](theTry: Try[A])(using pos: source.Position) {
+  //DOTTY-ONLY   def failure: Failure[A] = convertTryToSuccessOrFailure(theTry).failure
+  //DOTTY-ONLY   def success: Success[A] = convertTryToSuccessOrFailure(theTry).success
+  //DOTTY-ONLY }
+}
+
+/**
+ * Companion object that facilitates the importing of <code>TryValues</code> members as 
+ * an alternative to mixing it in. One use case is to import <code>TryValues</code>'s members so you can use
+ * <code>success</code> and <code>failure</code> on <code>Try</code> in the Scala interpreter.
+ * </pre>
+ */
+object TryValues extends TryValues {
   /**
    * Wrapper class that adds <code>success</code> and <code>failure</code> methods to <code>scala.util.Try</code>, allowing
    * you to make statements like:
@@ -136,11 +163,3 @@ trait TryValues extends Serializable {
     }
   }
 }
-
-/**
- * Companion object that facilitates the importing of <code>TryValues</code> members as 
- * an alternative to mixing it in. One use case is to import <code>TryValues</code>'s members so you can use
- * <code>success</code> and <code>failure</code> on <code>Try</code> in the Scala interpreter.
- * </pre>
- */
-object TryValues extends TryValues
