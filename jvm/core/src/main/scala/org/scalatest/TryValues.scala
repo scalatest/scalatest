@@ -89,6 +89,8 @@ import org.scalatest.exceptions.TestFailedException
  */
 trait TryValues extends Serializable {
 
+  import TryValues.SuccessOrFailure
+
   // SKIP-DOTTY-START
   import scala.language.implicitConversions
 
@@ -114,7 +116,15 @@ trait TryValues extends Serializable {
   //DOTTY-ONLY   def failure: Failure[A] = convertTryToSuccessOrFailure(theTry).failure
   //DOTTY-ONLY   def success: Success[A] = convertTryToSuccessOrFailure(theTry).success
   //DOTTY-ONLY }
+}
 
+/**
+ * Companion object that facilitates the importing of <code>TryValues</code> members as 
+ * an alternative to mixing it in. One use case is to import <code>TryValues</code>'s members so you can use
+ * <code>success</code> and <code>failure</code> on <code>Try</code> in the Scala interpreter.
+ * </pre>
+ */
+object TryValues extends TryValues {
   /**
    * Wrapper class that adds <code>success</code> and <code>failure</code> methods to <code>scala.util.Try</code>, allowing
    * you to make statements like:
@@ -153,11 +163,3 @@ trait TryValues extends Serializable {
     }
   }
 }
-
-/**
- * Companion object that facilitates the importing of <code>TryValues</code> members as 
- * an alternative to mixing it in. One use case is to import <code>TryValues</code>'s members so you can use
- * <code>success</code> and <code>failure</code> on <code>Try</code> in the Scala interpreter.
- * </pre>
- */
-object TryValues extends TryValues
