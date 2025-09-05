@@ -80,6 +80,8 @@ import org.scalatest.exceptions.TestFailedException
  */
 trait OptionValues {
 
+  import OptionValues.OptionValuable
+
   // SKIP-DOTTY-START
   import scala.language.implicitConversions
 
@@ -105,32 +107,6 @@ trait OptionValues {
   //DOTTY-ONLY   def value: T =
   //DOTTY-ONLY     convertOptionToValuable(opt)(pos).value
   //DOTTY-ONLY }
-
-  /**
-   * Wrapper class that adds a <code>value</code> method to <code>Option</code>, allowing
-   * you to make statements like:
-   *
-   * <pre class="stHighlight">
-   * opt.value should be &gt; 9
-   * </pre>
-   *
-   * @param opt An option to convert to <code>OptionValuable</code>, which provides the <code>value</code> method.
-   */
-  class OptionValuable[T](opt: Option[T], pos: source.Position) {
-    /**
-     * Returns the value contained in the wrapped <code>Option</code>, if defined, else throws <code>TestFailedException</code> with
-     * a detail message indicating the option was not defined.
-     */
-    def value: T = {
-      try {
-        opt.get
-      }
-      catch {
-        case cause: NoSuchElementException => 
-          throw new TestFailedException((_: StackDepthException) => Some(Resources.optionValueNotDefined), Some(cause), pos)
-      }
-    }
-  }
 }
 
 /**
@@ -169,5 +145,31 @@ trait OptionValues {
  * </pre>
  *
  */
-object OptionValues extends OptionValues
+object OptionValues extends OptionValues {
+  /**
+   * Wrapper class that adds a <code>value</code> method to <code>Option</code>, allowing
+   * you to make statements like:
+   *
+   * <pre class="stHighlight">
+   * opt.value should be &gt; 9
+   * </pre>
+   *
+   * @param opt An option to convert to <code>OptionValuable</code>, which provides the <code>value</code> method.
+   */
+  class OptionValuable[T](opt: Option[T], pos: source.Position) {
+    /**
+     * Returns the value contained in the wrapped <code>Option</code>, if defined, else throws <code>TestFailedException</code> with
+     * a detail message indicating the option was not defined.
+     */
+    def value: T = {
+      try {
+        opt.get
+      }
+      catch {
+        case cause: NoSuchElementException => 
+          throw new TestFailedException((_: StackDepthException) => Some(Resources.optionValueNotDefined), Some(cause), pos)
+      }
+    }
+  }
+}
 
