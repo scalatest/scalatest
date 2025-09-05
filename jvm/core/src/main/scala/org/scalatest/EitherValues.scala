@@ -83,6 +83,8 @@ import org.scalatest.exceptions.TestFailedException
  */
 trait EitherValues extends Serializable {
 
+  import EitherValues._
+
   // SKIP-DOTTY-START
   import scala.language.implicitConversions
 
@@ -157,7 +159,41 @@ trait EitherValues extends Serializable {
   //DOTTY-ONLY   def value: R = 
   //DOTTY-ONLY     (new EitherValuable(either, pos)).value
   //DOTTY-ONLY }
+}
 
+/**
+ * Companion object that facilitates the importing of <code>ValueEither</code> members as 
+ * an alternative to mixing it in. One use case is to import <code>EitherValues</code>'s members so you can use
+ * <code>left.value</code> and <code>right.value</code> on <code>Either</code> in the Scala interpreter:
+ *
+ * <pre class="stREPL">
+ * $ scala -cp scalatest-1.7.jar
+ * Welcome to Scala version 2.9.1.final (Java HotSpot(TM) 64-Bit Server VM, Java 1.6.0_29).
+ * Type in expressions to have them evaluated.
+ * Type :help for more information.
+ * 
+ * scala&gt; import org.scalatest._
+ * import org.scalatest._
+ * 
+ * scala&gt; import matchers.Matchers._
+ * import matchers.Matchers._
+ * 
+ * scala&gt; import EitherValues._
+ * import EitherValues._
+ * 
+ * scala&gt; val e: Either[String, Int] = Left("Muchas problemas")
+ * e: Either[String,Int] = Left(Muchos problemas)
+ * 
+ * scala&gt; e.left.value should be ("Muchos problemas")
+ * 
+ * scala&gt; e.value should be &lt; 9
+ * org.scalatest.TestFailedException: The Either on which value was invoked was not defined.
+ *   at org.scalatest.EitherValues$RightValuable.value(EitherValues.scala:148)
+ *   at .&lt;init&gt;(&lt;console&gt;:18)
+ *   ...
+ * </pre>
+ */
+object EitherValues extends EitherValues {
   /**
    * Wrapper class that adds a <code>value</code> method to <code>LeftProjection</code>, allowing
    * you to make statements like:
@@ -245,37 +281,3 @@ trait EitherValues extends Serializable {
     }
   }
 }
-
-/**
- * Companion object that facilitates the importing of <code>ValueEither</code> members as 
- * an alternative to mixing it in. One use case is to import <code>EitherValues</code>'s members so you can use
- * <code>left.value</code> and <code>right.value</code> on <code>Either</code> in the Scala interpreter:
- *
- * <pre class="stREPL">
- * $ scala -cp scalatest-1.7.jar
- * Welcome to Scala version 2.9.1.final (Java HotSpot(TM) 64-Bit Server VM, Java 1.6.0_29).
- * Type in expressions to have them evaluated.
- * Type :help for more information.
- * 
- * scala&gt; import org.scalatest._
- * import org.scalatest._
- * 
- * scala&gt; import matchers.Matchers._
- * import matchers.Matchers._
- * 
- * scala&gt; import EitherValues._
- * import EitherValues._
- * 
- * scala&gt; val e: Either[String, Int] = Left("Muchas problemas")
- * e: Either[String,Int] = Left(Muchos problemas)
- * 
- * scala&gt; e.left.value should be ("Muchos problemas")
- * 
- * scala&gt; e.value should be &lt; 9
- * org.scalatest.TestFailedException: The Either on which value was invoked was not defined.
- *   at org.scalatest.EitherValues$RightValuable.value(EitherValues.scala:148)
- *   at .&lt;init&gt;(&lt;console&gt;:18)
- *   ...
- * </pre>
- */
-object EitherValues extends EitherValues
