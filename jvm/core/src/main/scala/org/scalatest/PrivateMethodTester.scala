@@ -84,6 +84,67 @@ import java.lang.reflect.{InvocationTargetException, Method, Modifier}
  */
 trait PrivateMethodTester {
 
+  import PrivateMethodTester._
+
+  // SKIP-DOTTY-START
+  import scala.language.implicitConversions
+
+  /**
+   * Implicit conversion from <code>AnyRef</code> to <code>Invoker</code>, used to enable
+   * assertions testing of private methods.
+   *
+   * @param target the target object on which to invoke a private method.
+   * @throws NullArgumentException if <code>target</code> is <code>null</code>.
+   */
+  implicit def anyRefToInvoker(target: AnyRef): Invoker = new Invoker(target)
+  // SKIP-DOTTY-END
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert <code>AnyRef</code> to <code>Invoker</code>.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @param target the target object on which to invoke a private method.
+  //DOTTY-ONLY  * @throws NullArgumentException if <code>target</code> is <code>null</code>.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def anyRefToInvoker(target: AnyRef): Invoker = new Invoker(target)
+
+  //DOTTY-ONLY given Conversion[AnyRef, Invoker] with {
+  //DOTTY-ONLY   def apply(target: AnyRef): Invoker = anyRefToInvoker(target)
+  //DOTTY-ONLY }
+}
+
+/**
+ * Companion object that facilitates the importing of <code>PrivateMethodTester</code> members as 
+ * an alternative to mixing it in. One use case is to import <code>PrivateMethodTester</code> members so you can use
+ * them in the Scala interpreter:
+ *
+ * <pre class="stREPL">
+ * $scala -classpath scalatest.jar
+ * Welcome to Scala version 2.7.5.final (Java HotSpot(TM) Client VM, Java 1.5.0_16).
+ * Type in expressions to have them evaluated.
+ * Type :help for more information.
+ * &nbsp;
+ * scala> import org.scalatest.PrivateMethodTester._                 
+ * import org.scalatest.PrivateMethodTester._
+ * &nbsp;
+ * scala> class Example {
+ *      |   private def addSesame(prefix: String) = prefix + " sesame"
+ *      | }
+ * defined class Example
+ * &nbsp;
+ * scala> val example = new Example
+ * example: Example = Example@d8b6fe
+ * &nbsp;
+ * scala> val addSesame = PrivateMethod[String]('addSesame)           
+ * addSesame: org.scalatest.PrivateMethodTester.PrivateMethod[String] = org.scalatest.PrivateMethodTester$PrivateMethod@5cdf95
+ * &nbsp;
+ * scala> example invokePrivate addSesame("open")                     
+ * res0: String = open sesame
+ * <pre>
+ *
+ * @author Bill Venners
+ */
+object PrivateMethodTester extends PrivateMethodTester {
+
   /**
    * Represent a private method, whose apply method returns an <code>Invocation0</code> object that
    * records the name of the private method to invoke.
@@ -2787,62 +2848,5 @@ trait PrivateMethodTester {
     }
   }
 
-  // SKIP-DOTTY-START
-  import scala.language.implicitConversions
-
-  /**
-   * Implicit conversion from <code>AnyRef</code> to <code>Invoker</code>, used to enable
-   * assertions testing of private methods.
-   *
-   * @param target the target object on which to invoke a private method.
-   * @throws NullArgumentException if <code>target</code> is <code>null</code>.
-   */
-  implicit def anyRefToInvoker(target: AnyRef): Invoker = new Invoker(target)
-  // SKIP-DOTTY-END
-
-  //DOTTY-ONLY /**
-  //DOTTY-ONLY  * Convert <code>AnyRef</code> to <code>Invoker</code>.
-  //DOTTY-ONLY  *
-  //DOTTY-ONLY  * @param target the target object on which to invoke a private method.
-  //DOTTY-ONLY  * @throws NullArgumentException if <code>target</code> is <code>null</code>.
-  //DOTTY-ONLY  */
-  //DOTTY-ONLY def anyRefToInvoker(target: AnyRef): Invoker = new Invoker(target)
-
-  //DOTTY-ONLY given Conversion[AnyRef, Invoker] with {
-  //DOTTY-ONLY   def apply(target: AnyRef): Invoker = anyRefToInvoker(target)
-  //DOTTY-ONLY }
 }
-
-/**
- * Companion object that facilitates the importing of <code>PrivateMethodTester</code> members as 
- * an alternative to mixing it in. One use case is to import <code>PrivateMethodTester</code> members so you can use
- * them in the Scala interpreter:
- *
- * <pre class="stREPL">
- * $scala -classpath scalatest.jar
- * Welcome to Scala version 2.7.5.final (Java HotSpot(TM) Client VM, Java 1.5.0_16).
- * Type in expressions to have them evaluated.
- * Type :help for more information.
- * &nbsp;
- * scala> import org.scalatest.PrivateMethodTester._                 
- * import org.scalatest.PrivateMethodTester._
- * &nbsp;
- * scala> class Example {
- *      |   private def addSesame(prefix: String) = prefix + " sesame"
- *      | }
- * defined class Example
- * &nbsp;
- * scala> val example = new Example
- * example: Example = Example@d8b6fe
- * &nbsp;
- * scala> val addSesame = PrivateMethod[String]('addSesame)           
- * addSesame: org.scalatest.PrivateMethodTester.PrivateMethod[String] = org.scalatest.PrivateMethodTester$PrivateMethod@5cdf95
- * &nbsp;
- * scala> example invokePrivate addSesame("open")                     
- * res0: String = open sesame
- * <pre>
- *
- * @author Bill Venners
- */
-object PrivateMethodTester extends PrivateMethodTester
 

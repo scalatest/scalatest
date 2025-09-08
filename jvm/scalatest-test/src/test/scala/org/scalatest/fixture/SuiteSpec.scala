@@ -30,7 +30,7 @@ import org.scalatest.funsuite.FixtureAnyFunSuite
 class SuiteSpec extends scalatest.funspec.AnyFunSpec with PrivateMethodTester {
 
   describe("The private testMethodTakesInformer method") {
-    val testMethodTakesAFixtureAndInformer = PrivateMethod1[String, Boolean](Symbol("testMethodTakesAFixtureAndInformer"))
+    val testMethodTakesAFixtureAndInformer = PrivateMethodTester.PrivateMethod1[String, Boolean](Symbol("testMethodTakesAFixtureAndInformer"))
     val suiteObject = Suite
     it("should return true if passed a string that ends in (FixtureParam, Informer)") {
       assert(suiteObject invokePrivate testMethodTakesAFixtureAndInformer("thisDoes(FixtureParam, Informer)"))
