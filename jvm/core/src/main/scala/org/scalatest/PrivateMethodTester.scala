@@ -106,9 +106,305 @@ trait PrivateMethodTester {
   //DOTTY-ONLY  * @throws NullArgumentException if <code>target</code> is <code>null</code>.
   //DOTTY-ONLY  */
   //DOTTY-ONLY def anyRefToInvoker(target: AnyRef): Invoker = new Invoker(target)
-
-  //DOTTY-ONLY given Conversion[AnyRef, Invoker] with {
-  //DOTTY-ONLY   def apply(target: AnyRef): Invoker = anyRefToInvoker(target)
+  //DOTTY-ONLY extension (target: AnyRef) {
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[T](invocation: Invocation[T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with no argument. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The object on which to invoke the private method is the <code>target</code> object passed to this <code>Invoker</code>'s 
+  //DOTTY-ONLY    * primary constructor.  The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation0</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[T](invocation: Invocation0[T]): T = anyRefToInvoker(target).invokePrivate(invocation)  
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 1 argument. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation1</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, T](invocation: Invocation1[A1, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 2 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation2</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, T](invocation: Invocation2[A1, A2, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 3 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation3</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, A3, T](invocation: Invocation3[A1, A2, A3, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 4 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation4</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, A3, A4, T](invocation: Invocation4[A1, A2, A3, A4, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 5 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation5</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, A3, A4, A5, T](invocation: Invocation5[A1, A2, A3, A4, A5, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 6 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation6</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, A3, A4, A5, A6, T](invocation: Invocation6[A1, A2, A3, A4, A5, A6, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 7 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation7</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, A3, A4, A5, A6, A7, T](invocation: Invocation7[A1, A2, A3, A4, A5, A6, A7, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 8 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation8</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, A3, A4, A5, A6, A7, A8, T](invocation: Invocation8[A1, A2, A3, A4, A5, A6, A7, A8, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 9 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation9</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, A3, A4, A5, A6, A7, A8, A9, T](invocation: Invocation9[A1, A2, A3, A4, A5, A6, A7, A8, A9, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 10 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation10</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, T](invocation: Invocation10[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 11 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation11</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, T](invocation: Invocation11[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 12 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation12</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, T](invocation: Invocation12[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 13 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation13</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, T](invocation: Invocation13[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 14 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation14</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, T](invocation: Invocation14[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 15 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation15</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, T](invocation: Invocation15[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 16 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation16</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, T](invocation: Invocation16[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 17 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation17</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, T](invocation: Invocation17[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 18 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation18</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, T](invocation: Invocation18[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 19 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation19</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, T](invocation: Invocation19[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 20 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation20</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, T](invocation: Invocation20[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Invoke a private method with 21 arguments. This method will attempt to invoke via reflection a private method.
+  //DOTTY-ONLY    * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+  //DOTTY-ONLY    * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+  //DOTTY-ONLY    * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+  //DOTTY-ONLY    * The type parameter, <code>T</code>, is the return type of the private method.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param invocation the <code>Invocation21</code> object containing the method name symbol and args of the invocation.
+  //DOTTY-ONLY    * @return the value returned by the invoked private method
+  //DOTTY-ONLY    * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+  //DOTTY-ONLY    * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def invokePrivate[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, T](invocation: Invocation21[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, T]): T = anyRefToInvoker(target).invokePrivate(invocation)
   //DOTTY-ONLY }
 }
 
