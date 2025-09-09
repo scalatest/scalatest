@@ -12,7 +12,7 @@ class AbstractPatienceConfigurationSpec extends AnyFunSpec {
 
     // SKIP-SCALATESTJS-START
     it("should be serialized and deserialized") {
-      val initialPatienceConfig = AbstractPatienceConfiguration.PatienceConfig(Span(466, Milliseconds))
+      val initialPatienceConfig = PatienceConfig(Span(466, Milliseconds))
       val objectStream = new ByteArrayOutputStream()
       val out = new ObjectOutputStream(objectStream)
       out.writeObject(initialPatienceConfig)
