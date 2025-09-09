@@ -25,7 +25,7 @@ import scala.concurrent.TimeoutException
 import scala.concurrent.duration.Duration
 import scala.util.Failure
 import scala.util.Success
-
+import Futures.FutureConcept
 
 /**
  * Provides an implicit conversion from <code>scala.concurrent.Future[T]</code> to

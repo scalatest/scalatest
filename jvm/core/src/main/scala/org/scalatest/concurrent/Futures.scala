@@ -243,7 +243,147 @@ import exceptions.StackDepthException
  */
 trait Futures extends PatienceConfiguration {
 
+  import Futures.FutureConcept
+
   private[concurrent] val jsAdjustment: Int = 0
+
+  //DOTTY-ONLY import scala.quoted._
+
+  /**
+   * Queries the passed future repeatedly until it either is ready, or a configured maximum
+   * amount of time has passed, sleeping a configured interval between attempts; and when ready, passes the future's value
+   * to the passed function.
+   *
+   * <p>
+   * The maximum amount of time to tolerate unsuccessful queries before giving up and throwing
+   * <code>TestFailedException</code> is configured by the value contained in the passed
+   * <code>timeout</code> parameter.
+   * The interval to sleep between attempts is configured by the value contained in the passed
+   * <code>interval</code> parameter.
+   * </p>
+   *
+   * <p>
+   * If the <code>eitherValue</code> method of the underlying Scala future returns a <code>scala.Some</code> containing a
+   * <code>scala.util.Failure</code> containing a <code>java.util.concurrent.ExecutionException</code>, and this
+   * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The
+   * <code>ExecutionException</code> will be be included as the <code>TestFailedException</code>'s cause only if the
+   * <code>ExecutionException</code>'s cause is <code>null</code>.
+   * </p>
+   *
+   * @param future the future to query
+   * @param timeout the <code>Timeout</code> configuration parameter
+   * @param interval the <code>Interval</code> configuration parameter
+   * @param fun the function to which pass the future's value when it is ready
+   * @param config an <code>PatienceConfig</code> object containing <code>timeout</code> and
+   *          <code>interval</code> parameters that are unused by this method
+   * @return the result of invoking the <code>fun</code> parameter
+   */
+  // SKIP-DOTTY-START 
+  final def whenReady[T, U](future: FutureConcept[T], timeout: Timeout, interval: Interval)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
+    Futures.whenReadyImpl(this)(future, fun, timeout.value, interval.value, pos)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY final inline def whenReady[T, U](future: FutureConcept[T], timeout: Timeout, interval: Interval)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
+  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{this}, '{future}, '{fun}, '{timeout.value}, '{interval.value}) }    
+    
+  /**
+   * Queries the passed future repeatedly until it either is ready, or a configured maximum
+   * amount of time has passed, sleeping a configured interval between attempts; and when ready, passes the future's value
+   * to the passed function.
+   *
+   * <p>
+   * The maximum amount of time in milliseconds to tolerate unsuccessful queries before giving up and throwing
+   * <code>TestFailedException</code> is configured by the value contained in the passed
+   * <code>timeout</code> parameter.
+   * The interval to sleep between attempts is configured by the <code>interval</code> field of
+   * the <code>PatienceConfig</code> passed implicitly as the last parameter.
+   * </p>
+   *
+   * <p>
+   * If the <code>eitherValue</code> method of the underlying Scala future returns a <code>scala.Some</code> containing a
+   * <code>scala.util.Failure</code> containing a <code>java.util.concurrent.ExecutionException</code>, and this
+   * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The
+   * <code>ExecutionException</code> will be be included as the <code>TestFailedException</code>'s cause only if the
+   * <code>ExecutionException</code>'s cause is <code>null</code>.
+   * </p>
+   *
+   * @param future the future to query
+   * @param timeout the <code>Timeout</code> configuration parameter
+   * @param fun the function to which pass the future's value when it is ready
+   * @param config an <code>PatienceConfig</code> object containing <code>timeout</code> and
+   *          <code>interval</code> parameters that are unused by this method
+   * @return the result of invoking the <code>fun</code> parameter
+   */
+  // SKIP-DOTTY-START 
+  final def whenReady[T, U](future: FutureConcept[T], timeout: Timeout)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
+    Futures.whenReadyImpl(this)(future, fun, timeout.value, config.interval, pos)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY final inline def whenReady[T, U](future: FutureConcept[T], timeout: Timeout)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
+  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{this}, '{future}, '{fun}, '{timeout.value}, '{config.interval}) }  
+
+  /**
+   * Queries the passed future repeatedly until it either is ready, or a configured maximum
+   * amount of time has passed, sleeping a configured interval between attempts; and when ready, passes the future's value
+   * to the passed function.
+   *
+   * <p>
+   * The maximum amount of time in milliseconds to tolerate unsuccessful attempts before giving up is configured by the <code>timeout</code> field of
+   * the <code>PatienceConfig</code> passed implicitly as the last parameter.
+   * The interval to sleep between attempts is configured by the value contained in the passed
+   * <code>interval</code> parameter.
+   * </p>
+   *
+   * @param future the future to query
+   * @param interval the <code>Interval</code> configuration parameter
+   * @param fun the function to which pass the future's value when it is ready
+   * @param config an <code>PatienceConfig</code> object containing <code>timeout</code> and
+   *          <code>interval</code> parameters that are unused by this method
+   * @return the result of invoking the <code>fun</code> parameter
+   */
+  // SKIP-DOTTY-START 
+  final def whenReady[T, U](future: FutureConcept[T], interval: Interval)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
+    Futures.whenReadyImpl(this)(future, fun, config.timeout, interval.value, pos)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY final inline def whenReady[T, U](future: FutureConcept[T], interval: Interval)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
+  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{this}, '{future}, '{fun}, '{config.timeout}, '{interval.value}) }
+  
+  /**
+   * Queries the passed future repeatedly until it either is ready, or a configured maximum
+   * amount of time has passed, sleeping a configured interval between attempts; and when ready, passes the future's value
+   * to the passed function.
+   *
+   * <p>
+   * The maximum amount of time in milliseconds to tolerate unsuccessful attempts before giving up is configured by the <code>timeout</code> field of
+   * the <code>PatienceConfig</code> passed implicitly as the last parameter.
+   * The interval to sleep between attempts is configured by the <code>interval</code> field of
+   * the <code>PatienceConfig</code> passed implicitly as the last parameter.
+   * </p>
+   *
+   * <p>
+   * If the <code>eitherValue</code> method of the underlying Scala future returns a <code>scala.Some</code> containing a
+   * <code>scala.util.Failure</code> containing a <code>java.util.concurrent.ExecutionException</code>, and this
+   * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The
+   * <code>ExecutionException</code> will be be included as the <code>TestFailedException</code>'s cause only if the
+   * <code>ExecutionException</code>'s cause is <code>null</code>.
+   * </p>
+   *
+   *
+   * @param future the future to query
+   * @param fun the function to which pass the future's value when it is ready
+   * @param config an <code>PatienceConfig</code> object containing <code>timeout</code> and
+   *          <code>interval</code> parameters that are unused by this method
+   * @return the result of invoking the <code>fun</code> parameter
+   */
+  // SKIP-DOTTY-START
+  final def whenReady[T, U](future: FutureConcept[T])(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
+    Futures.whenReadyImpl(this)(future, fun, config.timeout, config.interval, pos)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY final inline def whenReady[T, U](future: FutureConcept[T])(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
+  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{this}, '{future}, '{fun}, '{config.timeout}, '{config.interval}) }
+
+  /**/
+}
+
+object Futures extends Futures {
 
   /**
    * Concept trait for futures, instances of which are passed to the <code>whenReady</code>
@@ -478,156 +618,18 @@ trait Futures extends PatienceConfiguration {
     private[concurrent] def futureValueImpl(pos: source.Position)(implicit config: PatienceConfig): T
   }
 
-  //DOTTY-ONLY import scala.quoted.*
-
-  /**
-   * Queries the passed future repeatedly until it either is ready, or a configured maximum
-   * amount of time has passed, sleeping a configured interval between attempts; and when ready, passes the future's value
-   * to the passed function.
-   *
-   * <p>
-   * The maximum amount of time to tolerate unsuccessful queries before giving up and throwing
-   * <code>TestFailedException</code> is configured by the value contained in the passed
-   * <code>timeout</code> parameter.
-   * The interval to sleep between attempts is configured by the value contained in the passed
-   * <code>interval</code> parameter.
-   * </p>
-   *
-   * <p>
-   * If the <code>eitherValue</code> method of the underlying Scala future returns a <code>scala.Some</code> containing a
-   * <code>scala.util.Failure</code> containing a <code>java.util.concurrent.ExecutionException</code>, and this
-   * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The
-   * <code>ExecutionException</code> will be be included as the <code>TestFailedException</code>'s cause only if the
-   * <code>ExecutionException</code>'s cause is <code>null</code>.
-   * </p>
-   *
-   * @param future the future to query
-   * @param timeout the <code>Timeout</code> configuration parameter
-   * @param interval the <code>Interval</code> configuration parameter
-   * @param fun the function to which pass the future's value when it is ready
-   * @param config an <code>PatienceConfig</code> object containing <code>timeout</code> and
-   *          <code>interval</code> parameters that are unused by this method
-   * @return the result of invoking the <code>fun</code> parameter
-   */
-  // SKIP-DOTTY-START 
-  final def whenReady[T, U](future: FutureConcept[T], timeout: Timeout, interval: Interval)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
-    Futures.whenReadyImpl(this)(future, fun, timeout.value, interval.value, pos)
-  // SKIP-DOTTY-END
-  //DOTTY-ONLY final inline def whenReady[T, U](future: FutureConcept[T], timeout: Timeout, interval: Interval)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
-  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{this}, '{future}, '{fun}, '{timeout.value}, '{interval.value}) }    
-    
-  /**
-   * Queries the passed future repeatedly until it either is ready, or a configured maximum
-   * amount of time has passed, sleeping a configured interval between attempts; and when ready, passes the future's value
-   * to the passed function.
-   *
-   * <p>
-   * The maximum amount of time in milliseconds to tolerate unsuccessful queries before giving up and throwing
-   * <code>TestFailedException</code> is configured by the value contained in the passed
-   * <code>timeout</code> parameter.
-   * The interval to sleep between attempts is configured by the <code>interval</code> field of
-   * the <code>PatienceConfig</code> passed implicitly as the last parameter.
-   * </p>
-   *
-   * <p>
-   * If the <code>eitherValue</code> method of the underlying Scala future returns a <code>scala.Some</code> containing a
-   * <code>scala.util.Failure</code> containing a <code>java.util.concurrent.ExecutionException</code>, and this
-   * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The
-   * <code>ExecutionException</code> will be be included as the <code>TestFailedException</code>'s cause only if the
-   * <code>ExecutionException</code>'s cause is <code>null</code>.
-   * </p>
-   *
-   * @param future the future to query
-   * @param timeout the <code>Timeout</code> configuration parameter
-   * @param fun the function to which pass the future's value when it is ready
-   * @param config an <code>PatienceConfig</code> object containing <code>timeout</code> and
-   *          <code>interval</code> parameters that are unused by this method
-   * @return the result of invoking the <code>fun</code> parameter
-   */
-  // SKIP-DOTTY-START 
-  final def whenReady[T, U](future: FutureConcept[T], timeout: Timeout)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
-    Futures.whenReadyImpl(this)(future, fun, timeout.value, config.interval, pos)
-  // SKIP-DOTTY-END
-  //DOTTY-ONLY final inline def whenReady[T, U](future: FutureConcept[T], timeout: Timeout)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
-  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{this}, '{future}, '{fun}, '{timeout.value}, '{config.interval}) }  
-
-  /**
-   * Queries the passed future repeatedly until it either is ready, or a configured maximum
-   * amount of time has passed, sleeping a configured interval between attempts; and when ready, passes the future's value
-   * to the passed function.
-   *
-   * <p>
-   * The maximum amount of time in milliseconds to tolerate unsuccessful attempts before giving up is configured by the <code>timeout</code> field of
-   * the <code>PatienceConfig</code> passed implicitly as the last parameter.
-   * The interval to sleep between attempts is configured by the value contained in the passed
-   * <code>interval</code> parameter.
-   * </p>
-   *
-   * @param future the future to query
-   * @param interval the <code>Interval</code> configuration parameter
-   * @param fun the function to which pass the future's value when it is ready
-   * @param config an <code>PatienceConfig</code> object containing <code>timeout</code> and
-   *          <code>interval</code> parameters that are unused by this method
-   * @return the result of invoking the <code>fun</code> parameter
-   */
-  // SKIP-DOTTY-START 
-  final def whenReady[T, U](future: FutureConcept[T], interval: Interval)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
-    Futures.whenReadyImpl(this)(future, fun, config.timeout, interval.value, pos)
-  // SKIP-DOTTY-END
-  //DOTTY-ONLY final inline def whenReady[T, U](future: FutureConcept[T], interval: Interval)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
-  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{this}, '{future}, '{fun}, '{config.timeout}, '{interval.value}) }
-  
-  /**
-   * Queries the passed future repeatedly until it either is ready, or a configured maximum
-   * amount of time has passed, sleeping a configured interval between attempts; and when ready, passes the future's value
-   * to the passed function.
-   *
-   * <p>
-   * The maximum amount of time in milliseconds to tolerate unsuccessful attempts before giving up is configured by the <code>timeout</code> field of
-   * the <code>PatienceConfig</code> passed implicitly as the last parameter.
-   * The interval to sleep between attempts is configured by the <code>interval</code> field of
-   * the <code>PatienceConfig</code> passed implicitly as the last parameter.
-   * </p>
-   *
-   * <p>
-   * If the <code>eitherValue</code> method of the underlying Scala future returns a <code>scala.Some</code> containing a
-   * <code>scala.util.Failure</code> containing a <code>java.util.concurrent.ExecutionException</code>, and this
-   * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The
-   * <code>ExecutionException</code> will be be included as the <code>TestFailedException</code>'s cause only if the
-   * <code>ExecutionException</code>'s cause is <code>null</code>.
-   * </p>
-   *
-   *
-   * @param future the future to query
-   * @param fun the function to which pass the future's value when it is ready
-   * @param config an <code>PatienceConfig</code> object containing <code>timeout</code> and
-   *          <code>interval</code> parameters that are unused by this method
-   * @return the result of invoking the <code>fun</code> parameter
-   */
-  // SKIP-DOTTY-START
-  final def whenReady[T, U](future: FutureConcept[T])(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
-    Futures.whenReadyImpl(this)(future, fun, config.timeout, config.interval, pos)
-  // SKIP-DOTTY-END
-  //DOTTY-ONLY final inline def whenReady[T, U](future: FutureConcept[T])(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
-  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{this}, '{future}, '{fun}, '{config.timeout}, '{config.interval}) }
-
-  /**/
-}
-
-object Futures extends Futures {
-
-  final def whenReadyImpl[T, U](futures: Futures)(future: futures.FutureConcept[T], fun: T => U, timeout: Span, interval: Span, pos: source.Position): U = {
+  final def whenReadyImpl[T, U](futures: Futures)(future: FutureConcept[T], fun: T => U, timeout: Span, interval: Span, pos: source.Position): U = {
     val result = future.futureValueImpl(pos)(PatienceConfig(timeout, interval))
     fun(result)
   }
 
   //DOTTY-ONLY import scala.quoted.*
 
-  //DOTTY-ONLY final def workaroundWhenReadyImpl[T, U](futures: Futures)(future: Futures#FutureConcept[T], fun: T => U, timeout: Span, interval: Span, pos: source.Position): U = 
-  //DOTTY-ONLY   whenReadyImpl(futures)(future.asInstanceOf[futures.FutureConcept[T]], fun, timeout, interval, pos)
+  //DOTTY-ONLY final def workaroundWhenReadyImpl[T, U](futures: Futures)(future: FutureConcept[T], fun: T => U, timeout: Span, interval: Span, pos: source.Position): U = 
+  //DOTTY-ONLY   whenReadyImpl(futures)(future.asInstanceOf[FutureConcept[T]], fun, timeout, interval, pos)
 
-  //DOTTY-ONLY // Ideally, we can use future: Expr[futures.FutureConcept[T]] and fun Expr[T => U] here, can't get it to work so we have the above workaroundWhenReadyImpl that takes Any.
-  //DOTTY-ONLY private[concurrent] def whenReadyMacro[T, U](futures: Expr[Futures], future: Expr[Futures#FutureConcept[T]], fun: Expr[T => U], timeout: Expr[Span], interval: Expr[Span])(using quotes: Quotes, typeT: Type[T], typeU: Type[U]): Expr[U] = {
+  //DOTTY-ONLY // Ideally, we can use future: Expr[FutureConcept[T]] and fun Expr[T => U] here, can't get it to work so we have the above workaroundWhenReadyImpl that takes Any.
+  //DOTTY-ONLY private[concurrent] def whenReadyMacro[T, U](futures: Expr[Futures], future: Expr[FutureConcept[T]], fun: Expr[T => U], timeout: Expr[Span], interval: Expr[Span])(using quotes: Quotes, typeT: Type[T], typeU: Type[U]): Expr[U] = {
   //DOTTY-ONLY   source.Position.withPosition[U]('{(pos: source.Position) => workaroundWhenReadyImpl(${futures})(${future}, ${fun}, ${timeout}, ${interval}, pos) })
   //DOTTY-ONLY }
 
