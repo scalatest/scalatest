@@ -23,6 +23,7 @@ import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.{TestPendingException, TestFailedException, TimeoutField}
 import org.scalatest.time.Span
+import Futures.FutureConcept
 
 /**
  * Provides an implicit conversion from <code>java.util.concurrent.Future[T]</code> to
