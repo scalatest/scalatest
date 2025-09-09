@@ -283,7 +283,7 @@ trait Futures extends PatienceConfiguration {
     Futures.whenReadyImpl(future, fun, timeout.value, interval.value, pos)
   // SKIP-DOTTY-END
   //DOTTY-ONLY final inline def whenReady[T, U](future: FutureConcept[T], timeout: Timeout, interval: Interval)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
-  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{this}, '{future}, '{fun}, '{timeout.value}, '{interval.value}) }    
+  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{future}, '{fun}, '{timeout.value}, '{interval.value}) }    
     
   /**
    * Queries the passed future repeatedly until it either is ready, or a configured maximum
@@ -318,7 +318,7 @@ trait Futures extends PatienceConfiguration {
     Futures.whenReadyImpl(future, fun, timeout.value, config.interval, pos)
   // SKIP-DOTTY-END
   //DOTTY-ONLY final inline def whenReady[T, U](future: FutureConcept[T], timeout: Timeout)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
-  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{this}, '{future}, '{fun}, '{timeout.value}, '{config.interval}) }  
+  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{future}, '{fun}, '{timeout.value}, '{config.interval}) }  
 
   /**
    * Queries the passed future repeatedly until it either is ready, or a configured maximum
@@ -344,7 +344,7 @@ trait Futures extends PatienceConfiguration {
     Futures.whenReadyImpl(future, fun, config.timeout, interval.value, pos)
   // SKIP-DOTTY-END
   //DOTTY-ONLY final inline def whenReady[T, U](future: FutureConcept[T], interval: Interval)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
-  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{this}, '{future}, '{fun}, '{config.timeout}, '{interval.value}) }
+  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{future}, '{fun}, '{config.timeout}, '{interval.value}) }
   
   /**
    * Queries the passed future repeatedly until it either is ready, or a configured maximum
@@ -378,7 +378,7 @@ trait Futures extends PatienceConfiguration {
     Futures.whenReadyImpl(future, fun, config.timeout, config.interval, pos)
   // SKIP-DOTTY-END
   //DOTTY-ONLY final inline def whenReady[T, U](future: FutureConcept[T])(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
-  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{this}, '{future}, '{fun}, '{config.timeout}, '{config.interval}) }
+  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{future}, '{fun}, '{config.timeout}, '{config.interval}) }
 
   /**/
 }
@@ -629,7 +629,7 @@ object Futures extends Futures {
   //DOTTY-ONLY   whenReadyImpl(future.asInstanceOf[FutureConcept[T]], fun, timeout, interval, pos)
 
   //DOTTY-ONLY // Ideally, we can use future: Expr[FutureConcept[T]] and fun Expr[T => U] here, can't get it to work so we have the above workaroundWhenReadyImpl that takes Any.
-  //DOTTY-ONLY private[concurrent] def whenReadyMacro[T, U](futures: Expr[Futures], future: Expr[FutureConcept[T]], fun: Expr[T => U], timeout: Expr[Span], interval: Expr[Span])(using quotes: Quotes, typeT: Type[T], typeU: Type[U]): Expr[U] = {
+  //DOTTY-ONLY private[concurrent] def whenReadyMacro[T, U](future: Expr[FutureConcept[T]], fun: Expr[T => U], timeout: Expr[Span], interval: Expr[Span])(using quotes: Quotes, typeT: Type[T], typeU: Type[U]): Expr[U] = {
   //DOTTY-ONLY   source.Position.withPosition[U]('{(pos: source.Position) => workaroundWhenReadyImpl(${future}, ${fun}, ${timeout}, ${interval}, pos) })
   //DOTTY-ONLY }
 
