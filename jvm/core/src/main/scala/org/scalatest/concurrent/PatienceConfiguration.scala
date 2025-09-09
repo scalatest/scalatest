@@ -17,7 +17,6 @@ package org.scalatest.concurrent
 
 import org.scalatest._
 import time.Span
-import PatienceConfiguration._
 import org.scalactic.Requirements._
 
 /**
@@ -82,6 +81,8 @@ import org.scalactic.Requirements._
  */
 trait PatienceConfiguration extends AbstractPatienceConfiguration {
 
+  import PatienceConfiguration.{Timeout, Interval}
+
   private val defaultPatienceConfig = PatienceConfig()
 
   /**
@@ -107,7 +108,7 @@ trait PatienceConfiguration extends AbstractPatienceConfiguration {
   def interval(value: Span) = Interval(value)    // TODO: Throw NPE
 }
 
-object PatienceConfiguration {
+object PatienceConfiguration extends PatienceConfiguration {
 
   /**
    * Abstract class defining a family of configuration parameters for traits <code>Eventually</code> and <code>Waiters</code>.

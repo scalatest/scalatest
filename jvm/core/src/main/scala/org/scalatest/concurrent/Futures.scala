@@ -617,7 +617,7 @@ trait Futures extends PatienceConfiguration {
 object Futures extends Futures {
 
   final def whenReadyImpl[T, U](futures: Futures)(future: futures.FutureConcept[T], fun: T => U, timeout: Span, interval: Span, pos: source.Position): U = {
-    val result = future.futureValueImpl(pos)(futures.PatienceConfig(timeout, interval))
+    val result = future.futureValueImpl(pos)(PatienceConfig(timeout, interval))
     fun(result)
   }
 

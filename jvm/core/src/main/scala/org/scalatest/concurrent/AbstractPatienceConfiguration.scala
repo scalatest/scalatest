@@ -15,9 +15,6 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.time.{Span, Millis}
-
-
 /**
  * Trait that defines an abstract <code>patienceConfig</code> method that is implemented in <a href="PatienceConfiguration.html"><code>PatienceConfiguration</code></a> and can
  * be overriden in stackable modification traits such as <a href="IntegrationPatience.html"><code>IntegrationPatience</code></a>.
@@ -52,66 +49,8 @@ import org.scalatest.time.{Span, Millis}
  * @author Bill Venners
  */
 trait AbstractPatienceConfiguration extends ScaledTimeSpans {
-
-  /**
-   * Configuration object for asynchronous constructs, such as those provided by traits <a href="Eventually.html"><code>Eventually</code></a> and
-   * <a href="Waiters.html"><code>Waiters</code></a>.
-   *
-   * <p>
-   * The default values for the parameters are:
-   * </p>
-   *
-   * <table style="border-collapse: collapse; border: 1px solid black">
- * <tr><th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black"><strong>Configuration Parameter</strong></th><th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black"><strong>Default Value</strong></th></tr>
-   * <tr>
-   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
-   * <code>timeout</code>
-   * </td>
-   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
-   * <code>scaled(150 milliseconds)</code>
-   * </td>
-   * </tr>
-   * <tr>
-   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
-   * <code>interval</code>
-   * </td>
-   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
-   * <code>scaled(15 milliseconds)</code>
-   * </td>
-   * </tr>
-   * </table>
-   *
-   * @param timeout the maximum amount of time to wait for an asynchronous operation to complete before giving up and throwing
-   *   <code>TestFailedException</code>.
-   * @param interval the amount of time to sleep between each check of the status of an asynchronous operation when polling
-   *
-   * @author Bill Venners
-   * @author Chua Chee Seng
-   */
-  final case class PatienceConfig(timeout: Span = scaled(Span(150, Millis)), interval: Span = scaled(Span(15, Millis))) {
-    /**
-     * <code>PatienceConfig</code> is an inner class. For some reason (like using <code>SocketReporter</code> and having
-     * a <code>ScalaFutures</code> test that fails), instance of this class will be serialized. But as an inner class,
-     * scala will add an extra <code>$outer</code> field that references actual outer class: an instance that you don't
-     * want make serializable.
-     * To avoid errors like <code>java.io.NotSerializableException: org.scalatest.verbs.BehaveWord</code>, this function
-     * delegates serialization to a non inner class.
-     */
-    private def writeReplace(): Any = new AbstractPatienceConfiguration.PatienceConfigProxy(timeout, interval)
-  }
-
   /**
    * Returns a <code>PatienceConfig</code> value providing default configuration values if implemented and made implicit in subtraits.
    */
   def patienceConfig: PatienceConfig
-}
-
-private object AbstractPatienceConfiguration extends AbstractPatienceConfiguration {
-
-  override def patienceConfig: PatienceConfig = PatienceConfig()
-
-  private final class PatienceConfigProxy(timeout: Span, interval: Span) extends Serializable {
-    private def readResolve(): Any = PatienceConfig(timeout, interval)
-  }
-
 }
