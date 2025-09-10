@@ -40,6 +40,60 @@ import Futures.FutureConcept
  */
 trait JavaFutures extends Futures {
 
+  import JavaFutures._
+
+  // SKIP-DOTTY-START
+  import scala.language.implicitConversions
+
+  /**
+   * Implicitly converts a <code>java.util.concurrent.Future[T]</code> to
+   * <code>FutureConcept[T]</code>, allowing you to invoke the methods
+   * defined on <code>FutureConcept</code> on a Java <code>Future</code>, as well as to pass a Java future
+   * to the <code>whenReady</code> methods of supertrait <a href="Futures.html"><code>Futures</code></a>.
+   *
+   * <p>
+   * See the documentation for supertrait <a href="Futures.html"><code>Futures</code></a> for the details on the syntax this trait provides
+   * for testing with Java futures.
+   * </p>
+   *
+   * <p>If the <code>get</code> method of the underlying Java future throws <code>java.util.concurrent.ExecutionException</code>, and this
+   * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The <code>ExecutionException</code>
+   * will be be included as the <code>TestFailedException</code>'s cause only if the <code>ExecutionException</code>'s cause is <code>null</code>.
+   * </p>
+   *
+   * <p>
+   * The <code>isExpired</code> method of the returned <code>FutureConcept</code> will always return <code>false</code>, because
+   * the underlying type, <code>java.util.concurrent.Future</code>, does not support the notion of a timeout. The <code>isCanceled</code>
+   * method of the returned <code>FutureConcept</code> will return the result of invoking <code>isCancelled</code> on the underlying
+   * <code>java.util.concurrent.Future</code>.
+   * </p>
+   *
+   * @param javaFuture a <code>java.util.concurrent.Future[T]</code> to convert
+   * @return a <code>FutureConcept[T]</code> wrapping the passed <code>java.util.concurrent.Future[T]</code>
+   */
+  implicit def convertJavaFuture[T](javaFuture: FutureOfJava[T]): FutureConcept[T] = new FutureConceptImpl[T](javaFuture)
+  // SKIP-DOTTY-END
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert <code>java.util.concurrent.Future[T]</code> to <code>FutureConcept[T]</code>
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def convertJavaFuture[T](javaFuture: FutureOfJava[T]): FutureConcept[T] = new FutureConceptImpl[T](javaFuture)
+
+  //DOTTY-ONLY given[T]: Conversion[FutureOfJava[T], FutureConcept[T]] with {
+  //DOTTY-ONLY   def apply(javaFuture: FutureOfJava[T]): FutureConcept[T] = new FutureConceptImpl[T](javaFuture)
+  //DOTTY-ONLY }
+}
+
+/**
+ * Companion object that facilitates the importing of <code>JavaFutures</code> members as
+ * an alternative to mixing it in. One use case is to import <code>JavaFutures</code>'s members so you can use
+ * them in the Scala interpreter.
+ *
+ * <pre class="stHighlight">
+ * import org.scalatest.concurrent.JavaFutures._
+ * </pre>
+ */
+object JavaFutures extends JavaFutures {
   private class FutureConceptImpl[T](javaFuture: FutureOfJava[T]) extends FutureConcept[T] {
     def eitherValue: Option[Either[Throwable, T]] =
       if (javaFuture.isDone())
@@ -94,45 +148,4 @@ trait JavaFutures extends Futures {
       }
     }
   }
-
-  // SKIP-DOTTY-START
-  import scala.language.implicitConversions
-
-  /**
-   * Implicitly converts a <code>java.util.concurrent.Future[T]</code> to
-   * <code>FutureConcept[T]</code>, allowing you to invoke the methods
-   * defined on <code>FutureConcept</code> on a Java <code>Future</code>, as well as to pass a Java future
-   * to the <code>whenReady</code> methods of supertrait <a href="Futures.html"><code>Futures</code></a>.
-   *
-   * <p>
-   * See the documentation for supertrait <a href="Futures.html"><code>Futures</code></a> for the details on the syntax this trait provides
-   * for testing with Java futures.
-   * </p>
-   *
-   * <p>If the <code>get</code> method of the underlying Java future throws <code>java.util.concurrent.ExecutionException</code>, and this
-   * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The <code>ExecutionException</code>
-   * will be be included as the <code>TestFailedException</code>'s cause only if the <code>ExecutionException</code>'s cause is <code>null</code>.
-   * </p>
-   *
-   * <p>
-   * The <code>isExpired</code> method of the returned <code>FutureConcept</code> will always return <code>false</code>, because
-   * the underlying type, <code>java.util.concurrent.Future</code>, does not support the notion of a timeout. The <code>isCanceled</code>
-   * method of the returned <code>FutureConcept</code> will return the result of invoking <code>isCancelled</code> on the underlying
-   * <code>java.util.concurrent.Future</code>.
-   * </p>
-   *
-   * @param javaFuture a <code>java.util.concurrent.Future[T]</code> to convert
-   * @return a <code>FutureConcept[T]</code> wrapping the passed <code>java.util.concurrent.Future[T]</code>
-   */
-  implicit def convertJavaFuture[T](javaFuture: FutureOfJava[T]): FutureConcept[T] = new FutureConceptImpl[T](javaFuture)
-  // SKIP-DOTTY-END
-
-  //DOTTY-ONLY /**
-  //DOTTY-ONLY  * Convert <code>java.util.concurrent.Future[T]</code> to <code>FutureConcept[T]</code>
-  //DOTTY-ONLY  */
-  //DOTTY-ONLY def convertJavaFuture[T](javaFuture: FutureOfJava[T]): FutureConcept[T] = new FutureConceptImpl[T](javaFuture)
-
-  //DOTTY-ONLY given[T]: Conversion[FutureOfJava[T], FutureConcept[T]] with {
-  //DOTTY-ONLY   def apply(javaFuture: FutureOfJava[T]): FutureConcept[T] = new FutureConceptImpl[T](javaFuture)
-  //DOTTY-ONLY }
 }
