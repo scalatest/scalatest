@@ -278,74 +278,7 @@ trait ScalaFutures extends Futures {
    * @return a <code>FutureConcept[T]</code> wrapping the passed <code>scala.concurrent.Future[T]</code>
    */
   implicit def convertScalaFuture[T](scalaFuture: scala.concurrent.Future[T]): FutureConcept[T] =
-    new FutureConcept[T] {
-      def eitherValue: Option[Either[Throwable, T]] =
-         scalaFuture.value.map {
-           case Success(o) => Right(o)
-           case Failure(e) => Left(e)
-         }
-      def isExpired: Boolean = false // Scala Futures themselves don't support the notion of a timeout
-      def isCanceled: Boolean = false // Scala Futures don't seem to be cancelable either
-
-      override private[concurrent] def futureValueImpl(pos: source.Position)(implicit config: PatienceConfig): T = {
-        try {
-          val result: Either[Throwable, T] = 
-          // SKIP-SCALATESTJS-START
-          if (scalaFuture.isCompleted)
-            scalaFuture.value.get.transform(s => Success(Right(s)), f => Success(Left(f))).get
-          else
-            Await.ready(scalaFuture, Duration.fromNanos(config.timeout.totalNanos)).eitherValue.get
-          // SKIP-SCALATESTJS-END
-          //SCALATESTJS-ONLY scalaFuture.value.getOrElse(throw new TimeoutException("Cannot Await or block in Scala.js.")).transform(s => Success(Right(s)), f => Success(Left(f))).get
-
-          result match {  
-            case Right(v) => v
-            case Left(tpe: TestPendingException) => throw tpe
-            case Left(tce: TestCanceledException) => throw tce
-            case Left(e) if anExceptionThatShouldCauseAnAbort(e) => throw e
-            case Left(ee: java.util.concurrent.ExecutionException) if ee.getCause != null =>
-              val cause = ee.getCause
-              cause match {
-                case tpe: TestPendingException => throw tpe
-                case tce: TestCanceledException => throw tce
-                case e if anExceptionThatShouldCauseAnAbort(e) => throw e
-                case _ =>
-                  throw new TestFailedException(
-                    (_: StackDepthException) => Some {
-                      if (cause.getMessage == null)
-                        Resources.futureReturnedAnException(cause.getClass.getName)
-                      else
-                        Resources.futureReturnedAnExceptionWithMessage(cause.getClass.getName, cause.getMessage)
-                    },
-                    Some(cause),
-                    pos
-                  )
-              }
-            case Left(e) =>
-              throw new TestFailedException(
-                (_: StackDepthException) => Some {
-                  if (e.getMessage == null)
-                    Resources.futureReturnedAnException(e.getClass.getName)
-                  else
-                    Resources.futureReturnedAnExceptionWithMessage(e.getClass.getName, e.getMessage)
-                },
-                Some(e),
-                pos
-              )
-          }
-        }
-        catch {
-          case e: TimeoutException => 
-            throw new TestFailedException(
-                  (_: StackDepthException) => Some(Resources.wasNeverReady(config.timeout.prettyString)),
-                  None,
-                  pos
-                ) with TimeoutField {
-                  val timeout: Span = config.timeout
-                }
-        }
-      }
-    }
+    new ScalaFutures.ScalaFutureConcept(scalaFuture)
   //SCALATESTJS,NATIVE-ONLY override private[concurrent] val jsAdjustment: Int = -1
 }
 
@@ -354,4 +287,73 @@ trait ScalaFutures extends Futures {
  * an alternative to mixing in the trait. One use case is to import <code>ScalaFutures</code>'s members so you can use
  * them in the Scala interpreter.
  */
-object ScalaFutures extends ScalaFutures
+object ScalaFutures extends ScalaFutures {
+  private final class ScalaFutureConcept[T](scalaFuture: scala.concurrent.Future[T]) extends FutureConcept[T] {
+    def eitherValue: Option[Either[Throwable, T]] =
+        scalaFuture.value.map {
+          case Success(o) => Right(o)
+          case Failure(e) => Left(e)
+        }
+    def isExpired: Boolean = false // Scala Futures themselves don't support the notion of a timeout
+    def isCanceled: Boolean = false // Scala Futures don't seem to be cancelable either
+
+    override private[concurrent] def futureValueImpl(pos: source.Position)(implicit config: PatienceConfig): T = {
+      try {
+        val result: Either[Throwable, T] = 
+        // SKIP-SCALATESTJS-START
+        if (scalaFuture.isCompleted)
+          scalaFuture.value.get.transform(s => Success(Right(s)), f => Success(Left(f))).get
+        else
+          Await.ready(scalaFuture, Duration.fromNanos(config.timeout.totalNanos)).eitherValue.get
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY scalaFuture.value.getOrElse(throw new TimeoutException("Cannot Await or block in Scala.js.")).transform(s => Success(Right(s)), f => Success(Left(f))).get
+
+        result match {  
+          case Right(v) => v
+          case Left(tpe: TestPendingException) => throw tpe
+          case Left(tce: TestCanceledException) => throw tce
+          case Left(e) if anExceptionThatShouldCauseAnAbort(e) => throw e
+          case Left(ee: java.util.concurrent.ExecutionException) if ee.getCause != null =>
+            val cause = ee.getCause
+            cause match {
+              case tpe: TestPendingException => throw tpe
+              case tce: TestCanceledException => throw tce
+              case e if anExceptionThatShouldCauseAnAbort(e) => throw e
+              case _ =>
+                throw new TestFailedException(
+                  (_: StackDepthException) => Some {
+                    if (cause.getMessage == null)
+                      Resources.futureReturnedAnException(cause.getClass.getName)
+                    else
+                      Resources.futureReturnedAnExceptionWithMessage(cause.getClass.getName, cause.getMessage)
+                  },
+                  Some(cause),
+                  pos
+                )
+            }
+          case Left(e) =>
+            throw new TestFailedException(
+              (_: StackDepthException) => Some {
+                if (e.getMessage == null)
+                  Resources.futureReturnedAnException(e.getClass.getName)
+                else
+                  Resources.futureReturnedAnExceptionWithMessage(e.getClass.getName, e.getMessage)
+              },
+              Some(e),
+              pos
+            )
+        }
+      }
+      catch {
+        case e: TimeoutException => 
+          throw new TestFailedException(
+                (_: StackDepthException) => Some(Resources.wasNeverReady(config.timeout.prettyString)),
+                None,
+                pos
+              ) with TimeoutField {
+                val timeout: Span = config.timeout
+              }
+      }
+    }
+  }
+}
