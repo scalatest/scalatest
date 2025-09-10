@@ -21,6 +21,7 @@ import org.scalatest.events._
 import org.scalactic.exceptions.NullArgumentException
 import SharedHelpers._
 import concurrent.Eventually._
+//DOTTY-ONLY import concurrent.Eventually.given_PatienceConfig
 import OptionValues._
 import Inside._
 import tagobjects.Retryable

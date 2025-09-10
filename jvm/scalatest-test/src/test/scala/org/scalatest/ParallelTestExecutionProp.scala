@@ -24,6 +24,7 @@ import org.scalatest.tools.SuiteSortingReporter
 import scala.collection.mutable.ListBuffer
 // SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.concurrent.Eventually._
+//DOTTY-ONLY import org.scalatest.concurrent.Eventually.given_PatienceConfig
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest.Retries._
 import SharedHelpers._
