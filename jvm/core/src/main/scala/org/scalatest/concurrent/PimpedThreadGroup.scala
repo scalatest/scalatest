@@ -26,6 +26,7 @@ import Thread.State
  */
 private[scalatest] object PimpedThreadGroup {
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
 
   /**
@@ -34,9 +35,24 @@ private[scalatest] object PimpedThreadGroup {
    * @param tg the <code>ThreadGroup</code>
    * @return a <code>List</code> of <code>Thread</code>
    */
-  implicit def ThreadGroupToList(tg:ThreadGroup): List[Thread] = {
+  implicit def ThreadGroupToList(tg: ThreadGroup): List[Thread] = {
     new PimpedThreadGroup(tg).getThreads
   }
+  // SKIP-DOTTY-END
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert a <code>ThreadGroup</code> to a <code>List</code> of <code>Thread</code>
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @param tg the <code>ThreadGroup</code>
+  //DOTTY-ONLY  * @return a <code>List</code> of <code>Thread</code>
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def ThreadGroupToList(tg: ThreadGroup): List[Thread] = {
+  //DOTTY-ONLY   new PimpedThreadGroup(tg).getThreads
+  //DOTTY-ONLY }
+
+  //DOTTY-ONLY given Conversion[ThreadGroup, List[Thread]] with {
+  //DOTTY-ONLY   def apply(tg: ThreadGroup): List[Thread] = ThreadGroupToList(tg)
+  //DOTTY-ONLY }
 
   /**
    * Converts a ThreadGroup into a PimpedThreadGroup
