@@ -17,6 +17,7 @@ package org.scalatest.concurrent
 
 import org.scalatest._
 import Eventually._
+//DOTTY-ONLY import Eventually.given_PatienceConfig
 import SharedHelpers.thisLineNumber
 import time.{Millis, Millisecond, Span}
 import org.scalatest.exceptions.TestFailedException

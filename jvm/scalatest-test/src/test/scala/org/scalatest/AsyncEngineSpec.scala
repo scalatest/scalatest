@@ -23,6 +23,7 @@ import events.InfoProvided
 import events.Ordinal
 // SKIP-SCALATESTJS,NATIVE-START
 import concurrent.Eventually._
+//DOTTY-ONLY import concurrent.Eventually.given_PatienceConfig
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalactic._
 import org.scalatest.funsuite.AsyncFunSuite
