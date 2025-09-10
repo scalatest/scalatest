@@ -318,13 +318,15 @@ trait ScalaFutures extends Futures {
 
   //DOTTY-ONLY /**
   //DOTTY-ONLY   * Conversion that convert a <code>scala.concurrent.Future[T]</code> to the
-  //DOTTY-ONLY   * <a href="Futures$FutureConcept.html"><code>FutureConcept[T]</code></a> trait.
+  //DOTTY-ONLY   * <a href="Futures$FutureConcept.html"><code>FutureConcept[T]</code></a>.
   //DOTTY-ONLY   *
   //DOTTY-ONLY   * This allows Scala <code>Future</code>s to be passed to the <code>whenReady</code> methods of <code>Futures</code>.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given[T]: Conversion[scala.concurrent.Future[T], FutureConcept[T]] = new ScalaFutures.ScalaFutureConcept(_)
-
   //DOTTY-ONLY import PatienceConfiguration.{Interval, Timeout}
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Extension methods for <code>scala.concurrent.Future[T]</code> to support methods of <code>FutureConcept</code>.
+  //DOTTY-ONLY   */
   //DOTTY-ONLY extension [T](scalaFuture: scala.concurrent.Future[T]) {
   //DOTTY-ONLY   /**
   //DOTTY-ONLY    * Queries this future for its value.

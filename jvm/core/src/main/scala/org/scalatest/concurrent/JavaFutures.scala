@@ -78,9 +78,215 @@ trait JavaFutures extends Futures {
   //DOTTY-ONLY  * Convert <code>java.util.concurrent.Future[T]</code> to <code>FutureConcept[T]</code>
   //DOTTY-ONLY  */
   //DOTTY-ONLY def convertJavaFuture[T](javaFuture: FutureOfJava[T]): FutureConcept[T] = new FutureConceptImpl[T](javaFuture)
-
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Conversion that convert a <code>java.util.concurrent.Future[T]</code> to the
+  //DOTTY-ONLY   * <a href="Futures$FutureConcept.html"><code>FutureConcept[T]</code></a>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * This allows Java <code>Future</code>s to be passed to the <code>whenReady</code> methods of <code>Futures</code>.
+  //DOTTY-ONLY   */
   //DOTTY-ONLY given[T]: Conversion[FutureOfJava[T], FutureConcept[T]] with {
   //DOTTY-ONLY   def apply(javaFuture: FutureOfJava[T]): FutureConcept[T] = new FutureConceptImpl[T](javaFuture)
+  //DOTTY-ONLY }
+
+  //DOTTY-ONLY import PatienceConfiguration.{Interval, Timeout}
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for <code>java.util.concurrent.Future[T]</code> to support methods of <code>FutureConcept</code>.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension [T](javaFuture: java.util.concurrent.Future[T]) {
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Queries this future for its value.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * If the future is not ready, this method will return <code>None</code>. If ready, it will either return an exception
+  //DOTTY-ONLY    * or a <code>T</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def eitherValue: Option[Either[Throwable, T]] = convertJavaFuture(javaFuture).eitherValue
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Indicates whether this future has expired (timed out).
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * The timeout detected by this method is different from the timeout supported by <code>whenReady</code>. This timeout
+  //DOTTY-ONLY    * is a timeout of the underlying future. If the underlying future does not support timeouts, this method must always
+  //DOTTY-ONLY    * return <code>false</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def isExpired: Boolean = convertJavaFuture(javaFuture).isExpired
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Indicates whether this future has been canceled.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * If the underlying future does not support the concept of cancellation, this method must always return <code>false</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def isCanceled: Boolean = convertJavaFuture(javaFuture).isCanceled
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Indicates whether this future is ready within the specified timeout.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * If the <code>eitherValue</code> method returns a <code>java..Some</code> containing a
+  //DOTTY-ONLY    * <code>scala.util.Failure</code> containing a <code>java.util.concurrent.ExecutionException</code>, and this
+  //DOTTY-ONLY    * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The
+  //DOTTY-ONLY    * <code>ExecutionException</code> will be be included as the <code>TestFailedException</code>'s cause only if the
+  //DOTTY-ONLY    * <code>ExecutionException</code>'s cause is <code>null</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param timeout
+  //DOTTY-ONLY    * @param config
+  //DOTTY-ONLY    * @return
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def isReadyWithin(timeout: Span)(using config: PatienceConfig, pos: source.Position): Boolean = convertJavaFuture(javaFuture).isReadyWithin(timeout)(config, pos)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Returns the result of this <code>FutureConcept</code>, once it is ready, or throws either the
+  //DOTTY-ONLY    * exception returned by the future (<em>i.e.</em>, <code>value</code> returned a <code>Left</code>)
+  //DOTTY-ONLY    * or <code>TestFailedException</code>.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * The maximum amount of time to wait for the future to become ready before giving up and throwing
+  //DOTTY-ONLY    * <code>TestFailedException</code> is configured by the value contained in the passed
+  //DOTTY-ONLY    * <code>timeout</code> parameter.
+  //DOTTY-ONLY    * The interval to sleep between queries of the future (used only if the future is polled) is configured by the value contained in the passed
+  //DOTTY-ONLY    * <code>interval</code> parameter.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This method invokes the overloaded <code>futureValue</code> form with only one (implicit) argument
+  //DOTTY-ONLY    * list that contains only one argument, a <code>PatienceConfig</code>, passing a new
+  //DOTTY-ONLY    * <code>PatienceConfig</code> with the <code>Timeout</code> specified as <code>timeout</code> and
+  //DOTTY-ONLY    * the <code>Interval</code> specified as <code>interval</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * If the <code>eitherValue</code> method returns a <code>scala.Some</code> containing a
+  //DOTTY-ONLY    * <code>scala.util.Failure</code> containing a <code>java.util.concurrent.ExecutionException</code>, and this
+  //DOTTY-ONLY    * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The
+  //DOTTY-ONLY    * <code>ExecutionException</code> will be be included as the <code>TestFailedException</code>'s cause only if the
+  //DOTTY-ONLY    * <code>ExecutionException</code>'s cause is <code>null</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param timeout the <code>Timeout</code> configuration parameter
+  //DOTTY-ONLY    * @param interval the <code>Interval</code> configuration parameter
+  //DOTTY-ONLY    * @return the result of the future once it is ready, if <code>value</code> is defined as a <code>Right</code>
+  //DOTTY-ONLY    * @throws Throwable if once ready, the <code>value</code> of this future is defined as a
+  //DOTTY-ONLY    *       <code>Left</code> (in this case, this method throws that same exception)
+  //DOTTY-ONLY    * @throws TestFailedException if the future is cancelled, expires, or is still not ready after
+  //DOTTY-ONLY    *     the specified timeout has been exceeded
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   final def futureValue(timeout: Timeout, interval: Interval)(using pos: source.Position): T = convertJavaFuture(javaFuture).futureValue(timeout, interval)(pos)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Returns the result of this <code>FutureConcept</code>, once it is ready, or throws either the
+  //DOTTY-ONLY    * exception returned by the future (<em>i.e.</em>, <code>value</code> returned a <code>Left</code>)
+  //DOTTY-ONLY    * or <code>TestFailedException</code>.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * The maximum amount of time to wait for the future to become ready before giving up and throwing
+  //DOTTY-ONLY    * <code>TestFailedException</code> is configured by the value contained in the passed
+  //DOTTY-ONLY    * <code>timeout</code> parameter.
+  //DOTTY-ONLY    * The interval to sleep between queries of the future (used only if the future is polled) is configured by the <code>interval</code> field of
+  //DOTTY-ONLY    * the <code>PatienceConfig</code> passed implicitly as the last parameter.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This method invokes the overloaded <code>futureValue</code> form with only one (implicit) argument
+  //DOTTY-ONLY    * list that contains only one argument, a <code>PatienceConfig</code>, passing a new
+  //DOTTY-ONLY    * <code>PatienceConfig</code> with the <code>Timeout</code> specified as <code>timeout</code> and
+  //DOTTY-ONLY    * the <code>Interval</code> specified as <code>config.interval</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * If the <code>eitherValue</code> method returns a <code>scala.Some</code> containing a
+  //DOTTY-ONLY    * <code>scala.util.Failure</code> containing a <code>java.util.concurrent.ExecutionException</code>, and this
+  //DOTTY-ONLY    * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The
+  //DOTTY-ONLY    * <code>ExecutionException</code> will be be included as the <code>TestFailedException</code>'s cause only if the
+  //DOTTY-ONLY    * <code>ExecutionException</code>'s cause is <code>null</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param timeout the <code>Timeout</code> configuration parameter
+  //DOTTY-ONLY    * @param config an <code>PatienceConfig</code> object containing <code>timeout</code> and
+  //DOTTY-ONLY    *          <code>interval</code> parameters that are unused by this method
+  //DOTTY-ONLY    * @return the result of the future once it is ready, if <code>eitherValue</code> is defined as a <code>Right</code>
+  //DOTTY-ONLY    * @throws Throwable if once ready, the <code>eitherValue</code> of this future is defined as a
+  //DOTTY-ONLY    *       <code>Left</code> (in this case, this method throws that same exception)
+  //DOTTY-ONLY    * @throws TestFailedException if the future is cancelled, expires, or is still not ready after
+  //DOTTY-ONLY    *     the specified timeout has been exceeded
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   final def futureValue(timeout: Timeout)(using config: PatienceConfig, pos: source.Position): T = convertJavaFuture(javaFuture).futureValue(timeout)(config, pos)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Returns the result of this <code>FutureConcept</code>, once it is ready, or throws either the
+  //DOTTY-ONLY    * exception returned by the future (<em>i.e.</em>, <code>eitherValue</code> returned a <code>Left</code>)
+  //DOTTY-ONLY    * or <code>TestFailedException</code>.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * The maximum amount of time to wait for the future to become ready before giving up and throwing
+  //DOTTY-ONLY    * <code>TestFailedException</code> is configured by the <code>timeout</code> field of
+  //DOTTY-ONLY    * the <code>PatienceConfig</code> passed implicitly as the last parameter.
+  //DOTTY-ONLY    * The interval to sleep between queries of the future (used only if the future is polled) is configured by the value contained in the passed
+  //DOTTY-ONLY    * <code>interval</code> parameter.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This method invokes the overloaded <code>futureValue</code> form with only one (implicit) argument
+  //DOTTY-ONLY    * list that contains only one argument, a <code>PatienceConfig</code>, passing a new
+  //DOTTY-ONLY    * <code>PatienceConfig</code> with the <code>Interval</code> specified as <code>interval</code> and
+  //DOTTY-ONLY    * the <code>Timeout</code> specified as <code>config.timeout</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * If the <code>eitherValue</code> method returns a <code>scala.Some</code> containing a
+  //DOTTY-ONLY    * <code>scala.util.Failure</code> containing a <code>java.util.concurrent.ExecutionException</code>, and this
+  //DOTTY-ONLY    * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The
+  //DOTTY-ONLY    * <code>ExecutionException</code> will be be included as the <code>TestFailedException</code>'s cause only if the
+  //DOTTY-ONLY    * <code>ExecutionException</code>'s cause is <code>null</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param interval the <code>Interval</code> configuration parameter
+  //DOTTY-ONLY    * @param config an <code>PatienceConfig</code> object containing <code>timeout</code> and
+  //DOTTY-ONLY    *          <code>interval</code> parameters that are unused by this method
+  //DOTTY-ONLY    * @return the result of the future once it is ready, if <code>value</code> is defined as a <code>Right</code>
+  //DOTTY-ONLY    * @throws Throwable if once ready, the <code>value</code> of this future is defined as a
+  //DOTTY-ONLY    *       <code>Left</code> (in this case, this method throws that same exception)
+  //DOTTY-ONLY    * @throws TestFailedException if the future is cancelled, expires, or is still not ready after
+  //DOTTY-ONLY    *     the specified timeout has been exceeded
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   final def futureValue(interval: Interval)(using config: PatienceConfig, pos: source.Position): T = convertJavaFuture(javaFuture).futureValue(interval)(config, pos)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Returns the result of this <code>FutureConcept</code>, once it is ready, or throws either the
+  //DOTTY-ONLY    * exception returned by the future (<em>i.e.</em>, <code>futureValue</code> returned a <code>Left</code>)
+  //DOTTY-ONLY    * or <code>TestFailedException</code>.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This trait's implementation of this method queries the future repeatedly until it either is
+  //DOTTY-ONLY    * ready, or a configured maximum amount of time has passed, sleeping a configured interval between
+  //DOTTY-ONLY    * attempts; and when ready, returns the future's value. For greater efficiency, implementations of
+  //DOTTY-ONLY    * this trait may override this method so that it blocks the specified timeout while waiting for
+  //DOTTY-ONLY    * the result, if the underlying future supports this.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * The maximum amount of time to wait for the future to become ready before giving up and throwing
+  //DOTTY-ONLY    * <code>TestFailedException</code> is configured by the <code>timeout</code> field of
+  //DOTTY-ONLY    * the <code>PatienceConfig</code> passed implicitly as the last parameter.
+  //DOTTY-ONLY    * The interval to sleep between queries of the future (used only if the future is polled) is configured by the <code>interval</code> field of
+  //DOTTY-ONLY    * the <code>PatienceConfig</code> passed implicitly as the last parameter.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * If the <code>eitherValue</code> method returns a <code>scala.Some</code> containing a
+  //DOTTY-ONLY    * <code>scala.util.Failure</code> containing a <code>java.util.concurrent.ExecutionException</code>, and this
+  //DOTTY-ONLY    * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The
+  //DOTTY-ONLY    * <code>ExecutionException</code> will be be included as the <code>TestFailedException</code>'s cause only if the
+  //DOTTY-ONLY    * <code>ExecutionException</code>'s cause is <code>null</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param config a <code>PatienceConfig</code> object containing <code>timeout</code> and
+  //DOTTY-ONLY    *          <code>interval</code> parameters that are unused by this method
+  //DOTTY-ONLY    * @return the result of the future once it is ready, if <code>value</code> is defined as a <code>Right</code>
+  //DOTTY-ONLY    * @throws Throwable if once ready, the <code>value</code> of this future is defined as a
+  //DOTTY-ONLY    *       <code>Left</code> (in this case, this method throws that same exception)
+  //DOTTY-ONLY    * @throws TestFailedException if the future is cancelled, expires, or is still not ready after
+  //DOTTY-ONLY    *     the specified timeout has been exceeded
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def futureValue(using config: PatienceConfig, pos: source.Position): T = convertJavaFuture(javaFuture).futureValue(config, pos)
   //DOTTY-ONLY }
 }
 
