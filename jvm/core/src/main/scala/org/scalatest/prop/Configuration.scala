@@ -29,8 +29,6 @@ trait Configuration {
 
   import Configuration.{PropertyCheckConfiguration, PropertyCheckConfigParam, 
                         MinSuccessful, MaxDiscardedFactor, MinSize, SizeRange, Workers}
-
-  import scala.language.implicitConversions
   
   /**
    * Returns a <code>MinSuccessful</code> property check configuration parameter containing the passed value, which specifies the minimum number of successful
@@ -165,10 +163,20 @@ trait Configuration {
     param
   }
 
+  // SKIP-DOTTY-START
+  import scala.language.implicitConversions
+
   /**
    * Implicit <code>PropertyCheckConfig</code> value providing default configuration values.
    */
   implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfiguration()
+  // SKIP-DOTTY-END
+
+  //DOTTY-ONLY val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfiguration()
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Given <code>PropertyCheckConfig</code> value providing default configuration values.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY given PropertyCheckConfiguration = generatorDrivenConfig
 }
 
 /**
