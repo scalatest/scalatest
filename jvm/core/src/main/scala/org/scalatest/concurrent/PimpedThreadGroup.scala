@@ -54,10 +54,62 @@ private[scalatest] object PimpedThreadGroup {
   //DOTTY-ONLY   def apply(tg: ThreadGroup): List[Thread] = ThreadGroupToList(tg)
   //DOTTY-ONLY }
 
+  // SKIP-DOTTY-START
   /**
    * Converts a ThreadGroup into a PimpedThreadGroup
    */
   implicit def threadGroupToPimpedThreadGroup(tg: ThreadGroup): PimpedThreadGroup = new PimpedThreadGroup(tg)
+  // SKIP-DOTTY-END
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Converts a ThreadGroup into a PimpedThreadGroup
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def threadGroupToPimpedThreadGroup(tg: ThreadGroup): PimpedThreadGroup = new PimpedThreadGroup(tg)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for <code>ThreadGroup</code> to support methods of <code>PimpedThreadGroup</code>.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension (tg: ThreadGroup) {
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Return all the Threads in this ThreadGroup, recursively scanning child ThreadGroups.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def getThreads: List[Thread] = threadGroupToPimpedThreadGroup(tg).getThreads
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Return all the Threads in this ThreadGroup. If the parameter recursive is true,
+  //DOTTY-ONLY    * then scan all child ThreadGroups as well. If false, just find Threads who's parent is
+  //DOTTY-ONLY    * this ThreadGroup.
+  //DOTTY-ONLY    * This method gets around Java's mysterious Thread.enumerate call which may or may
+  //DOTTY-ONLY    * not silently ignore threads if its given an array that is too small. It does so by
+  //DOTTY-ONLY    * recalling enumerate with a larger array until this array is not full.
+  //DOTTY-ONLY    * @returns A list of Threads in this ThreadGroup (and possibly child ThreadGroups)
+  //DOTTY-ONLY    *          The list will never contain null values, only Threads. 
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def getThreads(recursive: Boolean): List[Thread] = threadGroupToPimpedThreadGroup(tg).getThreads(recursive)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Returns a list of all the Threads in this ThreadGroup that are in the given state.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def filter(state: State): List[Thread] = threadGroupToPimpedThreadGroup(tg).filter(state)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Returns true if this ThreadGroup contains any Thread whose state matches the given State,
+  //DOTTY-ONLY    * false otherwise.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def exists(state: State): Boolean = threadGroupToPimpedThreadGroup(tg).exists(state)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Returns true if any Threads in this ThreadGroup are in a State
+  //DOTTY-ONLY    * other than NEW or TERMINATED, false otherwise.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def areAnyThreadsAlive: Boolean = threadGroupToPimpedThreadGroup(tg).areAnyThreadsAlive
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Returns true if any Threads in this ThreadGroup are in a State RUNNING,
+  //DOTTY-ONLY    * false otherwise.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def areAnyThreadsRunning: Boolean = threadGroupToPimpedThreadGroup(tg).areAnyThreadsRunning
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Returns true if any Threads in this ThreadGroup are in a State TIMED_WAITING,
+  //DOTTY-ONLY    * false otherwise.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def areAnyThreadsInTimedWaiting: Boolean = threadGroupToPimpedThreadGroup(tg).areAnyThreadsInTimedWaiting
+  //DOTTY-ONLY }
 
   /**
    * Get all the Threads in the current ThreadGroup
