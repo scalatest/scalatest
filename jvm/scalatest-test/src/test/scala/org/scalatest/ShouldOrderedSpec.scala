@@ -24,6 +24,8 @@ import org.scalatest.matchers.should.Matchers._
 
 class ShouldOrderedSpec extends AnyFunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
 
+  import prop.Configuration.PropertyCheckConfiguration
+
   // TODO: Fix these tests. They are wasting a bunch of time with discarded values
   implicit override val generatorDrivenConfig = PropertyCheckConfiguration(maxDiscardedFactor = 500.0)
 

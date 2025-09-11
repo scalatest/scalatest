@@ -452,6 +452,8 @@ import org.scalatest.enablers.PropCheckerAsserting
  */
 trait GeneratorDrivenPropertyChecks extends CommonGenerators with Whenever with Configuration {
 
+  import Configuration.{PropertyCheckConfigParam, PropertyCheckConfiguration}
+
   /**
    * Performs a property check by applying the specified property check function to arguments
    * supplied by implicitly passed generators, modifying the values in the implicitly passed

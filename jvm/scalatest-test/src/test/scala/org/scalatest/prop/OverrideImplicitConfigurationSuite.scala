@@ -3,6 +3,7 @@ package org.scalatest.prop
 import org.scalatest._
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
+import Configuration.PropertyCheckConfiguration
 
 trait GetImplicitConfig { self: Configuration =>
   def getImplicitConfig()(implicit config: PropertyCheckConfiguration): PropertyCheckConfiguration = config
