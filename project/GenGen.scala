@@ -65,6 +65,7 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalatest.exceptions.StackDepth
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.enablers.PropCheckerAsserting
+import org.scalatest.prop.Configuration.PropertyCheckConfiguration
 
 /**
  * Trait containing methods that faciliate property checks against generated data using [[Generator]].
@@ -833,6 +834,7 @@ object GeneratorDrivenPropertyChecks extends GeneratorDrivenPropertyChecks
 
 import org.scalatest._
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
+import org.scalatest.prop.Configuration.PropertyCheckConfiguration
 """
 
   val generatorSuitePostamble = """
