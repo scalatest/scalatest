@@ -719,7 +719,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
       indicateSuccess(shouldBeTrue, FailureMessages.containedOneElementOf(prettifier, left, right), FailureMessages.didNotContainOneElementOf(prettifier, left, right))
   }
 
-  infix def contain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit aggregating: Aggregating[T]): Assertion = {
+  infix def contain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(using aggregating: Aggregating[T]): Assertion = {
 
     val right = atLeastOneOf.right
 
