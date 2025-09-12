@@ -718,7 +718,7 @@ trait AggregatingHighPriorityImplicits extends AggregatingStandardImplicits {
     * @return <code>Aggregating</code> of type <code>MAP[K, V]</code>
     */
   // SKIP-DOTTY-START  
-  implicit def convertEqualityToMapAggregating[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](equality: Equality[(K, V)]): Aggregating[scala.collection.GenMap[K, V]] =
+  implicit def convertEqualityToMapAggregating[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](equality: Equality[(K, V)]): Aggregating[MAP[K, V]] =
   // SKIP-DOTTY-END
   //DOTTY-ONLY def convertEqualityToMapAggregating[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](equality: Equality[(K, V)]): Aggregating[MAP[K, V]] =
     new Aggregating[MAP[K, V]] {
