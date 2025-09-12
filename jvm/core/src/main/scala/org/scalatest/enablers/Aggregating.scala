@@ -413,12 +413,44 @@ trait AggregatingStandardImplicits extends AggregatingJavaImplicits {
   //DOTTY-ONLY }  
 
   /**
+    // SKIP-DOTTY-START
     * Implicit to support <code>Aggregating</code> nature of <code>String</code>.
+    // SKIP-DOTTY-END
+  //DOTTY-ONLY * <code>Aggregating</code> nature of <code>String</code>.
     *
     * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of <code>Char</code> in the <code>String</code>
     * @return <code>Aggregating[String]</code> that supports <code>String</code> in relevant <code>contain</code> syntax
     */
+  // SKIP-DOTTY-START  
   implicit def aggregatingNatureOfString(implicit equality: Equality[Char]): Aggregating[String] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def aggregatingNatureOfString(implicit equality: Equality[Char]): Aggregating[String] =
+    convertEqualityToStringAggregating(equality)
+
+  /**
+    // SKIP-DOTTY-START
+    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Char</code>
+    * into <code>Aggregating</code> of type <code>String</code>.
+    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+    *
+    * <pre class="stHighlight">
+    * // lowerCased needs to be implemented as Normalization[Char]
+    * ("hi hello" should contain ('E')) (after being lowerCased)
+    * </pre>
+    *
+    * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[Char]</code></a>
+    * and this implicit conversion will convert it into <code>Aggregating[String]</code>.
+    // SKIP-DOTTY-END   
+    //DOTTY-ONLY   * Converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+    //DOTTY-ONLY   * into <code>Aggregating</code> of type <code>Array[E]</code>.
+    *
+    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Char</code>
+    * @return <code>Aggregating</code> of type <code>String</code>
+    */
+  // SKIP-DOTTY-START  
+  implicit def convertEqualityToStringAggregating(equality: Equality[Char]): Aggregating[String] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertEqualityToStringAggregating(equality: Equality[Char]): Aggregating[String] =
     new Aggregating[String] {
       def containsAtLeastOneOf(s: String, elements: scala.collection.Seq[Any]): Boolean = {
         s.exists((e: Char) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
@@ -437,24 +469,34 @@ trait AggregatingStandardImplicits extends AggregatingJavaImplicits {
       }
     }
 
-  /**
-    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Char</code>
-    * into <code>Aggregating</code> of type <code>String</code>.
-    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
-    *
-    * <pre class="stHighlight">
-    * // lowerCased needs to be implemented as Normalization[Char]
-    * ("hi hello" should contain ('E')) (after being lowerCased)
-    * </pre>
-    *
-    * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[Char]</code></a>
-    * and this implicit conversion will convert it into <code>Aggregating[String]</code>.
-    *
-    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Char</code>
-    * @return <code>Aggregating</code> of type <code>String</code>
-    */
-  implicit def convertEqualityToStringAggregating(equality: Equality[Char]): Aggregating[String] =
-    aggregatingNatureOfString(equality)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Aggregating</code> nature of <code>String</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>String</code>
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>String</code>
+  //DOTTY-ONLY   * @return <code>Aggregating[String]</code> that supports <code>String</code> in relevant <code>contain</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given (using equality: Equality[Char]): Aggregating[String] = convertEqualityToStringAggregating(equality)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Char</code>
+  //DOTTY-ONLY   * into <code>Aggregating</code> of type <code>String</code>.
+  //DOTTY-ONLY   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <pre class="stHighlight">
+  //DOTTY-ONLY   * // lowerCased needs to be implemented as Normalization[Char]
+  //DOTTY-ONLY   * ("hi hello" should contain ('E')) (after being lowerCased)
+  //DOTTY-ONLY   * </pre>
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[Char]</code></a>
+  //DOTTY-ONLY   * and this implicit conversion will convert it into <code>Aggregating[String]</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Char</code>
+  //DOTTY-ONLY   * @return <code>Aggregating</code> of type <code>String</code>
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given equalityToStringAggregating[E]: Conversion[Equality[Char], Aggregating[String]] with {
+  //DOTTY-ONLY   def apply(equality: Equality[Char]): Aggregating[String] = convertEqualityToStringAggregating(equality)
+  //DOTTY-ONLY }  
 
   /**
     * Implicit to support <code>Aggregating</code> nature of <code>Every</code>.
