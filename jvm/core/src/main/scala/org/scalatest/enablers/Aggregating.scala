@@ -408,7 +408,7 @@ trait AggregatingStandardImplicits extends AggregatingJavaImplicits {
   //DOTTY-ONLY   * @tparam E type of elements in the <code>Array</code>
   //DOTTY-ONLY   * @return <code>Aggregating</code> of type <code>Array[E]</code>
   //DOTTY-ONLY   */
-  //DOTTY-ONLY given[E]: Conversion[Equality[E], Aggregating[Array[E]]] with {
+  //DOTTY-ONLY given equalityToArrayAggregating[E]: Conversion[Equality[E], Aggregating[Array[E]]] with {
   //DOTTY-ONLY   def apply(equality: Equality[E]): Aggregating[Array[E]] = convertEqualityToArrayAggregating(equality)
   //DOTTY-ONLY }  
 
@@ -586,14 +586,44 @@ trait AggregatingStandardImplicits extends AggregatingJavaImplicits {
   //DOTTY-ONLY }
 
   /**
+    // SKIP-DOTTY-START
     * Implicit to support <code>Aggregating</code> nature of <code>Iterable</code>.
+    // SKIP-DOTTY-END
+  //DOTTY-ONLY * <code>Aggregating</code> nature of <code>Iterable</code>.
     *
     * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Iterable</code>
     * @tparam E the type of the element in the <code>Iterable</code>
     * @tparam ITR any subtype of <code>Iterable</code>
     * @return <code>Aggregating[ITR[E]]</code> that supports <code>Iterable</code> in relevant <code>contain</code> syntax
     */
+  // SKIP-DOTTY-START  
   implicit def aggregatingNatureOfIterable[E, ITR[e] <: Iterable[e]](implicit equality: Equality[E]): Aggregating[ITR[E]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def aggregatingNatureOfIterable[E, ITR[e] <: Iterable[e]](using equality: Equality[E]): Aggregating[ITR[E]] =
+    convertEqualityToIterableAggregating(equality)  
+
+  /**
+    // SKIP-DOTTY-START
+    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+    * into <code>Aggregating</code> of type <code>TRAV[E]</code>, where <code>TRAV</code> is a subtype of <code>Iterable</code>.
+    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+    *
+    * <pre class="stHighlight">
+    * (List("hi") should contain ("HI")) (after being lowerCased)
+    * </pre>
+    *
+    * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
+    * and this implicit conversion will convert it into <code>Aggregating[List[String]]</code>.
+    // SKIP-DOTTY-END   
+    //DOTTY-ONLY   * Converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+    //DOTTY-ONLY   * into <code>Aggregating</code> of type <code>Iterable[E]</code>.
+    *
+    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+    * @tparam E type of elements in the <code>Iterable</code>
+    * @tparam ITR subtype of <code>Iterable</code>
+    * @return <code>Aggregating</code> of type <code>ITR[E]</code>
+    */
+  implicit def convertEqualityToIterableAggregating[E, ITR[e] <: Iterable[e]](equality: Equality[E]): Aggregating[ITR[E]] =
     new Aggregating[ITR[E]] {
       def containsAtLeastOneOf(itr: ITR[E], elements: scala.collection.Seq[Any]): Boolean = {
         itr.exists((e: E) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
@@ -612,32 +642,44 @@ trait AggregatingStandardImplicits extends AggregatingJavaImplicits {
       }
     }
 
-  /**
-    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
-    * into <code>Aggregating</code> of type <code>TRAV[E]</code>, where <code>TRAV</code> is a subtype of <code>Iterable</code>.
-    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
-    *
-    * <pre class="stHighlight">
-    * (List("hi") should contain ("HI")) (after being lowerCased)
-    * </pre>
-    *
-    * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
-    * and this implicit conversion will convert it into <code>Aggregating[List[String]]</code>.
-    *
-    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
-    * @tparam E type of elements in the <code>Iterable</code>
-    * @tparam TRAV subtype of <code>Iterable</code>
-    * @return <code>Aggregating</code> of type <code>TRAV[E]</code>
-    */
-  implicit def convertEqualityToIterableAggregating[E, ITR[e] <: Iterable[e]](equality: Equality[E]): Aggregating[ITR[E]] =
-    aggregatingNatureOfIterable(equality)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Aggregating</code> nature of <code>Iterable</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Iterable</code>
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>Iterable</code>
+  //DOTTY-ONLY   * @return <code>Aggregating[Iterable[E]]</code> that supports <code>Iterable</code> in relevant <code>contain</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [E](using equality: Equality[E]): Aggregating[Iterable[E]] = convertEqualityToIterableAggregating(equality)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+  //DOTTY-ONLY   * into <code>Aggregating</code> of type <code>Iterable[E]</code>.
+  //DOTTY-ONLY   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <pre class="stHighlight">
+  //DOTTY-ONLY   * (List("hi") should contain ("HI")) (after being lowerCased)
+  //DOTTY-ONLY   * </pre>
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
+  //DOTTY-ONLY   * and this implicit conversion will convert it into <code>Aggregating[List[String]]</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+  //DOTTY-ONLY   * @tparam E type of elements in the <code>Iterable/code>
+  //DOTTY-ONLY   * @return <code>Aggregating</code> of type <code>Iterable[E]</code>
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given equalityToIterableAggregating[E]: Conversion[Equality[E], Aggregating[Iterable[E]]] with {
+  //DOTTY-ONLY   def apply(equality: Equality[E]): Aggregating[Iterable[E]] = convertEqualityToIterableAggregating(equality)
+  //DOTTY-ONLY }
 
 }
 
 trait AggregatingHighPriorityImplicits extends AggregatingStandardImplicits {
 
   /**
+    // SKIP-DOTTY-START
     * Implicit to support <code>Aggregating</code> nature of <code>scala.collection.GenMap</code>.
+    // SKIP-DOTTY-END
+  //DOTTY-ONLY * <code>Aggregating</code> nature of <code>scala.collection.GenMap</code>.
     *
     * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of entry in the <code>scala.collection.GenMap</code>
     * @tparam K the type of the key in the <code>scala.collection.GenMap</code>
@@ -645,7 +687,40 @@ trait AggregatingHighPriorityImplicits extends AggregatingStandardImplicits {
     * @tparam MAP any subtype of <code>scala.collection.GenMap</code>
     * @return <code>Aggregating[MAP[K, V]]</code> that supports <code>scala.collection.GenMap</code> in relevant <code>contain</code> syntax
     */
+  // SKIP-DOTTY-START  
   implicit def aggregatingNatureOfMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](implicit equality: Equality[(K, V)]): Aggregating[MAP[K, V]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def aggregatingNatureOfMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](using equality: Equality[(K, V)]): Aggregating[MAP[K, V]] =
+    convertEqualityToMapAggregating(equality)
+
+  /**
+    // SKIP-DOTTY-START
+    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Tuple2[K, V]</code>
+    * into <code>Aggregating</code> of type <code>MAP[K, V]</code>, where <code>MAP</code> is a subtype of <code>scala.collection.GenMap</code>.
+    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+    *
+    * <pre class="stHighlight">
+    * val map = Map(1 -> "one")
+    * // lowerCased needs to be implemented as Normalization[Tuple2[K, V]]
+    * (map should contain ((1, "ONE"))) (after being lowerCased)
+    * </pre>
+    *
+    * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Tuple2[Int, String]</code></a>
+    * and this implicit conversion will convert it into <code>Aggregating[scala.collection.GenMap[Int, String]]</code>.
+    // SKIP-DOTTY-END   
+    //DOTTY-ONLY   * Converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Tuple2[K, V]</code>
+    //DOTTY-ONLY   * into <code>Aggregating</code> of type <code>scala.collection.GenMap[K, V]</code>.
+    *
+    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Tuple2[K, V]</code>
+    * @tparam K the type of the key in the <code>scala.collection.GenMap</code>
+    * @tparam V the type of the value in the <code>scala.collection.GenMap</code>
+    * @tparam MAP any subtype of <code>scala.collection.GenMap</code>
+    * @return <code>Aggregating</code> of type <code>MAP[K, V]</code>
+    */
+  // SKIP-DOTTY-START  
+  implicit def convertEqualityToMapAggregating[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](equality: Equality[(K, V)]): Aggregating[scala.collection.GenMap[K, V]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertEqualityToMapAggregating[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](equality: Equality[(K, V)]): Aggregating[MAP[K, V]] =
     new Aggregating[MAP[K, V]] {
       def containsAtLeastOneOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
         map.exists((e: (K, V)) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
@@ -664,28 +739,38 @@ trait AggregatingHighPriorityImplicits extends AggregatingStandardImplicits {
       }
     }
 
-  /**
-    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Tuple2[K, V]</code>
-    * into <code>Aggregating</code> of type <code>MAP[K, V]</code>, where <code>MAP</code> is a subtype of <code>scala.collection.GenMap</code>.
-    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
-    *
-    * <pre class="stHighlight">
-    * val map = Map(1 -> "one")
-    * // lowerCased needs to be implemented as Normalization[Tuple2[K, V]]
-    * (map should contain ((1, "ONE"))) (after being lowerCased)
-    * </pre>
-    *
-    * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Tuple2[Int, String]</code></a>
-    * and this implicit conversion will convert it into <code>Aggregating[scala.collection.GenMap[Int, String]]</code>.
-    *
-    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Tuple2[K, V]</code>
-    * @tparam K the type of the key in the <code>scala.collection.GenMap</code>
-    * @tparam V the type of the value in the <code>scala.collection.GenMap</code>
-    * @tparam MAP any subtype of <code>scala.collection.GenMap</code>
-    * @return <code>Aggregating</code> of type <code>MAP[K, V]</code>
-    */
-  implicit def convertEqualityToMapAggregating[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](equality: Equality[(K, V)]): Aggregating[scala.collection.GenMap[K, V]] =
-    aggregatingNatureOfMap(equality)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Aggregating</code> nature of <code>scala.collection.GenMap</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>scala.collection.GenMap</code>
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>scala.collection.GenMap</code>
+  //DOTTY-ONLY   * @return <code>Aggregating[scala.collection.GenMap[E]]</code> that supports <code>scala.collection.GenMap</code> in relevant <code>contain</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](using equality: Equality[(K, V)]): Aggregating[MAP[K, V]] = convertEqualityToMapAggregating(equality)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Tuple2[K, V]</code>
+  //DOTTY-ONLY   * into <code>Aggregating</code> of type <code>MAP[K, V]</code>.
+  //DOTTY-ONLY   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <pre class="stHighlight">
+  //DOTTY-ONLY   * val map = Map(1 -> "one")
+  //DOTTY-ONLY   * // lowerCased needs to be implemented as Normalization[Tuple2[K, V]]
+  //DOTTY-ONLY   * (map should contain ((1, "ONE"))) (after being lowerCased)
+  //DOTTY-ONLY   * </pre>
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Tuple2[Int, String]</code></a>
+  //DOTTY-ONLY   * and this implicit conversion will convert it into <code>Aggregating[scala.collection.GenMap[Int, String]]</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Tuple2[K, V]</code>
+  //DOTTY-ONLY   * @tparam K the type of the key in the <code>scala.collection.GenMap</code>
+  //DOTTY-ONLY   * @tparam V the type of the value in the <code>scala.collection.GenMap</code>
+  //DOTTY-ONLY   * @tparam MAP any subtype of <code>scala.collection.GenMap</code>
+  //DOTTY-ONLY   * @return <code>Aggregating</code> of type <code>MAP[K, V]</code>
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given equalityToMapAggregating[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]]: Conversion[Equality[(K, V)], Aggregating[MAP[K, V]]] with {
+  //DOTTY-ONLY   def apply(equality: Equality[(K, V)]): Aggregating[MAP[K, V]] = convertEqualityToMapAggregating(equality)
+  //DOTTY-ONLY }  
 
 }
 
