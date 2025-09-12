@@ -322,16 +322,49 @@ trait AggregatingJavaImplicits extends AggregatingImpls {
 trait AggregatingStandardImplicits extends AggregatingJavaImplicits {
 
   import scala.language.higherKinds
+
   import scala.language.implicitConversions
 
   /**
+  // SKIP-DOTTY-START
     * Implicit to support <code>Aggregating</code> nature of <code>Array</code>.
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY * <code>Aggregating</code> nature of <code>Array</code>.
     *
     * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Array</code>
     * @tparam E the type of the element in the <code>Array</code>
     * @return <code>Aggregating[Array[E]]</code> that supports <code>Array</code> in relevant <code>contain</code> syntax
     */
-  implicit def aggregatingNatureOfArray[E](implicit equality: Equality[E]): Aggregating[Array[E]] =
+  // SKIP-DOTTY-START  
+  implicit def aggregatingNatureOfArray[E](implicit equality: Equality[E]): Aggregating[Array[E]] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def aggregatingNatureOfArray[E](using equality: Equality[E]): Aggregating[Array[E]] = 
+    convertEqualityToArrayAggregating(equality)
+
+  /**
+  // SKIP-DOTTY-START 
+    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+    * into <code>Aggregating</code> of type <code>Array[E]</code>.
+    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+    *
+    * <pre class="stHighlight">
+    * (Array("hi") should contain ("HI")) (after being lowerCased)
+    * </pre>
+    *
+    * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
+    * and this implicit conversion will convert it into <code>Aggregating[Array[String]]</code>.
+  // SKIP-DOTTY-END   
+  //DOTTY-ONLY   * Converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+  //DOTTY-ONLY   * into <code>Aggregating</code> of type <code>Array[E]</code>.
+    *
+    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+    * @tparam E type of elements in the <code>Array</code>
+    * @return <code>Aggregating</code> of type <code>Array[E]</code>
+    */
+  // SKIP-DOTTY-START   
+  implicit def convertEqualityToArrayAggregating[E](equality: Equality[E]): Aggregating[Array[E]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertEqualityToArrayAggregating[E](equality: Equality[E]): Aggregating[Array[E]] =
     new Aggregating[Array[E]] {
       def containsAtLeastOneOf(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
         new ArrayWrapper(array).exists((e: E) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
@@ -348,26 +381,36 @@ trait AggregatingStandardImplicits extends AggregatingJavaImplicits {
       def containsAtMostOneOf(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
         checkAtMostOneOf(new ArrayWrapper(array), elements, equality)
       }
-    }
+    } 
 
-  /**
-    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
-    * into <code>Aggregating</code> of type <code>Array[E]</code>.
-    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
-    *
-    * <pre class="stHighlight">
-    * (Array("hi") should contain ("HI")) (after being lowerCased)
-    * </pre>
-    *
-    * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
-    * and this implicit conversion will convert it into <code>Aggregating[Array[String]]</code>.
-    *
-    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
-    * @tparam E type of elements in the <code>Array</code>
-    * @return <code>Aggregating</code> of type <code>Array[E]</code>
-    */
-  implicit def convertEqualityToArrayAggregating[E](equality: Equality[E]): Aggregating[Array[E]] =
-    aggregatingNatureOfArray(equality)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Aggregating</code> nature of <code>Array</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Array</code>
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>Array</code>
+  //DOTTY-ONLY   * @return <code>Aggregating[Array[E]]</code> that supports <code>Array</code> in relevant <code>contain</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [E](using equality: Equality[E]): Aggregating[Array[E]] = convertEqualityToArrayAggregating(equality)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+  //DOTTY-ONLY   * into <code>Aggregating</code> of type <code>Array[E]</code>.
+  //DOTTY-ONLY   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <pre class="stHighlight">
+  //DOTTY-ONLY   * (Array("hi") should contain ("HI")) (after being lowerCased)
+  //DOTTY-ONLY   * </pre>
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
+  //DOTTY-ONLY   * and this implicit conversion will convert it into <code>Aggregating[Array[String]]</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+  //DOTTY-ONLY   * @tparam E type of elements in the <code>Array</code>
+  //DOTTY-ONLY   * @return <code>Aggregating</code> of type <code>Array[E]</code>
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given[E]: Conversion[Equality[E], Aggregating[Array[E]]] with {
+  //DOTTY-ONLY   def apply(equality: Equality[E]): Aggregating[Array[E]] = convertEqualityToArrayAggregating(equality)
+  //DOTTY-ONLY }  
 
   /**
     * Implicit to support <code>Aggregating</code> nature of <code>String</code>.
