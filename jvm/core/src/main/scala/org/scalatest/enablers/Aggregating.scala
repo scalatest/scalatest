@@ -323,7 +323,9 @@ trait AggregatingStandardImplicits extends AggregatingJavaImplicits {
 
   import scala.language.higherKinds
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   /**
   // SKIP-DOTTY-START
