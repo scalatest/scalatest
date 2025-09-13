@@ -25,7 +25,7 @@ import java.util.concurrent.locks.{Lock, ReadWriteLock}
  * @author Josh Cough
  */
 private[concurrent] object PimpedReadWriteLock {
-
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
 
   /**
@@ -35,6 +35,47 @@ private[concurrent] object PimpedReadWriteLock {
    * @return an instance of <code>PimpedReadWriteLock</code>
    */
   implicit def pimpMyReadWriteLock(lock: ReadWriteLock): PimpedReadWriteLock = new PimpedReadWriteLock(lock)
+  // SKIP-DOTTY-END
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert a <code>java.util.concurrent.locks.ReadWriteLock</code> to <code>PimpedReadWriteLock</code>.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @param lock the <code>ReadWriteLock</code>
+  //DOTTY-ONLY  * @return an instance of <code>PimpedReadWriteLock</code>
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def pimpMyReadWriteLock(lock: ReadWriteLock): PimpedReadWriteLock = new PimpedReadWriteLock(lock)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Extension methods for <code>java.util.concurrent.locks.ReadWriteLock</code> to support methods of <code>PimpedReadWriteLock</code>.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY extension (lock: ReadWriteLock) {
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Locks the read lock
+  //DOTTY-ONLY    * Executes the given function, holding the result
+  //DOTTY-ONLY    * Unlocks the read lock
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param f the function to be executed while the read lock is locked
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def withReadLock[T](f: => T): T = pimpMyReadWriteLock(lock).withReadLock(f)
+  //DOTTY-ONLY   /*
+  //DOTTY-ONLY    * Alternate name for withReadLock
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def read[T](f: => T): T = pimpMyReadWriteLock(lock).read(f)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Locks the write lock
+  //DOTTY-ONLY    * Executes the given function, holding the result
+  //DOTTY-ONLY    * Unlocks the write lock
+  //DOTTY-ONLY    * Returns the result
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param f the function to be executed while the read lock is locked
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def withWriteLock[T](f: => T): T = pimpMyReadWriteLock(lock).withWriteLock(f)
+  //DOTTY-ONLY   /*
+  //DOTTY-ONLY    * Alternate name for withWriteLock
+  //DOTTY-ONLY    * Returns the result
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def write[T](f: => T): T = pimpMyReadWriteLock(lock).write(f)
+  //DOTTY-ONLY }
 
   /**
    * Locks the given lock

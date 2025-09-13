@@ -17,7 +17,6 @@ package org.scalatest.concurrent
 
 import org.scalatest._
 import time.Span
-import PatienceConfiguration._
 import org.scalactic.Requirements._
 
 /**
@@ -82,8 +81,11 @@ import org.scalactic.Requirements._
  */
 trait PatienceConfiguration extends AbstractPatienceConfiguration {
 
+  import PatienceConfiguration.{Timeout, Interval}
+
   private val defaultPatienceConfig = PatienceConfig()
 
+  // SKIP-DOTTY-START
   /**
    * Implicit <code>PatienceConfig</code> value providing default configuration values.
    *
@@ -93,6 +95,21 @@ trait PatienceConfiguration extends AbstractPatienceConfiguration {
    * </p>
    */
   implicit def patienceConfig: PatienceConfig = defaultPatienceConfig
+  // SKIP-DOTTY-END
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * The <code>PatienceConfig</code> value providing default configuration values.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * <p>
+  //DOTTY-ONLY  * To change the default configuration, override or hide this <code>def</code> with another 
+  //DOTTY-ONLY  * <code>PatienceConfig</code> containing your desired default configuration values.
+  //DOTTY-ONLY  * </p>
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def patienceConfig: PatienceConfig = defaultPatienceConfig
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Given <code>PatienceConfig</code> value providing default configuration values.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY given PatienceConfig = patienceConfig
 
   /**
    * Returns a <code>Timeout</code> configuration parameter containing the passed value, which
@@ -107,7 +124,7 @@ trait PatienceConfiguration extends AbstractPatienceConfiguration {
   def interval(value: Span) = Interval(value)    // TODO: Throw NPE
 }
 
-object PatienceConfiguration {
+object PatienceConfiguration extends PatienceConfiguration {
 
   /**
    * Abstract class defining a family of configuration parameters for traits <code>Eventually</code> and <code>Waiters</code>.

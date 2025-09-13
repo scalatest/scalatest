@@ -339,6 +339,7 @@ class ClueSpec extends AnyFlatSpec with Matchers {
   it should "throw Serializable TestFailedDueToTimeoutException thrown from withClue wrapping a failing eventually" in {
 
     import org.scalatest.concurrent.Eventually._
+    //DOTTY-ONLY import org.scalatest.concurrent.Eventually.given_PatienceConfig
     import org.scalatest.exceptions.TestFailedDueToTimeoutException
     import SharedHelpers.serializeRoundtrip
 

@@ -83,6 +83,9 @@ import org.scalatest.exceptions.TestFailedException
  */
 trait EitherValues extends Serializable {
 
+  import EitherValues._
+
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
 
   /**
@@ -107,7 +110,90 @@ trait EitherValues extends Serializable {
    * @param either the <code>Either</code> on which to add the <code>value</code> method
    */
   implicit def convertEitherToValuable[L, R](either: Either[L, R])(implicit pos: source.Position): EitherValuable[L, R] = new EitherValuable(either, pos)
+  // SKIP-DOTTY-END
 
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert <code>LeftProjection</code> to <code>LeftValuable</code>.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @param leftProj the <code>LeftProjection</code> on which to be converted to <code>LeftValuable</code>
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def convertLeftProjectionToValuable[L, R](leftProj: Either.LeftProjection[L, R])(implicit pos: source.Position): LeftValuable[L, R] = new LeftValuable(leftProj, pos)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for <code>LeftProjection</code> that add a <code>value</code> method.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension [L, R](leftProj: Either.LeftProjection[L, R])(using pos: source.Position) {  
+  //DOTTY-ONLY   def value: L = 
+  //DOTTY-ONLY     convertLeftProjectionToValuable(leftProj)(pos).value
+  //DOTTY-ONLY }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert <code>RightProjection</code> to <code>RightValuable</code>.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @param rightProj the <code>RightProjection</code> on which to be converted to <code>RightValuable</code>
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY @deprecated("The .right.value syntax on Either has been deprecated and will be removed in a future version of ScalaTest. Please use .value instead.", "3.2.3")
+  //DOTTY-ONLY def convertRightProjectionToValuable[L, R](rightProj: Either.RightProjection[L, R])(implicit pos: source.Position): RightValuable[L, R] = new RightValuable(rightProj, pos)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for <code>RightProjection</code> that add a <code>value</code> method.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension [L, R](rightProj: Either.RightProjection[L, R])(using pos: source.Position) {
+  //DOTTY-ONLY   @deprecated("The .right.value syntax on Either has been deprecated and will be removed in a future version of ScalaTest. Please use .value instead.", "3.2.3")
+  //DOTTY-ONLY   def value: R = 
+  //DOTTY-ONLY     (new RightValuable(rightProj, pos)).value
+  //DOTTY-ONLY }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert <code>Either</code> to <code>EitherValuable</code>.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @param either the <code>Either</code> on which to be converted to <code>EitherValuable</code>
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def convertEitherToValuable[L, R](either: Either[L, R])(implicit pos: source.Position): EitherValuable[L, R] = new EitherValuable(either, pos)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for <code>Either</code> that add a <code>value</code> method.
+  //DOTTY-ONLY  * This method is right biased and is the equivalent of calling <code>either.right.value</code>.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension [L, R](either: Either[L, R])(using pos: source.Position) {  
+  //DOTTY-ONLY   def value: R = 
+  //DOTTY-ONLY     (new EitherValuable(either, pos)).value
+  //DOTTY-ONLY }
+}
+
+/**
+ * Companion object that facilitates the importing of <code>ValueEither</code> members as 
+ * an alternative to mixing it in. One use case is to import <code>EitherValues</code>'s members so you can use
+ * <code>left.value</code> and <code>right.value</code> on <code>Either</code> in the Scala interpreter:
+ *
+ * <pre class="stREPL">
+ * $ scala -cp scalatest-1.7.jar
+ * Welcome to Scala version 2.9.1.final (Java HotSpot(TM) 64-Bit Server VM, Java 1.6.0_29).
+ * Type in expressions to have them evaluated.
+ * Type :help for more information.
+ * 
+ * scala&gt; import org.scalatest._
+ * import org.scalatest._
+ * 
+ * scala&gt; import matchers.Matchers._
+ * import matchers.Matchers._
+ * 
+ * scala&gt; import EitherValues._
+ * import EitherValues._
+ * 
+ * scala&gt; val e: Either[String, Int] = Left("Muchas problemas")
+ * e: Either[String,Int] = Left(Muchos problemas)
+ * 
+ * scala&gt; e.left.value should be ("Muchos problemas")
+ * 
+ * scala&gt; e.value should be &lt; 9
+ * org.scalatest.TestFailedException: The Either on which value was invoked was not defined.
+ *   at org.scalatest.EitherValues$RightValuable.value(EitherValues.scala:148)
+ *   at .&lt;init&gt;(&lt;console&gt;:18)
+ *   ...
+ * </pre>
+ */
+object EitherValues extends EitherValues {
   /**
    * Wrapper class that adds a <code>value</code> method to <code>LeftProjection</code>, allowing
    * you to make statements like:
@@ -195,37 +281,3 @@ trait EitherValues extends Serializable {
     }
   }
 }
-
-/**
- * Companion object that facilitates the importing of <code>ValueEither</code> members as 
- * an alternative to mixing it in. One use case is to import <code>EitherValues</code>'s members so you can use
- * <code>left.value</code> and <code>right.value</code> on <code>Either</code> in the Scala interpreter:
- *
- * <pre class="stREPL">
- * $ scala -cp scalatest-1.7.jar
- * Welcome to Scala version 2.9.1.final (Java HotSpot(TM) 64-Bit Server VM, Java 1.6.0_29).
- * Type in expressions to have them evaluated.
- * Type :help for more information.
- * 
- * scala&gt; import org.scalatest._
- * import org.scalatest._
- * 
- * scala&gt; import matchers.Matchers._
- * import matchers.Matchers._
- * 
- * scala&gt; import EitherValues._
- * import EitherValues._
- * 
- * scala&gt; val e: Either[String, Int] = Left("Muchas problemas")
- * e: Either[String,Int] = Left(Muchos problemas)
- * 
- * scala&gt; e.left.value should be ("Muchos problemas")
- * 
- * scala&gt; e.value should be &lt; 9
- * org.scalatest.TestFailedException: The Either on which value was invoked was not defined.
- *   at org.scalatest.EitherValues$RightValuable.value(EitherValues.scala:148)
- *   at .&lt;init&gt;(&lt;console&gt;:18)
- *   ...
- * </pre>
- */
-object EitherValues extends EitherValues

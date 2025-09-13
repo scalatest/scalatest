@@ -81,6 +81,9 @@ import org.scalatest.exceptions.TestFailedException
  */
 trait PartialFunctionValues {
 
+  import PartialFunctionValues.Valuable
+
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
 
   /**
@@ -89,31 +92,21 @@ trait PartialFunctionValues {
    * @param pf the <code>PartialFunction</code> on which to add the <code>valueAt</code> method
    */
   implicit def convertPartialFunctionToValuable[A, B](pf: PartialFunction[A, B])(implicit pos: source.Position): Valuable[A, B] = new Valuable(pf, pos)
-  
-  /**
-   * Wrapper class that adds a <code>valueAt</code> method to <code>PartialFunction</code>, allowing
-   * you to make statements like:
-   *
-   * <pre class="stHighlight">
-   * pf.valueAt("VI") should equal (6)
-   * </pre>
-   *
-   * @param pf An <code>PartialFunction</code> to convert to <code>Valuable</code>, which provides the <code>valueAt</code> method.
-   */
-  class Valuable[A, B](pf: PartialFunction[A, B], pos: source.Position) {
+  // SKIP-DOTTY-END
 
-    /**
-     * Returns the result of applying the wrapped <code>PartialFunction</code> to the passed input, if it is defined at that input, else
-     * throws <code>TestFailedException</code> with a detail message indicating the <code>PartialFunction</code> was not defined at the given input.
-     */
-    def valueAt(input: A): B = {
-      if (pf.isDefinedAt(input)) {
-        pf.apply(input)
-      }
-      else
-        throw new TestFailedException((_: StackDepthException) => Some(Resources.partialFunctionValueNotDefined(input.toString)), None, pos)
-    }
-  }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Convert <code>PartialFunction[A, B]</code> to <code>Valuable[A, B]</code>
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY def convertPartialFunctionToValuable[A, B](pf: PartialFunction[A, B])(implicit pos: source.Position): Valuable[A, B] = new Valuable(pf, pos)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension that adds a <code>valueAt</code> method to <code>PartialFunction</code>.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @param pf the <code>PartialFunction</code> on which to add the <code>valueAt</code> method
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension [A, B](pf: PartialFunction[A, B])(using pos: source.Position) {
+  //DOTTY-ONLY   def valueAt(input: A): B = convertPartialFunctionToValuable(pf).valueAt(input)
+  //DOTTY-ONLY }
 }
 
 /**
@@ -148,4 +141,29 @@ trait PartialFunctionValues {
  *   ...
  * </pre>
  */
-object PartialFunctionValues extends PartialFunctionValues
+object PartialFunctionValues extends PartialFunctionValues {
+  /**
+   * Wrapper class that adds a <code>valueAt</code> method to <code>PartialFunction</code>, allowing
+   * you to make statements like:
+   *
+   * <pre class="stHighlight">
+   * pf.valueAt("VI") should equal (6)
+   * </pre>
+   *
+   * @param pf An <code>PartialFunction</code> to convert to <code>Valuable</code>, which provides the <code>valueAt</code> method.
+   */
+  class Valuable[A, B](pf: PartialFunction[A, B], pos: source.Position) {
+
+    /**
+     * Returns the result of applying the wrapped <code>PartialFunction</code> to the passed input, if it is defined at that input, else
+     * throws <code>TestFailedException</code> with a detail message indicating the <code>PartialFunction</code> was not defined at the given input.
+     */
+    def valueAt(input: A): B = {
+      if (pf.isDefinedAt(input)) {
+        pf.apply(input)
+      }
+      else
+        throw new TestFailedException((_: StackDepthException) => Some(Resources.partialFunctionValueNotDefined(input.toString)), None, pos)
+    }
+  }
+}

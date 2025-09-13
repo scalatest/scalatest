@@ -51,12 +51,12 @@ object Position {
   import org.scalactic.Resources
 
   /**
-   * Implicit method, implemented with a macro, that returns the enclosing
+   * Inline given method, implemented with a macro, that returns the enclosing
    * source position where it is invoked.
    *
    * @return the enclosing source position
    */
-  implicit inline def here: Position = ${ genPosition }
+  inline given here: Position = ${ genPosition }
 
   private[scalactic] lazy val showScalacticFillFilePathnames: Boolean = 
     Option(System.getenv("SCALACTIC_FILL_FILE_PATHNAMES")) == Some("yes")

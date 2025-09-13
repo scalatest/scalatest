@@ -28,6 +28,8 @@ import org.scalactic.source
 
 class GeneratorSpec extends AnyFunSpec with Matchers {
 
+  import Configuration.PropertyCheckConfiguration
+
   implicit def roseTreeGenerator[A](implicit genOfA: Generator[A]): Generator[RoseTree[A]]  = {
     new Generator[RoseTree[A]] {
       def nextImpl(szp: SizeParam, isValidFun: (RoseTree[A], SizeParam) => Boolean, rnd: Randomizer): (RoseTree[RoseTree[A]], Randomizer) = {
