@@ -740,7 +740,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
       )
   }
 
-  infix def contain(atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication)(implicit aggregating: Aggregating[T]): Assertion = {
+  infix def contain(atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication)(using aggregating: Aggregating[T]): Assertion = {
 
     val right = atLeastOneElementOf.right
 
@@ -781,7 +781,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
       indicateSuccess(shouldBeTrue, FailureMessages.didNotContainAtLeastOneElementOf(prettifier, left, right), FailureMessages.containedAtLeastOneElementOf(prettifier, left, right))
   }
 
-  infix def contain(theSameElementsAs: ResultOfTheSameElementsAsApplication)(implicit aggregating: Aggregating[T]): Assertion = {
+  infix def contain(theSameElementsAs: ResultOfTheSameElementsAsApplication)(using aggregating: Aggregating[T]): Assertion = {
 
     val right = theSameElementsAs.right
 
@@ -801,7 +801,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
       indicateSuccess(shouldBeTrue, FailureMessages.containedSameElementsInOrder(prettifier, left, right), FailureMessages.didNotContainSameElementsInOrder(prettifier, left, right))
   }
 
-  infix def contain(only: ResultOfOnlyApplication)(implicit aggregating: Aggregating[T]): Assertion = {
+  infix def contain(only: ResultOfOnlyApplication)(using aggregating: Aggregating[T]): Assertion = {
     val right = only.right
     val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[Iterable[_]] || right(0).isInstanceOf[Every[_]])
     if (aggregating.containsOnly(left, right) != shouldBeTrue) {
@@ -854,7 +854,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
       )
   }
 
-  infix def contain(allOf: ResultOfAllOfApplication)(implicit aggregating: Aggregating[T]): Assertion = {
+  infix def contain(allOf: ResultOfAllOfApplication)(using aggregating: Aggregating[T]): Assertion = {
 
     val right = allOf.right
     if (aggregating.containsAllOf(left, right) != shouldBeTrue)
@@ -874,7 +874,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
       )
   }
 
-  infix def contain(allElementsOf: ResultOfAllElementsOfApplication)(implicit aggregating: Aggregating[T]): Assertion = {
+  infix def contain(allElementsOf: ResultOfAllElementsOfApplication)(using aggregating: Aggregating[T]): Assertion = {
 
     val right = allElementsOf.right
     if (aggregating.containsAllOf(left, right.distinct) != shouldBeTrue)
@@ -912,7 +912,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
       indicateSuccess(shouldBeTrue, FailureMessages.containedAllElementsOfInOrder(prettifier, left, right), FailureMessages.didNotContainAllElementsOfInOrder(prettifier, left, right))
   }
 
-  infix def contain(atMostOneOf: ResultOfAtMostOneOfApplication)(implicit aggregating: Aggregating[T]): Assertion = {
+  infix def contain(atMostOneOf: ResultOfAtMostOneOfApplication)(using aggregating: Aggregating[T]): Assertion = {
 
     val right = atMostOneOf.right
 
@@ -933,7 +933,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
       )
   }
 
-  infix def contain(atMostOneElementOf: ResultOfAtMostOneElementOfApplication)(implicit aggregating: Aggregating[T]): Assertion = {
+  infix def contain(atMostOneElementOf: ResultOfAtMostOneElementOfApplication)(using aggregating: Aggregating[T]): Assertion = {
 
     val right = atMostOneElementOf.right
 

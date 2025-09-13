@@ -27,7 +27,7 @@ object GenScalaTestDotty {
     else if (line.trim.startsWith("//DOTTY-ONLY "))
       line.substring(line.indexOf("//DOTTY-ONLY ") + 13)
     else
-      line
+      line.replaceAll("""/\*\s*DOTTY-ONLY\s*(.*?)\s*\*/""", "$1")
 
   private def transformLine(line: String): String =
     uncommentJsExport(line)
@@ -66,7 +66,7 @@ object GenScalaTestDotty {
     else if (line.trim.startsWith("//SCALATESTJS-ONLY "))
       line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19)  
     else
-      line
+      line.replaceAll("""/\*\s*DOTTY-ONLY\s*(.*?)\s*\*/""", "$1")
 
   private def transformLineJS(line: String): String =
     uncommentJsExportJS(line)
@@ -165,7 +165,7 @@ object GenScalaTestDotty {
     else if (line.trim.startsWith("//SCALATESTNATIVE-ONLY "))
       line.substring(line.indexOf("//SCALATESTNATIVE-ONLY ") + 23)    
     else
-      line
+      line.replaceAll("""/\*\s*DOTTY-ONLY\s*(.*?)\s*\*/""", "$1")
 
   private def transformLineNative(line: String): String =
     uncommentNativeExportNative(line)
