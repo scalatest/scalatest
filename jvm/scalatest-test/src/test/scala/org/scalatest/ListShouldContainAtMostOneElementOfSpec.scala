@@ -156,11 +156,11 @@ class ListShouldContainAtMostOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+        (fumList should not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FAM"))) (decided by upperCaseStringEquality)
+          (fumList should not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FAM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
-        (fumList should not contain atMostOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
+        (fumList should not contain atMostOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           fumList should not contain atMostOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUM "))
         }

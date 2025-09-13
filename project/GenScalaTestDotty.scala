@@ -36,6 +36,7 @@ object GenScalaTestDotty {
           .replace(":_*", "*")
           .replaceAll("""Resources\.(\w+) _,""", """Resources.$1,""")
           .replace("Framework => SbtFramework, Runner => SbtRunner, Status => SbtStatus, _", "Framework as SbtFramework, Runner as SbtRunner, Status as SbtStatus, *")
+          .replaceAll("""/\*\s*DOTTY-ONLY\s*(.*?)\s*\*/""", "$1")
 
   private def transformLine(line: String): String =
     uncommentJsExport(line)
@@ -76,6 +77,7 @@ object GenScalaTestDotty {
     else
       line.replaceAll("""import ([\w\.]+)\._""", """import $1.*""")
           .replace(": _*", "*")
+          .replaceAll("""/\*\s*DOTTY-ONLY\s*(.*?)\s*\*/""", "$1")
 
   private def transformLineJS(line: String): String =
     uncommentJsExportJS(line)
@@ -174,7 +176,7 @@ object GenScalaTestDotty {
     else if (line.trim.startsWith("//SCALATESTNATIVE-ONLY "))
       line.substring(line.indexOf("//SCALATESTNATIVE-ONLY ") + 23)    
     else
-      line
+      line.replaceAll("""/\*\s*DOTTY-ONLY\s*(.*?)\s*\*/""", "$1")
 
   private def transformLineNative(line: String): String =
     uncommentNativeExportNative(line)

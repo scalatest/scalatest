@@ -278,15 +278,15 @@ class OnlyContainMatcherDeciderSpec extends AnyFunSpec with Explicitly {
     
     it("should take specified normalization when 'should not contain' is used") {
       
-      (List("1", "2", "3") should not contain only ("1", "2", "3")) (after being appended)
-      (Set("1", "2", "3") should not contain only ("1", "2", "3")) (after being appended)
-      (Array("1", "2", "3") should not contain only ("1", "2", "3")) (after being appended)
-      (Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain only (1 -> "one", 2 -> "two", 3 -> "three")) (after being mapAppended)
+      (List("1", "2", "3") should not contain only ("1", "2", "3")) (/* DOTTY-ONLY using */ after being appended)
+      (Set("1", "2", "3") should not contain only ("1", "2", "3")) (/* DOTTY-ONLY using */ after being appended)
+      (Array("1", "2", "3") should not contain only ("1", "2", "3")) (/* DOTTY-ONLY using */ after being appended)
+      (Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain only (1 -> "one", 2 -> "two", 3 -> "three")) (/* DOTTY-ONLY using */ after being mapAppended)
 
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList("1", "2", "3") should not contain only ("1", "2", "3")) (after being appended)
-      (javaSet("1", "2", "3") should not contain only ("1", "2", "3")) (after being appended)
-      (javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain only (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (after being javaMapAppended)
+      (javaList("1", "2", "3") should not contain only ("1", "2", "3")) (/* DOTTY-ONLY using */ after being appended)
+      (javaSet("1", "2", "3") should not contain only ("1", "2", "3")) (/* DOTTY-ONLY using */ after being appended)
+      (javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain only (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (/* DOTTY-ONLY using */ after being javaMapAppended)
       // SKIP-SCALATESTJS,NATIVE-END
     }
     
@@ -335,38 +335,38 @@ class OnlyContainMatcherDeciderSpec extends AnyFunSpec with Explicitly {
       
       val left1 = List("1", " 2", "3")
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should not contain only (" 1", "2 ", " 3")) (after being trimmed)
+        (left1 should not contain only (" 1", "2 ", " 3")) (/* DOTTY-ONLY using */ after being trimmed)
       }
       checkShouldNotContainStackDepth(e1, left1, deep(Array(" 1", "2 ", " 3")), thisLineNumber - 2)
         
       val left2 = Set("1", " 2", "3")
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should not contain only (" 1", "2 ", " 3")) (after being trimmed)
+        (left2 should not contain only (" 1", "2 ", " 3")) (/* DOTTY-ONLY using */ after being trimmed)
       }
       checkShouldNotContainStackDepth(e2, left2, deep(Array(" 1", "2 ", " 3")), thisLineNumber - 2)
         
       val left3 = Array("1", " 2", "3")
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should not contain only (" 1", "2 ", " 3")) (after being trimmed)
+        (left3 should not contain only (" 1", "2 ", " 3")) (/* DOTTY-ONLY using */ after being trimmed)
       }
       checkShouldNotContainStackDepth(e3, left3, deep(Array(" 1", "2 ", " 3")), thisLineNumber - 2)
       
       val left4 = Map(1 -> "one", 2 -> " two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        (left4 should not contain only (1 -> " one", 2 -> "two ", 3 -> " three")) (after being mapTrimmed)
+        (left4 should not contain only (1 -> " one", 2 -> "two ", 3 -> " three")) (/* DOTTY-ONLY using */ after being mapTrimmed)
       }
       checkShouldNotContainStackDepth(e4, left4, deep(Array(1 -> " one", 2 -> "two ", 3 -> " three")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS,NATIVE-START
       val left5 = javaList("1", " 2", "3")
       val e5 = intercept[exceptions.TestFailedException] {
-        (left5 should not contain only (" 1", "2 ", " 3")) (after being trimmed)
+        (left5 should not contain only (" 1", "2 ", " 3")) (/* DOTTY-ONLY using */ after being trimmed)
       }
       checkShouldNotContainStackDepth(e5, left5, deep(Array(" 1", "2 ", " 3")), thisLineNumber - 2)
 
       val left6 = javaMap(Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
-        (left6 should not contain only (Entry(1, " one"), Entry(2, "two "), Entry(3, " three"))) (after being javaMapTrimmed)
+        (left6 should not contain only (Entry(1, " one"), Entry(2, "two "), Entry(3, " three"))) (/* DOTTY-ONLY using */ after being javaMapTrimmed)
       }
       checkShouldNotContainStackDepth(e6, left6, deep(Array(Entry(1, " one"), Entry(2, "two "), Entry(3, " three"))), thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END
@@ -387,14 +387,14 @@ class OnlyContainMatcherDeciderSpec extends AnyFunSpec with Explicitly {
     
     it("should take specified equality and normalization when 'should not contain' is used") {
       
-      (List("one ", " two", "three ") should not contain only (" one", "two ", " three")) (decided by reverseEquality afterBeing trimmed)
-      (Set("one ", " two", "three ") should not contain only (" one", "two ", " three")) (decided by reverseEquality afterBeing trimmed)
-      (Array("one ", " two", "three ") should not contain only (" one", "two ", " three")) (decided by reverseEquality afterBeing trimmed)
-      (Map(1 -> "one ", 2 -> " two", 3 -> "three ") should not contain only (1 -> " one", 2 -> "two ", 3 -> " three")) (decided by mapReverseEquality afterBeing mapTrimmed)
+      (List("one ", " two", "three ") should not contain only (" one", "two ", " three")) (/* DOTTY-ONLY using */ decided by reverseEquality afterBeing trimmed)
+      (Set("one ", " two", "three ") should not contain only (" one", "two ", " three")) (/* DOTTY-ONLY using */ decided by reverseEquality afterBeing trimmed)
+      (Array("one ", " two", "three ") should not contain only (" one", "two ", " three")) (/* DOTTY-ONLY using */ decided by reverseEquality afterBeing trimmed)
+      (Map(1 -> "one ", 2 -> " two", 3 -> "three ") should not contain only (1 -> " one", 2 -> "two ", 3 -> " three")) (/* DOTTY-ONLY using */ decided by mapReverseEquality afterBeing mapTrimmed)
 
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList("one ", " two", "three ") should not contain only (" one", "two ", " three")) (decided by reverseEquality afterBeing trimmed)
-      (javaMap(Entry(1, "one "), Entry(2, " two"), Entry(3, "three ")) should not contain only (Entry(1, " one"), Entry(2, "two "), Entry(3, " three"))) (decided by javaMapReverseEquality afterBeing javaMapTrimmed)
+      (javaList("one ", " two", "three ") should not contain only (" one", "two ", " three")) (/* DOTTY-ONLY using */ decided by reverseEquality afterBeing trimmed)
+      (javaMap(Entry(1, "one "), Entry(2, " two"), Entry(3, "three ")) should not contain only (Entry(1, " one"), Entry(2, "two "), Entry(3, " three"))) (/* DOTTY-ONLY using */ decided by javaMapReverseEquality afterBeing javaMapTrimmed)
       // SKIP-SCALATESTJS,NATIVE-END
     }
     
@@ -443,38 +443,38 @@ class OnlyContainMatcherDeciderSpec extends AnyFunSpec with Explicitly {
       
       val left1 = List("ONE ", " TWO", "THREE ")
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should not contain only (" one", "two ", " three")) (decided by lowerCaseEquality afterBeing trimmed)
+        (left1 should not contain only (" one", "two ", " three")) (/* DOTTY-ONLY using */ decided by lowerCaseEquality afterBeing trimmed)
       }
       checkShouldNotContainStackDepth(e1, left1, deep(Array(" one", "two ", " three")), thisLineNumber - 2)
         
       val left2 = Set("ONE ", " TWO", "THREE ")
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should not contain only (" one", "two ", " three")) (decided by lowerCaseEquality afterBeing trimmed)
+        (left2 should not contain only (" one", "two ", " three")) (/* DOTTY-ONLY using */ decided by lowerCaseEquality afterBeing trimmed)
       }
       checkShouldNotContainStackDepth(e2, left2, deep(Array(" one", "two ", " three")), thisLineNumber - 2)
         
       val left3 = Array("ONE ", " TWO", "THREE ")
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should not contain only (" one", "two ", " three")) (decided by lowerCaseEquality afterBeing trimmed)
+        (left3 should not contain only (" one", "two ", " three")) (/* DOTTY-ONLY using */ decided by lowerCaseEquality afterBeing trimmed)
       }
       checkShouldNotContainStackDepth(e3, left3, deep(Array(" one", "two ", " three")), thisLineNumber - 2)
        
       val left4 = Map(1 -> "ONE ", 2 -> " TWO", 3 -> "THREE ")
       val e4 = intercept[exceptions.TestFailedException] {
-        (left4 should not contain only (1 -> " one ", 2 -> "two ", 3 -> " three")) (decided by mapLowerCaseEquality afterBeing mapTrimmed)
+        (left4 should not contain only (1 -> " one ", 2 -> "two ", 3 -> " three")) (/* DOTTY-ONLY using */ decided by mapLowerCaseEquality afterBeing mapTrimmed)
       }
       checkShouldNotContainStackDepth(e4, left4, deep(Array(1 -> " one ", 2 -> "two ", 3 -> " three")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS,NATIVE-START
       val left5 = javaList("ONE ", " TWO", "THREE ")
       val e5 = intercept[exceptions.TestFailedException] {
-        (left5 should not contain only (" one", "two ", " three")) (decided by lowerCaseEquality afterBeing trimmed)
+        (left5 should not contain only (" one", "two ", " three")) (/* DOTTY-ONLY using */ decided by lowerCaseEquality afterBeing trimmed)
       }
       checkShouldNotContainStackDepth(e5, left5, deep(Array(" one", "two ", " three")), thisLineNumber - 2)
 
       val left6 = javaMap(Entry(1, "ONE "), Entry(2, " TWO"), Entry(3, "THREE "))
       val e6 = intercept[exceptions.TestFailedException] {
-        (left6 should not contain only (Entry(1, " one "), Entry(2, "two "), Entry(3, " three"))) (decided by javaMapLowerCaseEquality afterBeing javaMapTrimmed)
+        (left6 should not contain only (Entry(1, " one "), Entry(2, "two "), Entry(3, " three"))) (/* DOTTY-ONLY using */ decided by javaMapLowerCaseEquality afterBeing javaMapTrimmed)
       }
       checkShouldNotContainStackDepth(e6, left6, deep(Array(Entry(1, " one "), Entry(2, "two "), Entry(3, " three"))), thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END

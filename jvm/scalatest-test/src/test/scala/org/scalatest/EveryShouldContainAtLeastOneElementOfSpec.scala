@@ -147,13 +147,13 @@ class EveryShouldContainAtLeastOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList should not contain atLeastOneElementOf (Seq("to", "you"))) (decided by upperCaseStringEquality)
+        (toList should not contain atLeastOneElementOf (Seq("to", "you"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should not contain atLeastOneElementOf (Seq("TO", "YOU"))) (decided by upperCaseStringEquality)
+          (toList should not contain atLeastOneElementOf (Seq("TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         toList should not contain atLeastOneElementOf (Seq(" TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList should not contain atLeastOneElementOf (Seq(" TO ", " YOU "))) (after being lowerCased and trimmed)
+          (toList should not contain atLeastOneElementOf (Seq(" TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should allow RHS to contain duplicated value") {
