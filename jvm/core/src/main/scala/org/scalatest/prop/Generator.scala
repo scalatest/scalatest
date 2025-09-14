@@ -522,7 +522,9 @@ trait Generator[T] { thisGeneratorOfT =>
   */
 object Generator {
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   /**
     * Allow Generators of a type to be used as Generators of a supertype.
@@ -546,7 +548,12 @@ object Generator {
     * @tparam U the supertype that we want a [[Generator]] for
     * @return a `Generator[U]` derived from the `Generator[T]`
     */
+  // SKIP-DOTTY-START  
   implicit def widen[T, U](genOfT: Generator[T])(implicit ev: T <:< U): Generator[U] = genOfT.map(o => (o: U))
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given widen[T, U](using ev: T <:< U): Conversion[Generator[T], Generator[U]] with {
+  //DOTTY-ONLY   def apply(genOfT: Generator[T]): Generator[U] = genOfT.map(o => (o: U))
+  //DOTTY-ONLY }
 
   ///////////////////////////////////////
   //
