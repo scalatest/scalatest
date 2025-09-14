@@ -616,10 +616,13 @@ object Generator {
   // suggesting changing the signatures of any of these, just merging their implementations.)
   //
 
+  // SKIP-DOTTY-START
   /**
     * A [[Generator]] that produces [[Boolean]] values.
     */
   implicit val booleanGenerator: Generator[Boolean] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val booleanGenerator: Generator[Boolean] =
     new Generator[Boolean] {
       def nextImpl(szp: SizeParam, isValidFun: (Boolean, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[Boolean], Randomizer) = {
         val (bit, nextRnd) = rnd.nextBit
@@ -628,7 +631,8 @@ object Generator {
       }
 
       override def toString = "Generator[Boolean]"
-    }  
+    }
+  //DOTTY-ONLY given Generator[Boolean] = booleanGenerator
 
   /**
     * A [[Generator]] that produces [[Byte]] values.
