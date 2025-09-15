@@ -616,10 +616,10 @@ object Generator {
   // suggesting changing the signatures of any of these, just merging their implementations.)
   //
 
-  // SKIP-DOTTY-START
   /**
     * A [[Generator]] that produces [[Boolean]] values.
     */
+  // SKIP-DOTTY-START  
   implicit val booleanGenerator: Generator[Boolean] =
   // SKIP-DOTTY-END
   //DOTTY-ONLY val booleanGenerator: Generator[Boolean] =
@@ -632,12 +632,18 @@ object Generator {
 
       override def toString = "Generator[Boolean]"
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[Boolean]] values.
+  //DOTTY-ONLY   */  
   //DOTTY-ONLY given Generator[Boolean] = booleanGenerator
 
   /**
     * A [[Generator]] that produces [[Byte]] values.
     */
+  // SKIP-DOTTY-START  
   implicit val byteGenerator: Generator[Byte] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val byteGenerator: Generator[Byte] =
     new Generator[Byte] {
       case class NextRoseTree(value: Byte)(sizeParam: SizeParam, isValidFun: (Byte, SizeParam) => Boolean) extends RoseTree[Byte] {
         def shrinks: LazyListOrStream[RoseTree[Byte]] = {
@@ -694,11 +700,18 @@ object Generator {
       // be based on the values being shrunk.
       override def shrinksForValue(valueToShrink: Byte): Option[LazyListOrStream[RoseTree[Byte]]] = Some(NextRoseTree(valueToShrink)(SizeParam(1, 0, 1), this.isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[Byte]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[Byte] = byteGenerator
 
   /**
     * A [[Generator]] that produces [[Short]] values.
     */
+  // SKIP-DOTTY-START
   implicit val shortGenerator: Generator[Short] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val shortGenerator: Generator[Short] =
     new Generator[Short] {
 
       case class NextRoseTree(value: Short)(sizeParam: SizeParam, isValidFun: (Short, SizeParam) => Boolean) extends RoseTree[Short] {
@@ -750,11 +763,18 @@ object Generator {
       override def toString = "Generator[Short]"
       override def shrinksForValue(valueToShrink: Short): Option[LazyListOrStream[RoseTree[Short]]] = Some(NextRoseTree(valueToShrink)(SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[Short]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[Short] = shortGenerator
 
   /**
     * A [[Generator]] that produces [[Char]] values.
     */
+  // SKIP-DOTTY-START
   implicit val charGenerator: Generator[Char] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val charGenerator: Generator[Char] =
     new Generator[Char] {
 
       case class NextRoseTree(value: Char)(sizeParam: SizeParam, isValidFun: (Char, SizeParam) => Boolean) extends RoseTree[Char] {
@@ -812,11 +832,18 @@ object Generator {
       override def toString = "Generator[Char]"
       override def shrinksForValue(valueToShrink: Char): Option[LazyListOrStream[RoseTree[Char]]] = Some(NextRoseTree(valueToShrink)(SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[Char]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[Char] = charGenerator
 
   /**
     * A [[Generator]] that produces [[Int]] values.
     */
+  // SKIP-DOTTY-START
   implicit val intGenerator: Generator[Int] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val intGenerator: Generator[Int] =
     new Generator[Int] {
 
       case class NextRoseTree(value: Int, sizeParam: SizeParam, isValidFun: (Int, SizeParam) => Boolean) extends RoseTree[Int] {
@@ -868,11 +895,18 @@ object Generator {
       }
       override def shrinksForValue(valueToShrink: Int): Option[LazyListOrStream[RoseTree[Int]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[Int]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[Int] = intGenerator
 
   /**
     * A [[Generator]] that produces [[Long]] values.
     */
+  // SKIP-DOTTY-START
   implicit val longGenerator: Generator[Long] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val longGenerator: Generator[Long] =
     new Generator[Long] {
 
       case class NextRoseTree(value: Long, sizeParam: SizeParam, isValidFun: (Long, SizeParam) => Boolean) extends RoseTree[Long] {
@@ -924,11 +958,18 @@ object Generator {
       override def toString = "Generator[Long]"
       override def shrinksForValue(valueToShrink: Long): Option[LazyListOrStream[RoseTree[Long]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[Long]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[Long] = longGenerator
 
   /**
     * A [[Generator]] that produces [[Float]] values.
     */
+  // SKIP-DOTTY-START
   implicit val floatGenerator: Generator[Float] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val floatGenerator: Generator[Float] =
     new Generator[Float] {
 
       case class NextRoseTree(value: Float, sizeParam: SizeParam, isValidFun: (Float, SizeParam) => Boolean) extends RoseTree[Float] {
@@ -1017,11 +1058,18 @@ object Generator {
       override def toString = "Generator[Float]"
       override def shrinksForValue(valueToShrink: Float): Option[LazyListOrStream[RoseTree[Float]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[Float]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[Float] = floatGenerator
 
   /**
     * A [[Generator]] that produces [[Double]] values.
     */
+  // SKIP-DOTTY-START
   implicit val doubleGenerator: Generator[Double] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val doubleGenerator: Generator[Double] =
     new Generator[Double] {
 
       case class NextRoseTree(value: Double, sizeParam: SizeParam, isValidFun: (Double, SizeParam) => Boolean) extends RoseTree[Double] {
@@ -1111,6 +1159,10 @@ object Generator {
       override def toString = "Generator[Double]"
       override def shrinksForValue(valueToShrink: Double): Option[LazyListOrStream[RoseTree[Double]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[Double]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[Double] = doubleGenerator  
 
   /**
     * A [[Generator]] that produces positive integers, excluding zero.
