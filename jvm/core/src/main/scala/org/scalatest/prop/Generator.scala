@@ -1167,7 +1167,10 @@ object Generator {
   /**
     * A [[Generator]] that produces positive integers, excluding zero.
     */
+  // SKIP-DOTTY-START
   implicit val posIntGenerator: Generator[PosInt] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posIntGenerator: Generator[PosInt] =
     new Generator[PosInt] {
 
       case class NextRoseTree(value: PosInt, sizeParam: SizeParam, isValidFun: (PosInt, SizeParam) => Boolean) extends RoseTree[PosInt] {
@@ -1215,11 +1218,18 @@ object Generator {
       override def toString = "Generator[PosInt]"
       override def shrinksForValue(valueToShrink: PosInt): Option[LazyListOrStream[RoseTree[PosInt]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosInt]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosInt] = posIntGenerator
 
   /**
     * A [[Generator]] that produces positive integers, including zero.
     */
+  // SKIP-DOTTY-START
   implicit val posZIntGenerator: Generator[PosZInt] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posZIntGenerator: Generator[PosZInt] =
     new Generator[PosZInt] {
 
       case class NextRoseTree(value: PosZInt, sizeParam: SizeParam, isValidFun: (PosZInt, SizeParam) => Boolean) extends RoseTree[PosZInt] {
@@ -1267,11 +1277,18 @@ object Generator {
       override def toString = "Generator[PosZInt]"
       override def shrinksForValue(valueToShrink: PosZInt): Option[LazyListOrStream[RoseTree[PosZInt]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosZInt]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosZInt] = posZIntGenerator
 
   /**
     * A [[Generator]] that produces positive Longs, excluding zero.
     */
+  // SKIP-DOTTY-START
   implicit val posLongGenerator: Generator[PosLong] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posLongGenerator: Generator[PosLong] =
     new Generator[PosLong] {
 
       case class NextRoseTree(value: PosLong, sizeParam: SizeParam, isValidFun: (PosLong, SizeParam) => Boolean) extends RoseTree[PosLong] {
@@ -1320,11 +1337,18 @@ object Generator {
       override def toString = "Generator[PosLong]"
       override def shrinksForValue(valueToShrink: PosLong): Option[LazyListOrStream[RoseTree[PosLong]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosLong]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosLong] = posLongGenerator
 
   /**
     * A [[Generator]] that produces positive Longs, including zero.
     */
+  // SKIP-DOTTY-START
   implicit val posZLongGenerator: Generator[PosZLong] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posZLongGenerator: Generator[PosZLong] =
     new Generator[PosZLong] {
       
       case class NextRoseTree(value: PosZLong, sizeParam: SizeParam, isValidFun: (PosZLong, SizeParam) => Boolean) extends RoseTree[PosZLong] {
@@ -1372,11 +1396,18 @@ object Generator {
       override def toString = "Generator[PosZLong]"
       override def shrinksForValue(valueToShrink: PosZLong): Option[LazyListOrStream[RoseTree[PosZLong]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosZLong]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosZLong] = posZLongGenerator
 
   /**
     * A [[Generator]] that produces positive Floats, excluding zero.
     */
+  // SKIP-DOTTY-START
   implicit val posFloatGenerator: Generator[PosFloat] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posFloatGenerator: Generator[PosFloat] =
     new Generator[PosFloat] {
 
       case class NextRoseTree(value: PosFloat, sizeParam: SizeParam, isValidFun: (PosFloat, SizeParam) => Boolean) extends RoseTree[PosFloat] {
@@ -1444,11 +1475,18 @@ object Generator {
       override def toString = "Generator[PosFloat]"
       override def shrinksForValue(valueToShrink: PosFloat): Option[LazyListOrStream[RoseTree[PosFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosFloat] = posFloatGenerator
 
   /**
     * A [[Generator]] that produces positive Floats, excluding zero and infinity.
     */
+  // SKIP-DOTTY-START
   implicit val posFiniteFloatGenerator: Generator[PosFiniteFloat] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posFiniteFloatGenerator: Generator[PosFiniteFloat] =
     new Generator[PosFiniteFloat] {
 
       case class NextRoseTree(value: PosFiniteFloat, sizeParam: SizeParam, isValidFun: (PosFiniteFloat, SizeParam) => Boolean) extends RoseTree[PosFiniteFloat] {
@@ -1511,11 +1549,18 @@ object Generator {
       override def toString = "Generator[PosFiniteFloat]"
       override def shrinksForValue(valueToShrink: PosFiniteFloat): Option[LazyListOrStream[RoseTree[PosFiniteFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosFiniteFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosFiniteFloat] = posFiniteFloatGenerator
 
   /**
     * A [[Generator]] that produces Floats, excluding infinity.
     */
+  // SKIP-DOTTY-START
   implicit val finiteFloatGenerator: Generator[FiniteFloat] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val finiteFloatGenerator: Generator[FiniteFloat] =
     new Generator[FiniteFloat] {
 
       case class NextRoseTree(value: FiniteFloat, sizeParam: SizeParam, isValidFun: (FiniteFloat, SizeParam) => Boolean) extends RoseTree[FiniteFloat] {
@@ -1586,11 +1631,18 @@ object Generator {
       override def toString = "Generator[FiniteFloat]"
       override def shrinksForValue(valueToShrink: FiniteFloat): Option[LazyListOrStream[RoseTree[FiniteFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[FiniteFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[FiniteFloat] = finiteFloatGenerator  
 
   /**
     * A [[Generator]] that produces Doubles, excluding infinity.
     */
+  // SKIP-DOTTY-START
   implicit val finiteDoubleGenerator: Generator[FiniteDouble] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val finiteDoubleGenerator: Generator[FiniteDouble] =
     new Generator[FiniteDouble] {
 
       case class NextRoseTree(value: FiniteDouble, sizeParam: SizeParam, isValidFun: (FiniteDouble, SizeParam) => Boolean) extends RoseTree[FiniteDouble] {
@@ -1661,11 +1713,18 @@ object Generator {
       override def toString = "Generator[FiniteDouble]"
       override def shrinksForValue(valueToShrink: FiniteDouble): Option[LazyListOrStream[RoseTree[FiniteDouble]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[FiniteDouble]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[FiniteDouble] = finiteDoubleGenerator
 
   /**
     * A [[Generator]] that produces positive Floats, including zero and infinity.
     */
+  // SKIP-DOTTY-START
   implicit val posZFloatGenerator: Generator[PosZFloat] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posZFloatGenerator: Generator[PosZFloat] =
     new Generator[PosZFloat] {
 
       case class NextRoseTree(value: PosZFloat, sizeParam: SizeParam, isValidFun: (PosZFloat, SizeParam) => Boolean) extends RoseTree[PosZFloat] {
@@ -1740,11 +1799,18 @@ object Generator {
       override def toString = "Generator[PosZFloat]"
       override def shrinksForValue(valueToShrink: PosZFloat): Option[LazyListOrStream[RoseTree[PosZFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosZFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosZFloat] = posZFloatGenerator
 
   /**
     * A [[Generator]] that produces positive Floats, including zero but excluding infinity.
     */
+  // SKIP-DOTTY-START
   implicit val posZFiniteFloatGenerator: Generator[PosZFiniteFloat] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posZFiniteFloatGenerator: Generator[PosZFiniteFloat] =
     new Generator[PosZFiniteFloat] {
 
       case class NextRoseTree(value: PosZFiniteFloat, sizeParam: SizeParam, isValidFun: (PosZFiniteFloat, SizeParam) => Boolean) extends RoseTree[PosZFiniteFloat] {
@@ -1810,11 +1876,18 @@ object Generator {
       override def toString = "Generator[PosZFiniteFloat]"
       override def shrinksForValue(valueToShrink: PosZFiniteFloat): Option[LazyListOrStream[RoseTree[PosZFiniteFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosZFiniteFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosZFiniteFloat] = posZFiniteFloatGenerator  
 
   /**
     * A [[Generator]] that produces positive Doubles, excluding zero but including infinity.
     */
+  // SKIP-DOTTY-START
   implicit val posDoubleGenerator: Generator[PosDouble] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posDoubleGenerator: Generator[PosDouble] =
     new Generator[PosDouble] {
 
       case class NextRoseTree(value: PosDouble, sizeParam: SizeParam, isValidFun: (PosDouble, SizeParam) => Boolean) extends RoseTree[PosDouble] {
@@ -1881,11 +1954,18 @@ object Generator {
       override def toString = "Generator[PosDouble]"
       override def shrinksForValue(valueToShrink: PosDouble): Option[LazyListOrStream[RoseTree[PosDouble]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosDouble]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosDouble] = posDoubleGenerator
 
   /**
     * A [[Generator]] that produces positive Doubles, excluding zero and infinity.
     */
+  // SKIP-DOTTY-START
   implicit val posFiniteDoubleGenerator: Generator[PosFiniteDouble] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posFiniteDoubleGenerator: Generator[PosFiniteDouble] =
     new Generator[PosFiniteDouble] {
 
       case class NextRoseTree(value: PosFiniteDouble, sizeParam: SizeParam, isValidFun: (PosFiniteDouble, SizeParam) => Boolean) extends RoseTree[PosFiniteDouble] {
@@ -1948,6 +2028,10 @@ object Generator {
       override def toString = "Generator[PosFiniteDouble]"
       override def shrinksForValue(valueToShrink: PosFiniteDouble): Option[LazyListOrStream[RoseTree[PosFiniteDouble]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosFiniteDouble]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosFiniteDouble] = posFiniteDoubleGenerator
 
   /**
     * A [[Generator]] that produces positive Doubles, including zero and infinity.
