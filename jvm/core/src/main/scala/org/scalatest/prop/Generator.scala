@@ -3027,7 +3027,10 @@ object Generator {
   /**
     * A [[Generator]] that produces negative Longs, excluding zero.
     */
+  // SKIP-DOTTY-START
   implicit val negLongGenerator: Generator[NegLong] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val negLongGenerator: Generator[NegLong] =
     new Generator[NegLong] {
 
       case class NextRoseTree(value: NegLong, sizeParam: SizeParam, isValidFun: (NegLong, SizeParam) => Boolean) extends RoseTree[NegLong] {
@@ -3076,11 +3079,18 @@ object Generator {
       override def toString = "Generator[NegLong]"
       override def shrinksForValue(valueToShrink: NegLong): Option[LazyListOrStream[RoseTree[NegLong]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegLong]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NegLong] = negLongGenerator
 
   /**
     * A [[Generator]] that produces negative Doubles, including zero and infinity.
     */
+  // SKIP-DOTTY-START
   implicit val negZDoubleGenerator: Generator[NegZDouble] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val negZDoubleGenerator: Generator[NegZDouble] =
     new Generator[NegZDouble] {
 
       case class NextRoseTree(value: NegZDouble, sizeParam: SizeParam, isValidFun: (NegZDouble, SizeParam) => Boolean) extends RoseTree[NegZDouble] {
@@ -3155,11 +3165,18 @@ object Generator {
       override def toString = "Generator[NegZDouble]"
       override def shrinksForValue(valueToShrink: NegZDouble): Option[LazyListOrStream[RoseTree[NegZDouble]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegZDouble]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NegZDouble] = negZDoubleGenerator
 
   /**
     * A [[Generator]] that produces negative Doubles, including zero but excluding infinity.
     */
+  // SKIP-DOTTY-START
   implicit val negZFiniteDoubleGenerator: Generator[NegZFiniteDouble] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val negZFiniteDoubleGenerator: Generator[NegZFiniteDouble] =
     new Generator[NegZFiniteDouble] {
 
       case class NextRoseTree(value: NegZFiniteDouble, sizeParam: SizeParam, isValidFun: (NegZFiniteDouble, SizeParam) => Boolean) extends RoseTree[NegZFiniteDouble] {
@@ -3230,11 +3247,18 @@ object Generator {
       override def toString = "Generator[NegZFiniteDouble]"
       override def shrinksForValue(valueToShrink: NegZFiniteDouble): Option[LazyListOrStream[RoseTree[NegZFiniteDouble]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegZFiniteDouble]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NegZFiniteDouble] = negZFiniteDoubleGenerator
 
   /**
     * A [[Generator]] that produces negative Floats, including zero and infinity.
     */
+  // SKIP-DOTTY-START
   implicit val negZFloatGenerator: Generator[NegZFloat] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val negZFloatGenerator: Generator[NegZFloat] =
     new Generator[NegZFloat] {
 
       case class NextRoseTree(value: NegZFloat, sizeParam: SizeParam, isValidFun: (NegZFloat, SizeParam) => Boolean) extends RoseTree[NegZFloat] {
@@ -3309,11 +3333,18 @@ object Generator {
       override def toString = "Generator[NegZFloat]"
       override def shrinksForValue(valueToShrink: NegZFloat): Option[LazyListOrStream[RoseTree[NegZFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegZFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NegZFloat] = negZFloatGenerator
 
   /**
     * A [[Generator]] that produces negative Floats, including zero but excluding infinity.
     */
+  // SKIP-DOTTY-START
   implicit val negZFiniteFloatGenerator: Generator[NegZFiniteFloat] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val negZFiniteFloatGenerator: Generator[NegZFiniteFloat] =
     new Generator[NegZFiniteFloat] {
 
       case class NextRoseTree(value: NegZFiniteFloat, sizeParam: SizeParam, isValidFun: (NegZFiniteFloat, SizeParam) => Boolean) extends RoseTree[NegZFiniteFloat] {
@@ -3384,11 +3415,18 @@ object Generator {
       override def toString = "Generator[NegZFiniteFloat]"
       override def shrinksForValue(valueToShrink: NegZFiniteFloat): Option[LazyListOrStream[RoseTree[NegZFiniteFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegZFiniteFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NegZFiniteFloat] = negZFiniteFloatGenerator
 
   /**
     * A [[Generator]] that produces negative Ints, including zero.
     */
+  // SKIP-DOTTY-START
   implicit val negZIntGenerator: Generator[NegZInt] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val negZIntGenerator: Generator[NegZInt] =
     new Generator[NegZInt] {
 
       case class NextRoseTree(value: NegZInt, sizeParam: SizeParam, isValidFun: (NegZInt, SizeParam) => Boolean) extends RoseTree[NegZInt] {
@@ -3437,11 +3475,18 @@ object Generator {
       override def toString = "Generator[NegZInt]"
       override def shrinksForValue(valueToShrink: NegZInt): Option[LazyListOrStream[RoseTree[NegZInt]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegZInt]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NegZInt] = negZIntGenerator
 
   /**
     * A [[Generator]] that produces negative Longs, including zero.
     */
+  // SKIP-DOTTY-START
   implicit val negZLongGenerator: Generator[NegZLong] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val negZLongGenerator: Generator[NegZLong] =
     new Generator[NegZLong] {
 
       case class NextRoseTree(value: NegZLong, sizeParam: SizeParam, isValidFun: (NegZLong, SizeParam) => Boolean) extends RoseTree[NegZLong] {
@@ -3490,11 +3535,18 @@ object Generator {
       override def toString = "Generator[NegZLong]"
       override def shrinksForValue(valueToShrink: NegZLong): Option[LazyListOrStream[RoseTree[NegZLong]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegZLong]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NegZLong] = negZLongGenerator
 
   /**
     * A [[Generator]] that produces Chars, but only the ones that represent digits.
     */
+  // SKIP-DOTTY-START
   implicit val numericCharGenerator: Generator[NumericChar] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val numericCharGenerator: Generator[NumericChar] =
     new Generator[NumericChar] {
 
       case class NextRoseTree(value: NumericChar)(sizeParam: SizeParam, isValidFun: (NumericChar, SizeParam) => Boolean) extends RoseTree[NumericChar] {
@@ -3543,6 +3595,10 @@ object Generator {
       override def toString = "Generator[NumericChar]"
       override def shrinksForValue(valueToShrink: NumericChar): Option[LazyListOrStream[RoseTree[NumericChar]]] = Some(NextRoseTree(valueToShrink)(SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NumericChar]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NumericChar] = numericCharGenerator
 
   // Should throw IAE on negative size in all generators, even the ones that ignore size.
   /**
@@ -3551,7 +3607,10 @@ object Generator {
     * Note that this does not confine itself to ASCII! While failed tests will try to shrink to
     * readable ASCII, this will produce arbitrary Unicode [[String]]s.
     */
+  // SKIP-DOTTY-START
   implicit val stringGenerator: Generator[String] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val stringGenerator: Generator[String] =
     new Generator[String] {
       private val stringEdges = List("")
 
@@ -3599,6 +3658,10 @@ object Generator {
       override def toString = "Generator[String]"
       override def shrinksForValue(valueToShrink: String): Option[LazyListOrStream[RoseTree[String]]] = Some(NextRoseTree(valueToShrink)(SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[String]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[String] = stringGenerator
 
   // Should throw IAE on negative size in all generators, even the ones that ignore size.
   /**
@@ -3608,7 +3671,10 @@ object Generator {
     * @tparam T the type that we are producing a List of
     * @return a List of values of type [[T]]
     */
+  // SKIP-DOTTY-START
   implicit def listGenerator[T](implicit genOfT: Generator[T]): Generator[List[T]] with HavingLength[List[T]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def listGenerator[T](implicit genOfT: Generator[T]): Generator[List[T]] with HavingLength[List[T]] =
     new Generator[List[T]] with HavingLength[List[T]] { outerGenOfListOfT =>
       private val listEdges = List(Nil)
 
@@ -3708,6 +3774,8 @@ object Generator {
         }
       override def shrinksForValue(valueToShrink: List[T]): Option[LazyListOrStream[RoseTree[List[T]]]] = Some(NextRoseTree(valueToShrink, SizeParam(0, 0, 0), isValid).shrinks)
     }
+    //DOTTY-ONLY given [T](using genOfT: Generator[T]): (Generator[List[T]] with HavingLength[List[T]]) = listGenerator(genOfT)
+    //given [E](using equality: Equality[E]): Aggregating[Array[E]] = convertEqualityToArrayAggregating(equality)
 
   /**
     * Given a [[Generator]] that produces values of type [[T]], this returns one that produces ''functions'' that return
