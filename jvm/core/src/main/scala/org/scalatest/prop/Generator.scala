@@ -3774,8 +3774,10 @@ object Generator {
         }
       override def shrinksForValue(valueToShrink: List[T]): Option[LazyListOrStream[RoseTree[List[T]]]] = Some(NextRoseTree(valueToShrink, SizeParam(0, 0, 0), isValid).shrinks)
     }
-    //DOTTY-ONLY given [T](using genOfT: Generator[T]): (Generator[List[T]] with HavingLength[List[T]]) = listGenerator(genOfT)
-    //given [E](using equality: Equality[E]): Aggregating[Array[E]] = convertEqualityToArrayAggregating(equality)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[List[T]] with HavingLength[List[T]]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [T](using genOfT: Generator[T]): (Generator[List[T]] with HavingLength[List[T]]) = listGenerator(genOfT)
 
   /**
     * Given a [[Generator]] that produces values of type [[T]], this returns one that produces ''functions'' that return
@@ -3787,7 +3789,10 @@ object Generator {
     * @tparam T the type to produce
     * @return a [[Generator]] that produces functions that return values of type [[T]]
     */
+  // SKIP-DOTTY-START
   implicit def function0Generator[T](implicit genOfT: Generator[T]): Generator[() => T] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function0Generator[T](implicit genOfT: Generator[T]): Generator[() => T] = {
     new Generator[() => T] { thisGeneratorOfFunction0 =>
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[() => T], Randomizer) = {
         val (edgesOfT, nextRnd) = genOfT.initEdges(maxLength, rnd)
@@ -3804,6 +3809,10 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[() => T]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [T](using genOfT: Generator[T]): Generator[() => T] = function0Generator(genOfT)
 
   /**
     * Generate functions that take an [[Int]] and return a modified [[Int]].
@@ -3812,7 +3821,10 @@ object Generator {
     * functions (returning the same Int, returning that [[Int]] plus 1), it tests overflow situations such as
     * adding [[Int.MaxValue]], negation, and other such cases.
     */
+  // SKIP-DOTTY-START
   implicit val function1IntToIntGenerator: Generator[Int => Int] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val function1IntToIntGenerator: Generator[Int => Int] = {  
     object IntToIntIdentity extends (Int => Int) {
       def apply(i: Int): Int = i
       override def toString = "(i: Int) => i"
@@ -3915,6 +3927,10 @@ object Generator {
       override def toString = "Generator[Int => Int]"
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[Int => Int]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[Int => Int] = function1IntToIntGenerator
 
   // TODO: it's a hassle to maintain 22 distinct versions of this function generator. What we *should* be doing here,
   // in theory, is abstracting over arity. Unfortunately, Scalatest can't depend on Shapeless, so that's not
@@ -3953,7 +3969,10 @@ object Generator {
     * @tparam B the result type for the generated functions
     * @return a [[Generator]] that produces functions that take values of [[A]] and returns values of [[B]]
   */
+  // SKIP-DOTTY-START
   implicit def function1Generator[A, B](implicit genOfB: Generator[B], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B]): Generator[A => B] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function1Generator[A, B](implicit genOfB: Generator[B], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B]): Generator[A => B] = {
     new Generator[A => B] {
       def nextImpl(szp: SizeParam, isValidFun: (A => B, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[A => B], Randomizer) = {
 
@@ -3974,6 +3993,10 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[A => B]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B](using genOfB: Generator[B], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B]): Generator[A => B] = function1Generator(genOfB, typeInfoA, typeInfoB)
 
   /**
     * Generates a function with 2 input parameters of types A through B and an output of type C.
