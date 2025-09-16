@@ -4002,7 +4002,10 @@ object Generator {
     * Generates a function with 2 input parameters of types A through B and an output of type C.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */  
+  // SKIP-DOTTY-START
   implicit def function2Generator[A, B, C](implicit genOfC: Generator[C], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C]): Generator[(A, B) => C] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function2Generator[A, B, C](implicit genOfC: Generator[C], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C]): Generator[(A, B) => C] = {
     new Generator[(A, B) => C] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B) => C, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B) => C], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4023,12 +4026,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B) => C]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C](using genOfC: Generator[C], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C]): Generator[(A, B) => C] = function2Generator(genOfC, typeInfoA, typeInfoB, typeInfoC)
 
   /**
     * Generates a function with 3 input parameters of types A through C and an output of type D.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function3Generator[A, B, C, D](implicit genOfD: Generator[D], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D]): Generator[(A, B, C) => D] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function3Generator[A, B, C, D](implicit genOfD: Generator[D], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D]): Generator[(A, B, C) => D] = {
     new Generator[(A, B, C) => D] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C) => D, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C) => D], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4050,12 +4060,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C) => D]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D](using genOfD: Generator[D], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D]): Generator[(A, B, C) => D] = function3Generator(genOfD, typeInfoA, typeInfoB, typeInfoC, typeInfoD)
 
   /**
     * Generates a function with 4 input parameters of types A through D and an output of type E.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function4Generator[A, B, C, D, E](implicit genOfE: Generator[E], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E]): Generator[(A, B, C, D) => E] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function4Generator[A, B, C, D, E](implicit genOfE: Generator[E], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E]): Generator[(A, B, C, D) => E] = {
     new Generator[(A, B, C, D) => E] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D) => E, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D) => E], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4078,12 +4095,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E) => F]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E](using genOfE: Generator[E], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E]): Generator[(A, B, C, D) => E] = function4Generator(genOfE, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE)
 
   /**
     * Generates a function with 5 input parameters of types A through E and an output of type F.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function5Generator[A, B, C, D, E, F](implicit genOfF: Generator[F], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F]): Generator[(A, B, C, D, E) => F] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function5Generator[A, B, C, D, E, F](implicit genOfF: Generator[F], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F]): Generator[(A, B, C, D, E) => F] = {
     new Generator[(A, B, C, D, E) => F] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E) => F, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E) => F], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4107,12 +4131,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E) => F]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F](using genOfF: Generator[F], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F]): Generator[(A, B, C, D, E) => F] = function5Generator(genOfF, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF)
 
   /**
     * Generates a function with 6 input parameters of types A through F and an output of type G.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function6Generator[A, B, C, D, E, F, G](implicit genOfG: Generator[G], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G]): Generator[(A, B, C, D, E, F) => G] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function6Generator[A, B, C, D, E, F, G](implicit genOfG: Generator[G], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G]): Generator[(A, B, C, D, E, F) => G] = {
     new Generator[(A, B, C, D, E, F) => G] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F) => G, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F) => G], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4137,12 +4168,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F) => G]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G](using genOfG: Generator[G], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G]): Generator[(A, B, C, D, E, F) => G] = function6Generator(genOfG, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG)
 
   /**
     * Generates a function with 7 input parameters of types A through G and an output of type H.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function7Generator[A, B, C, D, E, F, G, H](implicit genOfH: Generator[H], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H]): Generator[(A, B, C, D, E, F, G) => H] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function7Generator[A, B, C, D, E, F, G, H](implicit genOfH: Generator[H], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H]): Generator[(A, B, C, D, E, F, G) => H] = {
     new Generator[(A, B, C, D, E, F, G) => H] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G) => H, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G) => H], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4168,12 +4206,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G) => H]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H](using genOfH: Generator[H], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H]): Generator[(A, B, C, D, E, F, G) => H] = function7Generator(genOfH, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH)
 
   /**
     * Generates a function with 8 input parameters of types A through H and an output of type I.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START  
   implicit def function8Generator[A, B, C, D, E, F, G, H, I](implicit genOfI: Generator[I], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I]): Generator[(A, B, C, D, E, F, G, H) => I] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function8Generator[A, B, C, D, E, F, G, H, I](implicit genOfI: Generator[I], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I]): Generator[(A, B, C, D, E, F, G, H) => I] = {
     new Generator[(A, B, C, D, E, F, G, H) => I] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G, H) => I, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G, H) => I], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4200,12 +4245,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G, H) => I]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I](using genOfI: Generator[I], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I]): Generator[(A, B, C, D, E, F, G, H) => I] = function8Generator(genOfI, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI)
 
   /**
     * Generates a function with 9 input parameters of types A through I and an output of type J.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function9Generator[A, B, C, D, E, F, G, H, I, J](implicit genOfJ: Generator[J], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J]): Generator[(A, B, C, D, E, F, G, H, I) => J] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function9Generator[A, B, C, D, E, F, G, H, I, J](implicit genOfJ: Generator[J], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J]): Generator[(A, B, C, D, E, F, G, H, I) => J] = {
     new Generator[(A, B, C, D, E, F, G, H, I) => J] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G, H, I) => J, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G, H, I) => J], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4233,12 +4285,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G, H, I) => J]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J](using genOfJ: Generator[J], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J]): Generator[(A, B, C, D, E, F, G, H, I) => J] = function9Generator(genOfJ, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI, typeInfoJ)
 
   /**
     * Generates a function with 10 input parameters of types A through J and an output of type K.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function10Generator[A, B, C, D, E, F, G, H, I, J, K](implicit genOfK: Generator[K], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K]): Generator[(A, B, C, D, E, F, G, H, I, J) => K] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function10Generator[A, B, C, D, E, F, G, H, I, J, K](implicit genOfK: Generator[K], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K]): Generator[(A, B, C, D, E, F, G, H, I, J) => K] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J) => K] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G, H, I, J) => K, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G, H, I, J) => K], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4267,6 +4326,10 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G, H, I, J) => K]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K](using genOfK: Generator[K], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K]): Generator[(A, B, C, D, E, F, G, H, I, J) => K] = function10Generator(genOfK, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI, typeInfoJ, typeInfoK)
 
   /**
     * Generates a function with 11 input parameters of types A through K and an output of type L.
