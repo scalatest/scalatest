@@ -30,6 +30,7 @@ import scala.util.Try
  * Implementation trait for class <code>FixtureAsyncFeatureSpec</code>, which is
  * a sister class to <a href="AsyncFeatureSpec.html"><code>org.scalatest.featurespec.AsyncFeatureSpec</code></a> that can pass a
  * fixture object into its tests.
+ * The expected type of a test in this trait is <code>Fixture => Future[Assertion]</code>.
  *
  * <p>
  * <a href="FixtureAsyncFeatureSpec.html"><code>FixtureAsyncFeatureSpec</code></a> is a class,

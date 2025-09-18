@@ -21,6 +21,8 @@ import org.scalatest._
  * A suite of tests in which each test represents one <em>scenario</em> of a <em>feature</em>. 
  * <code>AnyFeatureSpec</code> is intended for writing tests that are "higher level" than unit tests, for example, integration
  * tests, functional tests, and acceptance tests. You can use <code>AnyFeatureSpec</code> for unit testing if you prefer, however.
+ *
+ * The expected type of a test in this class is <code>Any</code>.
  * 
  * <table><tr><td class="usage">
  * <strong>Recommended Usage</strong>:
