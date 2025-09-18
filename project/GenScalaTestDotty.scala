@@ -228,7 +228,13 @@ object GenScalaTestDotty {
     sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName)).map { sourceFile =>
       val destFile = new File(packageDir, sourceFile.getName)
       if (!destFile.exists || sourceFile.lastModified > destFile.lastModified) {
-        if (packageDirName == "images")
+        val sourceFileName = sourceFile.getName
+        if (sourceFileName.endsWith(".png") || 
+            sourceFileName.endsWith(".jpg") || 
+            sourceFileName.endsWith(".gif") || 
+            sourceFileName.endsWith(".jpeg") ||
+            sourceFileName.endsWith(".psd")
+           )
           IO.copyFile(sourceFile, destFile) // For image files
         else
           copyFile(sourceFile, destFile)
