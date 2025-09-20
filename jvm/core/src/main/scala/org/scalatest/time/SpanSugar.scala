@@ -283,7 +283,9 @@ trait SpanSugar {
 
   implicit val postfixOps: languageFeature.postfixOps = language.postfixOps
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   /**
    * Implicit conversion that adds time units methods to <code>Int</code>s.
@@ -291,7 +293,10 @@ trait SpanSugar {
    * @param i: the <code>Int</code> to which to add time units methods
    * @return a <code>GrainOfTime</code> wrapping the passed <code>Int</code>
    */
+  // SKIP-DOTTY-START 
   implicit def convertIntToGrainOfTime(i: Int): GrainOfTime = new GrainOfTime(i)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertIntToGrainOfTime(i: Int): GrainOfTime = new GrainOfTime(i)
   
   /**
    * Implicit conversion that adds time units methods to <code>Long</code>s.
@@ -299,8 +304,10 @@ trait SpanSugar {
    * @param i: the <code>Long</code> to which to add time units methods
    * @return a <code>GrainOfTime</code> wrapping the passed <code>Long</code>
    */
+  // SKIP-DOTTY-START 
   implicit def convertLongToGrainOfTime(i: Long): GrainOfTime = new GrainOfTime(i)
-
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertLongToGrainOfTime(i: Long): GrainOfTime = new GrainOfTime(i)
 
   /**
    * Implicit conversion that adds time units methods to <code>Float</code>s.
@@ -308,7 +315,10 @@ trait SpanSugar {
    * @param f: the <code>Float</code> to which to add time units methods
    * @return a <code>FloatingGrainOfTime</code> wrapping the passed <code>Float</code>
    */
+  // SKIP-DOTTY-START 
   implicit def convertFloatToGrainOfTime(f: Float): FloatingGrainOfTime = new FloatingGrainOfTime(f)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertFloatToGrainOfTime(f: Float): FloatingGrainOfTime = new FloatingGrainOfTime(f)
 
   /**
    * Implicit conversion that adds time units methods to <code>Double</code>s.
@@ -316,7 +326,259 @@ trait SpanSugar {
    * @param d: the <code>Double</code> to which to add time units methods
    * @return a <code>FloatingGrainOfTime</code> wrapping the passed <code>Double</code>
    */
+  // SKIP-DOTTY-START 
   implicit def convertDoubleToGrainOfTime(d: Double): FloatingGrainOfTime = new FloatingGrainOfTime(d)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertDoubleToGrainOfTime(d: Double): FloatingGrainOfTime = new FloatingGrainOfTime(d)
+
+  //DOTTY-ONLY extension (i: Int) {
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY   * Adds <code>nanosecond</code> method to <code>Int</code>s.
+  //DOTTY-ONLY   */ 
+  //DOTTY-ONLY   def nanosecond: Span = convertIntToGrainOfTime(i).nanosecond
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>nanoseconds</code> method to <code>Int</code>s.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY   def nanoseconds: Span = convertIntToGrainOfTime(i).nanoseconds
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>microsecond</code> method to <code>Int</code>s.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY   def microsecond: Span = convertIntToGrainOfTime(i).microsecond
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>microseconds</code> method to <code>Int</code>s.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY   def microseconds: Span = convertIntToGrainOfTime(i).microseconds
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>millisecond</code> method to <code>Int</code>s.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY   def millisecond: Span = convertIntToGrainOfTime(i).millisecond
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>milliseconds</code> method to <code>Int</code>s.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY   def milliseconds: Span = convertIntToGrainOfTime(i).milliseconds
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>millis</code> method to <code>Int</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def millis: Span = convertIntToGrainOfTime(i).millis
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>second</code> method to <code>Int</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def second: Span = convertIntToGrainOfTime(i).second
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>seconds</code> method to <code>Int</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def seconds: Span = convertIntToGrainOfTime(i).seconds
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>minute</code> method to <code>Int</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def minute: Span = convertIntToGrainOfTime(i).minute
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>minutes</code> method to <code>Int</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def minutes: Span = convertIntToGrainOfTime(i).minutes
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>hour</code> method to <code>Int</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def hour: Span = convertIntToGrainOfTime(i).hour
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>hours</code> method to <code>Int</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def hours: Span = convertIntToGrainOfTime(i).hours
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>day</code> method to <code>Int</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def day: Span = convertIntToGrainOfTime(i).day
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>days</code> method to <code>Int</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def days: Span = convertIntToGrainOfTime(i).days
+  //DOTTY-ONLY }
+  //DOTTY-ONLY extension (i: Long) {
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>nanosecond</code> method to <code>Long</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def nanosecond: Span = convertLongToGrainOfTime(i).nanosecond
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>nanoseconds</code> method to <code>Long</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def nanoseconds: Span = convertLongToGrainOfTime(i).nanoseconds
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>microsecond</code> method to <code>Long</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def microsecond: Span = convertLongToGrainOfTime(i).microsecond
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>microseconds</code> method to <code>Long</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def microseconds: Span = convertLongToGrainOfTime(i).microseconds
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>millisecond</code> method to <code>Long</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def millisecond: Span = convertLongToGrainOfTime(i).millisecond
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>milliseconds</code> method to <code>Long</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def milliseconds: Span = convertLongToGrainOfTime(i).milliseconds
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>millis</code> method to <code>Long</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def millis: Span = convertLongToGrainOfTime(i).millis
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>second</code> method to <code>Long</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def second: Span = convertLongToGrainOfTime(i).second
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>seconds</code> method to <code>Long</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def seconds: Span = convertLongToGrainOfTime(i).seconds
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>minute</code> method to <code>Long</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def minute: Span = convertLongToGrainOfTime(i).minute
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>minutes</code> method to <code>Long</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def minutes: Span = convertLongToGrainOfTime(i).minutes
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>hour</code> method to <code>Long</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def hour: Span = convertLongToGrainOfTime(i).hour
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>hours</code> method to <code>Long</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def hours: Span = convertLongToGrainOfTime(i).hours
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>day</code> method to <code>Long</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def day: Span = convertLongToGrainOfTime(i).day
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>days</code> method to <code>Long</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def days: Span = convertLongToGrainOfTime(i).days
+  //DOTTY-ONLY }
+  //DOTTY-ONLY extension (f: Float) {
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>nanosecond</code> method to <code>Float</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def nanosecond: Span = convertFloatToGrainOfTime(f).nanosecond
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>nanoseconds</code> method to <code>Float</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def nanoseconds: Span = convertFloatToGrainOfTime(f).nanoseconds
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>microsecond</code> method to <code>Float</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def microsecond: Span = convertFloatToGrainOfTime(f).microsecond
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>microseconds</code> method to <code>Float</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def microseconds: Span = convertFloatToGrainOfTime(f).microseconds
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>millisecond</code> method to <code>Float</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def millisecond: Span = convertFloatToGrainOfTime(f).millisecond
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>milliseconds</code> method to <code>Float</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def milliseconds: Span = convertFloatToGrainOfTime(f).milliseconds
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>millis</code> method to <code>Float</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def millis: Span = convertFloatToGrainOfTime(f).millis
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>second</code> method to <code>Float</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def second: Span = convertFloatToGrainOfTime(f).second
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>seconds</code> method to <code>Float</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def seconds: Span = convertFloatToGrainOfTime(f).seconds
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>minute</code> method to <code>Float</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def minute: Span = convertFloatToGrainOfTime(f).minute
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>minutes</code> method to <code>Float</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def minutes: Span = convertFloatToGrainOfTime(f).minutes
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>hour</code> method to <code>Float</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def hour: Span = convertFloatToGrainOfTime(f).hour
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>hours</code> method to <code>Float</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def hours: Span = convertFloatToGrainOfTime(f).hours
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>day</code> method to <code>Float</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def day: Span = convertFloatToGrainOfTime(f).day
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>days</code> method to <code>Float</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def days: Span = convertFloatToGrainOfTime(f).days
+  //DOTTY-ONLY }
+  //DOTTY-ONLY extension (d: Double) {
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>nanosecond</code> method to <code>Double</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def nanosecond: Span = convertDoubleToGrainOfTime(d).nanosecond
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>nanoseconds</code> method to <code>Double</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def nanoseconds: Span = convertDoubleToGrainOfTime(d).nanoseconds
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>microsecond</code> method to <code>Double</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def microsecond: Span = convertDoubleToGrainOfTime(d).microsecond
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>microseconds</code> method to <code>Double</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def microseconds: Span = convertDoubleToGrainOfTime(d).microseconds
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>millisecond</code> method to <code>Double</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def millisecond: Span = convertDoubleToGrainOfTime(d).millisecond
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>milliseconds</code> method to <code>Double</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def milliseconds: Span = convertDoubleToGrainOfTime(d).milliseconds
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>millis</code> method to <code>Double</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def millis: Span = convertDoubleToGrainOfTime(d).millis
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>second</code> method to <code>Double</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def second: Span = convertDoubleToGrainOfTime(d).second
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>seconds</code> method to <code>Double</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def seconds: Span = convertDoubleToGrainOfTime(d).seconds
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>minute</code> method to <code>Double</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def minute: Span = convertDoubleToGrainOfTime(d).minute
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>minutes</code> method to <code>Double</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def minutes: Span = convertDoubleToGrainOfTime(d).minutes
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>hour</code> method to <code>Double</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def hour: Span = convertDoubleToGrainOfTime(d).hour
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>hours</code> method to <code>Double</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def hours: Span = convertDoubleToGrainOfTime(d).hours
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>day</code> method to <code>Double</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def day: Span = convertDoubleToGrainOfTime(d).day
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Adds <code>days</code> method to <code>Double</code>s.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def days: Span = convertDoubleToGrainOfTime(d).days
+  //DOTTY-ONLY }
 }
 
 /**
