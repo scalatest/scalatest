@@ -687,12 +687,17 @@ object Span {
       unitsString + "s (i.e., with an s) instead."
   }
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
   import scala.concurrent.duration.Duration
   import scala.concurrent.duration.FiniteDuration
 
   /**
+  // SKIP-DOTTY-START
    * Implicitly converts a <code>scala.concurrent.duration.Duration</code> to a <code>Span</code>,
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY  * Converts a <code>scala.concurrent.duration.Duration</code> to a <code>Span</code>,
    * so that a <code>Duration</code> can be used where a <code>Span</code> is needed.
    *
    * <p>
@@ -701,13 +706,17 @@ object Span {
    * corresponing number of nanoseconds.
    * </p>
    */
+  // SKIP-DOTTY-START 
   implicit def convertDurationToSpan(duration: Duration): Span = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertDurationToSpan(duration: Duration): Span = {  
     duration match {
       case _ if duration.isFinite => Span(duration.toNanos, Nanoseconds)
       case Duration.MinusInf => Span.Zero
       case _ => Span.Max // Duration.Inf and Undefined
     }
   }
+  //DOTTY-ONLY given Conversion[Duration, Span] = convertDurationToSpan
 
   /**
    * Implicitly converts a <code>Span</code> to a <code>scala.concurrent.duration.FiniteDuration</code>,

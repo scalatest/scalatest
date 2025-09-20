@@ -522,7 +522,9 @@ trait Generator[T] { thisGeneratorOfT =>
   */
 object Generator {
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   /**
     * Allow Generators of a type to be used as Generators of a supertype.
@@ -546,7 +548,12 @@ object Generator {
     * @tparam U the supertype that we want a [[Generator]] for
     * @return a `Generator[U]` derived from the `Generator[T]`
     */
+  // SKIP-DOTTY-START  
   implicit def widen[T, U](genOfT: Generator[T])(implicit ev: T <:< U): Generator[U] = genOfT.map(o => (o: U))
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given widen[T, U](using ev: T <:< U): Conversion[Generator[T], Generator[U]] with {
+  //DOTTY-ONLY   def apply(genOfT: Generator[T]): Generator[U] = genOfT.map(o => (o: U))
+  //DOTTY-ONLY }
 
   ///////////////////////////////////////
   //
@@ -612,7 +619,10 @@ object Generator {
   /**
     * A [[Generator]] that produces [[Boolean]] values.
     */
+  // SKIP-DOTTY-START  
   implicit val booleanGenerator: Generator[Boolean] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val booleanGenerator: Generator[Boolean] =
     new Generator[Boolean] {
       def nextImpl(szp: SizeParam, isValidFun: (Boolean, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[Boolean], Randomizer) = {
         val (bit, nextRnd) = rnd.nextBit
@@ -621,12 +631,19 @@ object Generator {
       }
 
       override def toString = "Generator[Boolean]"
-    }  
+    }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[Boolean]] values.
+  //DOTTY-ONLY   */  
+  //DOTTY-ONLY given Generator[Boolean] = booleanGenerator
 
   /**
     * A [[Generator]] that produces [[Byte]] values.
     */
+  // SKIP-DOTTY-START  
   implicit val byteGenerator: Generator[Byte] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val byteGenerator: Generator[Byte] =
     new Generator[Byte] {
       case class NextRoseTree(value: Byte)(sizeParam: SizeParam, isValidFun: (Byte, SizeParam) => Boolean) extends RoseTree[Byte] {
         def shrinks: LazyListOrStream[RoseTree[Byte]] = {
@@ -683,11 +700,18 @@ object Generator {
       // be based on the values being shrunk.
       override def shrinksForValue(valueToShrink: Byte): Option[LazyListOrStream[RoseTree[Byte]]] = Some(NextRoseTree(valueToShrink)(SizeParam(1, 0, 1), this.isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[Byte]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[Byte] = byteGenerator
 
   /**
     * A [[Generator]] that produces [[Short]] values.
     */
+  // SKIP-DOTTY-START
   implicit val shortGenerator: Generator[Short] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val shortGenerator: Generator[Short] =
     new Generator[Short] {
 
       case class NextRoseTree(value: Short)(sizeParam: SizeParam, isValidFun: (Short, SizeParam) => Boolean) extends RoseTree[Short] {
@@ -739,11 +763,18 @@ object Generator {
       override def toString = "Generator[Short]"
       override def shrinksForValue(valueToShrink: Short): Option[LazyListOrStream[RoseTree[Short]]] = Some(NextRoseTree(valueToShrink)(SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[Short]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[Short] = shortGenerator
 
   /**
     * A [[Generator]] that produces [[Char]] values.
     */
+  // SKIP-DOTTY-START
   implicit val charGenerator: Generator[Char] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val charGenerator: Generator[Char] =
     new Generator[Char] {
 
       case class NextRoseTree(value: Char)(sizeParam: SizeParam, isValidFun: (Char, SizeParam) => Boolean) extends RoseTree[Char] {
@@ -801,11 +832,18 @@ object Generator {
       override def toString = "Generator[Char]"
       override def shrinksForValue(valueToShrink: Char): Option[LazyListOrStream[RoseTree[Char]]] = Some(NextRoseTree(valueToShrink)(SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[Char]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[Char] = charGenerator
 
   /**
     * A [[Generator]] that produces [[Int]] values.
     */
+  // SKIP-DOTTY-START
   implicit val intGenerator: Generator[Int] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val intGenerator: Generator[Int] =
     new Generator[Int] {
 
       case class NextRoseTree(value: Int, sizeParam: SizeParam, isValidFun: (Int, SizeParam) => Boolean) extends RoseTree[Int] {
@@ -857,11 +895,18 @@ object Generator {
       }
       override def shrinksForValue(valueToShrink: Int): Option[LazyListOrStream[RoseTree[Int]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[Int]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[Int] = intGenerator
 
   /**
     * A [[Generator]] that produces [[Long]] values.
     */
+  // SKIP-DOTTY-START
   implicit val longGenerator: Generator[Long] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val longGenerator: Generator[Long] =
     new Generator[Long] {
 
       case class NextRoseTree(value: Long, sizeParam: SizeParam, isValidFun: (Long, SizeParam) => Boolean) extends RoseTree[Long] {
@@ -913,11 +958,18 @@ object Generator {
       override def toString = "Generator[Long]"
       override def shrinksForValue(valueToShrink: Long): Option[LazyListOrStream[RoseTree[Long]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[Long]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[Long] = longGenerator
 
   /**
     * A [[Generator]] that produces [[Float]] values.
     */
+  // SKIP-DOTTY-START
   implicit val floatGenerator: Generator[Float] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val floatGenerator: Generator[Float] =
     new Generator[Float] {
 
       case class NextRoseTree(value: Float, sizeParam: SizeParam, isValidFun: (Float, SizeParam) => Boolean) extends RoseTree[Float] {
@@ -1006,11 +1058,18 @@ object Generator {
       override def toString = "Generator[Float]"
       override def shrinksForValue(valueToShrink: Float): Option[LazyListOrStream[RoseTree[Float]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[Float]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[Float] = floatGenerator
 
   /**
     * A [[Generator]] that produces [[Double]] values.
     */
+  // SKIP-DOTTY-START
   implicit val doubleGenerator: Generator[Double] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val doubleGenerator: Generator[Double] =
     new Generator[Double] {
 
       case class NextRoseTree(value: Double, sizeParam: SizeParam, isValidFun: (Double, SizeParam) => Boolean) extends RoseTree[Double] {
@@ -1100,11 +1159,18 @@ object Generator {
       override def toString = "Generator[Double]"
       override def shrinksForValue(valueToShrink: Double): Option[LazyListOrStream[RoseTree[Double]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[Double]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[Double] = doubleGenerator  
 
   /**
     * A [[Generator]] that produces positive integers, excluding zero.
     */
+  // SKIP-DOTTY-START
   implicit val posIntGenerator: Generator[PosInt] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posIntGenerator: Generator[PosInt] =
     new Generator[PosInt] {
 
       case class NextRoseTree(value: PosInt, sizeParam: SizeParam, isValidFun: (PosInt, SizeParam) => Boolean) extends RoseTree[PosInt] {
@@ -1152,11 +1218,18 @@ object Generator {
       override def toString = "Generator[PosInt]"
       override def shrinksForValue(valueToShrink: PosInt): Option[LazyListOrStream[RoseTree[PosInt]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosInt]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosInt] = posIntGenerator
 
   /**
     * A [[Generator]] that produces positive integers, including zero.
     */
+  // SKIP-DOTTY-START
   implicit val posZIntGenerator: Generator[PosZInt] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posZIntGenerator: Generator[PosZInt] =
     new Generator[PosZInt] {
 
       case class NextRoseTree(value: PosZInt, sizeParam: SizeParam, isValidFun: (PosZInt, SizeParam) => Boolean) extends RoseTree[PosZInt] {
@@ -1204,11 +1277,18 @@ object Generator {
       override def toString = "Generator[PosZInt]"
       override def shrinksForValue(valueToShrink: PosZInt): Option[LazyListOrStream[RoseTree[PosZInt]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosZInt]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosZInt] = posZIntGenerator
 
   /**
     * A [[Generator]] that produces positive Longs, excluding zero.
     */
+  // SKIP-DOTTY-START
   implicit val posLongGenerator: Generator[PosLong] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posLongGenerator: Generator[PosLong] =
     new Generator[PosLong] {
 
       case class NextRoseTree(value: PosLong, sizeParam: SizeParam, isValidFun: (PosLong, SizeParam) => Boolean) extends RoseTree[PosLong] {
@@ -1257,11 +1337,18 @@ object Generator {
       override def toString = "Generator[PosLong]"
       override def shrinksForValue(valueToShrink: PosLong): Option[LazyListOrStream[RoseTree[PosLong]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosLong]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosLong] = posLongGenerator
 
   /**
     * A [[Generator]] that produces positive Longs, including zero.
     */
+  // SKIP-DOTTY-START
   implicit val posZLongGenerator: Generator[PosZLong] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posZLongGenerator: Generator[PosZLong] =
     new Generator[PosZLong] {
       
       case class NextRoseTree(value: PosZLong, sizeParam: SizeParam, isValidFun: (PosZLong, SizeParam) => Boolean) extends RoseTree[PosZLong] {
@@ -1309,11 +1396,18 @@ object Generator {
       override def toString = "Generator[PosZLong]"
       override def shrinksForValue(valueToShrink: PosZLong): Option[LazyListOrStream[RoseTree[PosZLong]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosZLong]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosZLong] = posZLongGenerator
 
   /**
     * A [[Generator]] that produces positive Floats, excluding zero.
     */
+  // SKIP-DOTTY-START
   implicit val posFloatGenerator: Generator[PosFloat] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posFloatGenerator: Generator[PosFloat] =
     new Generator[PosFloat] {
 
       case class NextRoseTree(value: PosFloat, sizeParam: SizeParam, isValidFun: (PosFloat, SizeParam) => Boolean) extends RoseTree[PosFloat] {
@@ -1381,11 +1475,18 @@ object Generator {
       override def toString = "Generator[PosFloat]"
       override def shrinksForValue(valueToShrink: PosFloat): Option[LazyListOrStream[RoseTree[PosFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosFloat] = posFloatGenerator
 
   /**
     * A [[Generator]] that produces positive Floats, excluding zero and infinity.
     */
+  // SKIP-DOTTY-START
   implicit val posFiniteFloatGenerator: Generator[PosFiniteFloat] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posFiniteFloatGenerator: Generator[PosFiniteFloat] =
     new Generator[PosFiniteFloat] {
 
       case class NextRoseTree(value: PosFiniteFloat, sizeParam: SizeParam, isValidFun: (PosFiniteFloat, SizeParam) => Boolean) extends RoseTree[PosFiniteFloat] {
@@ -1448,11 +1549,18 @@ object Generator {
       override def toString = "Generator[PosFiniteFloat]"
       override def shrinksForValue(valueToShrink: PosFiniteFloat): Option[LazyListOrStream[RoseTree[PosFiniteFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosFiniteFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosFiniteFloat] = posFiniteFloatGenerator
 
   /**
     * A [[Generator]] that produces Floats, excluding infinity.
     */
+  // SKIP-DOTTY-START
   implicit val finiteFloatGenerator: Generator[FiniteFloat] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val finiteFloatGenerator: Generator[FiniteFloat] =
     new Generator[FiniteFloat] {
 
       case class NextRoseTree(value: FiniteFloat, sizeParam: SizeParam, isValidFun: (FiniteFloat, SizeParam) => Boolean) extends RoseTree[FiniteFloat] {
@@ -1523,11 +1631,18 @@ object Generator {
       override def toString = "Generator[FiniteFloat]"
       override def shrinksForValue(valueToShrink: FiniteFloat): Option[LazyListOrStream[RoseTree[FiniteFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[FiniteFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[FiniteFloat] = finiteFloatGenerator  
 
   /**
     * A [[Generator]] that produces Doubles, excluding infinity.
     */
+  // SKIP-DOTTY-START
   implicit val finiteDoubleGenerator: Generator[FiniteDouble] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val finiteDoubleGenerator: Generator[FiniteDouble] =
     new Generator[FiniteDouble] {
 
       case class NextRoseTree(value: FiniteDouble, sizeParam: SizeParam, isValidFun: (FiniteDouble, SizeParam) => Boolean) extends RoseTree[FiniteDouble] {
@@ -1598,11 +1713,18 @@ object Generator {
       override def toString = "Generator[FiniteDouble]"
       override def shrinksForValue(valueToShrink: FiniteDouble): Option[LazyListOrStream[RoseTree[FiniteDouble]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[FiniteDouble]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[FiniteDouble] = finiteDoubleGenerator
 
   /**
     * A [[Generator]] that produces positive Floats, including zero and infinity.
     */
+  // SKIP-DOTTY-START
   implicit val posZFloatGenerator: Generator[PosZFloat] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posZFloatGenerator: Generator[PosZFloat] =
     new Generator[PosZFloat] {
 
       case class NextRoseTree(value: PosZFloat, sizeParam: SizeParam, isValidFun: (PosZFloat, SizeParam) => Boolean) extends RoseTree[PosZFloat] {
@@ -1677,11 +1799,18 @@ object Generator {
       override def toString = "Generator[PosZFloat]"
       override def shrinksForValue(valueToShrink: PosZFloat): Option[LazyListOrStream[RoseTree[PosZFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosZFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosZFloat] = posZFloatGenerator
 
   /**
     * A [[Generator]] that produces positive Floats, including zero but excluding infinity.
     */
+  // SKIP-DOTTY-START
   implicit val posZFiniteFloatGenerator: Generator[PosZFiniteFloat] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posZFiniteFloatGenerator: Generator[PosZFiniteFloat] =
     new Generator[PosZFiniteFloat] {
 
       case class NextRoseTree(value: PosZFiniteFloat, sizeParam: SizeParam, isValidFun: (PosZFiniteFloat, SizeParam) => Boolean) extends RoseTree[PosZFiniteFloat] {
@@ -1747,11 +1876,18 @@ object Generator {
       override def toString = "Generator[PosZFiniteFloat]"
       override def shrinksForValue(valueToShrink: PosZFiniteFloat): Option[LazyListOrStream[RoseTree[PosZFiniteFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosZFiniteFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosZFiniteFloat] = posZFiniteFloatGenerator  
 
   /**
     * A [[Generator]] that produces positive Doubles, excluding zero but including infinity.
     */
+  // SKIP-DOTTY-START
   implicit val posDoubleGenerator: Generator[PosDouble] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posDoubleGenerator: Generator[PosDouble] =
     new Generator[PosDouble] {
 
       case class NextRoseTree(value: PosDouble, sizeParam: SizeParam, isValidFun: (PosDouble, SizeParam) => Boolean) extends RoseTree[PosDouble] {
@@ -1818,11 +1954,18 @@ object Generator {
       override def toString = "Generator[PosDouble]"
       override def shrinksForValue(valueToShrink: PosDouble): Option[LazyListOrStream[RoseTree[PosDouble]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosDouble]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosDouble] = posDoubleGenerator
 
   /**
     * A [[Generator]] that produces positive Doubles, excluding zero and infinity.
     */
+  // SKIP-DOTTY-START
   implicit val posFiniteDoubleGenerator: Generator[PosFiniteDouble] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posFiniteDoubleGenerator: Generator[PosFiniteDouble] =
     new Generator[PosFiniteDouble] {
 
       case class NextRoseTree(value: PosFiniteDouble, sizeParam: SizeParam, isValidFun: (PosFiniteDouble, SizeParam) => Boolean) extends RoseTree[PosFiniteDouble] {
@@ -1885,11 +2028,18 @@ object Generator {
       override def toString = "Generator[PosFiniteDouble]"
       override def shrinksForValue(valueToShrink: PosFiniteDouble): Option[LazyListOrStream[RoseTree[PosFiniteDouble]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosFiniteDouble]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosFiniteDouble] = posFiniteDoubleGenerator
 
   /**
     * A [[Generator]] that produces positive Doubles, including zero and infinity.
     */
+  // SKIP-DOTTY-START
   implicit val posZDoubleGenerator: Generator[PosZDouble] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posZDoubleGenerator: Generator[PosZDouble] =
     new Generator[PosZDouble] {
 
       case class NextRoseTree(value: PosZDouble, sizeParam: SizeParam, isValidFun: (PosZDouble, SizeParam) => Boolean) extends RoseTree[PosZDouble] {
@@ -1964,11 +2114,18 @@ object Generator {
       override def toString = "Generator[PosZDouble]"
       override def shrinksForValue(valueToShrink: PosZDouble): Option[LazyListOrStream[RoseTree[PosZDouble]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosZDouble]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosZDouble] = posZDoubleGenerator
 
   /**
     * A [[Generator]] that produces positive Doubles, including zero but excluding infinity.
     */
+  // SKIP-DOTTY-START
   implicit val posZFiniteDoubleGenerator: Generator[PosZFiniteDouble] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val posZFiniteDoubleGenerator: Generator[PosZFiniteDouble] =
     new Generator[PosZFiniteDouble] {
 
       case class NextRoseTree(value: PosZFiniteDouble, sizeParam: SizeParam, isValidFun: (PosZFiniteDouble, SizeParam) => Boolean) extends RoseTree[PosZFiniteDouble] {
@@ -2039,11 +2196,18 @@ object Generator {
       override def toString = "Generator[PosZFiniteDouble]"
       override def shrinksForValue(valueToShrink: PosZFiniteDouble): Option[LazyListOrStream[RoseTree[PosZFiniteDouble]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosZFiniteDouble]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[PosZFiniteDouble] = posZFiniteDoubleGenerator
 
   /**
     * A [[Generator]] that produces non-zero Doubles, including infinity.
     */
+  // SKIP-DOTTY-START
   implicit val nonZeroDoubleGenerator: Generator[NonZeroDouble] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val nonZeroDoubleGenerator: Generator[NonZeroDouble] =
     new Generator[NonZeroDouble] {
 
       case class NextRoseTree(value: NonZeroDouble, sizeParam: SizeParam, isValidFun: (NonZeroDouble, SizeParam) => Boolean) extends RoseTree[NonZeroDouble] {
@@ -2122,11 +2286,18 @@ object Generator {
       override def toString = "Generator[NonZeroDouble]"
       override def shrinksForValue(valueToShrink: NonZeroDouble): Option[LazyListOrStream[RoseTree[NonZeroDouble]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NonZeroDouble]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NonZeroDouble] = nonZeroDoubleGenerator
 
   /**
     * A [[Generator]] that produces Doubles, excluding zero and infinity.
     */
+  // SKIP-DOTTY-START
   implicit val nonZeroFiniteDoubleGenerator: Generator[NonZeroFiniteDouble] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val nonZeroFiniteDoubleGenerator: Generator[NonZeroFiniteDouble] =
     new Generator[NonZeroFiniteDouble] {
 
       case class NextRoseTree(value: NonZeroFiniteDouble, sizeParam: SizeParam, isValidFun: (NonZeroFiniteDouble, SizeParam) => Boolean) extends RoseTree[NonZeroFiniteDouble] {
@@ -2198,11 +2369,18 @@ object Generator {
       override def toString = "Generator[NonZeroFiniteDouble]"
       override def shrinksForValue(valueToShrink: NonZeroFiniteDouble): Option[LazyListOrStream[RoseTree[NonZeroFiniteDouble]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NonZeroFiniteDouble]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NonZeroFiniteDouble] = nonZeroFiniteDoubleGenerator
 
   /**
     * A [[Generator]] that produces Floats, excluding zero but including infinity.
     */
+  // SKIP-DOTTY-START
   implicit val nonZeroFloatGenerator: Generator[NonZeroFloat] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val nonZeroFloatGenerator: Generator[NonZeroFloat] =
     new Generator[NonZeroFloat] {
 
       case class NextRoseTree(value: NonZeroFloat, sizeParam: SizeParam, isValidFun: (NonZeroFloat, SizeParam) => Boolean) extends RoseTree[NonZeroFloat] {
@@ -2279,11 +2457,18 @@ object Generator {
       override def toString = "Generator[NonZeroFloat]"
       override def shrinksForValue(valueToShrink: NonZeroFloat): Option[LazyListOrStream[RoseTree[NonZeroFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NonZeroFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NonZeroFloat] = nonZeroFloatGenerator
 
   /**
     * A [[Generator]] that produces Floats, excluding zero and infinity.
     */
+  // SKIP-DOTTY-START
   implicit val nonZeroFiniteFloatGenerator: Generator[NonZeroFiniteFloat] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val nonZeroFiniteFloatGenerator: Generator[NonZeroFiniteFloat] =
     new Generator[NonZeroFiniteFloat] {
 
       case class NextRoseTree(value: NonZeroFiniteFloat, sizeParam: SizeParam, isValidFun: (NonZeroFiniteFloat, SizeParam) => Boolean) extends RoseTree[NonZeroFiniteFloat] {
@@ -2354,11 +2539,18 @@ object Generator {
       override def toString = "Generator[NonZeroFiniteFloat]"
       override def shrinksForValue(valueToShrink: NonZeroFiniteFloat): Option[LazyListOrStream[RoseTree[NonZeroFiniteFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NonZeroFiniteFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NonZeroFiniteFloat] = nonZeroFiniteFloatGenerator
 
   /**
     * A [[Generator]] that produces integers, excluding zero.
     */
+  // SKIP-DOTTY-START
   implicit val nonZeroIntGenerator: Generator[NonZeroInt] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val nonZeroIntGenerator: Generator[NonZeroInt] =
     new Generator[NonZeroInt] {
 
       case class NextRoseTree(value: NonZeroInt, sizeParam: SizeParam, isValidFun: (NonZeroInt, SizeParam) => Boolean) extends RoseTree[NonZeroInt] {
@@ -2405,11 +2597,18 @@ object Generator {
       override def toString = "Generator[NonZeroInt]"
       override def shrinksForValue(valueToShrink: NonZeroInt): Option[LazyListOrStream[RoseTree[NonZeroInt]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NonZeroInt]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NonZeroInt] = nonZeroIntGenerator
 
   /**
     * A [[Generator]] that produces Longs, excluding zero.
     */
+  // SKIP-DOTTY-START
   implicit val nonZeroLongGenerator: Generator[NonZeroLong] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val nonZeroLongGenerator: Generator[NonZeroLong] =
     new Generator[NonZeroLong] {
 
       case class NextRoseTree(value: NonZeroLong, sizeParam: SizeParam, isValidFun: (NonZeroLong, SizeParam) => Boolean) extends RoseTree[NonZeroLong] {
@@ -2456,11 +2655,18 @@ object Generator {
       override def toString = "Generator[NonZeroLong]"
       override def shrinksForValue(valueToShrink: NonZeroLong): Option[LazyListOrStream[RoseTree[NonZeroLong]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NonZeroLong]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NonZeroLong] = nonZeroLongGenerator
 
   /**
     * A [[Generator]] that produces negative Doubles, excluding zero but including infinity.
     */
+  // SKIP-DOTTY-START  
   implicit val negDoubleGenerator: Generator[NegDouble] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val negDoubleGenerator: Generator[NegDouble] =
     new Generator[NegDouble] {
 
       case class NextRoseTree(value: NegDouble, sizeParam: SizeParam, isValidFun: (NegDouble, SizeParam) => Boolean) extends RoseTree[NegDouble] {
@@ -2527,11 +2733,18 @@ object Generator {
       override def toString = "Generator[NegDouble]"
       override def shrinksForValue(valueToShrink: NegDouble): Option[LazyListOrStream[RoseTree[NegDouble]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegDouble]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NegDouble] = negDoubleGenerator
 
   /**
     * A [[Generator]] that produces negative Doubles, excluding zero and infinity.
     */
+  // SKIP-DOTTY-START
   implicit val negFiniteDoubleGenerator: Generator[NegFiniteDouble] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val negFiniteDoubleGenerator: Generator[NegFiniteDouble] =
     new Generator[NegFiniteDouble] {
 
       case class NextRoseTree(value: NegFiniteDouble, sizeParam: SizeParam, isValidFun: (NegFiniteDouble, SizeParam) => Boolean) extends RoseTree[NegFiniteDouble] {
@@ -2594,11 +2807,18 @@ object Generator {
       override def toString = "Generator[NegFiniteDouble]"
       override def shrinksForValue(valueToShrink: NegFiniteDouble): Option[LazyListOrStream[RoseTree[NegFiniteDouble]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegFiniteDouble]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NegFiniteDouble] = negFiniteDoubleGenerator
 
   /**
     * A [[Generator]] that produces negative Floats, excluding zero but including infinity.
     */
+  // SKIP-DOTTY-START
   implicit val negFloatGenerator: Generator[NegFloat] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val negFloatGenerator: Generator[NegFloat] =
     new Generator[NegFloat] {
 
       case class NextRoseTree(value: NegFloat, sizeParam: SizeParam, isValidFun: (NegFloat, SizeParam) => Boolean) extends RoseTree[NegFloat] {
@@ -2665,11 +2885,18 @@ object Generator {
       override def toString = "Generator[NegFloat]"
       override def shrinksForValue(valueToShrink: NegFloat): Option[LazyListOrStream[RoseTree[NegFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NegFloat] = negFloatGenerator
 
   /**
     * A [[Generator]] that produces negative Floats, excluding zero and infinity.
     */
+  // SKIP-DOTTY-START
   implicit val negFiniteFloatGenerator: Generator[NegFiniteFloat] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val negFiniteFloatGenerator: Generator[NegFiniteFloat] =
     new Generator[NegFiniteFloat] {
 
       case class NextRoseTree(value: NegFiniteFloat, sizeParam: SizeParam, isValidFun: (NegFiniteFloat, SizeParam) => Boolean) extends RoseTree[NegFiniteFloat] {
@@ -2732,11 +2959,18 @@ object Generator {
       override def toString = "Generator[NegFiniteFloat]"
       override def shrinksForValue(valueToShrink: NegFiniteFloat): Option[LazyListOrStream[RoseTree[NegFiniteFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegFiniteFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NegFiniteFloat] = negFiniteFloatGenerator
 
   /**
     * A [[Generator]] that produces negative Ints, excluding zero.
     */
+  // SKIP-DOTTY-START
   implicit val negIntGenerator: Generator[NegInt] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val negIntGenerator: Generator[NegInt] =
     new Generator[NegInt] {
 
       case class NextRoseTree(value: NegInt, sizeParam: SizeParam, isValidFun: (NegInt, SizeParam) => Boolean) extends RoseTree[NegInt] {
@@ -2785,11 +3019,18 @@ object Generator {
       override def toString = "Generator[NegInt]"
       override def shrinksForValue(valueToShrink: NegInt): Option[LazyListOrStream[RoseTree[NegInt]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegInt]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NegInt] = negIntGenerator
 
   /**
     * A [[Generator]] that produces negative Longs, excluding zero.
     */
+  // SKIP-DOTTY-START
   implicit val negLongGenerator: Generator[NegLong] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val negLongGenerator: Generator[NegLong] =
     new Generator[NegLong] {
 
       case class NextRoseTree(value: NegLong, sizeParam: SizeParam, isValidFun: (NegLong, SizeParam) => Boolean) extends RoseTree[NegLong] {
@@ -2838,11 +3079,18 @@ object Generator {
       override def toString = "Generator[NegLong]"
       override def shrinksForValue(valueToShrink: NegLong): Option[LazyListOrStream[RoseTree[NegLong]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegLong]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NegLong] = negLongGenerator
 
   /**
     * A [[Generator]] that produces negative Doubles, including zero and infinity.
     */
+  // SKIP-DOTTY-START
   implicit val negZDoubleGenerator: Generator[NegZDouble] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val negZDoubleGenerator: Generator[NegZDouble] =
     new Generator[NegZDouble] {
 
       case class NextRoseTree(value: NegZDouble, sizeParam: SizeParam, isValidFun: (NegZDouble, SizeParam) => Boolean) extends RoseTree[NegZDouble] {
@@ -2917,11 +3165,18 @@ object Generator {
       override def toString = "Generator[NegZDouble]"
       override def shrinksForValue(valueToShrink: NegZDouble): Option[LazyListOrStream[RoseTree[NegZDouble]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegZDouble]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NegZDouble] = negZDoubleGenerator
 
   /**
     * A [[Generator]] that produces negative Doubles, including zero but excluding infinity.
     */
+  // SKIP-DOTTY-START
   implicit val negZFiniteDoubleGenerator: Generator[NegZFiniteDouble] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val negZFiniteDoubleGenerator: Generator[NegZFiniteDouble] =
     new Generator[NegZFiniteDouble] {
 
       case class NextRoseTree(value: NegZFiniteDouble, sizeParam: SizeParam, isValidFun: (NegZFiniteDouble, SizeParam) => Boolean) extends RoseTree[NegZFiniteDouble] {
@@ -2992,11 +3247,18 @@ object Generator {
       override def toString = "Generator[NegZFiniteDouble]"
       override def shrinksForValue(valueToShrink: NegZFiniteDouble): Option[LazyListOrStream[RoseTree[NegZFiniteDouble]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegZFiniteDouble]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NegZFiniteDouble] = negZFiniteDoubleGenerator
 
   /**
     * A [[Generator]] that produces negative Floats, including zero and infinity.
     */
+  // SKIP-DOTTY-START
   implicit val negZFloatGenerator: Generator[NegZFloat] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val negZFloatGenerator: Generator[NegZFloat] =
     new Generator[NegZFloat] {
 
       case class NextRoseTree(value: NegZFloat, sizeParam: SizeParam, isValidFun: (NegZFloat, SizeParam) => Boolean) extends RoseTree[NegZFloat] {
@@ -3071,11 +3333,18 @@ object Generator {
       override def toString = "Generator[NegZFloat]"
       override def shrinksForValue(valueToShrink: NegZFloat): Option[LazyListOrStream[RoseTree[NegZFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegZFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NegZFloat] = negZFloatGenerator
 
   /**
     * A [[Generator]] that produces negative Floats, including zero but excluding infinity.
     */
+  // SKIP-DOTTY-START
   implicit val negZFiniteFloatGenerator: Generator[NegZFiniteFloat] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val negZFiniteFloatGenerator: Generator[NegZFiniteFloat] =
     new Generator[NegZFiniteFloat] {
 
       case class NextRoseTree(value: NegZFiniteFloat, sizeParam: SizeParam, isValidFun: (NegZFiniteFloat, SizeParam) => Boolean) extends RoseTree[NegZFiniteFloat] {
@@ -3146,11 +3415,18 @@ object Generator {
       override def toString = "Generator[NegZFiniteFloat]"
       override def shrinksForValue(valueToShrink: NegZFiniteFloat): Option[LazyListOrStream[RoseTree[NegZFiniteFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegZFiniteFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NegZFiniteFloat] = negZFiniteFloatGenerator
 
   /**
     * A [[Generator]] that produces negative Ints, including zero.
     */
+  // SKIP-DOTTY-START
   implicit val negZIntGenerator: Generator[NegZInt] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val negZIntGenerator: Generator[NegZInt] =
     new Generator[NegZInt] {
 
       case class NextRoseTree(value: NegZInt, sizeParam: SizeParam, isValidFun: (NegZInt, SizeParam) => Boolean) extends RoseTree[NegZInt] {
@@ -3199,11 +3475,18 @@ object Generator {
       override def toString = "Generator[NegZInt]"
       override def shrinksForValue(valueToShrink: NegZInt): Option[LazyListOrStream[RoseTree[NegZInt]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegZInt]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NegZInt] = negZIntGenerator
 
   /**
     * A [[Generator]] that produces negative Longs, including zero.
     */
+  // SKIP-DOTTY-START
   implicit val negZLongGenerator: Generator[NegZLong] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val negZLongGenerator: Generator[NegZLong] =
     new Generator[NegZLong] {
 
       case class NextRoseTree(value: NegZLong, sizeParam: SizeParam, isValidFun: (NegZLong, SizeParam) => Boolean) extends RoseTree[NegZLong] {
@@ -3252,11 +3535,18 @@ object Generator {
       override def toString = "Generator[NegZLong]"
       override def shrinksForValue(valueToShrink: NegZLong): Option[LazyListOrStream[RoseTree[NegZLong]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegZLong]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NegZLong] = negZLongGenerator
 
   /**
     * A [[Generator]] that produces Chars, but only the ones that represent digits.
     */
+  // SKIP-DOTTY-START
   implicit val numericCharGenerator: Generator[NumericChar] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val numericCharGenerator: Generator[NumericChar] =
     new Generator[NumericChar] {
 
       case class NextRoseTree(value: NumericChar)(sizeParam: SizeParam, isValidFun: (NumericChar, SizeParam) => Boolean) extends RoseTree[NumericChar] {
@@ -3305,6 +3595,10 @@ object Generator {
       override def toString = "Generator[NumericChar]"
       override def shrinksForValue(valueToShrink: NumericChar): Option[LazyListOrStream[RoseTree[NumericChar]]] = Some(NextRoseTree(valueToShrink)(SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NumericChar]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NumericChar] = numericCharGenerator
 
   // Should throw IAE on negative size in all generators, even the ones that ignore size.
   /**
@@ -3313,7 +3607,10 @@ object Generator {
     * Note that this does not confine itself to ASCII! While failed tests will try to shrink to
     * readable ASCII, this will produce arbitrary Unicode [[String]]s.
     */
+  // SKIP-DOTTY-START
   implicit val stringGenerator: Generator[String] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val stringGenerator: Generator[String] =
     new Generator[String] {
       private val stringEdges = List("")
 
@@ -3361,6 +3658,10 @@ object Generator {
       override def toString = "Generator[String]"
       override def shrinksForValue(valueToShrink: String): Option[LazyListOrStream[RoseTree[String]]] = Some(NextRoseTree(valueToShrink)(SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[String]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[String] = stringGenerator
 
   // Should throw IAE on negative size in all generators, even the ones that ignore size.
   /**
@@ -3370,7 +3671,10 @@ object Generator {
     * @tparam T the type that we are producing a List of
     * @return a List of values of type [[T]]
     */
+  // SKIP-DOTTY-START
   implicit def listGenerator[T](implicit genOfT: Generator[T]): Generator[List[T]] with HavingLength[List[T]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def listGenerator[T](using genOfT: Generator[T]): Generator[List[T]] with HavingLength[List[T]] =
     new Generator[List[T]] with HavingLength[List[T]] { outerGenOfListOfT =>
       private val listEdges = List(Nil)
 
@@ -3470,6 +3774,10 @@ object Generator {
         }
       override def shrinksForValue(valueToShrink: List[T]): Option[LazyListOrStream[RoseTree[List[T]]]] = Some(NextRoseTree(valueToShrink, SizeParam(0, 0, 0), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[List[T]] with HavingLength[List[T]]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given givenListGenerator[T](using genOfT: Generator[T]): (Generator[List[T]] with HavingLength[List[T]]) = listGenerator(using genOfT)
 
   /**
     * Given a [[Generator]] that produces values of type [[T]], this returns one that produces ''functions'' that return
@@ -3481,7 +3789,10 @@ object Generator {
     * @tparam T the type to produce
     * @return a [[Generator]] that produces functions that return values of type [[T]]
     */
+  // SKIP-DOTTY-START
   implicit def function0Generator[T](implicit genOfT: Generator[T]): Generator[() => T] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function0Generator[T](implicit genOfT: Generator[T]): Generator[() => T] = {
     new Generator[() => T] { thisGeneratorOfFunction0 =>
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[() => T], Randomizer) = {
         val (edgesOfT, nextRnd) = genOfT.initEdges(maxLength, rnd)
@@ -3498,6 +3809,10 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[() => T]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [T](using genOfT: Generator[T]): Generator[() => T] = function0Generator(genOfT)
 
   /**
     * Generate functions that take an [[Int]] and return a modified [[Int]].
@@ -3506,7 +3821,10 @@ object Generator {
     * functions (returning the same Int, returning that [[Int]] plus 1), it tests overflow situations such as
     * adding [[Int.MaxValue]], negation, and other such cases.
     */
+  // SKIP-DOTTY-START
   implicit val function1IntToIntGenerator: Generator[Int => Int] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val function1IntToIntGenerator: Generator[Int => Int] = {  
     object IntToIntIdentity extends (Int => Int) {
       def apply(i: Int): Int = i
       override def toString = "(i: Int) => i"
@@ -3609,6 +3927,10 @@ object Generator {
       override def toString = "Generator[Int => Int]"
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[Int => Int]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[Int => Int] = function1IntToIntGenerator
 
   // TODO: it's a hassle to maintain 22 distinct versions of this function generator. What we *should* be doing here,
   // in theory, is abstracting over arity. Unfortunately, Scalatest can't depend on Shapeless, so that's not
@@ -3647,7 +3969,10 @@ object Generator {
     * @tparam B the result type for the generated functions
     * @return a [[Generator]] that produces functions that take values of [[A]] and returns values of [[B]]
   */
+  // SKIP-DOTTY-START
   implicit def function1Generator[A, B](implicit genOfB: Generator[B], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B]): Generator[A => B] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function1Generator[A, B](using genOfB: Generator[B], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B]): Generator[A => B] = {
     new Generator[A => B] {
       def nextImpl(szp: SizeParam, isValidFun: (A => B, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[A => B], Randomizer) = {
 
@@ -3668,12 +3993,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[A => B]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B](using genOfB: Generator[B], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B]): Generator[A => B] = function1Generator(using genOfB, typeInfoA, typeInfoB)
 
   /**
     * Generates a function with 2 input parameters of types A through B and an output of type C.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */  
+  // SKIP-DOTTY-START
   implicit def function2Generator[A, B, C](implicit genOfC: Generator[C], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C]): Generator[(A, B) => C] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function2Generator[A, B, C](using genOfC: Generator[C], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C]): Generator[(A, B) => C] = {
     new Generator[(A, B) => C] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B) => C, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B) => C], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -3694,12 +4026,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B) => C]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C](using genOfC: Generator[C], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C]): Generator[(A, B) => C] = function2Generator(using genOfC, typeInfoA, typeInfoB, typeInfoC)
 
   /**
     * Generates a function with 3 input parameters of types A through C and an output of type D.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function3Generator[A, B, C, D](implicit genOfD: Generator[D], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D]): Generator[(A, B, C) => D] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function3Generator[A, B, C, D](using genOfD: Generator[D], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D]): Generator[(A, B, C) => D] = {
     new Generator[(A, B, C) => D] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C) => D, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C) => D], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -3721,12 +4060,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C) => D]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D](using genOfD: Generator[D], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D]): Generator[(A, B, C) => D] = function3Generator(using genOfD, typeInfoA, typeInfoB, typeInfoC, typeInfoD)
 
   /**
     * Generates a function with 4 input parameters of types A through D and an output of type E.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function4Generator[A, B, C, D, E](implicit genOfE: Generator[E], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E]): Generator[(A, B, C, D) => E] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function4Generator[A, B, C, D, E](using genOfE: Generator[E], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E]): Generator[(A, B, C, D) => E] = {
     new Generator[(A, B, C, D) => E] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D) => E, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D) => E], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -3749,12 +4095,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E) => F]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E](using genOfE: Generator[E], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E]): Generator[(A, B, C, D) => E] = function4Generator(using genOfE, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE)
 
   /**
     * Generates a function with 5 input parameters of types A through E and an output of type F.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function5Generator[A, B, C, D, E, F](implicit genOfF: Generator[F], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F]): Generator[(A, B, C, D, E) => F] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function5Generator[A, B, C, D, E, F](using genOfF: Generator[F], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F]): Generator[(A, B, C, D, E) => F] = {
     new Generator[(A, B, C, D, E) => F] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E) => F, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E) => F], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -3778,12 +4131,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E) => F]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F](using genOfF: Generator[F], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F]): Generator[(A, B, C, D, E) => F] = function5Generator(using genOfF, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF)
 
   /**
     * Generates a function with 6 input parameters of types A through F and an output of type G.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function6Generator[A, B, C, D, E, F, G](implicit genOfG: Generator[G], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G]): Generator[(A, B, C, D, E, F) => G] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function6Generator[A, B, C, D, E, F, G](using genOfG: Generator[G], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G]): Generator[(A, B, C, D, E, F) => G] = {
     new Generator[(A, B, C, D, E, F) => G] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F) => G, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F) => G], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -3808,12 +4168,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F) => G]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G](using genOfG: Generator[G], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G]): Generator[(A, B, C, D, E, F) => G] = function6Generator(using genOfG, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG)
 
   /**
     * Generates a function with 7 input parameters of types A through G and an output of type H.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function7Generator[A, B, C, D, E, F, G, H](implicit genOfH: Generator[H], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H]): Generator[(A, B, C, D, E, F, G) => H] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function7Generator[A, B, C, D, E, F, G, H](using genOfH: Generator[H], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H]): Generator[(A, B, C, D, E, F, G) => H] = {
     new Generator[(A, B, C, D, E, F, G) => H] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G) => H, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G) => H], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -3839,12 +4206,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G) => H]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H](using genOfH: Generator[H], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H]): Generator[(A, B, C, D, E, F, G) => H] = function7Generator(using genOfH, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH)
 
   /**
     * Generates a function with 8 input parameters of types A through H and an output of type I.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START  
   implicit def function8Generator[A, B, C, D, E, F, G, H, I](implicit genOfI: Generator[I], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I]): Generator[(A, B, C, D, E, F, G, H) => I] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function8Generator[A, B, C, D, E, F, G, H, I](using genOfI: Generator[I], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I]): Generator[(A, B, C, D, E, F, G, H) => I] = {
     new Generator[(A, B, C, D, E, F, G, H) => I] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G, H) => I, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G, H) => I], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -3871,12 +4245,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G, H) => I]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I](using genOfI: Generator[I], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I]): Generator[(A, B, C, D, E, F, G, H) => I] = function8Generator(using genOfI, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI)
 
   /**
     * Generates a function with 9 input parameters of types A through I and an output of type J.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function9Generator[A, B, C, D, E, F, G, H, I, J](implicit genOfJ: Generator[J], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J]): Generator[(A, B, C, D, E, F, G, H, I) => J] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function9Generator[A, B, C, D, E, F, G, H, I, J](using genOfJ: Generator[J], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J]): Generator[(A, B, C, D, E, F, G, H, I) => J] = {
     new Generator[(A, B, C, D, E, F, G, H, I) => J] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G, H, I) => J, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G, H, I) => J], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -3904,12 +4285,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G, H, I) => J]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J](using genOfJ: Generator[J], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J]): Generator[(A, B, C, D, E, F, G, H, I) => J] = function9Generator(using genOfJ, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI, typeInfoJ)
 
   /**
     * Generates a function with 10 input parameters of types A through J and an output of type K.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function10Generator[A, B, C, D, E, F, G, H, I, J, K](implicit genOfK: Generator[K], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K]): Generator[(A, B, C, D, E, F, G, H, I, J) => K] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function10Generator[A, B, C, D, E, F, G, H, I, J, K](using genOfK: Generator[K], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K]): Generator[(A, B, C, D, E, F, G, H, I, J) => K] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J) => K] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G, H, I, J) => K, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G, H, I, J) => K], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -3938,12 +4326,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G, H, I, J) => K]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K](using genOfK: Generator[K], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K]): Generator[(A, B, C, D, E, F, G, H, I, J) => K] = function10Generator(using genOfK, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI, typeInfoJ, typeInfoK)
 
   /**
     * Generates a function with 11 input parameters of types A through K and an output of type L.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function11Generator[A, B, C, D, E, F, G, H, I, J, K, L](implicit genOfL: Generator[L], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L]): Generator[(A, B, C, D, E, F, G, H, I, J, K) => L] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function11Generator[A, B, C, D, E, F, G, H, I, J, K, L](using genOfL: Generator[L], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L]): Generator[(A, B, C, D, E, F, G, H, I, J, K) => L] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K) => L] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G, H, I, J, K) => L, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G, H, I, J, K) => L], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -3973,12 +4368,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G, H, I, J, K) => L]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L](using genOfL: Generator[L], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L]): Generator[(A, B, C, D, E, F, G, H, I, J, K) => L] = function11Generator(using genOfL, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI, typeInfoJ, typeInfoK, typeInfoL)
 
   /**
     * Generates a function with 12 input parameters of types A through L and an output of type M.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function12Generator[A, B, C, D, E, F, G, H, I, J, K, L, M](implicit genOfM: Generator[M], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L) => M] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function12Generator[A, B, C, D, E, F, G, H, I, J, K, L, M](using genOfM: Generator[M], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L) => M] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L) => M] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G, H, I, J, K, L) => M, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G, H, I, J, K, L) => M], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4009,12 +4411,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G, H, I, J, K, L) => M]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M](using genOfM: Generator[M], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L) => M] = function12Generator(using genOfM, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI, typeInfoJ, typeInfoK, typeInfoL, typeInfoM)
 
   /**
     * Generates a function with 13 input parameters of types A through M and an output of type N.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START  
   implicit def function13Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N](implicit genOfN: Generator[N], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function13Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N](using genOfN: Generator[N], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G, H, I, J, K, L, M) => N, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4046,12 +4455,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N](using genOfN: Generator[N], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N] = function13Generator(using genOfN, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI, typeInfoJ, typeInfoK, typeInfoL, typeInfoM, typeInfoN)
 
   /**
     * Generates a function with 14 input parameters of types A through N and an output of type O.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function14Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](implicit genOfO: Generator[O], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function14Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](using genOfO: Generator[O], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4084,12 +4500,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](using genOfO: Generator[O], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O] = function14Generator(using genOfO, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI, typeInfoJ, typeInfoK, typeInfoL, typeInfoM, typeInfoN, typeInfoO)
 
   /**
     * Generates a function with 15 input parameters of types A through O and an output of type P.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function15Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](implicit genOfP: Generator[P], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function15Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](using genOfP: Generator[P], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4123,12 +4546,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](using genOfP: Generator[P], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P] = function15Generator(using genOfP, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI, typeInfoJ, typeInfoK, typeInfoL, typeInfoM, typeInfoN, typeInfoO, typeInfoP)
 
   /**
     * Generates a function with 16 input parameters of types A through P and an output of type Q.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START  
   implicit def function16Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](implicit genOfQ: Generator[Q], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function16Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](using genOfQ: Generator[Q], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4163,12 +4593,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](using genOfQ: Generator[Q], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q] = function16Generator(using genOfQ, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI, typeInfoJ, typeInfoK, typeInfoL, typeInfoM, typeInfoN, typeInfoO, typeInfoP, typeInfoQ)
 
   /**
     * Generates a function with 17 input parameters of types A through Q and an output of type R.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function17Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](implicit genOfR: Generator[R], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function17Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](using genOfR: Generator[R], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4204,12 +4641,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](using genOfR: Generator[R], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R] = function17Generator(using genOfR, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI, typeInfoJ, typeInfoK, typeInfoL, typeInfoM, typeInfoN, typeInfoO, typeInfoP, typeInfoQ, typeInfoR)
 
   /**
     * Generates a function with 18 input parameters of types A through R and an output of type S.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function18Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](implicit genOfS: Generator[S], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function18Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](using genOfS: Generator[S], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4246,12 +4690,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](using genOfS: Generator[S], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S] = function18Generator(using genOfS, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI, typeInfoJ, typeInfoK, typeInfoL, typeInfoM, typeInfoN, typeInfoO, typeInfoP, typeInfoQ, typeInfoR, typeInfoS)
 
   /**
     * Generates a function with 19 input parameters of types A through S and an output of type T.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function19Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](implicit genOfT: Generator[T], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function19Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](using genOfT: Generator[T], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4289,12 +4740,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](using genOfT: Generator[T], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T] = function19Generator(using genOfT, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI, typeInfoJ, typeInfoK, typeInfoL, typeInfoM, typeInfoN, typeInfoO, typeInfoP, typeInfoQ, typeInfoR, typeInfoS, typeInfoT)
 
   /**
     * Generates a function with 20 input parameters of types A through T and an output of type U.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function20Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](implicit genOfU: Generator[U], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function20Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](using genOfU: Generator[U], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4333,12 +4791,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](using genOfU: Generator[U], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U] = function20Generator(using genOfU, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI, typeInfoJ, typeInfoK, typeInfoL, typeInfoM, typeInfoN, typeInfoO, typeInfoP, typeInfoQ, typeInfoR, typeInfoS, typeInfoT, typeInfoU)
 
   /**
     * Generates a function with 21 input parameters of types A through U and an output of type V.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function21Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](implicit genOfV: Generator[V], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U], typeInfoV: TypeInfo[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function21Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](using genOfV: Generator[V], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U], typeInfoV: TypeInfo[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4378,12 +4843,19 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](using genOfV: Generator[V], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U], typeInfoV: TypeInfo[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V] = function21Generator(using genOfV, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI, typeInfoJ, typeInfoK, typeInfoL, typeInfoM, typeInfoN, typeInfoO, typeInfoP, typeInfoQ, typeInfoR, typeInfoS, typeInfoT, typeInfoU, typeInfoV)
 
   /**
     * Generates a function with 22 input parameters of types A through V and an output of type W.
     * See [[function1Generator]] for more details on the underlying function generator mechanism.
     */
+  // SKIP-DOTTY-START
   implicit def function22Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](implicit genOfW: Generator[W], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U], typeInfoV: TypeInfo[V], typeInfoW: TypeInfo[W]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function22Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](using genOfW: Generator[W], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U], typeInfoV: TypeInfo[V], typeInfoW: TypeInfo[W]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W] = {
     new Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W] {
       def nextImpl(szp: SizeParam, isValidFun: ((A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W], Randomizer) = {
         val first1000PrimesGen: Generator[Int] = first1000Primes
@@ -4424,6 +4896,10 @@ object Generator {
       }
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](using genOfW: Generator[W], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U], typeInfoV: TypeInfo[V], typeInfoW: TypeInfo[W]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W] = function22Generator(using genOfW, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI, typeInfoJ, typeInfoK, typeInfoL, typeInfoM, typeInfoN, typeInfoO, typeInfoP, typeInfoQ, typeInfoR, typeInfoS, typeInfoT, typeInfoU, typeInfoV, typeInfoW)
 
   /**
     * Given a [[Generator]] for type [[T]], this provides one for `Option[T]`.
@@ -4432,7 +4908,10 @@ object Generator {
     * @tparam T the type to generate
     * @return a [[Generator]] that produces `Option[T]`
     */
+  // SKIP-DOTTY-START
   implicit def optionGenerator[T](implicit genOfT: Generator[T]): Generator[Option[T]] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def optionGenerator[T](using genOfT: Generator[T]): Generator[Option[T]] = {
     case class NextRoseTree(value: Option[T], sizeParam: SizeParam, isValidFun: (Option[T], SizeParam) => Boolean) extends RoseTree[Option[T]] { thisRoseTreeOfOptionOfT =>
         def shrinks: LazyListOrStream[RoseTree[Option[T]]] = {
 
@@ -4495,6 +4974,10 @@ object Generator {
       override def shrinksForValue(valueToShrink: Option[T]): Option[LazyListOrStream[RoseTree[Option[T]]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[Option[T]]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [T](using genOfT: Generator[T]): Generator[Option[T]] = optionGenerator(using genOfT)
 
   /**
     * Given [[Generator]]s for two types, [[G]] and [[B]], this provides one for `G Or B`.
@@ -4505,7 +4988,10 @@ object Generator {
     * @tparam B the "bad" type for an [[Or]]
     * @return a [[Generator]] that produces `G Or B`
     */
+  // SKIP-DOTTY-START
   implicit def orGenerator[G, B](implicit genOfG: Generator[G], genOfB: Generator[B]): Generator[G Or B] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def orGenerator[G, B](using genOfG: Generator[G], genOfB: Generator[B]): Generator[G Or B] =
     new Generator[G Or B] {
 
       case class NextRoseTree(value: G Or B, sizeParam: SizeParam, isValidFun: (G Or B, SizeParam) => Boolean) extends RoseTree[G Or B] {
@@ -4588,6 +5074,10 @@ object Generator {
       override def shrinksForValue(valueToShrink: G Or B): Option[LazyListOrStream[RoseTree[G Or B]]] =
         Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[Or[G, B]]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [G, B](using genOfG: Generator[G], genOfB: Generator[B]): Generator[Or[G, B]] = orGenerator(using genOfG, genOfB)
 
   // Note that this is identical to orGenerator *except* that the sides are reversed:
   // Right is "Good", and Left is "Bad".
@@ -4600,7 +5090,10 @@ object Generator {
     * @tparam R the "right" type for an [[Either]]
     * @return a [[Generator]] that produces `Either[L, R]`
     */
+  // SKIP-DOTTY-START
   implicit def eitherGenerator[L, R](implicit genOfL: Generator[L], genOfR: Generator[R]): Generator[Either[L, R]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def eitherGenerator[L, R](using genOfL: Generator[L], genOfR: Generator[R]): Generator[Either[L, R]] =
     new Generator[Either[L, R]] {
 
       case class NextRoseTree(value: Either[L, R], sizeParam: SizeParam, isValidFun: (Either[L, R], SizeParam) => Boolean) extends RoseTree[Either[L, R]] {
@@ -4684,6 +5177,10 @@ object Generator {
       override def shrinksForValue(valueToShrink: Either[L, R]): Option[LazyListOrStream[RoseTree[Either[L, R]]]] =
         Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given function that prouduces [[Generator[Either[L, R]]]].
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [L, R](using genOfL: Generator[L], genOfR: Generator[R]): Generator[Either[L, R]] = eitherGenerator(using genOfL, genOfR)
 
   /**
     * Given [[Generator]]s for types [[A]] and [[B]], get one that produces Tuples of those types.
@@ -4698,170 +5195,254 @@ object Generator {
     * @tparam B the second type in the Tuple
     * @return a [[Generator]] that produces the desired types, Tupled together.
     */
+  // SKIP-DOTTY-START
   implicit def tuple2Generator[A, B](implicit genOfA: Generator[A], genOfB: Generator[B]): Generator[(A, B)] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple2Generator[A, B](using genOfA: Generator[A], genOfB: Generator[B]): Generator[(A, B)] =
     new GeneratorFor2[A, B, (A, B)]((a: A, b: B) => (a, b), (c: (A, B)) => c)(genOfA, genOfB)
+  //DOTTY-ONLY given [A, B](using genOfA: Generator[A], genOfB: Generator[B]): Generator[(A, B)] = tuple2Generator(using genOfA, genOfB)  
 
   /**
     * Generates a tuple of three values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */  
+  // SKIP-DOTTY-START
   implicit def tuple3Generator[A, B, C](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C]): Generator[(A, B, C)] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple3Generator[A, B, C](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C]): Generator[(A, B, C)] = {
     new GeneratorFor3[A, B, C, (A, B, C)]((a: A, b: B, c: C) => (a, b, c), (d: (A, B, C)) => d)(genOfA, genOfB, genOfC)
   }
+  //DOTTY-ONLY given [A, B, C](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C]): Generator[(A, B, C)] = tuple3Generator(using genOfA, genOfB, genOfC)
 
   /**
     * Generates a tuple of four values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */
+  // SKIP-DOTTY-START
   implicit def tuple4Generator[A, B, C, D](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D]): Generator[(A, B, C, D)] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple4Generator[A, B, C, D](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D]): Generator[(A, B, C, D)] = {
     new GeneratorFor4[A, B, C, D, (A, B, C, D)]((a: A, b: B, c: C, d: D) => (a, b, c, d), (d: (A, B, C, D)) => d)(genOfA, genOfB, genOfC, genOfD)
   }
+  //DOTTY-ONLY given [A, B, C, D](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D]): Generator[(A, B, C, D)] = tuple4Generator(using genOfA, genOfB, genOfC, genOfD)
 
   /**
     * Generates a tuple of five values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */
+  // SKIP-DOTTY-START
   implicit def tuple5Generator[A, B, C, D, E](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E]): Generator[(A, B, C, D, E)] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple5Generator[A, B, C, D, E](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E]): Generator[(A, B, C, D, E)] =
     new GeneratorFor5[A, B, C, D, E, (A, B, C, D, E)]((a: A, b: B, c: C, d: D, e: E) => (a, b, c, d, e), (f: (A, B, C, D, E)) => f)(genOfA, genOfB, genOfC, genOfD, genOfE)
+  //DOTTY-ONLY given [A, B, C, D, E](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E]): Generator[(A, B, C, D, E)] = tuple5Generator(using genOfA, genOfB, genOfC, genOfD, genOfE)  
 
   /**
     * Generates a tuple of six values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */
+  // SKIP-DOTTY-START
   implicit def tuple6Generator[A, B, C, D, E, F](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F]): Generator[(A, B, C, D, E, F)] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple6Generator[A, B, C, D, E, F](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F]): Generator[(A, B, C, D, E, F)] =
     new GeneratorFor6[A, B, C, D, E, F, (A, B, C, D, E, F)]((a: A, b: B, c: C, d: D, e: E, f: F) => (a, b, c, d, e, f), (g: (A, B, C, D, E, F)) => g)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF)
+  //DOTTY-ONLY given [A, B, C, D, E, F](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F]): Generator[(A, B, C, D, E, F)] = tuple6Generator(using genOfA, genOfB, genOfC, genOfD, genOfE, genOfF)  
 
   /**
     * Generates a tuple of seven values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */
+  // SKIP-DOTTY-START
   implicit def tuple7Generator[A, B, C, D, E, F, G](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G]): Generator[(A, B, C, D, E, F, G)] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple7Generator[A, B, C, D, E, F, G](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G]): Generator[(A, B, C, D, E, F, G)] =
     new GeneratorFor7[A, B, C, D, E, F, G, (A, B, C, D, E, F, G)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G) => (a, b, c, d, e, f, g), (h: (A, B, C, D, E, F, G)) => h)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG)
+  //DOTTY-ONLY given [A, B, C, D, E, F, G](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G]): Generator[(A, B, C, D, E, F, G)] = tuple7Generator(using genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG)  
 
   /**
     * Generates a tuple of eight values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */
+  // SKIP-DOTTY-START
   implicit def tuple8Generator[A, B, C, D, E, F, G, H](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H]): Generator[(A, B, C, D, E, F, G, H)] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple8Generator[A, B, C, D, E, F, G, H](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H]): Generator[(A, B, C, D, E, F, G, H)] =
     new GeneratorFor8[A, B, C, D, E, F, G, H, (A, B, C, D, E, F, G, H)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H) => (a, b, c, d, e, f, g, h), (i: (A, B, C, D, E, F, G, H)) => i)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH)
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H]): Generator[(A, B, C, D, E, F, G, H)] = tuple8Generator(using genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH)  
 
   /**
     * Generates a tuple of nine values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */
+  // SKIP-DOTTY-START
   implicit def tuple9Generator[A, B, C, D, E, F, G, H, I](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I]): Generator[(A, B, C, D, E, F, G, H, I)] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple9Generator[A, B, C, D, E, F, G, H, I](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I]): Generator[(A, B, C, D, E, F, G, H, I)] =
     new GeneratorFor9[A, B, C, D, E, F, G, H, I, (A, B, C, D, E, F, G, H, I)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I) => (a, b, c, d, e, f, g, h, i), (j: (A, B, C, D, E, F, G, H, I)) => j)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI)
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I]): Generator[(A, B, C, D, E, F, G, H, I)] = tuple9Generator(using genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI)  
 
   /**
     * Generates a tuple of ten values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */
+  // SKIP-DOTTY-START
   implicit def tuple10Generator[A, B, C, D, E, F, G, H, I, J](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J]): Generator[(A, B, C, D, E, F, G, H, I, J)] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple10Generator[A, B, C, D, E, F, G, H, I, J](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J]): Generator[(A, B, C, D, E, F, G, H, I, J)] =
     new GeneratorFor10[A, B, C, D, E, F, G, H, I, J, (A, B, C, D, E, F, G, H, I, J)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J) => (a, b, c, d, e, f, g, h, i, j), (k: (A, B, C, D, E, F, G, H, I, J)) => k)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ)
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J]): Generator[(A, B, C, D, E, F, G, H, I, J)] = tuple10Generator(using genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ)
 
   /**
     * Generates a tuple of eleven values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */
+  // SKIP-DOTTY-START
   implicit def tuple11Generator[A, B, C, D, E, F, G, H, I, J, K](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K]): Generator[(A, B, C, D, E, F, G, H, I, J, K)] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple11Generator[A, B, C, D, E, F, G, H, I, J, K](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K]): Generator[(A, B, C, D, E, F, G, H, I, J, K)] =
     new GeneratorFor11[A, B, C, D, E, F, G, H, I, J, K, (A, B, C, D, E, F, G, H, I, J, K)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K) => (a, b, c, d, e, f, g, h, i, j, k), (l: (A, B, C, D, E, F, G, H, I, J, K)) => l)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK)
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K]): Generator[(A, B, C, D, E, F, G, H, I, J, K)] = tuple11Generator(using genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK)  
 
   /**
     * Generates a tuple of twelve values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */
+  // SKIP-DOTTY-START
   implicit def tuple12Generator[A, B, C, D, E, F, G, H, I, J, K, L](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L)] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple12Generator[A, B, C, D, E, F, G, H, I, J, K, L](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L)] =
     new GeneratorFor12[A, B, C, D, E, F, G, H, I, J, K, L, (A, B, C, D, E, F, G, H, I, J, K, L)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L) => (a, b, c, d, e, f, g, h, i, j, k, l), (m: (A, B, C, D, E, F, G, H, I, J, K, L)) => m)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL)
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L)] = tuple12Generator(using genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL)  
 
   /**
     * Generates a tuple of thirteen values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */
+  // SKIP-DOTTY-START
   implicit def tuple13Generator[A, B, C, D, E, F, G, H, I, J, K, L, M](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M)] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple13Generator[A, B, C, D, E, F, G, H, I, J, K, L, M](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M)] =
     new GeneratorFor13[A, B, C, D, E, F, G, H, I, J, K, L, M, (A, B, C, D, E, F, G, H, I, J, K, L, M)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M) => (a, b, c, d, e, f, g, h, i, j, k, l, m), (n: (A, B, C, D, E, F, G, H, I, J, K, L, M)) => n)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM)
-
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M)] = tuple13Generator(using genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM)  
+  
   /**
     * Generates a tuple of fourteen values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */
+  // SKIP-DOTTY-START
   implicit def tuple14Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N)] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple14Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N)] =
     new GeneratorFor14[A, B, C, D, E, F, G, H, I, J, K, L, M, N, (A, B, C, D, E, F, G, H, I, J, K, L, M, N)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n), (o: (A, B, C, D, E, F, G, H, I, J, K, L, M, N)) => o)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN)
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N)] = tuple14Generator(using genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN)  
 
   /**
     * Generates a tuple of fifteen values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */
+  // SKIP-DOTTY-START
   implicit def tuple15Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple15Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)] =
     new GeneratorFor15[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o), (p: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)) => p)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO)
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)] = tuple15Generator(using genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO)  
 
   /**
     * Generates a tuple of sixteen values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */
+  // SKIP-DOTTY-START
   implicit def tuple16Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple16Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)] =
     new GeneratorFor16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p), (q: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)) => q)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP)
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)] = tuple16Generator(using genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP)  
 
   /**
     * Generates a tuple of seventeen values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */
+  // SKIP-DOTTY-START
   implicit def tuple17Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple17Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] =
     new GeneratorFor17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q), (r: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)) => r)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ)
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] = tuple17Generator(using genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ)
 
   /**
     * Generates a tuple of eightteen values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */
+  // SKIP-DOTTY-START
   implicit def tuple18Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple18Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] =
     new GeneratorFor18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r), (s: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)) => s)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR)
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] = tuple18Generator(using genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR)  
 
   /**
     * Generates a tuple of nineteen values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */
+  // SKIP-DOTTY-START
   implicit def tuple19Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple19Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] =
     new GeneratorFor19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s), (t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)) => t)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS)
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] = tuple19Generator(using genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS)
 
   /**
     * Generates a tuple of twenty values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */
+  // SKIP-DOTTY-START
   implicit def tuple20Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple20Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] =
     new GeneratorFor20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t), (u: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)) => u)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS, genOfT)
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] = tuple20Generator(using genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS, genOfT)
 
   /**
     * Generates a tuple of twenty one values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */
+  // SKIP-DOTTY-START
   implicit def tuple21Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T], genOfU: Generator[U]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple21Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T], genOfU: Generator[U]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] =
     new GeneratorFor21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T, u: U) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u), (v: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)) => v)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS, genOfT, genOfU)
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T], genOfU: Generator[U]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] = tuple21Generator(using genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS, genOfT, genOfU)
 
   /**
     * Generates a tuple of twenty two values.
     *
     * See [[tuple2Generator]] for details of tuple generators.
     */
+  // SKIP-DOTTY-START
   implicit def tuple22Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T], genOfU: Generator[U], genOfV: Generator[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple22Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T], genOfU: Generator[U], genOfV: Generator[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] =
     new GeneratorFor22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)]((a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T, u: U, v: V) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v), (w: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)) => w)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS, genOfT, genOfU, genOfV)
+  //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T], genOfU: Generator[U], genOfV: Generator[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] = tuple22Generator(using genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS, genOfT, genOfU, genOfV)  
 
   /**
     * Given a [[Generator]] for type [[T]], this creates one for a [[Vector]] of [[T]].
@@ -4877,7 +5458,10 @@ object Generator {
     * @tparam T the type to produce
     * @return a [[Generator]] that produces values of type `Vector[T]`
     */
+  // SKIP-DOTTY-START
   implicit def vectorGenerator[T](implicit genOfT: Generator[T]): Generator[Vector[T]] with HavingLength[Vector[T]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def vectorGenerator[T](using genOfT: Generator[T]): Generator[Vector[T]] with HavingLength[Vector[T]] =
     new Generator[Vector[T]] with HavingLength[Vector[T]] { thisGen =>
 
       case class NextRoseTree(value: Vector[T], sizeParam: SizeParam, isValidFun: (Vector[T], SizeParam) => Boolean) extends RoseTree[Vector[T]] {
@@ -4956,7 +5540,8 @@ object Generator {
 
       override def shrinksForValue(valueToShrink: Vector[T]): Option[LazyListOrStream[RoseTree[Vector[T]]]] = Some(NextRoseTree(valueToShrink, SizeParam(0, 0, 0), isValid).shrinks)
     }
-
+  //DOTTY-ONLY given givenVectorGenerator[T](using genOfT: Generator[T]): (Generator[Vector[T]] with HavingLength[Vector[T]]) = vectorGenerator(using genOfT)
+  
   /**
     * Given a [[Generator]] that produces values of type [[T]], this creates one for a [[Set]] of [[T]].
     *
@@ -4971,7 +5556,10 @@ object Generator {
     * @tparam T the type to produce
     * @return a [[Generator]] that produces `Set[T]`.
     */
+  // SKIP-DOTTY-START
   implicit def setGenerator[T](implicit genOfT: Generator[T]): Generator[Set[T]] with HavingSize[Set[T]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def setGenerator[T](using genOfT: Generator[T]): Generator[Set[T]] with HavingSize[Set[T]] =
     new Generator[Set[T]] with HavingSize[Set[T]] {
 
       case class NextRoseTree(value: Set[T], sizeParam: SizeParam, isValidFun: (Set[T], SizeParam) => Boolean) extends RoseTree[Set[T]] {
@@ -5050,6 +5638,7 @@ object Generator {
 
       override def shrinksForValue(valueToShrink: Set[T]): Option[LazyListOrStream[RoseTree[Set[T]]]] = Some(NextRoseTree(valueToShrink, SizeParam(0, 0, 0), isValid).shrinks)
     }
+  //DOTTY-ONLY given givenSetGenerator[T](using genOfT: Generator[T]): (Generator[Set[T]] with HavingSize[Set[T]]) = setGenerator(using genOfT)
 
   /**
     * Given a [[Generator]] that produces values of type [[T]], this creates one for a [[SortedSet]] of [[T]].
@@ -5065,7 +5654,10 @@ object Generator {
     * @tparam T the type to produce
     * @return a [[Generator]] that produces `SortedSet[T]`.
     */
+  // SKIP-DOTTY-START
   implicit def sortedSetGenerator[T](implicit genOfT: Generator[T], ordering: Ordering[T]): Generator[SortedSet[T]] with HavingSize[SortedSet[T]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def sortedSetGenerator[T](using genOfT: Generator[T], ordering: Ordering[T]): Generator[SortedSet[T]] with HavingSize[SortedSet[T]] =
     new Generator[SortedSet[T]] with HavingSize[SortedSet[T]] {
 
       case class NextRoseTree(value: SortedSet[T], sizeParam: SizeParam, isValidFun: (SortedSet[T], SizeParam) => Boolean) extends RoseTree[SortedSet[T]] {
@@ -5144,6 +5736,7 @@ object Generator {
 
       override def shrinksForValue(valueToShrink: SortedSet[T]): Option[LazyListOrStream[RoseTree[SortedSet[T]]]] = Some(NextRoseTree(valueToShrink, SizeParam(0, 0, 0), isValid).shrinks)
     }
+  //DOTTY-ONLY given givenSortedSetGenerator[T](using genOfT: Generator[T], ordering: Ordering[T]): (Generator[SortedSet[T]] with HavingSize[SortedSet[T]]) = sortedSetGenerator(using genOfT, ordering)
 
   /**
     * Given a [[Generator]] that produces Tuples of key/value pairs, this gives you one that produces [[Map]]s
@@ -5161,7 +5754,10 @@ object Generator {
     * @tparam V the type of the values for the [[Map]]
     * @return a [[Generator]] of [[Map]]s from [[K]] to [[V]]
     */
+  // SKIP-DOTTY-START
   implicit def mapGenerator[K, V](implicit genOfTuple2KV: Generator[(K, V)]): Generator[Map[K, V]] with HavingSize[Map[K, V]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def mapGenerator[K, V](using genOfTuple2KV: Generator[(K, V)]): Generator[Map[K, V]] with HavingSize[Map[K, V]] =
     new Generator[Map[K, V]] with HavingSize[Map[K, V]] {
 
       case class NextRoseTree(value: Map[K, V], sizeParam: SizeParam, isValidFun: (Map[K, V], SizeParam) => Boolean) extends RoseTree[Map[K, V]] {
@@ -5241,6 +5837,7 @@ object Generator {
 
       override def shrinksForValue(valueToShrink: Map[K, V]): Option[LazyListOrStream[RoseTree[Map[K, V]]]] = Some(NextRoseTree(valueToShrink, SizeParam(0, 0, 0), isValid).shrinks)
     }
+  //DOTTY-ONLY given givenMapGenerator[K, V](using genOfTuple2KV: Generator[(K, V)]): (Generator[Map[K, V]] with HavingSize[Map[K, V]]) = mapGenerator(using genOfTuple2KV)  
 
   /**
     * Given a [[Generator]] that produces Tuples of key/value pairs, this gives you one that produces [[SortedMap]]s
@@ -5258,7 +5855,10 @@ object Generator {
     * @tparam V the type of the values for the [[SortedMap]]
     * @return a [[Generator]] of [[SortedMap]]s from [[K]] to [[V]]
     */
+  // SKIP-DOTTY-START
   implicit def sortedMapGenerator[K, V](implicit genOfTuple2KV: Generator[(K, V)], ordering: Ordering[K]): Generator[SortedMap[K, V]] with HavingSize[SortedMap[K, V]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def sortedMapGenerator[K, V](using genOfTuple2KV: Generator[(K, V)], ordering: Ordering[K]): Generator[SortedMap[K, V]] with HavingSize[SortedMap[K, V]] =
     new Generator[SortedMap[K, V]] with HavingSize[SortedMap[K, V]] {
 
       case class NextRoseTree(value: SortedMap[K, V], sizeParam: SizeParam, isValidFun: (SortedMap[K, V], SizeParam) => Boolean) extends RoseTree[SortedMap[K, V]] {
@@ -5337,6 +5937,7 @@ object Generator {
 
       override def shrinksForValue(valueToShrink: SortedMap[K, V]): Option[LazyListOrStream[RoseTree[SortedMap[K, V]]]] = Some(NextRoseTree(valueToShrink, SizeParam(0, 0, 0), isValid).shrinks)
     }
+  //DOTTY-ONLY given givenSortedMapGenerator[K, V](using genOfTuple2KV: Generator[(K, V)], ordering: Ordering[K]): (Generator[SortedMap[K, V]] with HavingSize[SortedMap[K, V]]) = sortedMapGenerator(using genOfTuple2KV, ordering)
 }
 
 

@@ -31,6 +31,7 @@ import org.scalatest.matchers.dsl._
 import org.scalatest.verbs.CompileWord
 import org.scalatest.verbs.TypeCheckWord
 import org.scalatest.verbs.ShouldVerb
+import ShouldVerb.StringShouldWrapperForVerb
 import org.scalatest.matchers.dsl.ResultOfNoElementsOfApplication
 import org.scalatest.matchers.dsl.ResultOfOneElementOfApplication
 import org.scalactic.ColCompatHelper.Iterable

@@ -312,7 +312,7 @@ trait Eventually extends PatienceConfiguration {
   def eventually[T](timeout: Timeout, interval: Interval)(fun: => T)(implicit retrying: Retrying[T], pos: source.Position): T =
     retrying.retry(timeout.value, interval.value, pos)(fun)
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def eventually[T](timeout: Timeout, interval: Interval)(fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T]): T = 
+  //DOTTY-ONLY inline def eventually[T](timeout: Timeout, interval: Interval)(fun: => T)(using config: PatienceConfig, retrying: Retrying[T]): T = 
   //DOTTY-ONLY   ${ Eventually.eventuallyMacro('{timeout.value}, '{interval.value}, '{fun}, '{retrying}) }
 
   /**
@@ -347,7 +347,7 @@ trait Eventually extends PatienceConfiguration {
   def eventually[T](timeout: Timeout)(fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T], pos: source.Position): T =
     retrying.retry(timeout.value, config.interval, pos)(fun)
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def eventually[T](timeout: Timeout)(fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T]): T = 
+  //DOTTY-ONLY inline def eventually[T](timeout: Timeout)(fun: => T)(using config: PatienceConfig, retrying: Retrying[T]): T = 
   //DOTTY-ONLY   ${ Eventually.eventuallyMacro('{timeout.value}, '{config.interval}, '{fun}, '{retrying}) }
 
   /**
@@ -381,7 +381,7 @@ trait Eventually extends PatienceConfiguration {
   def eventually[T](interval: Interval)(fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T], pos: source.Position): T =
     retrying.retry(config.timeout, interval.value, pos)(fun) 
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def eventually[T](interval: Interval)(fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T]): T = 
+  //DOTTY-ONLY inline def eventually[T](interval: Interval)(fun: => T)(using config: PatienceConfig, retrying: Retrying[T]): T = 
   //DOTTY-ONLY   ${ Eventually.eventuallyMacro('{config.timeout}, '{interval.value}, '{fun}, '{retrying}) }  
 
   /**
@@ -414,7 +414,7 @@ trait Eventually extends PatienceConfiguration {
   def eventually[T](fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T], pos: source.Position): T =
     retrying.retry(config.timeout, config.interval, pos)(fun)  
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def eventually[T](fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T]): T = 
+  //DOTTY-ONLY inline def eventually[T](fun: => T)(using config: PatienceConfig, retrying: Retrying[T]): T = 
   //DOTTY-ONLY   ${ Eventually.eventuallyMacro('{config.timeout}, '{config.interval}, '{fun}, '{retrying}) }  
 }
 

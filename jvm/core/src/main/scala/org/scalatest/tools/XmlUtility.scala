@@ -13,7 +13,6 @@
 package org.scalatest.tools
 
 import scala.collection.mutable
-import scala.language.implicitConversions
 import scala.collection.Seq
 import scala.xml._
 

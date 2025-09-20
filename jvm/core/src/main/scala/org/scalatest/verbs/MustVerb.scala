@@ -101,6 +101,26 @@ import org.scalactic._
  */
 trait MustVerb {
 
+  import MustVerb.StringMustWrapperForVerb
+
+  import scala.language.implicitConversions
+
+  /**
+   * Implicitly converts an object of type <code>String</code> to a <code>StringMustWrapper</code>,
+   * to enable <code>must</code> methods to be invokable on that object.
+   */
+  implicit def convertToStringMustWrapperForVerb(o: String)(implicit position: source.Position): StringMustWrapperForVerb =
+    new StringMustWrapperForVerb {
+      val leftSideString = o.trim
+      val pos = position
+    }
+}
+
+/**
+ * Companion object for the <code>MustVerb</code> trait.
+ */
+object MustVerb extends MustVerb {
+
   /**
    * This class supports the syntax of <code>FlatSpec</code>, <code>WordSpec</code>, <code>fixture.FlatSpec</code>,
    * and <code>fixture.WordSpec</code>.
@@ -223,15 +243,4 @@ trait MustVerb {
     }
   }
 
-  import scala.language.implicitConversions
-
-  /**
-   * Implicitly converts an object of type <code>String</code> to a <code>StringMustWrapper</code>,
-   * to enable <code>must</code> methods to be invokable on that object.
-   */
-  implicit def convertToStringMustWrapperForVerb(o: String)(implicit position: source.Position): StringMustWrapperForVerb =
-    new StringMustWrapperForVerb {
-      val leftSideString = o.trim
-      val pos = position
-    }
 }

@@ -154,13 +154,13 @@ class ListShouldContainAllElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList should not contain allElementsOf (Seq("happy", "birthday", "to", "you", "dear"))) (decided by upperCaseStringEquality)
+        (toList should not contain allElementsOf (Seq("happy", "birthday", "to", "you", "dear"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should not contain allElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+          (toList should not contain allElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         toList should not contain allElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList should not contain allElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+          (toList should not contain allElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should allow RHS to contain duplicated value") {
