@@ -79,18 +79,104 @@ import org.scalactic._
 trait CanVerb {
 
   import CanVerb.StringCanWrapperForVerb
-
+  // SKIP-DOTTY-START 
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   /**
+  // SKIP-DOTTY-START
    * Implicitly converts an object of type <code>String</code> to a <code>StringCanWrapper</code>,
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY   * Converts an object of type <code>String</code> to a <code>StringCanWrapper</code>,
    * to enable <code>can</code> methods to be invokable on that object.
    */
+  // SKIP-DOTTY-START 
   implicit def convertToStringCanWrapper(o: String)(implicit position: source.Position): StringCanWrapperForVerb =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertToStringCanWrapper(o: String)(using position: source.Position): StringCanWrapperForVerb =
     new StringCanWrapperForVerb {
       val leftSideString = o.trim
       val pos = position
     }
+  //DOTTY-ONLY extension (o: String)(using position: source.Position) {
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Extension method to support test registration in <code>FlatSpec</code> and <code>fixture.FlatSpec</code>.
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method enables syntax such as the following in <code>FlatSpec</code>
+  //DOTTY-ONLY    * and <code>fixture.FlatSpec</code>:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack (when empty)" can "be empty" in { ... }
+  //DOTTY-ONLY    *                        ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * <code>FlatSpec</code> passes in a function via the implicit parameter that takes
+  //DOTTY-ONLY    * three strings and results in a <code>ResultOfStringPassedToVerb</code>. This method
+  //DOTTY-ONLY    * simply invokes this function, passing in leftSideString, the verb string
+  //DOTTY-ONLY    * <code>"can"</code>, and right, and returns the result.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def can(right: String)(using svsi: StringVerbStringInvocation): ResultOfStringPassedToVerb = convertToStringCanWrapper(o).can(right)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Extension method to support shared test registration in <code>FlatSpec</code>
+  //DOTTY-ONLY    * and <code>fixture.FlatSpec</code>.
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method enables syntax such as the following in <code>FlatSpec</code>
+  //DOTTY-ONLY    * and <code>fixture.FlatSpec</code>:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack (with one item)" can behave like nonEmptyStack(stackWithOneItem, lastValuePushed)
+  //DOTTY-ONLY    *                           ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * <code>FlatSpec</code> and <code>fixture.FlatSpec</code> passes in a function via the implicit parameter that takes
+  //DOTTY-ONLY    * a string and results in a <code>BehaveWord</code>. This method
+  //DOTTY-ONLY    * simply invokes this function, passing in leftSideString, and returns the result.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def can(right: BehaveWord)(using svbli: StringVerbBehaveLikeInvocation): BehaveWord = convertToStringCanWrapper(o).can(right)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Extension method to support the registration of subject descriptions in <code>WordSpec</code>
+  //DOTTY-ONLY    * and <code>fixture.WordSpec</code>.
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method enables syntax such as the following in <code>WordSpec</code>
+  //DOTTY-ONLY    * and <code>fixture.WordSpec</code>:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack (when empty)" can { ...
+  //DOTTY-ONLY    *                        ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * <code>WordSpec</code> passes in a function via the implicit parameter of type <code>StringVerbBlockRegistration</code>,
+  //DOTTY-ONLY    * a function that takes two strings and a no-arg function and results in <code>Unit</code>. This method
+  //DOTTY-ONLY    * simply invokes this function, passing in leftSideString, the verb string
+  //DOTTY-ONLY    * <code>"can"</code>, and the right by-name parameter transformed into a
+  //DOTTY-ONLY    * no-arg function.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def can(right: => Unit)(using fun: StringVerbBlockRegistration): Unit = convertToStringCanWrapper(o).can(right)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Extension method to support the registration of subject descriptions with after words
+  //DOTTY-ONLY    * in <code>WordSpec</code> and <code>fixture.WordSpec</code>.
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method enables syntax such as the following in <code>WordSpec</code>
+  //DOTTY-ONLY    * and <code>fixture.WordSpec</code>:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    *    def provide = afterWord("provide")
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    *   "The ScalaTest Matchers DSL" can provide {
+  //DOTTY-ONLY    *                                ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * <code>WordSpec</code> passes in a function via the implicit parameter that takes
+  //DOTTY-ONLY    * two strings and a <code>ResultOfAfterWordApplication</code> and results in <code>Unit</code>. This method
+  //DOTTY-ONLY    * simply invokes this function, passing in leftSideString, the verb string
+  //DOTTY-ONLY    * <code>"can"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>can</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def can(resultOfAfterWordApplication: ResultOfAfterWordApplication)(using swawr: SubjectWithAfterWordRegistration): Unit = convertToStringCanWrapper(o).can(resultOfAfterWordApplication)
+  //DOTTY-ONLY }
 }
 
 object CanVerb extends CanVerb {
