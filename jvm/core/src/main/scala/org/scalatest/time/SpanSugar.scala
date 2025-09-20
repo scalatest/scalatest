@@ -279,8 +279,71 @@ package org.scalatest.time
  */
 trait SpanSugar {
 
+  import SpanSugar._
+
   implicit val postfixOps: languageFeature.postfixOps = language.postfixOps
 
+  import scala.language.implicitConversions
+
+  /**
+   * Implicit conversion that adds time units methods to <code>Int</code>s.
+   * 
+   * @param i: the <code>Int</code> to which to add time units methods
+   * @return a <code>GrainOfTime</code> wrapping the passed <code>Int</code>
+   */
+  implicit def convertIntToGrainOfTime(i: Int): GrainOfTime = new GrainOfTime(i)
+  
+  /**
+   * Implicit conversion that adds time units methods to <code>Long</code>s.
+   * 
+   * @param i: the <code>Long</code> to which to add time units methods
+   * @return a <code>GrainOfTime</code> wrapping the passed <code>Long</code>
+   */
+  implicit def convertLongToGrainOfTime(i: Long): GrainOfTime = new GrainOfTime(i)
+
+
+  /**
+   * Implicit conversion that adds time units methods to <code>Float</code>s.
+   *
+   * @param f: the <code>Float</code> to which to add time units methods
+   * @return a <code>FloatingGrainOfTime</code> wrapping the passed <code>Float</code>
+   */
+  implicit def convertFloatToGrainOfTime(f: Float): FloatingGrainOfTime = new FloatingGrainOfTime(f)
+
+  /**
+   * Implicit conversion that adds time units methods to <code>Double</code>s.
+   *
+   * @param d: the <code>Double</code> to which to add time units methods
+   * @return a <code>FloatingGrainOfTime</code> wrapping the passed <code>Double</code>
+   */
+  implicit def convertDoubleToGrainOfTime(d: Double): FloatingGrainOfTime = new FloatingGrainOfTime(d)
+}
+
+/**
+ * Companion object that facilitates the importing of <code>SpanSugar</code> members as 
+ * an alternative to mixing it in. One use case is to import <code>SpanSugar</code> members so you can use
+ * them in the Scala interpreter:
+ *
+ * <pre class="stREPL">
+ * $scala -classpath scalatest.jar
+ * Welcome to Scala version 2.9.1.final (Java HotSpot(TM) 64-Bit Server VM, Java 1.6.0_29).
+ * Type in expressions to have them evaluated.
+ * Type :help for more information.
+ *
+ * scala&gt; import org.scalatest._
+ * import org.scalatest._
+ *
+ * scala&gt; import concurrent.Eventually._
+ * import org.scalatest.concurrent.Eventually._
+ *
+ * scala&gt; import time.SpanSugar._
+ * import org.scalatest.time.SpanSugar._
+ *
+ * scala&gt; eventually(timeout(100 millis)) { 1 + 1 should equal (3) }
+ * </pre>
+ */
+object SpanSugar extends SpanSugar {
+  
   /**
    * Class containing methods that return a <code>Span</code> time value calculated from the
    * <code>Long</code> value passed to the <code>GrainOfTime</code> constructor.
@@ -509,63 +572,4 @@ trait SpanSugar {
     def days: Span = Span(value, Days)
   }
 
-  import scala.language.implicitConversions
-
-  /**
-   * Implicit conversion that adds time units methods to <code>Int</code>s.
-   * 
-   * @param i: the <code>Int</code> to which to add time units methods
-   * @return a <code>GrainOfTime</code> wrapping the passed <code>Int</code>
-   */
-  implicit def convertIntToGrainOfTime(i: Int): GrainOfTime = new GrainOfTime(i)
-  
-  /**
-   * Implicit conversion that adds time units methods to <code>Long</code>s.
-   * 
-   * @param i: the <code>Long</code> to which to add time units methods
-   * @return a <code>GrainOfTime</code> wrapping the passed <code>Long</code>
-   */
-  implicit def convertLongToGrainOfTime(i: Long): GrainOfTime = new GrainOfTime(i)
-
-
-  /**
-   * Implicit conversion that adds time units methods to <code>Float</code>s.
-   *
-   * @param f: the <code>Float</code> to which to add time units methods
-   * @return a <code>FloatingGrainOfTime</code> wrapping the passed <code>Float</code>
-   */
-  implicit def convertFloatToGrainOfTime(f: Float): FloatingGrainOfTime = new FloatingGrainOfTime(f)
-
-  /**
-   * Implicit conversion that adds time units methods to <code>Double</code>s.
-   *
-   * @param d: the <code>Double</code> to which to add time units methods
-   * @return a <code>FloatingGrainOfTime</code> wrapping the passed <code>Double</code>
-   */
-  implicit def convertDoubleToGrainOfTime(d: Double): FloatingGrainOfTime = new FloatingGrainOfTime(d)
 }
-
-/**
- * Companion object that facilitates the importing of <code>SpanSugar</code> members as 
- * an alternative to mixing it in. One use case is to import <code>SpanSugar</code> members so you can use
- * them in the Scala interpreter:
- *
- * <pre class="stREPL">
- * $scala -classpath scalatest.jar
- * Welcome to Scala version 2.9.1.final (Java HotSpot(TM) 64-Bit Server VM, Java 1.6.0_29).
- * Type in expressions to have them evaluated.
- * Type :help for more information.
- *
- * scala&gt; import org.scalatest._
- * import org.scalatest._
- *
- * scala&gt; import concurrent.Eventually._
- * import org.scalatest.concurrent.Eventually._
- *
- * scala&gt; import time.SpanSugar._
- * import org.scalatest.time.SpanSugar._
- *
- * scala&gt; eventually(timeout(100 millis)) { 1 + 1 should equal (3) }
- * </pre>
- */
-object SpanSugar extends SpanSugar
