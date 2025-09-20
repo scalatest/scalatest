@@ -78,7 +78,23 @@ import org.scalactic._
  */
 trait CanVerb {
 
-  // This one can be final, because it isn't extended by anything in the matchers DSL.
+  import CanVerb.StringCanWrapperForVerb
+
+  import scala.language.implicitConversions
+
+  /**
+   * Implicitly converts an object of type <code>String</code> to a <code>StringCanWrapper</code>,
+   * to enable <code>can</code> methods to be invokable on that object.
+   */
+  implicit def convertToStringCanWrapper(o: String)(implicit position: source.Position): StringCanWrapperForVerb =
+    new StringCanWrapperForVerb {
+      val leftSideString = o.trim
+      val pos = position
+    }
+}
+
+object CanVerb extends CanVerb {
+
   /**
    * This class supports the syntax of <code>FlatSpec</code>, <code>WordSpec</code>, <code>fixture.FlatSpec</code>,
    * and <code>fixture.WordSpec</code>.
@@ -201,15 +217,4 @@ trait CanVerb {
     }
   }
 
-  import scala.language.implicitConversions
-
-  /**
-   * Implicitly converts an object of type <code>String</code> to a <code>StringCanWrapper</code>,
-   * to enable <code>can</code> methods to be invokable on that object.
-   */
-  implicit def convertToStringCanWrapper(o: String)(implicit position: source.Position): StringCanWrapperForVerb =
-    new StringCanWrapperForVerb {
-      val leftSideString = o.trim
-      val pos = position
-    }
 }
