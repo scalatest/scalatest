@@ -101,6 +101,22 @@ import org.scalactic._
  */
 trait ShouldVerb {
 
+  import ShouldVerb.StringShouldWrapperForVerb
+
+  import scala.language.implicitConversions
+
+  /**
+   * Implicitly converts an object of type <code>String</code> to a <code>StringShouldWrapperForVerb</code>,
+   * to enable <code>should</code> methods to be invokable on that object.
+   */
+  implicit def convertToStringShouldWrapperForVerb(o: String)(implicit position: source.Position): StringShouldWrapperForVerb =
+    new StringShouldWrapperForVerb {
+      val leftSideString = o.trim
+      val pos = position
+    }
+}
+
+object ShouldVerb extends ShouldVerb {
   // This can't be final or abstract, because it is instantiated directly by the implicit conversion, and
   // extended by something in Matchers.
   /**
@@ -225,16 +241,4 @@ trait ShouldVerb {
       swawr(leftSideString, "should", resultOfAfterWordApplication, pos)
     }
   }
-
-  import scala.language.implicitConversions
-
-  /**
-   * Implicitly converts an object of type <code>String</code> to a <code>StringShouldWrapperForVerb</code>,
-   * to enable <code>should</code> methods to be invokable on that object.
-   */
-  implicit def convertToStringShouldWrapperForVerb(o: String)(implicit position: source.Position): StringShouldWrapperForVerb =
-    new StringShouldWrapperForVerb {
-      val leftSideString = o.trim
-      val pos = position
-    }
 }

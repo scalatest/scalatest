@@ -179,6 +179,9 @@ trait CanVerb {
   //DOTTY-ONLY }
 }
 
+/**
+ * Companion object for the <code>CanVerb</code> trait.
+ */
 object CanVerb extends CanVerb {
 
   /**
