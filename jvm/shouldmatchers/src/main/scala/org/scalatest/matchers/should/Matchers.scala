@@ -1808,7 +1808,11 @@ import org.scalatest.exceptions._
  */
 trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWords with Explicitly { matchers =>
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
+
+  import Matchers.ShouldMethodHelper
 
   // SKIP-SCALATESTJS,NATIVE-START
   // This guy is generally done through an implicit conversion from a symbol. It takes that symbol, and
@@ -7284,42 +7288,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def the[T : ClassTag](implicit pos: source.Position): ResultOfTheTypeInvocation[T] =
     new ResultOfTheTypeInvocation(classTag, pos)
 
-  // This is where ShouldMatchers.scala started
-
-  // 13 Feb 2019: Current dotty does not seems to like inner object, this is a work around until the problem is fixed.
-  private class ShouldMethodHelperClass {
-
-    def shouldMatcher[T](left: T, rightMatcher: Matcher[T], prettifier: Prettifier, pos: source.Position): Assertion = {
-      val result = rightMatcher(left)
-      result match {
-        case resultWithAnalysis: MatchResultWithAnalysis =>
-          if (resultWithAnalysis.matches)
-            indicateSuccess(result.negatedFailureMessage(prettifier))
-          else {
-            val failureMessage = resultWithAnalysis.failureMessage(prettifier)
-            val analysis = resultWithAnalysis.analysis
-            indicateFailure(failureMessage, None, pos, analysis)
-          }
-
-        case _ =>
-          MatchFailed.unapply(result)(prettifier) match {
-            case Some(failureMessage) => indicateFailure(failureMessage, None, pos)
-            case None => indicateSuccess(result.negatedFailureMessage(prettifier))
-          }
-      }
-    }
-
-    def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], prettifier: Prettifier, pos: source.Position): Assertion = {
-      val result = rightMatcher(left)
-      MatchSucceeded.unapply(result)(prettifier) match {
-        case Some(negatedFailureMessage) => indicateFailure(negatedFailureMessage, None, pos)
-        case None => indicateSuccess(result.failureMessage(prettifier))
-      }
-    }
-  }
-
-  private val ShouldMethodHelper = new ShouldMethodHelperClass
-
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
    * the matchers DSL.
@@ -8433,4 +8401,33 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
  *
  * @author Bill Venners
  */
-object Matchers extends Matchers
+object Matchers extends Matchers {
+  private object ShouldMethodHelper {
+    def shouldMatcher[T](left: T, rightMatcher: Matcher[T], prettifier: Prettifier, pos: source.Position): Assertion = {
+      val result = rightMatcher(left)
+      result match {
+        case resultWithAnalysis: MatchResultWithAnalysis =>
+          if (resultWithAnalysis.matches)
+            indicateSuccess(result.negatedFailureMessage(prettifier))
+          else {
+            val failureMessage = resultWithAnalysis.failureMessage(prettifier)
+            val analysis = resultWithAnalysis.analysis
+            indicateFailure(failureMessage, None, pos, analysis)
+          }
+
+        case _ =>
+          MatchFailed.unapply(result)(prettifier) match {
+            case Some(failureMessage) => indicateFailure(failureMessage, None, pos)
+            case None => indicateSuccess(result.negatedFailureMessage(prettifier))
+          }
+      }
+    }
+    def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], prettifier: Prettifier, pos: source.Position): Assertion = {
+      val result = rightMatcher(left)
+      MatchSucceeded.unapply(result)(prettifier) match {
+        case Some(negatedFailureMessage) => indicateFailure(negatedFailureMessage, None, pos)
+        case None => indicateSuccess(result.failureMessage(prettifier))
+      }
+    }
+  }
+}
