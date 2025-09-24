@@ -277,7 +277,7 @@ trait JavaContainingImplicits extends ContainingImpls {
   // SKIP-DOTTY-START  
   implicit def containingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]](implicit equality: Equality[java.util.Map.Entry[K, V]]): Containing[JMAP[K, V]] =
   // SKIP-DOTTY-END
-  //DOTTY-ONLY def containingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]](implicit equality: Equality[java.util.Map.Entry[K, V]]): Containing[JMAP[K, V]] =
+  //DOTTY-ONLY def containingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]](using equality: Equality[java.util.Map.Entry[K, V]]): Containing[JMAP[K, V]] =
     convertEqualityToJavaMapContaining(equality)
 
   /**
@@ -383,7 +383,7 @@ trait ContainingStandardImplicits extends JavaContainingImplicits {
   // SKIP-DOTTY-START
   implicit def containingNatureOfIterable[E, ITR[e] <: Iterable[e]](implicit equality: Equality[E]): Containing[ITR[E]] =
   // SKIP-DOTTY-END
-  //DOTTY-ONLY def containingNatureOfIterable[E, ITR[e] <: Iterable[e]](implicit equality: Equality[E]): Containing[ITR[E]] =
+  //DOTTY-ONLY def containingNatureOfIterable[E, ITR[e] <: Iterable[e]](using equality: Equality[E]): Containing[ITR[E]] =
     convertEqualityToIterableContaining(equality)
 
   /**
@@ -475,7 +475,7 @@ trait ContainingStandardImplicits extends JavaContainingImplicits {
   // SKIP-DOTTY-START
   implicit def containingNatureOfOption[E, OPT[e] <: Option[e]](implicit equality: Equality[E]): Containing[OPT[E]] =
   // SKIP-DOTTY-END
-  //DOTTY-ONLY def containingNatureOfOption[E, OPT[e] <: Option[e]](implicit equality: Equality[E]): Containing[OPT[E]] =
+  //DOTTY-ONLY def containingNatureOfOption[E, OPT[e] <: Option[e]](using equality: Equality[E]): Containing[OPT[E]] =
     convertEqualityToOptionContaining(equality)
 
   /**
@@ -560,7 +560,7 @@ trait ContainingStandardImplicits extends JavaContainingImplicits {
   // SKIP-DOTTY-START
   implicit def containingNatureOfArray[E](implicit equality: Equality[E]): Containing[Array[E]] =
   // SKIP-DOTTY-END
-  //DOTTY-ONLY def containingNatureOfArray[E](implicit equality: Equality[E]): Containing[Array[E]] =
+  //DOTTY-ONLY def containingNatureOfArray[E](using equality: Equality[E]): Containing[Array[E]] =
     convertEqualityToArrayContaining(equality)
 
   /**
@@ -640,7 +640,7 @@ trait ContainingStandardImplicits extends JavaContainingImplicits {
   // SKIP-DOTTY-START
   implicit def containingNatureOfString(implicit equality: Equality[Char]): Containing[String] =
   // SKIP-DOTTY-END
-  //DOTTY-ONLY def containingNatureOfString(implicit equality: Equality[Char]): Containing[String] =
+  //DOTTY-ONLY def containingNatureOfString(using equality: Equality[Char]): Containing[String] =
     convertEqualityToStringContaining(equality)
 
   /**
@@ -720,7 +720,7 @@ trait ContainingStandardImplicits extends JavaContainingImplicits {
   // SKIP-DOTTY-START
   implicit def containingNatureOfEvery[E](implicit equality: Equality[E]): Containing[Every[E]] =
   // SKIP-DOTTY-END
-  //DOTTY-ONLY def containingNatureOfEvery[E](implicit equality: Equality[E]): Containing[Every[E]] =
+  //DOTTY-ONLY def containingNatureOfEvery[E](using equality: Equality[E]): Containing[Every[E]] =
     convertEqualityToEveryContaining(equality)
 
   /**
@@ -811,7 +811,7 @@ trait ContainingHighPriorityImplicits extends ContainingStandardImplicits {
   // SKIP-DOTTY-START
   implicit def containingNatureOfMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](implicit equality: Equality[(K, V)]): Containing[MAP[K, V]] =
   // SKIP-DOTTY-END
-  //DOTTY-ONLY def containingNatureOfMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](implicit equality: Equality[(K, V)]): Containing[MAP[K, V]] =
+  //DOTTY-ONLY def containingNatureOfMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](using equality: Equality[(K, V)]): Containing[MAP[K, V]] =
     convertEqualityToMapContaining(equality)
 
   /**
