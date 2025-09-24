@@ -85,13 +85,19 @@ trait Collecting[E, C] {
 object Collecting {
 
   /**
+   // SKIP-DOTTY-START
    * Implicit to support <code>Collecting</code> nature of <code>Iterable</code>.
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY   * To support <code>Collecting</code> nature of <code>Iterable</code>.
    *
    * @tparam E the type of the element in the <code>Iterable</code>
    * @tparam ITR any subtype of <code>Iterable</code>
    * @return <code>Collecting[E, TRAV[E]]</code> that supports <code>Iterable</code> in <code>loneElement</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def collectingNatureOfIterable[E, ITR[e] <: Iterable[e]]: Collecting[E, ITR[E]] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def collectingNatureOfIterable[E, ITR[e] <: Iterable[e]]: Collecting[E, ITR[E]] = 
     new Collecting[E, ITR[E]] {
       def loneElementOf(trav: ITR[E]): Option[E] = {
         if (trav.size == 1) Some(trav.head) else None
@@ -99,14 +105,28 @@ object Collecting {
       def sizeOf(trav: ITR[E]): Int = trav.size
       def iterableFrom(collection: ITR[E]): Iterable[E] = collection
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Collecting</code> nature of <code>Iterable</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>Iterable</code>
+  //DOTTY-ONLY   * @tparam ITR any subtype of <code>Iterable</code>
+  //DOTTY-ONLY   * @return <code>Collecting[E, TRAV[E]]</code> that supports <code>Iterable</code> in <code>loneElement</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [E, ITR[e] <: Iterable[e]]: Collecting[E, ITR[E]] = collectingNatureOfIterable
 
   /**
+   // SKIP-DOTTY-START 
    * Implicit to support <code>Collecting</code> nature of <code>Array</code>.
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY   * To support <code>Collecting</code> nature of <code>Array</code>.
    *
    * @tparam E the type of the element in the <code>Array</code>
    * @return <code>Collecting[E, Array[E]]</code> that supports <code>Array</code> in <code>loneElement</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def collectingNatureOfArray[E]: Collecting[E, Array[E]] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def collectingNatureOfArray[E]: Collecting[E, Array[E]] = 
     new Collecting[E, Array[E]] {
       def loneElementOf(array: Array[E]): Option[E] = {
         if (array.size == 1) Some(array.head) else None
@@ -114,13 +134,26 @@ object Collecting {
       def sizeOf(array: Array[E]): Int = array.length
       def iterableFrom(collection: Array[E]): Iterable[E] = collection
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Collecting</code> nature of <code>Array</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>Array</code>
+  //DOTTY-ONLY   * @return <code>Collecting[E, Array[E]]</code> that supports <code>Array</code> in <code>loneElement</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [E]: Collecting[E, Array[E]] = collectingNatureOfArray
 
   /**
+   // SKIP-DOTTY-START
    * Implicit to support <code>Collecting</code> nature of <code>String</code>.
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY   * To support <code>Collecting</code> nature of <code>String</code>.
    *
    * @return <code>Collecting[Char, String]</code> that supports <code>String</code> in <code>loneElement</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def collectingNatureOfString: Collecting[Char, String] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def collectingNatureOfString: Collecting[Char, String] = 
     new Collecting[Char, String] {
       def loneElementOf(string: String): Option[Char] = {
         if (string.size == 1) Some(string.head) else None
@@ -128,15 +161,27 @@ object Collecting {
       def sizeOf(string: String): Int = string.length
       def iterableFrom(collection: String): Iterable[Char] = collection.toVector
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Collecting</code> nature of <code>String</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @return <code>Collecting[Char, String]</code> that supports <code>String</code> in <code>loneElement</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Collecting[Char, String] = collectingNatureOfString
 
   /**
+   // SKIP-DOTTY-START
    * Implicit to support <code>Collecting</code> nature of <code>java.util.Collection</code>.
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY To support <code>Collecting</code> nature of <code>java.util.Collection</code>.
    *
    * @tparam E the type of the element in the <code>java.util.Collection</code>
    * @tparam JCOL any subtype of <code>java.util.Collection</code>
    * @return <code>Collecting[E, JCOL[E]]</code> that supports <code>java.util.Collection</code> in <code>loneElement</code> syntax
    */
+  // SKIP-DOTTY-START 
   implicit def collectingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]]: Collecting[E, JCOL[E]] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def collectingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]]: Collecting[E, JCOL[E]] = 
     new Collecting[E, JCOL[E]] {
       def loneElementOf(coll: JCOL[E]): Option[E] = {
         if (coll.size == 1) Some(coll.iterator.next) else None
@@ -156,17 +201,31 @@ object Collecting {
         }
       }
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Collecting</code> nature of <code>java.util.Collection</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>java.util.Collection</code>
+  //DOTTY-ONLY   * @tparam JCOL any subtype of <code>java.util.Collection</code>
+  //DOTTY-ONLY   * @return <code>Collecting[E, JCOL[E]]</code> that supports <code>java.util.Collection</code> in <code>loneElement</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [E, JCOL[e] <: java.util.Collection[e]]: Collecting[E, JCOL[E]] = collectingNatureOfJavaCollection
 
   // Wrap the extracted entry in an org.scalatest.Entry so people can call key and value methods instead of getKey and getValue
   /**
+   // SKIP-DOTTY-START 
    * Implicit to support <code>Collecting</code> nature of <code>java.util.Map</code>.
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY   * To support <code>Collecting</code> nature of <code>java.util.Map</code>.
    *
    * @tparam K the type of the key in the <code>java.util.Map</code>
    * @tparam V the type of the value in the <code>java.util.Map</code>
    * @tparam JMAP any subtype of <code>java.util.Map</code>
    * @return <code>Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]</code> that supports <code>java.util.Map</code> in <code>loneElement</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def collectingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]]: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def collectingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]]: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]] = 
     new Collecting[org.scalatest.Entry[K, V], JMAP[K, V]] {
       def loneElementOf(jmap: JMAP[K, V]): Option[org.scalatest.Entry[K, V]] = {
         if (jmap.size == 1) {
@@ -183,20 +242,43 @@ object Collecting {
         collection.entrySet.iterator.asScala.map(entry => org.scalatest.Entry(entry.getKey, entry.getValue)).toList
       }
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Collecting</code> nature of <code>java.util.Map</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @tparam K the type of the key in the <code>java.util.Map</code>
+  //DOTTY-ONLY   * @tparam V the type of the value in the <code>java.util.Map</code>
+  //DOTTY-ONLY   * @tparam JMAP any subtype of <code>java.util.Map</code>
+  //DOTTY-ONLY   * @return <code>Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]</code> that supports <code>java.util.Map</code> in <code>loneElement</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [K, V, JMAP[k, v] <: java.util.Map[k, v]]: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]] = collectingNatureOfJavaMap  
 
   /**
+   // SKIP-DOTTY-START
    * Implicit to support <code>Collecting</code> nature of <code>Every</code>.
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY   * To support <code>Collecting</code> nature of <code>Every</code>.
    *
    * @tparam E the type of the element in the <code>Every</code>
    * @tparam EVERY any subtype of <code>Every</code>
    * @return <code>Collecting[EVERY[E]]</code> that supports <code>Every</code> in <code>loneElement</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def collectingNatureOfEvery[E, EVERY[e] <: Every[e]]: Collecting[E, EVERY[E]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def collectingNatureOfEvery[E, EVERY[e] <: Every[e]]: Collecting[E, EVERY[E]] =
     new Collecting[E, EVERY[E]] {
       def loneElementOf(every: EVERY[E]): Option[E] =
         if (every.size == 1) Some(every.head) else None
       def sizeOf(every: EVERY[E]): Int = every.size
       def iterableFrom(collection: EVERY[E]): Iterable[E] = collection.toVector
     }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Collecting</code> nature of <code>Every</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>Every</code>
+  //DOTTY-ONLY   * @tparam EVERY any subtype of <code>Every</code>
+  //DOTTY-ONLY   * @return <code>Collecting[EVERY[E]]</code> that supports <code>Every</code> in <code>loneElement</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [E, EVERY[e] <: Every[e]]: Collecting[E, EVERY[E]] = collectingNatureOfEvery
 
 }
