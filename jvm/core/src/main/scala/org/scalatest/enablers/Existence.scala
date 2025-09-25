@@ -52,9 +52,20 @@ object Existence {
    * @tparam FILE any subtype of <code>java.io.File</code>
    * @return <code>Existence[FILE]</code> that supports <code>java.io.File</code> in <code>exist</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def existenceOfFile[FILE <: java.io.File]: Existence[FILE] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def existenceOfFile[FILE <: java.io.File]: Existence[FILE] =
     new Existence[FILE] {
       def exists(file: FILE): Boolean = file.exists
     }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Emptiness</code> implementation for <code>java.io.File</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @tparam FILE any subtype of <code>java.io.File</code>
+  //DOTTY-ONLY   * @return <code>Existence[FILE]</code> that supports <code>java.io.File</code> in <code>exist</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [FILE <: java.io.File]: Existence[FILE] = existenceOfFile
   
 }
