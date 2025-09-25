@@ -227,7 +227,7 @@ trait AggregatingJavaImplicits extends AggregatingImpls {
   // SKIP-DOTTY-START
   implicit def aggregatingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]](implicit equality: Equality[E]): Aggregating[JCOL[E]] =
   // SKIP-DOTTY-END
-  //DOTTY-ONLY def aggregatingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]](implicit equality: Equality[E]): Aggregating[JCOL[E]] =
+  //DOTTY-ONLY def aggregatingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]](using equality: Equality[E]): Aggregating[JCOL[E]] =
     convertEqualityToJavaCollectionAggregating(equality)
 
   /**
@@ -322,7 +322,7 @@ trait AggregatingJavaImplicits extends AggregatingImpls {
   // SKIP-DOTTY-START
   implicit def aggregatingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]](implicit equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] =
   // SKIP-DOTTY-END
-  //DOTTY-ONLY def aggregatingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]](implicit equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] =
+  //DOTTY-ONLY def aggregatingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]](using equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] =
     convertEqualityToJavaMapAggregating(equality)
 
   /**
