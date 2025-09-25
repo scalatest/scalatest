@@ -62,10 +62,22 @@ object Definition {
    * @tparam OPT any subtype of <code>Option</code>
    * @return <code>Definition[OPT[E]]</code> that supports <code>Option</code> in <code>be defined</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def definitionOfOption[E, OPT[e] <: scala.Option[e]]: Definition[OPT[E]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def definitionOfOption[E, OPT[e] <: scala.Option[e]]: Definition[OPT[E]] =
     new Definition[OPT[E]] {
       def isDefined(option: OPT[E]): Boolean = option.isDefined
     }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Definition</code> implementation for <code>scala.Option</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>Option</code>
+  //DOTTY-ONLY   * @tparam OPT any subtype of <code>Option</code>
+  //DOTTY-ONLY   * @return <code>Definition[OPT[E]]</code> that supports <code>Option</code> in <code>be defined</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [E, OPT[e] <: scala.Option[e]]: Definition[OPT[E]] = definitionOfOption
 
   import scala.language.reflectiveCalls
   
@@ -75,10 +87,20 @@ object Definition {
    * @tparam T any type that has a <code>isDefined()</code> method that returns <code>Boolean</code>
    * @return <code>Definition[T]</code> that supports <code>T</code> in <code>be defined</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def definitionOfAnyRefWithIsDefinedMethod[T <: AnyRef { def isDefined(): Boolean}]: Definition[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def definitionOfAnyRefWithIsDefinedMethod[T <: AnyRef { def isDefined(): Boolean}]: Definition[T] = 
     new Definition[T] {
       def isDefined(obj: T): Boolean = obj.isDefined()
     }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Definition</code> implementation for any arbitrary object with a <code>isDefined()</code> method that returns <code>Boolean</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @return <code>Definition[T]</code> that supports <code>T</code> in <code>be defined</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Definition[AnyRef { def isDefined(): Boolean}] = definitionOfAnyRefWithIsDefinedMethod
 
   /**
    * Provides <code>Definition</code> implementation for any arbitrary object with a <code>isDefined</code> method that returns <code>Boolean</code>
@@ -86,9 +108,20 @@ object Definition {
    * @tparam T any type that has a parameterless <code>isDefined</code> method that returns <code>Boolean</code>
    * @return <code>Definition[T]</code> that supports <code>T</code> in <code>be defined</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def definitionOfAnyRefWithParameterlessIsDefinedMethod[T <: AnyRef { def isDefined: Boolean}]: Definition[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def definitionOfAnyRefWithParameterlessIsDefinedMethod[T <: AnyRef { def isDefined: Boolean}]: Definition[T] = 
     new Definition[T] {
       def isDefined(obj: T): Boolean = obj.isDefined
     }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Definition</code> implementation for any arbitrary object with a <code>isDefined</code> method that returns <code>Boolean</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @tparam T any type that has a parameterless <code>isDefined</code> method that returns <code>Boolean</code>
+  //DOTTY-ONLY   * @return <code>Definition[T]</code> that supports <code>T</code> in <code>be defined</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [T <: AnyRef { def isDefined: Boolean}]: Definition[T] = definitionOfAnyRefWithParameterlessIsDefinedMethod
 }
 
