@@ -130,7 +130,10 @@ abstract class ExpectationPropCheckerAsserting {
 
   import PropCheckerAsserting.PropCheckerAssertingImpl
 
+  // SKIP-DOTTY-START
   implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): PropCheckerAsserting[Expectation] { type Result = Expectation } = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def assertingNatureOfExpectation(using prettifier: Prettifier): PropCheckerAsserting[Expectation] { type Result = Expectation } = {
     new PropCheckerAssertingImpl[Expectation] {
       type Result = Expectation
       def discard(result: Expectation): Boolean = result.isVacuousYes
@@ -153,6 +156,7 @@ abstract class ExpectationPropCheckerAsserting {
       }
     }
   }
+  //DOTTY-ONLY given given_assertingNatureOfExpectation(using prettifier: Prettifier): PropCheckerAsserting[Expectation] { type Result = Expectation } = assertingNatureOfExpectation(using prettifier)
 }
 
 object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
@@ -2192,7 +2196,10 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
 
   }
 
+  // SKIP-DOTTY-START
   implicit def assertingNatureOfAssertion: PropCheckerAsserting[Assertion] { type Result = Assertion } = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def assertingNatureOfAssertion: PropCheckerAsserting[Assertion] { type Result = Assertion } = { 
     new PropCheckerAssertingImpl[Assertion] {
       type Result = Assertion
       def discard(result: Assertion): Boolean = false
@@ -2212,8 +2219,12 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       }
     }
   }
+  //DOTTY-ONLY given given_assertingNatureOfAssertion: PropCheckerAsserting[Assertion] { type Result = Assertion } = assertingNatureOfAssertion
 
+  // SKIP-DOTTY-START
   implicit def assertingNatureOfFutureAssertion(implicit exeCtx: scala.concurrent.ExecutionContext): PropCheckerAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def assertingNatureOfFutureAssertion(using exeCtx: scala.concurrent.ExecutionContext): PropCheckerAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
     new FuturePropCheckerAssertingImpl[Assertion] {
       implicit val executionContext = exeCtx
       def discard(result: Assertion): Boolean = false
@@ -2233,6 +2244,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       }
     }
   }
+  //DOTTY-ONLY given given_assertingNatureOfFutureAssertion(using exeCtx: scala.concurrent.ExecutionContext): PropCheckerAsserting[Future[Assertion]] { type Result = Future[Assertion] } = assertingNatureOfFutureAssertion(using exeCtx)
 
   private[enablers] def argsAndLabels(result: PropertyCheckResult): (List[PropertyArgument], List[String]) = {
 
