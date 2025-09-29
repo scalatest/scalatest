@@ -126,12 +126,36 @@ trait PropCheckerAsserting[T] {
 
 }
 
-/**
-  * Class holding the lowest priority <code>CheckerAsserting</code> implicit, which enables [[org.scalatest.prop.GeneratorDrivenPropertyChecks GeneratorDrivenPropertyChecks]] expressions that have result type <code>Unit</code>.
-  */
-abstract class UnitPropCheckerAsserting {
+abstract class ExpectationPropCheckerAsserting {
 
-  import PropCheckerAsserting._
+  import PropCheckerAsserting.PropCheckerAssertingImpl
+
+  implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): PropCheckerAsserting[Expectation] { type Result = Expectation } = {
+    new PropCheckerAssertingImpl[Expectation] {
+      type Result = Expectation
+      def discard(result: Expectation): Boolean = result.isVacuousYes
+      def succeed(result: Expectation): (Boolean, Option[Throwable]) = (result.isYes, result.cause)
+      private[scalatest] def indicateSuccess(message: => String): Expectation = Fact.Yes(message, prettifier)
+      private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Expectation = {
+        val gdpcfe =
+          new GeneratorDrivenPropertyCheckFailedException(
+            messageFun,
+            optionalCause,
+            pos,
+            None,
+            undecoratedMessage,
+            scalaCheckArgs,
+            None,
+            scalaCheckLabels.toList
+          )
+        val message: String = gdpcfe.getMessage
+        Fact.No(message, prettifier)
+      }
+    }
+  }
+}
+
+object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
 
   abstract class PropCheckerAssertingImpl[T] extends PropCheckerAsserting[T] {
 
@@ -915,12 +939,6 @@ abstract class UnitPropCheckerAsserting {
     private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Result
 
   }
-
-}
-
-trait FuturePropCheckerAsserting {
-
-  import PropCheckerAsserting._
 
   abstract class FuturePropCheckerAssertingImpl[T] extends PropCheckerAsserting[Future[T]] {
 
@@ -2173,37 +2191,6 @@ trait FuturePropCheckerAsserting {
     private[scalatest] def indicateFutureFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Assertion
 
   }
-
-}
-
-abstract class ExpectationPropCheckerAsserting extends UnitPropCheckerAsserting {
-
-  implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): PropCheckerAsserting[Expectation] { type Result = Expectation } = {
-    new PropCheckerAssertingImpl[Expectation] {
-      type Result = Expectation
-      def discard(result: Expectation): Boolean = result.isVacuousYes
-      def succeed(result: Expectation): (Boolean, Option[Throwable]) = (result.isYes, result.cause)
-      private[scalatest] def indicateSuccess(message: => String): Expectation = Fact.Yes(message, prettifier)
-      private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Expectation = {
-        val gdpcfe =
-          new GeneratorDrivenPropertyCheckFailedException(
-            messageFun,
-            optionalCause,
-            pos,
-            None,
-            undecoratedMessage,
-            scalaCheckArgs,
-            None,
-            scalaCheckLabels.toList
-          )
-        val message: String = gdpcfe.getMessage
-        Fact.No(message, prettifier)
-      }
-    }
-  }
-}
-
-object PropCheckerAsserting extends ExpectationPropCheckerAsserting with FuturePropCheckerAsserting {
 
   implicit def assertingNatureOfAssertion: PropCheckerAsserting[Assertion] { type Result = Assertion } = {
     new PropCheckerAssertingImpl[Assertion] {
