@@ -126,10 +126,14 @@ object Length {
    * @tparam JLIST any subtype of <code>java.util.List</code>
    * @return <code>Length[JLIST]</code> that supports <code>java.util.List</code> in <code>have length</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def lengthOfJavaList[JLIST <: java.util.List[_]]: Length[JLIST] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def lengthOfJavaList[JLIST <: java.util.List[_]]: Length[JLIST] = 
     new Length[JLIST] {
       def lengthOf(javaList: JLIST): Long = javaList.size
     }
+  //DOTTY-ONLY given [JLIST <: java.util.List[_]]: Length[JLIST] = lengthOfJavaList
 
   /**
    * Enable <code>Length</code> implementation for <code>scala.collection.GenSeq</code>
@@ -137,10 +141,14 @@ object Length {
    * @tparam SEQ any subtype of <code>scala.collection.GenSeq</code>
    * @return <code>Length[SEQ]</code> that supports <code>scala.collection.GenSeq</code> in <code>have length</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def lengthOfGenSeq[SEQ <: scala.collection.GenSeq[_]]: Length[SEQ] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def lengthOfGenSeq[SEQ <: scala.collection.GenSeq[_]]: Length[SEQ] = 
     new Length[SEQ] {
       def lengthOf(seq: SEQ): Long = seq.length
     }
+  //DOTTY-ONLY given [SEQ <: scala.collection.GenSeq[_]]: Length[SEQ] = lengthOfGenSeq
 
   /**
    * Enable <code>Length</code> implementation for <code>Array</code>
@@ -148,20 +156,28 @@ object Length {
    * @tparam E the type of the element in the <code>Array</code>
    * @return <code>Length[Array[E]]</code> that supports <code>Array</code> in <code>have length</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def lengthOfArray[E]: Length[Array[E]] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def lengthOfArray[E]: Length[Array[E]] = 
     new Length[Array[E]] {
       def lengthOf(arr: Array[E]): Long = arr.length
     }
+  //DOTTY-ONLY given [E]: Length[Array[E]] = lengthOfArray
 
   /**
    * Enable <code>Length</code> implementation for <code>String</code>
    *
    * @return <code>Length[String]</code> that supports <code>String</code> in <code>have length</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit val lengthOfString: Length[String] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def lengthOfString: Length[String] = 
     new Length[String] {
       def lengthOf(str: String): Long = str.length
     }
+  //DOTTY-ONLY given Length[String] = lengthOfString
 
   import scala.language.reflectiveCalls
 
@@ -171,10 +187,14 @@ object Length {
    * @tparam T any type with <code>length()</code> method that returns <code>Int</code>
    * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def lengthOfAnyRefWithLengthMethodForInt[T <: AnyRef { def length(): Int}]: Length[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def lengthOfAnyRefWithLengthMethodForInt[T <: AnyRef { def length(): Int}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.length()
     }
+  //DOTTY-ONLY given given_lengthOfAnyRefWithLengthMethodForInt [T <: AnyRef { def length(): Int}]: Length[T] = lengthOfAnyRefWithLengthMethodForInt  
 
   /**
    * Enable <code>Length</code> implementation for arbitary object with parameterless <code>length</code> method that returns <code>Int</code>.
@@ -182,10 +202,14 @@ object Length {
    * @tparam T any type with parameterless <code>length</code> method that returns <code>Int</code>
    * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def lengthOfAnyRefWithParameterlessLengthMethodForInt[T <: AnyRef { def length: Int}]: Length[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def lengthOfAnyRefWithParameterlessLengthMethodForInt[T <: AnyRef { def length: Int}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.length
     }
+  //DOTTY-ONLY given given_lengthOfAnyRefWithParameterlessLengthMethodForInt[T <: AnyRef { def length: Int}]: Length[T] = lengthOfAnyRefWithParameterlessLengthMethodForInt  
 
   /**
    * Enable <code>Length</code> implementation for arbitary object with <code>getLength()</code> method that returns <code>Int</code>.
@@ -193,10 +217,14 @@ object Length {
    * @tparam T any type with <code>getLength()</code> method that returns <code>Int</code>
    * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def lengthOfAnyRefWithGetLengthMethodForInt[T <: AnyRef { def getLength(): Int}]: Length[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def lengthOfAnyRefWithGetLengthMethodForInt[T <: AnyRef { def getLength(): Int}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.getLength()
     }
+  //DOTTY-ONLY given given_lengthOfAnyRefWithGetLengthMethodForInt[T <: AnyRef { def getLength(): Int}]: Length[T] = lengthOfAnyRefWithGetLengthMethodForInt
 
   /**
    * Enable <code>Length</code> implementation for arbitary object with parameterless <code>getLength</code> method that returns <code>Int</code>.
@@ -204,10 +232,14 @@ object Length {
    * @tparam T any type with parameterless <code>getLength</code> method that returns <code>Int</code>
    * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def lengthOfAnyRefWithParameterlessGetLengthMethodForInt[T <: AnyRef { def getLength: Int}]: Length[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def lengthOfAnyRefWithParameterlessGetLengthMethodForInt[T <: AnyRef { def getLength: Int}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.getLength
     }
+  //DOTTY-ONLY given given_lengthOfAnyRefWithParameterlessGetLengthMethodForInt[T <: AnyRef { def getLength: Int}]: Length[T] = lengthOfAnyRefWithParameterlessGetLengthMethodForInt  
 
   /**
    * Enable <code>Length</code> implementation for arbitary object with <code>length()</code> method that returns <code>Long</code>.
@@ -215,10 +247,14 @@ object Length {
    * @tparam T any type with <code>length()</code> method that returns <code>Long</code>
    * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def lengthOfAnyRefWithLengthMethodForLong[T <: AnyRef { def length(): Long}]: Length[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def lengthOfAnyRefWithLengthMethodForLong[T <: AnyRef { def length(): Long}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.length()
     }
+  //DOTTY-ONLY given given_lengthOfAnyRefWithLengthMethodForLong[T <: AnyRef { def length(): Long}]: Length[T] = lengthOfAnyRefWithLengthMethodForLong  
 
   /**
    * Enable <code>Length</code> implementation for arbitary object with parameterless <code>length</code> method that returns <code>Long</code>.
@@ -226,10 +262,14 @@ object Length {
    * @tparam T any type with parameterless <code>length</code> method that returns <code>Long</code>
    * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def lengthOfAnyRefWithParameterlessLengthMethodForLong[T <: AnyRef { def length: Long}]: Length[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def lengthOfAnyRefWithParameterlessLengthMethodForLong[T <: AnyRef { def length: Long}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.length
     }
+  //DOTTY-ONLY given given_lengthOfAnyRefWithParameterlessLengthMethodForLong[T <: AnyRef { def length: Long}]: Length[T] = lengthOfAnyRefWithParameterlessLengthMethodForLong  
 
   /**
    * Enable <code>Length</code> implementation for arbitary object with <code>getLength()</code> method that returns <code>Long</code>.
@@ -237,10 +277,14 @@ object Length {
    * @tparam T any type with <code>getLength()</code> method that returns <code>Long</code>
    * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def lengthOfAnyRefWithGetLengthMethodForLong[T <: AnyRef { def getLength(): Long}]: Length[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def lengthOfAnyRefWithGetLengthMethodForLong[T <: AnyRef { def getLength(): Long}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.getLength()
     }
+  //DOTTY-ONLY given given_lengthOfAnyRefWithGetLengthMethodForLong[T <: AnyRef { def getLength(): Long}]: Length[T] = lengthOfAnyRefWithGetLengthMethodForLong
 
   /**
    * Enable <code>Length</code> implementation for arbitary object with parameterless <code>getLength</code> method that returns <code>Long</code>.
@@ -248,9 +292,13 @@ object Length {
    * @tparam T any type with parameterless <code>getLength</code> method that returns <code>Long</code>
    * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def lengthOfAnyRefWithParameterlessGetLengthMethodForLong[T <: AnyRef { def getLength: Long}]: Length[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def lengthOfAnyRefWithParameterlessGetLengthMethodForLong[T <: AnyRef { def getLength: Long}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.getLength
     }
+  //DOTTY-ONLY given given_lengthOfAnyRefWithParameterlessGetLengthMethodForLong[T <: AnyRef { def getLength: Long}]: Length[T] = lengthOfAnyRefWithParameterlessGetLengthMethodForLong  
 }
 
