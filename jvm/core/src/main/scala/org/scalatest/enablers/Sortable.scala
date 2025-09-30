@@ -77,7 +77,10 @@ object Sortable {
    * @tparam SEQ any subtype of <code>scala.collection.GenSeq</code>
    * @return <code>Sortable[SEQ[E]]</code> that supports <code>scala.collection.GenSeq</code> in <code>be</code> <code>sortable</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def sortableNatureOfSeq[E, SEQ[e] <: scala.collection.GenSeq[e]](implicit ordering: Ordering[E]): Sortable[SEQ[E]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def sortableNatureOfSeq[E, SEQ[e] <: scala.collection.GenSeq[e]](using ordering: Ordering[E]): Sortable[SEQ[E]] =
     new Sortable[SEQ[E]] {
       def isSorted(o: SEQ[E]): Boolean =
         if (o.size > 1)
@@ -85,6 +88,7 @@ object Sortable {
         else
           true
     }
+  //DOTTY-ONLY given given_sortableNatureOfSeq[E, SEQ[e] <: scala.collection.GenSeq[e]](using ordering: Ordering[E]): Sortable[SEQ[E]] = sortableNatureOfSeq(using ordering)  
 
   /**
    * Enable <code>Sortable</code> implementation for <code>Array</code>
@@ -93,7 +97,10 @@ object Sortable {
    * @tparam E type of elements in the <code>Array</code>
    * @return <code>Sortable[Array[E]]</code> that supports <code>Array</code> in <code>be</code> <code>sortable</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def sortableNatureOfArray[E](implicit ordering: Ordering[E]): Sortable[Array[E]] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def sortableNatureOfArray[E](using ordering: Ordering[E]): Sortable[Array[E]] = 
     new Sortable[Array[E]] {
       def isSorted(o: Array[E]): Boolean =
         if (o.length > 1)
@@ -101,6 +108,7 @@ object Sortable {
         else
           true
     }
+  //DOTTY-ONLY given given_sortableNatureOfArray[E](using ordering: Ordering[E]): Sortable[Array[E]] = sortableNatureOfArray(using ordering)  
 
   /**
    * Enable <code>Sortable</code> implementation for <code>String</code>
@@ -108,7 +116,10 @@ object Sortable {
    * @param ordering <code>scala.math.Ordering</code></a> of type <code>Char</code>
    * @return <code>Sortable[String]</code> that supports <code>String</code> in <code>be</code> <code>sortable</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def sortableNatureOfString(implicit ordering: Ordering[Char]): Sortable[String] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def sortableNatureOfString(using ordering: Ordering[Char]): Sortable[String] = 
     new Sortable[String] {
       def isSorted(o: String): Boolean =
         if (o.length > 1)
@@ -116,6 +127,7 @@ object Sortable {
         else
           true
     }
+  //DOTTY-ONLY given given_sortableNatureOfString(using ordering: Ordering[Char]): Sortable[String] = sortableNatureOfString(using ordering)  
 
   /**
    * Enable <code>Sortable</code> implementation for <code>java.util.List</code>
@@ -125,7 +137,10 @@ object Sortable {
    * @tparam JLIST any subtype of <code>java.util.List</code>
    * @return <code>Sortable[JLIST[E]]</code> that supports <code>java.util.List</code> in <code>be</code> <code>sortable</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def sortableNatureOfJavaList[E, JLIST[e] <: java.util.List[e]](implicit ordering: Ordering[E]): Sortable[JLIST[E]] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def sortableNatureOfJavaList[E, JLIST[e] <: java.util.List[e]](using ordering: Ordering[E]): Sortable[JLIST[E]] = 
     new Sortable[JLIST[E]] {
       def isSorted(o: JLIST[E]): Boolean =
         if (o.size > 1)
@@ -133,5 +148,6 @@ object Sortable {
         else
           true
     }
+  //DOTTY-ONLY given given_sortableNatureOfJavaList[E, JLIST[e] <: java.util.List[e]](using ordering: Ordering[E]): Sortable[JLIST[E]] = sortableNatureOfJavaList(using ordering)  
 }
 
