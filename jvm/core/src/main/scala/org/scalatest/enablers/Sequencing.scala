@@ -923,7 +923,10 @@ object Sequencing {
   //DOTTY-ONLY }
 
   /**
+   // SKIP-DOTTY-START
    * Implicit to support <code>Sequencing</code> nature of <code>Every</code>.
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * To support <code>Sequencing</code> nature of <code>Every</code>.
    *
    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Every</code>
    * @tparam E the type of the element in the <code>Every</code>
@@ -936,7 +939,10 @@ object Sequencing {
     convertEqualityToEverySequencing(equality)
 
   /**
+   // SKIP-DOTTY-START
    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * Converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * into <code>Sequencing</code> of type <code>Every[E]</code>.
    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
