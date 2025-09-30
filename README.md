@@ -1,7 +1,7 @@
 ScalaTest
 =========
 
-[![Build Status](https://travis-ci.org/scalatest/scalatest.png?branch=3.1.x)](https://travis-ci.org/scalatest/scalatest)
+![Build Status](https://github.com/scalatest/scalatest/actions/workflows/ci.yml/badge.svg)
 
 ScalaTest is a free, open-source testing toolkit for Scala and
 Java programmers.
@@ -11,7 +11,7 @@ Official Website: http://www.scalatest.org/
 💖 Support ScalaTest
 --------------------
 
-[![Sponsor ScalaTest](https://img.shields.io/badge/sponsor-scalatest-ff69b4?logo=github-sponsors)](https://github.com/sponsors/scalatest)
+![Sponsor ScalaTest](https://img.shields.io/badge/sponsor-scalatest-ff69b4?logo=github-sponsors)](https://github.com/sponsors/scalatest)
 
 ScalaTest has been a cornerstone of testing in the Scala ecosystem for over 17 years. It’s trusted by countless developers and teams to write expressive, flexible, and robust tests. We’ve always believed in keeping ScalaTest free and open source, but maintaining a tool used so widely takes time, care, and ongoing effort.
 
@@ -39,7 +39,7 @@ Building ScalaTest
 The followings are needed for building ScalaTest:
 
 *   JDK 8
-*   [SBT 1.3.13](https://www.scala-sbt.org/1.x/docs/Setup.html)
+*   [SBT 1.11.4](https://www.scala-sbt.org/1.x/docs/Setup.html)
 
 use the following SBT options instead:
 
@@ -51,7 +51,7 @@ This command will build and run the regular tests:
 
   `$ sbt test`
 
-To include flicker tests, you'll need to set environment variable SCALATEST_RUN_FLICKER_TESTS=true: 
+To include flicker tests, you'll need to set environment variable SCALATEST_RUN_FLICKER_TESTS=true:
 
 ```
 > export SCALATEST_RUN_FLICKER_TESTS=true
@@ -62,9 +62,9 @@ To run generated all tests, you'll need to increase maximum heap size to at leas
 
     $ rm -rf gentests
     $ sbt gentests/test
-  
-You can also run different groups generated tests separately: 
-    
+
+You can also run different groups generated tests separately:
+
     $ rm -rf gentests
     $ sbt genMustMatchersTests1/test
     $ sbt genMustMatchersTests2/test
@@ -84,7 +84,7 @@ You can also run different groups generated tests separately:
 
 What it does is simply switch to gentests project and run test.
 
-To run scala-js tests: 
+To run scala-js tests:
 
 ```
 $ sbt scalatestAppJS/clean
@@ -94,7 +94,7 @@ $ sbt scalatestTestJS/test:compile
 $ sbt scalatestTestJS/test
 ```
 
-To run scala-native tests: 
+To run scala-native tests:
 
 ```
 $ sbt -Dscalatest.skip.jdk.check=true ++2.11.12 scalatestAppNative/clean
@@ -106,7 +106,7 @@ $ sbt -Dscalatest.skip.jdk.check=true ++2.11.12 scalatestTestNative/test
 
 ### Building Examples
 
-You can build examples project using this command: 
+You can build examples project using this command:
 
   `$ sbt examples/compile`
 
@@ -237,6 +237,6 @@ Before publishing any patch release, binary compatibility with previous version 
     $ sbt ++2.13.16 scalatestShouldMatchersJS/package scalatestShouldMatchersJS/mimaReportBinaryIssues
     $ sbt ++2.13.16 scalatestMustMatchersJS/package scalatestMustMatchersJS/mimaReportBinaryIssues
 
-To publish scalatest modules for jvm, js, native and dotty, use the following commands: 
+To publish scalatest modules for jvm, js, native and dotty, use the following commands:
 
     $ ./publish.sh
