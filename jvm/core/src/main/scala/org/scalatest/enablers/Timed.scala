@@ -86,7 +86,10 @@ below:
 */
 
   /**
+   // SKIP-DOTTY-START
    * Implicit method that provides <code>Timed</code> implementation for any <code>T</code>.
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * Method that provides <code>Timed</code> implementation for any <code>T</code>.
    *
    * <p>
    * If the function completes <em>before</em> the timeout expires:
@@ -110,7 +113,10 @@ below:
    * This implementation will start a timer that when the time limit is exceeded while the passed in function <code>f</code> is still running, it will attempt to call the passed in <code>Signaler</code> to signal/interrupt the running function <code>f</code>.
    * </p>
    */
+  // SKIP-DOTTY-START
   implicit def timed[T]: Timed[T] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def timed[T]: Timed[T] =
     new Timed[T] {
       def timeoutAfter(
         timeout: Span,
@@ -155,8 +161,13 @@ below:
       }
     }
 
+  //DOTTY-ONLY given given_timed[T]: Timed[T] = timed
+
   /**
+   // SKIP-DOTTY-START
    * Implicit method that provides <code>Timed</code> implementation for any <code>Future[T]</code>.
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * Method that provides <code>Timed</code> implementation for any <code>Future[T]</code>.
    *
    * <p>
     * If the asynchronous function completes <em>before</em> the timeout expires:
@@ -180,7 +191,10 @@ below:
    * This implementation will start a timer that when the time limit is exceeded while the passed in asynchronous function <code>f</code> is still running, it will attempt to call the passed in <code>Signaler</code> to signal/interrupt the running function <code>f</code>.
    * </p>
    */
+  // SKIP-DOTTY-START
   implicit def timedFutureOf[T](implicit executionContext: ExecutionContext): Timed[Future[T]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def timedFutureOf[T](using executionContext: ExecutionContext): Timed[Future[T]] =
     new Timed[Future[T]] {
       def timeoutAfter(
                         timeout: Span,
@@ -249,6 +263,8 @@ below:
       }
     }
 
+  //DOTTY-ONLY given given_timedFutureOf[T](using executionContext: ExecutionContext): Timed[Future[T]] = timedFutureOf(using executionContext)
+
   /*
   Chee Seng: This one should catch TestCanceledException and change it into
   a Canceled. It should catch TestPendingException and change it into
@@ -284,7 +300,10 @@ below:
     * This implementation will start a timer that when the time limit is exceeded while the passed in asynchronous function <code>f</code> is still running, it will attempt to call the passed in <code>Signaler</code> to signal/interrupt the running function <code>f</code>.
     * </p>
     */
+  // SKIP-DOTTY-START
   implicit def timedFutureOutcome(implicit executionContext: ExecutionContext): Timed[FutureOutcome] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def timedFutureOutcome(using executionContext: ExecutionContext): Timed[FutureOutcome] =
     new Timed[FutureOutcome] {
       def timeoutAfter(
                         timeout: Span,
@@ -340,4 +359,6 @@ below:
         futureOutcome
       }
     }
+
+  //DOTTY-ONLY given given_timedFutureOutcome(using executionContext: ExecutionContext): Timed[FutureOutcome] = timedFutureOutcome(using executionContext)
 }
