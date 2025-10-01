@@ -238,25 +238,47 @@ trait Expectations {
    */
   def expectTypeError(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro CompileMacro.expectTypeErrorImpl
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   /**
+   // SKIP-DOTTY-START
    * Implicitly converts a boolean expression to a [[Fact]] for assertion purposes, which makes (x &gt; 0) implies expect(x &gt; -1) syntax works
+   // SKIP-DOTTY-END
+  //DOTTY-ONLY  * Converts a boolean expression to a [[Fact]] for assertion purposes, which makes (x &gt; 0) implies expect(x &gt; -1) syntax works
    *
    * @param expression the boolean expression to be evaluated
    * @param prettifier the prettifier used to pretty-print the values
    * @param pos the source position
    * @return a [[Fact]] representing the result of the assertion
-   */  
+   */
+  // SKIP-DOTTY-START    
   implicit def booleanToFact(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro ExpectationsMacro.expect
-  
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def booleanToFact(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro ExpectationsMacro.expect
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Given conversion that converts a boolean expression to a [[Fact]] for assertion purposes, which makes (x &gt; 0) implies expect(x &gt; -1) syntax works
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY given Conversion[Boolean, Fact] = booleanToFact
+
   /**
+   // SKIP-DOTTY-START
    * Implicitly converts an [[Expectation]] to an [[Assertion]].
+   // SKIP-DOTTY-END
+  //DOTTY-ONLY  * Converts an [[Expectation]] to an [[Assertion]].
    *
    * @param exp the expectation to be converted
    * @return an [[Assertion]] representing the result of the expectation
    */
+  // SKIP-DOTTY-END 
   implicit def convertExpectationToAssertion(exp: Expectation): Assertion = exp.toAssertion
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertExpectationToAssertion(exp: Expectation): Assertion = exp.toAssertion
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Given conversion that converts an [[Expectation]] to an [[Assertion]].
+  //DOTTY-ONLY  */  
+  //DOTTY-ONLY given Conversion[Expectation, Assertion] = convertExpectationToAssertion
 }
 
 
