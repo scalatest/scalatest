@@ -477,7 +477,10 @@ trait FixtureAnyFeatureSpecLike extends org.scalatest.FixtureTestSuite with Info
   // SKIP-DOTTY-END
 
   /**
+  // SKIP-DOTTY-START
    * Implicitly converts a function that takes no parameters and results in <code>PendingStatement</code> to
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY * Converts a function that takes no parameters and results in <code>PendingStatement</code> to
    * a function from <code>FixtureParam</code> to <code>Any</code>, to enable pending tests to registered as by-name parameters
    * by methods that require a test function that takes a <code>FixtureParam</code>.
    *
