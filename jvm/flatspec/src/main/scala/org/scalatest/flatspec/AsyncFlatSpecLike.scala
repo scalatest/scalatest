@@ -1568,12 +1568,63 @@ import resultOfStringPassedToVerb.verb
   import scala.language.implicitConversions
 
   /**
+  // SKIP-DOTTY-START
    * Implicitly converts an object of type <code>ResultOfStringPassedToVerb</code> to an
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY  * Converts an object of type <code>ResultOfStringPassedToVerb</code> to an
    * <code>InAndIgnoreMethods</code>, to enable <code>in</code> and <code>ignore</code>
    * methods to be invokable on that object.
    */
+  // SKIP-DOTTY-START 
   protected implicit def convertToInAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb): InAndIgnoreMethods =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY protected def convertToInAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb): InAndIgnoreMethods =
     new InAndIgnoreMethods(resultOfStringPassedToVerb)
+  
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for `ResultOfStringPassedToVerb` providing `in` and `ignore` for Dotty.
+  //DOTTY-ONLY  * Enables syntax like `"A Stack" must "pop values" in { ... }` and `"A Stack" must "pop values" ignore { ... }`.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension (resultOfStringPassedToVerb: ResultOfStringPassedToVerb) {
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports the registration of tagged tests in shorthand form.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack" must "pop values in last-in-first-out order" taggedAs(SlowTest) in { ... }
+  //DOTTY-ONLY    *                                                                           ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For examples of tagged test registration, see the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def in(testFun: => Future[compatible.Assertion]): Unit = convertToInAndIgnoreMethods(resultOfStringPassedToVerb).in(testFun)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports the registration of tagged, ignored tests in shorthand form.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack" must "pop values in last-in-first-out order" taggedAs(SlowTest) ignore { ... }
+  //DOTTY-ONLY    *                                                                           ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For examples of ignored test registration, see the <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
+  //DOTTY-ONLY    * For examples of tagged test registration, see the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def ignore(testFun: => Future[compatible.Assertion]): Unit = convertToInAndIgnoreMethods(resultOfStringPassedToVerb).ignore(testFun)
+  //DOTTY-ONLY }
 
   /**
    * Class that supports tagged test registration in shorthand form.
@@ -1676,12 +1727,63 @@ import resultOfStringPassedToVerb.verb
   }
 
   /**
+  // SKIP-DOTTY-START
    * Implicitly converts an object of type <code>ResultOfTaggedAsInvocation</code> to an
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY  * Converts an object of type <code>ResultOfTaggedAsInvocation</code> to an
    * <code>InAndIgnoreMethodsAfterTaggedAs</code>, to enable <code>in</code> and <code>ignore</code>
    * methods to be invokable on that object.
    */
+  // SKIP-DOTTY-START
   protected implicit def convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation): InAndIgnoreMethodsAfterTaggedAs =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY protected def convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation): InAndIgnoreMethodsAfterTaggedAs =
     new InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for `ResultOfTaggedAsInvocation` providing `in` and `ignore` for Dotty.
+  //DOTTY-ONLY  * Enables syntax like `"A Stack" must "pop values" taggedAs(SlowTest) in { ... }` and `"A Stack" must "pop values" taggedAs(SlowTest) ignore { ... }`.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension (resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation) {
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY    * Supports the registration of tagged tests in shorthand form.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack" must "pop values in last-in-first-out order" taggedAs(SlowTest) in { ... }
+  //DOTTY-ONLY    *                                                                           ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For examples of tagged test registration, see the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def in(testFun: => Future[compatible.Assertion]): Unit = convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).in(testFun)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY    * Supports the registration of tagged, ignored tests in shorthand form.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack" must "pop values in last-in-first-out order" taggedAs(SlowTest) ignore { ... }
+  //DOTTY-ONLY    *                                                                           ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For examples of ignored test registration, see the <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
+  //DOTTY-ONLY    * For examples of tagged test registration, see the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def ignore(testFun: => Future[compatible.Assertion]): Unit = convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).ignore(testFun)
+  //DOTTY-ONLY }
 
   /**
    * Supports the shorthand form of test registration.
