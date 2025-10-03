@@ -1798,7 +1798,10 @@ import resultOfStringPassedToVerb.verb
    * the function, respectively).
    * </p>
    */
+  // SKIP-DOTTY-START 
   protected implicit val shorthandTestRegistrationFunction: StringVerbStringInvocation =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY  protected val shorthandTestRegistrationFunction: StringVerbStringInvocation =
     new StringVerbStringInvocation {
       def apply(subject: String, verb: String, rest: String, pos: source.Position): ResultOfStringPassedToVerb = {
         // SKIP-SCALATESTJS,NATIVE-START
@@ -1828,6 +1831,7 @@ import resultOfStringPassedToVerb.verb
         }
       }
     }
+  //DOTTY-ONLY given StringVerbStringInvocation = shorthandTestRegistrationFunction  
 
   /**
    * Supports the shorthand form of shared test registration.
@@ -1849,13 +1853,17 @@ import resultOfStringPassedToVerb.verb
    * subject description (the  parameter to the function) and returns a <code>BehaveWord</code>.
    * </p>
    */
+  // SKIP-DOTTY-START
   protected implicit val shorthandSharedTestRegistrationFunction: StringVerbBehaveLikeInvocation =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY protected val shorthandSharedTestRegistrationFunction: StringVerbBehaveLikeInvocation =
     new StringVerbBehaveLikeInvocation {
       def apply(subject: String, pos: source.Position): BehaveWord = {
         registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, "AnyFlatSpecLike.scala", "apply", 5, 0, Some(pos))
         new BehaveWord
       }
     }
+  //DOTTY-ONLY given StringVerbBehaveLikeInvocation = shorthandSharedTestRegistrationFunction  
 
 // TODO: I got a:
 // runsuite:
