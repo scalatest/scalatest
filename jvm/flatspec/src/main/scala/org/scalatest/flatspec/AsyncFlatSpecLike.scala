@@ -1565,7 +1565,9 @@ import resultOfStringPassedToVerb.verb
     //DOTTY-ONLY }
   }
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   /**
   // SKIP-DOTTY-START

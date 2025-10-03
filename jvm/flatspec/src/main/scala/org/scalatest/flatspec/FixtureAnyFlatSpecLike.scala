@@ -2056,17 +2056,112 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
     //DOTTY-ONLY }
   }
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   /**
+  // SKIP-DOTTY-START
    * Implicitly converts an object of type <code>ResultOfStringPassedToVerb</code> to an
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY  * Converts an object of type <code>ResultOfStringPassedToVerb</code> to an 
    * <code>InAndIgnoreMethods</code>, to enable <code>in</code> and <code>ignore</code>
    * methods to be invokable on that object.
    *
    * @param resultOfStringPassedToVerb an <code>ResultOfStringPassedToVerb</code> instance
    */
+  // SKIP-DOTTY-START
   protected implicit def convertToInAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb): InAndIgnoreMethods =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY protected def convertToInAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb): InAndIgnoreMethods =
     new InAndIgnoreMethods(resultOfStringPassedToVerb)
+  
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for `ResultOfStringPassedToVerb` providing `in` and `ignore` for Dotty.
+  //DOTTY-ONLY  * Enables syntax like `"A Stack" must "pop values" in { () => ... }` and `"A Stack" must "pop values" ignore { () => ... }`.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension (resultOfStringPassedToVerb: ResultOfStringPassedToVerb) {
+  //DOTTY-ONLY  /**
+  //DOTTY-ONLY    * Supports the registration of no-arg tests in shorthand form.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack" must "pop values in last-in-first-out order" in { () => ... }
+  //DOTTY-ONLY    *                                                        ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For examples of test registration, see the <a href="FixtureAnyFlatSpec.html">main documentation</a>
+  //DOTTY-ONLY    * for trait <code>FixtureAnyFlatSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param testFun the test function
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def in(testFun: () => Any /* Assertion */): Unit = convertToInAndIgnoreMethods(resultOfStringPassedToVerb).in(testFun)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY    * Supports the registration of one-arg tests (tests that take a <code>FixtureParam</code> parameter) in shorthand form.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack" must "pop values in last-in-first-out order" in { fixture => ... }
+  //DOTTY-ONLY    *                                                        ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For examples of test registration, see the <a href="FixtureAnyFlatSpec.html">main documentation</a>
+  //DOTTY-ONLY    * for trait <code>FixtureAnyFlatSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param testFun the test function
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def in(testFun: FixtureParam => Any /* Assertion */): Unit = convertToInAndIgnoreMethods(resultOfStringPassedToVerb).in(testFun)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY    * Supports the registration of ignored, no-arg tests in shorthand form.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack" must "pop values in last-in-first-out order" ignore { () => ... }
+  //DOTTY-ONLY    *                                                        ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For examples of ignored test registration, see the <a href="AnyFlatSpec.html#IgnoredTests">Ignored tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AnyFlatSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param testFun the test function
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def ignore(testFun: () => Any /* Assertion */): Unit = convertToInAndIgnoreMethods(resultOfStringPassedToVerb).ignore(testFun)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY    * Supports the registration of ignored, one-arg tests (tests that take a <code>FixtureParam</code> parameter) in shorthand form.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack" must "pop values in last-in-first-out order" ignore { fixture => ... }
+  //DOTTY-ONLY    *                                                        ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For examples of ignored test registration, see the <a href="AnyFlatSpec.html#IgnoredTests">Ignored tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AnyFlatSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param testFun the test function
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = convertToInAndIgnoreMethods(resultOfStringPassedToVerb).ignore(testFun)
+  //DOTTY-ONLY }
 
   /**
    * Class that supports tagged test registration in shorthand form.
@@ -2248,8 +2343,109 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
    *
    * @param resultOfTaggedAsInvocation an <code>ResultOfTaggedAsInvocation</code> instance
    */
+  /**
+  // SKIP-DOTTY-START
+   * Implicitly converts an object of type `ResultOfTaggedAsInvocation` to an
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY  * Converts an object of type `ResultOfTaggedAsInvocation` to an  
+   * `InAndIgnoreMethodsAfterTaggedAs`, to enable `in` and `ignore` methods to be invokable on that object.
+   */
+  // SKIP-DOTTY-START
   protected implicit def convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation): InAndIgnoreMethodsAfterTaggedAs =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY protected def convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation): InAndIgnoreMethodsAfterTaggedAs =
     new InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for `ResultOfTaggedAsInvocation` providing `in` and `ignore` for Dotty.
+  //DOTTY-ONLY  * Enables syntax like `"A Stack" must "pop values" taggedAs(SlowTest) in { ... }` and `"A Stack" must "pop values" taggedAs(SlowTest) ignore { ... }`.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension (resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation) {
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports the registration of tagged, no-arg tests in shorthand form.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack" must "pop values in last-in-first-out order" taggedAs(SlowTest) in { () => ... }
+  //DOTTY-ONLY    *                                                                           ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For examples of tagged test registration, see the <a href="AnyFlatSpec.html#TaggingTests">Tagging tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AnyFlatSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param testFun the test function
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def in(testFun: () => Any /* Assertion */): Unit = convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).in(testFun)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports the registration of tagged, one-arg tests (tests that take a <code>FixtureParam</code> parameter) in shorthand form.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack" must "pop values in last-in-first-out order" taggedAs(SlowTest) in { fixture => ... }
+  //DOTTY-ONLY    *                                                                           ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For examples of tagged test registration, see the <a href="AnyFlatSpec.html#TaggingTests">Tagging tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AnyFlatSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param testFun the test function
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def in(testFun: FixtureParam => Any /* Assertion */): Unit = convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).in(testFun)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports the registration of tagged, ignored, no-arg tests in shorthand form.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack" must "pop values in last-in-first-out order" taggedAs(SlowTest) ignore { () => ... }
+  //DOTTY-ONLY    *                                                                           ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For examples of ignored test registration, see the <a href="AnyFlatSpec.html#IgnoredTests">Ignored tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AnyFlatSpec</code>.
+  //DOTTY-ONLY    * For examples of tagged test registration, see the <a href="AnyFlatSpec.html#TaggingTests">Tagging tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AnyFlatSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param testFun the test function
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def ignore(testFun: () => Any /* Assertion */): Unit = convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).ignore(testFun)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports the registration of tagged, ignored, one-arg tests (tests that take a <code>FixtureParam</code> parameter) in shorthand form.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack" must "pop values in last-in-first-out order" taggedAs(SlowTest) ignore { fixture => ... }
+  //DOTTY-ONLY    *                                                                           ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For examples of ignored test registration, see the <a href="AnyFlatSpec.html#IgnoredTests">Ignored tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AnyFlatSpec</code>.
+  //DOTTY-ONLY    * For examples of tagged test registration, see the <a href="AnyFlatSpec.html#TaggingTests">Tagging tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AnyFlatSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param testFun the test function
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).ignore(testFun)
+  //DOTTY-ONLY }
 
   /**
    * Supports the shorthand form of test registration.
@@ -2273,7 +2469,10 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
    * the function, respectively).
    * </p>
    */
+  // SKIP-DOTTY-START 
   protected implicit val shorthandTestRegistrationFunction: StringVerbStringInvocation =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY protected val shorthandTestRegistrationFunction: StringVerbStringInvocation =
     new StringVerbStringInvocation {
       def apply(subject: String, verb: String, rest: String, pos: source.Position): ResultOfStringPassedToVerb = {
         // SKIP-SCALATESTJS,NATIVE-START
@@ -2300,6 +2499,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
         }
       }
     }
+  //DOTTY-ONLY given StringVerbStringInvocation = shorthandTestRegistrationFunction
 
   // TODO: Get rid of unusedfixture, and use NoArgTestFunction instead
 
@@ -2323,14 +2523,18 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
    * subject description (the  parameter to the function) and returns a <code>BehaveWord</code>.
    * </p>
    */
+  // SKIP-DOTTY-START 
   protected implicit val shorthandSharedTestRegistrationFunction: StringVerbBehaveLikeInvocation =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY protected val shorthandSharedTestRegistrationFunction: StringVerbBehaveLikeInvocation =
     new StringVerbBehaveLikeInvocation {
       def apply(subject: String, pos: source.Position): BehaveWord = {
         registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", 5, 0, Some(pos))
         new BehaveWord
       }
     }
-
+  //DOTTY-ONLY given StringVerbBehaveLikeInvocation = shorthandSharedTestRegistrationFunction
+  
   /**
    * Register a test to ignore, which has the given spec text, optional tags, and test function value that takes no arguments.
    * This method will register the test for later ignoring via an invocation of one of the <code>execute</code>
