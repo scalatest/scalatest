@@ -493,7 +493,7 @@ object Sequencing {
   implicit def sequencingNatureOfArray[E](implicit equality: Equality[E]): Sequencing[Array[E]] = 
   // SKIP-DOTTY-END
   //DOTTY-ONLY def sequencingNatureOfArray[E](implicit equality: Equality[E]): Sequencing[Array[E]] = 
-    sequencingNatureOfArray(equality)
+    convertEqualityToArraySequencing(equality)
 
   /**
    // SKIP-DOTTY-START
