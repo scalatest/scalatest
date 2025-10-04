@@ -163,9 +163,9 @@ import org.scalatest.exceptions._
  * </p>
  *
  * <pre class="stHighlight">
- * val users = List.empty[User]
- * val fact = expect(users.nonEmpty) && expect(users.head.age &gt; 0)
- * // fact.isNo is true, but users.head.age is never evaluated
+ * val nums = List.empty[Int]
+ * val fact = expect(nums.nonEmpty) && expect(nums.head &gt; 0)
+ * // fact.isNo is true, but nums.head was never evaluated
  * </pre>
  *
  * <a name="implication"></a>
@@ -185,7 +185,7 @@ import org.scalatest.exceptions._
  * def checkUser(user: User): Fact = {
  *   val isPremium = expect(user.tier == "premium")
  *   val hasAdvancedFeatures = expect(user.features.contains("advanced"))
- *   isPremium.implies(hasAdvancedFeatures)
+ *   isPremium implies hasAdvancedFeatures
  * }
  * </pre>
  *
@@ -272,7 +272,7 @@ import org.scalatest.exceptions._
  *
  * <pre class="stHighlight">
  * val user = User(age = 15, tier = "basic")
- * val fact = expect(user.age &gt;= 18).implies(expect(user.canVote))
+ * val fact = expect(user.age &gt;= 18) implies expect(user.canVote)
  * fact.isYes         // true (vacuously)
  * fact.isVacuousYes  // true (because premise was false)
  * </pre>
@@ -313,7 +313,7 @@ import org.scalatest.exceptions._
  * val x = 0
  * val fact1 = expect(x == 0)
  * val fact2 = expect(x &gt;= 0 && x &lt;= 0)
- * val equiv = fact1.isEqvTo(fact2)
+ * val equiv = fact1 isEqvTo fact2
  * equiv.isYes  // true, because both facts have the same truth value
  * </pre>
  *
