@@ -1605,7 +1605,7 @@ import resultOfStringPassedToVerb.verb
   //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
   //DOTTY-ONLY    * </p>
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   inline infix def in(testFun: => Future[compatible.Assertion]): Unit = convertToInAndIgnoreMethods(resultOfStringPassedToVerb).in(testFun)
+  //DOTTY-ONLY   infix def in(testFun: => Future[compatible.Assertion]): Unit = convertToInAndIgnoreMethods(resultOfStringPassedToVerb).in(testFun)
   //DOTTY-ONLY   /**
   //DOTTY-ONLY    * Supports the registration of tagged, ignored tests in shorthand form.
   //DOTTY-ONLY    *
@@ -1625,7 +1625,7 @@ import resultOfStringPassedToVerb.verb
   //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
   //DOTTY-ONLY    * </p>
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   inline infix def ignore(testFun: => Future[compatible.Assertion]): Unit = convertToInAndIgnoreMethods(resultOfStringPassedToVerb).ignore(testFun)
+  //DOTTY-ONLY   infix def ignore(testFun: => Future[compatible.Assertion]): Unit = convertToInAndIgnoreMethods(resultOfStringPassedToVerb).ignore(testFun)
   //DOTTY-ONLY }
 
   /**
@@ -1764,7 +1764,7 @@ import resultOfStringPassedToVerb.verb
   //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
   //DOTTY-ONLY    * </p>
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   inline infix def in(testFun: => Future[compatible.Assertion]): Unit = convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).in(testFun)
+  //DOTTY-ONLY   infix def in(testFun: => Future[compatible.Assertion]): Unit = convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).in(testFun)
   //DOTTY-ONLY /**
   //DOTTY-ONLY    * Supports the registration of tagged, ignored tests in shorthand form.
   //DOTTY-ONLY    *
@@ -1784,7 +1784,7 @@ import resultOfStringPassedToVerb.verb
   //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
   //DOTTY-ONLY    * </p>
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   inline infix def ignore(testFun: => Future[compatible.Assertion]): Unit = convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).ignore(testFun)
+  //DOTTY-ONLY   infix def ignore(testFun: => Future[compatible.Assertion]): Unit = convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).ignore(testFun)
   //DOTTY-ONLY }
 
   /**
