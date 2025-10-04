@@ -471,23 +471,7 @@ import org.scalatest.exceptions._
  *
  * <p>
  * You can convert a <code>Fact</code> to a traditional ScalaTest <code>Assertion</code> by calling
- * <code>toAssertion</code>. This allows you to use <code>Fact</code>s in test methods that require
- * an <code>Assertion</code> result type.
- * </p>
- *
- * <p>
- * Here's an example:
- * </p>
- *
- * <pre class="stHighlight">
- * def testAddition(): Assertion = {
- *   val fact = expect(2 + 2 == 4)
- *   fact.toAssertion  // Returns Succeeded
- * }
- * </pre>
- *
- * <p>
- * The behavior of <code>toAssertion</code> depends on the <code>Fact</code>'s state:
+ * <code>toAssertion</code>. The behavior of <code>toAssertion</code> depends on the <code>Fact</code>'s state:
  * </p>
  *
  * <ul>
@@ -498,6 +482,36 @@ import org.scalatest.exceptions._
  * <li>If <code>isNo</code> is <code>true</code>, throws <code>TestFailedException</code> with
  *     the fact's message</li>
  * </ul>
+ *
+ * <p>
+ * This conversion will be applied implicitly if you import <code>org.scalatest.expectations.Expectations._</code>,
+ * so long as the expected test result type is <code>Assertion</code>. For example, style traits like
+ * <a href="funsuite/AnyFunSuite.html"><code>FunSuite</code></a>,
+ * <a href="funspec/AnyFunSpec.html"><code>FunSpec</code></a>, and
+ * <a href="featurespec/AnyFeatureSpec.html"><code>FeatureSpec</code></a> expect test result type
+ * <code>Assertion</code>. As a result, you need not explicitly call <code>toAssertion</code> when
+ * using expectations in these styles. Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * import org.scalatest.funsuite.FunSuite
+ * import org.scalatest.expectations.Expectations._
+ *
+ * class ExampleSuite extends FunSuite {
+ *   test("addition") {
+ *     val fact = expect(2 + 2 == 4)
+ *     // Implicit conversion to Assertion happens here
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * By contrast, style traits whose names start with <code>Any</code>, such as
+ * <a href="funsuite/AnyFunSuite.html"><code>AnyFunSuite</code></a> and
+ * <a href="featurespec/AnyFeatureSpec.html"><code>AnyFeatureSpec</code></a>, have <code>Any</code>
+ * as the expected test result type. You should use assertions or matchers with these styles, not
+ * expectations.
+ * </p>
  *
  * <p>
  * You can also convert a <code>Fact</code> to a <code>Boolean</code> by calling <code>toBoolean</code>,
