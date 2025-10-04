@@ -318,10 +318,70 @@ import org.scalatest.exceptions._
  * </pre>
  *
  * <p>
- * The <code>isEqvTo</code> method returns yes when both <code>Fact</code>s are yes <em>or</em>
- * both are no. It returns no when they have different truth values. If either <code>Fact</code>
- * is a <code>VacuousYes</code>, the result will also be a <code>VacuousYes</code> (when the
- * result would otherwise be yes).
+ * The <code>isEqvTo</code> method follows the truth table of logical equivalence:
+ * </p>
+ *
+ * <table style="border-collapse: collapse; border: 1px solid black">
+ * <tr>
+ *   <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Left
+ *   </th>
+ *   <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Right
+ *   </th>
+ *   <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Result
+ *   </th>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Yes
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Yes
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Yes (both true)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Yes
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     No
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     No (different truth values)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     No
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Yes
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     No (different truth values)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     No
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     No
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Yes (both false)
+ *   </td>
+ * </tr>
+ * </table>
+ *
+ * <p>
+ * If either <code>Fact</code> is a <code>VacuousYes</code>, the result will also be a
+ * <code>VacuousYes</code> (when the result would otherwise be yes).
  * </p>
  *
  * <a name="messages"></a>
