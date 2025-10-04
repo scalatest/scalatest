@@ -254,48 +254,9 @@ import org.scalatest.exceptions._
  * <p>
  * When the premise is no, <code>implies</code> returns a <code>VacuousYes</code> without
  * evaluating the consequent. This follows the principle of classical logic that "false implies
- * anything" (<em>ex falso quodlibet</em>).
+ * anything" (<em>ex falso quodlibet</em>). See the <a href="#vacuousYes">Vacuous Yes</a> section
+ * below for more details.
  * </p>
- *
- * <a name="vacuousYes"></a>
- * <h2>Vacuous Yes</h2>
- *
- * <p>
- * A <code>VacuousYes</code> is a special kind of yes that indicates an assertion was technically
- * true, but didn't test anything meaningful. This occurs when using <code>implies</code> with a
- * false premise, as shown in the example above.
- * </p>
- *
- * <p>
- * You can check whether a <code>Fact</code> is vacuous by calling <code>isVacuousYes</code>:
- * </p>
- *
- * <pre class="stHighlight">
- * val score = -5
- * val fact = expect(score &gt; 0) implies expect(score &lt;= 100)
- * fact.isYes         // true (vacuously)
- * fact.isVacuousYes  // true (because premise was false)
- * </pre>
- *
- * <p>
- * When converted to an <code>Assertion</code>, a <code>VacuousYes</code> throws
- * <code>TestCanceledException</code> to indicate the test was skipped because its precondition
- * wasn't met:
- * </p>
- *
- * <pre class="stHighlight">
- * fact.toAssertion  // throws TestCanceledException
- * </pre>
- *
- * <p>
- * This behavior is useful in property-based testing, where you want to distinguish between:
- * </p>
- *
- * <ul>
- * <li>Tests that passed meaningfully (Yes)</li>
- * <li>Tests that failed (No)</li>
- * <li>Tests that were skipped because preconditions weren't met (VacuousYes)</li>
- * </ul>
  *
  * <a name="equivalence"></a>
  * <h2>Equivalence</h2>
@@ -382,6 +343,134 @@ import org.scalatest.exceptions._
  * <p>
  * If either <code>Fact</code> is a <code>VacuousYes</code>, the result will also be a
  * <code>VacuousYes</code> (when the result would otherwise be yes).
+ * </p>
+ *
+ * <a name="vacuousYes"></a>
+ * <h2>Vacuous Yes</h2>
+ *
+ * <p>
+ * A <code>VacuousYes</code> is a special kind of yes that indicates an assertion was technically
+ * true, but didn't test anything meaningful. The most common way to create a <code>VacuousYes</code>
+ * is by using <code>implies</code> with a false premise. When the premise is false, the implication
+ * is vacuously true according to classical logic, following the principle of <em>ex falso quodlibet</em>
+ * ("from falsehood, anything follows").
+ * </p>
+ *
+ * <p>
+ * You can check whether a <code>Fact</code> is vacuous by calling <code>isVacuousYes</code>:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * val score = -5
+ * val fact = expect(score &gt; 0) implies expect(score &lt;= 100)
+ * fact.isYes         // true (vacuously)
+ * fact.isVacuousYes  // true (because premise was false)
+ * </pre>
+ *
+ * <p>
+ * When converted to an <code>Assertion</code>, a <code>VacuousYes</code> throws
+ * <code>TestCanceledException</code> to indicate the test was skipped because its precondition
+ * wasn't met:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * fact.toAssertion  // throws TestCanceledException
+ * </pre>
+ *
+ * <p>
+ * This behavior is useful in property-based testing, where you want to distinguish between:
+ * </p>
+ *
+ * <ul>
+ * <li>Tests that passed meaningfully (Yes)</li>
+ * <li>Tests that failed (No)</li>
+ * <li>Tests that were skipped because preconditions weren't met (VacuousYes)</li>
+ * </ul>
+ *
+ * <a name="vacuousPropagation"></a>
+ * <h3>Vacuous Yes Propagation</h3>
+ *
+ * <p>
+ * When you combine <code>Fact</code>s using logical operators, the vacuous property tends to
+ * propagate through the operations. The general rule is: <em>if the result is yes and either
+ * operand is vacuous, the result is also vacuous</em>. This ensures that vacuous truth is
+ * not hidden by subsequent operations.
+ * </p>
+ *
+ * <p>
+ * Here's how vacuous yes propagates through each operator:
+ * </p>
+ *
+ * <table style="border-collapse: collapse; border: 1px solid black">
+ * <tr>
+ *   <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Operator
+ *   </th>
+ *   <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Vacuous Propagation Rule
+ *   </th>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     <code>&&</code> or <code>&amp;</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Result is VacuousYes if result is Yes AND (left is VacuousYes OR right is VacuousYes)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     <code>||</code> or <code>|</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Result is VacuousYes if (left is VacuousYes AND right is VacuousYes) OR<br/>
+ *     (left is VacuousYes AND right is No) OR (left is No AND right is VacuousYes)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     <code>implies</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Result is VacuousYes if premise is No (regardless of consequent)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     <code>isEqvTo</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Result is VacuousYes if result is Yes AND (left is VacuousYes OR right is VacuousYes)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     <code>!</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Negation always produces a non-vacuous result
+ *   </td>
+ * </tr>
+ * </table>
+ *
+ * <p>
+ * Here's an example showing vacuous propagation:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * val x = -5
+ * val premise = expect(x &gt; 0)
+ * val consequent = expect(x &lt; 100)
+ * val implication = premise implies consequent  // VacuousYes
+ *
+ * val anotherFact = expect(true)
+ * val combined = implication && anotherFact     // Still VacuousYes!
+ * combined.isVacuousYes  // true - vacuousness propagated
+ * </pre>
+ *
+ * <p>
+ * This propagation ensures that if any part of a complex assertion was vacuously true, the
+ * overall result will be marked as vacuous, preventing false confidence in test coverage.
  * </p>
  *
  * <a name="messages"></a>
