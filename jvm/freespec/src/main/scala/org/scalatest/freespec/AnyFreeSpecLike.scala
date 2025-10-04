@@ -477,7 +477,7 @@ trait AnyFreeSpecLike extends TestSuite with Informing with Notifying with Alert
   //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="AnyFreeSpec.html">main documentation</a> for trait <code>AnyFreeSpec</code>.
   //DOTTY-ONLY    * </p>
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   def taggedAs(firstTestTag: Tag, otherTestTags: Tag*): ResultOfTaggedAsInvocationOnString = new FreeSpecStringWrapper(s, pos).taggedAs(firstTestTag, otherTestTags: _*)
+  //DOTTY-ONLY   def taggedAs(firstTestTag: Tag, otherTestTags: Tag*): ResultOfTaggedAsInvocationOnString = new FreeSpecStringWrapper(s, pos).taggedAs(firstTestTag, otherTestTags*)
   //DOTTY-ONLY }
 
   /**

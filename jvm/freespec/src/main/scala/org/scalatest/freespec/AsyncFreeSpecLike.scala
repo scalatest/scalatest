@@ -478,7 +478,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with Informing with Notifying wit
   //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="AsyncFreeSpec.html">main documentation</a> for trait <code>AsyncFreeSpec</code>.
   //DOTTY-ONLY    * </p>
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   def taggedAs(firstTestTag: Tag, otherTestTags: Tag*): ResultOfTaggedAsInvocationOnString = new FreeSpecStringWrapper(s, pos).taggedAs(firstTestTag, otherTestTags: _*)
+  //DOTTY-ONLY   def taggedAs(firstTestTag: Tag, otherTestTags: Tag*): ResultOfTaggedAsInvocationOnString = new FreeSpecStringWrapper(s, pos).taggedAs(firstTestTag, otherTestTags*)
   //DOTTY-ONLY }
 
   /**
