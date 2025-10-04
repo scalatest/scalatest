@@ -395,9 +395,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with Informing with Notifying wit
   // SKIP-DOTTY-START
   protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit pos: source.Position): FreeSpecStringWrapper = new FreeSpecStringWrapper(s, pos)
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def convertToFreeSpecStringWrapper(s: String): FreeSpecStringWrapper = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[FreeSpecStringWrapper]('{(pos: source.Position) => new FreeSpecStringWrapper(s, pos) }) } 
-  //DOTTY-ONLY }
+  //DOTTY-ONLY protected def convertToFreeSpecStringWrapper(s: String)(using pos: source.Position): FreeSpecStringWrapper = new FreeSpecStringWrapper(s, pos)
 
   /**
   //DOTTY-ONLY  * Extension methods to enable methods <code>in</code>, <code>is</code>, <code>taggedAs</code> and <code>ignore</code>,
