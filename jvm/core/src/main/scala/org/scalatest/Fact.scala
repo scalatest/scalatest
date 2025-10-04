@@ -182,10 +182,10 @@ import org.scalatest.exceptions._
  * </p>
  *
  * <pre class="stHighlight">
- * def checkUser(user: User): Fact = {
- *   val isPremium = expect(user.tier == "premium")
- *   val hasAdvancedFeatures = expect(user.features.contains("advanced"))
- *   isPremium implies hasAdvancedFeatures
+ * def validateScore(score: Int): Fact = {
+ *   val isPositive = expect(score &gt; 0)
+ *   val isReasonable = expect(score &lt;= 100)
+ *   isPositive implies isReasonable
  * }
  * </pre>
  *
@@ -271,8 +271,8 @@ import org.scalatest.exceptions._
  * </p>
  *
  * <pre class="stHighlight">
- * val user = User(age = 15, tier = "basic")
- * val fact = expect(user.age &gt;= 18) implies expect(user.canVote)
+ * val score = -5
+ * val fact = expect(score &gt; 0) implies expect(score &lt;= 100)
  * fact.isYes         // true (vacuously)
  * fact.isVacuousYes  // true (because premise was false)
  * </pre>
