@@ -981,11 +981,133 @@ object Fact {
   }
 
   /**
-   * Represents a vacuous "Yes" Fact, which is a special case of Fact where the underlying Fact is No,
-   * but it is treated as Yes without meaningful assertions.
+   * <p>
+   * Class representing a vacuously true <code>Fact</code>.
+   * </p>
    *
-   * @param underlying The underlying Fact that is treated as No but represented as Yes.
-   * @throws IllegalArgumentException if the underlying Fact's <code>isNo</code> is <code>false</code>.
+   * <p>
+   * A <code>VacuousYes</code> is a special kind of yes <code>Fact</code> that indicates an assertion
+   * was technically true, but something wasn't meaningfully tested. A <code>VacuousYes</code> has
+   * <code>isYes</code> returning <code>true</code> and <code>isVacuousYes</code> also returning
+   * <code>true</code>.
+   * </p>
+   *
+   * <a name="creation"></a>
+   * <h2>How VacuousYes is Created</h2>
+   *
+   * <p>
+   * A <code>VacuousYes</code> first comes into being when the premise of an <code>implies</code>
+   * operation is <code>No</code>. In classical logic, a false premise makes an implication
+   * vacuously true regardless of the consequent. This principle is known as
+   * <em>ex falso quodlibet</em> ("from falsehood, anything follows").
+   * </p>
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val premise = expect(score &lt; 0)      // No
+   * val consequent = expect(score &lt; 100) // Would be Yes, but won't be evaluated
+   * val result = premise implies consequent
+   *
+   * result.isYes         // true
+   * result.isVacuousYes  // true
+   * </pre>
+   *
+   * <p>
+   * In this example, because the premise (<code>score &lt; 0</code>) is <code>No</code>, the
+   * implication returns a <code>VacuousYes</code> without even evaluating the consequent. The
+   * assertion is technically true in a logical sense, but the result does not include any
+   * information from the consequent expectation.
+   * </p>
+   *
+   * <a name="propagation"></a>
+   * <h2>VacuousYes Propagation</h2>
+   *
+   * <p>
+   * Once a <code>VacuousYes</code> is created, it propagates through subsequent logical operations.
+   * If you combine a <code>VacuousYes</code> with other <code>Fact</code>s using operators like
+   * <code>&&</code>, <code>&</code>, <code>implies</code>, or <code>isEqvTo</code>, and the result
+   * would be <code>Yes</code>, it becomes <code>VacuousYes</code> instead.
+   * </p>
+   *
+   * <p>
+   * Here's an example showing propagation:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val premise = expect(score &lt; 0)        // No
+   * val implication = premise implies expect(score &lt; 100)  // VacuousYes
+   *
+   * val anotherFact = expect(score &gt; 0)    // Yes
+   * val combined = implication && anotherFact  // VacuousYes (propagated!)
+   *
+   * combined.isYes         // true
+   * combined.isVacuousYes  // true - vacuousness carried through
+   * </pre>
+   *
+   * <p>
+   * This propagation is important because it prevents false confidence in test coverage. Even though
+   * the combined fact is "yes," the <code>VacuousYes</code> marker indicates that something wasn't
+   * meaningfully tested.
+   * </p>
+   *
+   * <a name="conversion"></a>
+   * <h2>Converting to Assertion</h2>
+   *
+   * <p>
+   * When you convert a <code>VacuousYes</code> to an <code>Assertion</code> (either explicitly
+   * via <code>toAssertion</code> or implicitly in test styles that expect <code>Assertion</code>
+   * result type), it throws <code>TestCanceledException</code> rather than succeeding. This
+   * signals that the test didn't meaningfully execute.
+   * </p>
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val premise = expect(score &lt; 0)  // No
+   * val result = premise implies expect(score &lt; 100)  // VacuousYes
+   *
+   * result.toAssertion  // throws TestCanceledException
+   * </pre>
+   *
+   * <p>
+   * This behavior is particularly useful in property-based testing, where you might write:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * forAll { (n: Int) =&gt;
+   *   val isEven = n % 2 == 0
+   *   expect(isEven) implies expect(n % 4 == 0 || n % 4 == 2)
+   * }
+   * </pre>
+   *
+   * <p>
+   * For odd values of <code>n</code>, the premise is false, so the implication returns
+   * <code>VacuousYes</code>. When converted to <code>Assertion</code>, this throws
+   * <code>TestCanceledException</code>, which ScalaTest counts separately from test failures.
+   * This lets you see how many test cases were actually verified versus vacuously true.
+   * </p>
+   *
+   * <a name="implementation"></a>
+   * <h2>Implementation Details</h2>
+   *
+   * <p>
+   * A <code>VacuousYes</code> wraps an underlying <code>No</code> fact. The underlying fact's
+   * messages are preserved, which provides context about what condition was false that led to
+   * the vacuous result. You can access these messages through the standard fact message properties.
+   * </p>
+   *
+   * @param underlying the underlying <code>No</code> fact that this <code>VacuousYes</code> wraps
+   * @throws IllegalArgumentException if the underlying fact's <code>isNo</code> is <code>false</code>
+   *
+   * @author Bill Venners
    */
   class VacuousYes(underlying: Fact) extends Fact {
 
