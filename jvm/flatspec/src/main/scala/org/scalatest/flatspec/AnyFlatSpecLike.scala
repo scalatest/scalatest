@@ -1683,11 +1683,10 @@ trait AnyFlatSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
      */
     // SKIP-DOTTY-START
     def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    // SKIP-DOTTY-END  
+    //DOTTY-ONLY def in(testFun: => Any /* Assertion */)(using pos: source.Position): Unit = {
       registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, () => testFun, pos)
     }
-    // SKIP-DOTTY-END
-    //DOTTY-ONLY def in(testFun: => Any /* Assertion */)(using pos: source.Position): Unit = 
-    //DOTTY-ONLY   registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, () => testFun, pos)
 
     /**
      * Supports the registration of tagged, ignored tests in shorthand form.
