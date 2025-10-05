@@ -1202,7 +1202,9 @@ object Fact {
   }
 
   /**
-   * A companion object for the <code>VacuousYes</code> class, providing factory methods to create instances of <code>VacuousYes</code> fact.
+   * Companion object for the <code>VacuousYes</code> class, which provides a factory method to create <code>VacuousYes</code> instances.
+   *
+   * @author Bill Venners
    */
   object VacuousYes {
     /**
@@ -1216,7 +1218,8 @@ object Fact {
   }
 
   /**
-   * Companion object for the <code>No</code> case class.
+   * Object that contains factory methods for creating <code>Leaf</code> instances
+   * representing failed (no) assertions.
    *
    * @author Bill Venners
    */
@@ -1588,7 +1591,8 @@ object Fact {
   }
   
   /**
-   * Companion object for the <code>Yes</code> case class.
+   * Object that contains factory methods for creating <code>Leaf</code> instances
+   * representing successful (yes) assertions.
    *
    * @author Bill Venners
    */
@@ -2213,8 +2217,10 @@ object Fact {
   }
 
   /**
-   * Represents a binary logical AND operation between two `Fact` instances.
-   * This is a factory object used to create `Binary_&` instances.
+   * Companion object for the <code>Binary_&</code> class, which contains factory methods for creating
+   * <code>Binary_&</code> instances.
+   *
+   * @author Bill Venners
    */
   object Binary_& {
     /**
@@ -2290,8 +2296,10 @@ object Fact {
   }
 
   /**
-   * Represents a binary logical AND operation between two `Fact` instances, enforcing that the left-hand side `Fact` instance is `yes`.
-   * This is a factory object used to create `Binary_&&` instances.
+   * Companion object for the <code>Binary_&&</code> class, which contains factory methods for creating
+   * <code>Binary_&&</code> instances.
+   *
+   * @author Bill Venners
    */
   object Binary_&& {
     /**
@@ -2403,6 +2411,12 @@ object Fact {
     def modifyMessage(fun: Option[String] => Option[String]): Fact = new Binary_|(left, right, Some(fun))
   }
 
+  /**
+   * Companion object for the <code>Binary_|</code> class, which contains factory methods for creating
+   * <code>Binary_|</code> instances.
+   *
+   * @author Bill Venners
+   */
   object Binary_| {
     def apply(left: Fact, right: Fact): Fact = new Binary_|(left, right, None)
     def apply(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]): Fact = new Binary_|(left, right, messageFun)
@@ -2461,6 +2475,12 @@ object Fact {
     override def modifyMessage(fun: Option[String] => Option[String]): Fact = new Binary_||(left, right, Some(fun))
   }
 
+  /**
+   * Companion object for the <code>Binary_||</code> class, which contains factory methods for creating
+   * <code>Binary_||</code> instances.
+   *
+   * @author Bill Venners
+   */
   object Binary_|| {
     def apply(left: Fact, right: Fact): Fact = new Binary_||(left, right, None)
     def apply(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]): Fact = new Binary_||(left, right, messageFun)
@@ -2575,6 +2595,12 @@ object Fact {
     def modifyMessage(fun: Option[String] => Option[String]): Fact = new Implies(left, right, Some(fun))
   }
 
+  /**
+   * Companion object for the <code>Implies</code> class, which contains factory methods for creating
+   * <code>Implies</code> instances.
+   *
+   * @author Bill Venners
+   */
   object Implies {
     def apply(left: Fact, right: Fact): Fact = new Implies(left, right, None)
     def apply(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]): Fact = new Implies(left, right, messageFun)
@@ -2676,6 +2702,12 @@ object Fact {
     def modifyMessage(fun: Option[String] => Option[String]): Fact = new IsEqvTo(left, right, Some(fun))
   }
 
+  /**
+   * Companion object for the <code>IsEqvTo</code> class, which contains factory methods for creating
+   * <code>IsEqvTo</code> instances.
+   *
+   * @author Bill Venners
+   */
   object IsEqvTo {
     def apply(left: Fact, right: Fact): Fact = new IsEqvTo(left, right, None)
     def apply(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]): Fact = new IsEqvTo(left, right, messageFun)
