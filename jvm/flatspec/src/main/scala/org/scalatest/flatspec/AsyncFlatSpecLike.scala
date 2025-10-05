@@ -1531,12 +1531,10 @@ import resultOfStringPassedToVerb.verb
      */
     // SKIP-DOTTY-START
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY def in(testFun: => Future[compatible.Assertion])(using pos: source.Position): Unit = {
       registerTestToRun(verb.trim + " " + rest.trim, "in", List(), () => testFun, pos)
     }
-    // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + rest.trim, "in", List(), () => testFun, pos) }) } 
-    //DOTTY-ONLY }
 
     /**
      * Supports the registration of ignored tests in shorthand form.
@@ -1557,12 +1555,10 @@ import resultOfStringPassedToVerb.verb
      */
     // SKIP-DOTTY-START
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY def ignore(testFun: => Future[compatible.Assertion])(using pos: source.Position): Unit = {
       registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", () => testFun, pos)
     }
-    // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(testFun: => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", () => testFun, pos) }) } 
-    //DOTTY-ONLY }
   }
 
   // SKIP-DOTTY-START
@@ -1605,7 +1601,10 @@ import resultOfStringPassedToVerb.verb
   //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
   //DOTTY-ONLY    * </p>
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   infix def in(testFun: => Future[compatible.Assertion]): Unit = convertToInAndIgnoreMethods(resultOfStringPassedToVerb).in(testFun)
+  //DOTTY-ONLY   inline infix def in(testFun: => Future[compatible.Assertion]): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
+  //DOTTY-ONLY       convertToInAndIgnoreMethods(resultOfStringPassedToVerb).in(testFun)(using pos)
+  //DOTTY-ONLY     }) }
   //DOTTY-ONLY   /**
   //DOTTY-ONLY    * Supports the registration of tagged, ignored tests in shorthand form.
   //DOTTY-ONLY    *
@@ -1625,7 +1624,10 @@ import resultOfStringPassedToVerb.verb
   //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
   //DOTTY-ONLY    * </p>
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   infix def ignore(testFun: => Future[compatible.Assertion]): Unit = convertToInAndIgnoreMethods(resultOfStringPassedToVerb).ignore(testFun)
+  //DOTTY-ONLY   inline infix def ignore(testFun: => Future[compatible.Assertion]): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
+  //DOTTY-ONLY       convertToInAndIgnoreMethods(resultOfStringPassedToVerb).ignore(testFun)(using pos)
+  //DOTTY-ONLY     }) }
   //DOTTY-ONLY }
 
   /**
@@ -1692,12 +1694,10 @@ import resultOfStringPassedToVerb.verb
      */
     // SKIP-DOTTY-START
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY def in(testFun: => Future[compatible.Assertion])(using pos: source.Position): Unit = {
       registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, () => testFun, pos)
     }
-    // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, () => testFun, pos) }) } 
-    //DOTTY-ONLY }
 
     /**
      * Supports the registration of tagged, ignored tests in shorthand form.
@@ -1720,12 +1720,10 @@ import resultOfStringPassedToVerb.verb
      */
     // SKIP-DOTTY-START
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY def ignore(testFun: => Future[compatible.Assertion])(using pos: source.Position): Unit = {
       registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", () => testFun, pos)
     }
-    // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(testFun: => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", () => testFun, pos) }) } 
-    //DOTTY-ONLY }
   }
 
   /**
@@ -1764,7 +1762,10 @@ import resultOfStringPassedToVerb.verb
   //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
   //DOTTY-ONLY    * </p>
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   infix def in(testFun: => Future[compatible.Assertion]): Unit = convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).in(testFun)
+  //DOTTY-ONLY   inline infix def in(testFun: => Future[compatible.Assertion]): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
+  //DOTTY-ONLY       convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).in(testFun)(using pos)
+  //DOTTY-ONLY     }) }
   //DOTTY-ONLY /**
   //DOTTY-ONLY    * Supports the registration of tagged, ignored tests in shorthand form.
   //DOTTY-ONLY    *
@@ -1784,7 +1785,10 @@ import resultOfStringPassedToVerb.verb
   //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
   //DOTTY-ONLY    * </p>
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   infix def ignore(testFun: => Future[compatible.Assertion]): Unit = convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).ignore(testFun)
+  //DOTTY-ONLY   inline infix def ignore(testFun: => Future[compatible.Assertion]): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
+  //DOTTY-ONLY       convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).ignore(testFun)(using pos)
+  //DOTTY-ONLY     }) }
   //DOTTY-ONLY }
 
   /**
