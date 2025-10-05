@@ -1151,6 +1151,40 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
         fact.isYes shouldBe (true)
         fact.isVacuousYes shouldBe (false)
       }
+
+      "for Yes implies VacuousYes" in {
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), Prettifier.default)
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('f', 'g'),Vector('f', 'g'),Vector('f', 'g'),Vector('f', 'g'), Prettifier.default)
+        val rightSideVacuousYes = VacuousYes(rightSideNo)
+        val fact = leftSideYes implies rightSideVacuousYes
+        fact shouldBe a [Implies]
+        fact.isYes shouldBe true
+        fact.isVacuousYes shouldBe (true)
+        fact.isLeaf should be (false)
+      }
+
+      "for VacuousYes implies Yes" in {
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('f', 'g'),Vector('f', 'g'),Vector('f', 'g'),Vector('f', 'g'), Prettifier.default)
+        val leftSideVacuousYes = VacuousYes(leftSideNo)
+        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), Prettifier.default)
+        val fact = leftSideVacuousYes implies rightSideYes
+        fact shouldBe a [Implies]
+        fact.isYes shouldBe true
+        fact.isVacuousYes shouldBe (true)
+        fact.isLeaf should be (false)
+      }
+
+      "for VacuousYes implies VacuousYes" in {
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('f', 'g'),Vector('f', 'g'),Vector('f', 'g'),Vector('f', 'g'), Prettifier.default)
+        val leftSideVacuousYes = VacuousYes(leftSideNo)
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('h', 'i'),Vector('h', 'i'),Vector('h', 'i'),Vector('h', 'i'), Prettifier.default)
+        val rightSideVacuousYes = VacuousYes(rightSideNo)
+        val fact = leftSideVacuousYes implies rightSideVacuousYes
+        fact shouldBe a [Implies]
+        fact.isYes shouldBe true
+        fact.isVacuousYes shouldBe (true)
+        fact.isLeaf should be (false)
+      }
     }
 
     "should short-circuit correctly" - {

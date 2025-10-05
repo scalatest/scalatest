@@ -432,7 +432,8 @@ import org.scalatest.exceptions._
  *     <code>implies</code>
  *   </td>
  *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
- *     Result is VacuousYes if premise is No (regardless of consequent)
+ *     Result is VacuousYes if premise is No (regardless of consequent), OR<br/>
+ *     result is Yes AND (premise is VacuousYes OR consequent is VacuousYes)
  *   </td>
  * </tr>
  * <tr>
@@ -2146,10 +2147,10 @@ object Fact {
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = midSentenceFactMessageArgs
 
     val isLeaf: Boolean = false
-    val isVacuousYes: Boolean = false // TODO
     val prettifier: Prettifier = left.prettifier
 
     val isYes: Boolean = left.isYes && right.isYes
+    val isVacuousYes: Boolean = isYes && (left.isVacuousYes || right.isVacuousYes)
 
     override def factDiagram(level: Int): String = {
       val padding = "  " * level
