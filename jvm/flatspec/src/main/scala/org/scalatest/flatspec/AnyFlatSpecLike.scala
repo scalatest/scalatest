@@ -1524,11 +1524,10 @@ trait AnyFlatSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
      */
     // SKIP-DOTTY-START
     def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY def in(testFun: => Any /* Assertion */)(using pos: source.Position): Unit = {
       registerTestToRun(verb.trim + " " + rest.trim, "in", List(), () => testFun, pos)
     }
-    // SKIP-DOTTY-END
-    //DOTTY-ONLY def in(testFun: => Any /* Assertion */)(using pos: source.Position): Unit = 
-    //DOTTY-ONLY   registerTestToRun(verb.trim + " " + rest.trim, "in", List(), () => testFun, pos)
 
     /**
      * Supports the registration of ignored tests in shorthand form.
@@ -1549,15 +1548,15 @@ trait AnyFlatSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
      */
     // SKIP-DOTTY-START
     def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY def ignore(testFun: => Any /* Assertion */)(using pos: source.Position): Unit = {
       registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", () => testFun, pos)
     }
-    // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(testFun: => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", () => testFun, pos) }) } 
-    //DOTTY-ONLY }
   }
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   /**
   // SKIP-DOTTY-START
@@ -1615,8 +1614,10 @@ trait AnyFlatSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
   //DOTTY-ONLY     * in the main documentation for trait <code>AnyFlatSpec</code>.
   //DOTTY-ONLY     * </p>
   //DOTTY-ONLY     */
-  //DOTTY-ONLY   inline infix def ignore(testFun: => Any /* Assertion */)(using pos: source.Position): Unit =
-  //DOTTY-ONLY     convertToInAndIgnoreMethods(resultOfStringPassedToVerb).ignore(testFun)
+  //DOTTY-ONLY   inline infix def ignore(testFun: => Any /* Assertion */): Unit =
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => 
+  //DOTTY-ONLY       convertToInAndIgnoreMethods(resultOfStringPassedToVerb).ignore(testFun)(using pos)
+  //DOTTY-ONLY     }) }
   //DOTTY-ONLY }
    
   /**
@@ -1709,12 +1710,10 @@ trait AnyFlatSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
      */
     // SKIP-DOTTY-START
     def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline infix def ignore(testFun: => Any /* Assertion */)(using pos: source.Position): Unit = {
       registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", () => testFun, pos)
     }
-    // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(testFun: => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", () => testFun, pos) }) } 
-    //DOTTY-ONLY }
   }
 
   /**
@@ -1773,8 +1772,10 @@ trait AnyFlatSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
   //DOTTY-ONLY    * in the main documentation for trait <code>AnyFlatSpec</code>.
   //DOTTY-ONLY    * </p>
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   inline infix def ignore(testFun: => Any /* Assertion */)(using pos: source.Position): Unit =
-  //DOTTY-ONLY     convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).ignore(testFun)
+  //DOTTY-ONLY   inline infix def ignore(testFun: => Any /* Assertion */): Unit =
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
+  //DOTTY-ONLY       convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).ignore(testFun)(using pos)
+  //DOTTY-ONLY     }) }
   //DOTTY-ONLY }
 
 
