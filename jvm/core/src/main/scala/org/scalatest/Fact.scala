@@ -765,34 +765,64 @@ sealed abstract class Fact {
   def unary_! : Fact = Fact.Unary_!(this)
 
   /**
-   * Creates a new Fact that represents a logical OR between this Fact and the provided Fact.
+   * <p>
+   * Returns a new <code>Fact</code> that represents the logical OR of this <code>Fact</code> and the given <code>Fact</code>.
+   * </p>
    *
-   * @param rhs The Fact to be combined with this Fact using a logical OR.
-   * @return A new Fact representing the logical OR between this Fact and the provided Fact.
+   * <p>
+   * This operator short-circuits, just like the <code>||</code> operator on <code>Boolean</code>. If this
+   * <code>Fact</code> is <code>Yes</code>, the right-hand side will not be evaluated and this <code>Fact</code>
+   * will be returned.
+   * </p>
+   *
+   * @param rhs the right-hand side <code>Fact</code> (evaluated by-name)
+   * @return a <code>Fact</code> representing the logical OR of this and the right-hand side
    */
   final def ||(rhs: => Fact): Fact = if (isYes) this else Fact.Binary_||(this, rhs)
 
   /**
-   * Creates a new Fact that represents a logical AND between this Fact and the provided Fact.
+   * <p>
+   * Returns a new <code>Fact</code> that represents the logical AND of this <code>Fact</code> and the given <code>Fact</code>.
+   * </p>
    *
-   * @param rhs The Fact to be combined with this Fact using a logical AND.
-   * @return A new Fact representing the logical AND between this Fact and the provided Fact.
+   * <p>
+   * This operator short-circuits, just like the <code>&&</code> operator on <code>Boolean</code>. If this
+   * <code>Fact</code> is <code>No</code>, the right-hand side will not be evaluated and this <code>Fact</code>
+   * will be returned.
+   * </p>
+   *
+   * @param rhs the right-hand side <code>Fact</code> (evaluated by-name)
+   * @return a <code>Fact</code> representing the logical AND of this and the right-hand side
    */
   final def &&(rhs: => Fact): Fact = if (isNo) this else Fact.Binary_&&(this, rhs)
 
   /**
-   * Creates a new Fact that represents a logical OR between this Fact and the provided Fact.
+   * <p>
+   * Returns a new <code>Fact</code> that represents the logical OR of this <code>Fact</code> and the given <code>Fact</code>.
+   * </p>
    *
-   * @param rhs The Fact to be combined with this Fact using a logical OR.
-   * @return A new Fact representing the logical OR between this Fact and the provided Fact.
+   * <p>
+   * This operator does <em>not</em> short-circuit, just like the <code>|</code> operator on <code>Boolean</code>.
+   * Both the left-hand and right-hand sides will be evaluated regardless of their values.
+   * </p>
+   *
+   * @param rhs the right-hand side <code>Fact</code>
+   * @return a new <code>Fact</code> representing the logical OR of this and the right-hand side
    */
   final def |(rhs: Fact): Fact = Fact.Binary_|(this, rhs)
 
   /**
-   * Creates a new Fact that represents a logical AND between this Fact and the provided Fact.
+   * <p>
+   * Returns a new <code>Fact</code> that represents the logical AND of this <code>Fact</code> and the given <code>Fact</code>.
+   * </p>
    *
-   * @param rhs The Fact to be combined with this Fact using a logical AND.
-   * @return A new Fact representing the logical AND between this Fact and the provided Fact.
+   * <p>
+   * This operator does <em>not</em> short-circuit, just like the <code>&</code> operator on <code>Boolean</code>.
+   * Both the left-hand and right-hand sides will be evaluated regardless of their values.
+   * </p>
+   *
+   * @param rhs the right-hand side <code>Fact</code>
+   * @return a new <code>Fact</code> representing the logical AND of this and the right-hand side
    */
   final def &(rhs: Fact): Fact = Fact.Binary_&(this, rhs)
 
