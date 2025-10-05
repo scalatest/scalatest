@@ -924,21 +924,46 @@ sealed abstract class Fact {
 object Fact {
 
   /**
-   * Represents a leaf node in the Fact tree, which is a concrete Fact with known boolean values.
+   * <p>
+   * Case class representing a leaf node in the <code>Fact</code> tree.
+   * </p>
    *
-   * @param rawFactMessage The raw message representing the fact.
-   * @param rawSimplifiedFactMessage The raw simplified message representing the fact.
-   * @param rawMidSentenceFactMessage The raw mid-sentence message representing the fact.
-   * @param rawMidSentenceSimplifiedFactMessage The raw mid-sentence simplified message representing the fact.
-   * @param factMessageArgs Arguments used to format the rawFactMessage.
-   * @param simplifiedFactMessageArgs Arguments used to format the rawSimplifiedFactMessage.
-   * @param midSentenceFactMessageArgs Arguments used to format the rawMidSentenceFactMessage.
-   * @param midSentenceSimplifiedFactMessageArgs Arguments used to format the rawMidSentenceSimplifiedFactMessage.
-   * @param isYes Indicates whether the fact is evaluated to true.
-   * @param isVacuousYes Indicates whether the fact is a vacuous yes, which means true in a sense but without meaningful assertions.
-   * @param prettifier A prettifier used to format the messages when constructing failure messages.
-   * @param cause An optional cause Throwable associated with the fact.
-   * @throws IllegalArgumentException if `isVacuousYes` is true but `isYes` is false.
+   * <p>
+   * A <code>Leaf</code> is an atomic <code>Fact</code> created directly by expectation methods like
+   * <code>expect</code>, <code>expectResult</code>, or <code>expectThrows</code>. Unlike composite
+   * <code>Fact</code>s (which are created by combining other <code>Fact</code>s with operators like
+   * <code>&&</code>, <code>||</code>, or <code>implies</code>), a <code>Leaf</code> represents a
+   * single assertion result.
+   * </p>
+   *
+   * <p>
+   * You can check whether a <code>Fact</code> is a leaf by calling <code>isLeaf</code>. The
+   * <code>isLeaf</code> method will return <code>true</code> only if the <code>Fact</code> is
+   * a <code>Leaf</code>.
+   * </p>
+   *
+   * <p>
+   * Leaf facts are used for message formatting decisions. When combining two leaf facts with operators,
+   * ScalaTest can generate simplified comma-separated messages like "3 was not equal to 4, and 5 was
+   * greater than 2". When combining composite facts, full fact diagrams are used instead to show the
+   * nested logical structure.
+   * </p>
+   *
+   * @param rawFactMessage the raw message representing the fact
+   * @param rawSimplifiedFactMessage the raw simplified message representing the fact (used when negated)
+   * @param rawMidSentenceFactMessage the raw message for use mid-sentence
+   * @param rawMidSentenceSimplifiedFactMessage the raw simplified message for use mid-sentence
+   * @param factMessageArgs arguments used to format <code>rawFactMessage</code>
+   * @param simplifiedFactMessageArgs arguments used to format <code>rawSimplifiedFactMessage</code>
+   * @param midSentenceFactMessageArgs arguments used to format <code>rawMidSentenceFactMessage</code>
+   * @param midSentenceSimplifiedFactMessageArgs arguments used to format <code>rawMidSentenceSimplifiedFactMessage</code>
+   * @param isYes <code>true</code> if this fact represents a yes (passing) assertion, <code>false</code> for no (failing)
+   * @param isVacuousYes <code>true</code> if this is a vacuous yes, <code>false</code> otherwise
+   * @param prettifier the <code>Prettifier</code> used to format messages
+   * @param cause an optional <code>Throwable</code> cause associated with this fact
+   * @throws IllegalArgumentException if <code>isVacuousYes</code> is <code>true</code> but <code>isYes</code> is <code>false</code>
+   *
+   * @author Bill Venners
    */
   case class Leaf(
     rawFactMessage: String,
@@ -1949,13 +1974,54 @@ object Fact {
       )
   }
 
-  // The simplified Fact message is used when a Fact is negated, because
-  // sometimes factMessage can include info about what was expected, as in
-  // "Expected 3, but got 4", for expectResult(3) { x } . But if this is inverted
-  // to !expectResult(3) { x }, then it is confusing to say Expected 3 (because
-  // now anything *but* 3 is expected. So the simplified message just says, "3 did not equal 4".
-  // Of course, that means x was 4, and so the inverted form would be a Yes. But if x were 3, then
-  // the regular factMessage would be "Expected 3, but got 3" and the simplified fact message would be "3 equaled 3"
+  /**
+   * <p>
+   * Case class representing the logical negation of a <code>Fact</code>.
+   * </p>
+   *
+   * <p>
+   * A <code>Unary_!</code> inverts a <code>Fact</code>: if the underlying fact is <code>Yes</code>,
+   * the negation is <code>No</code>, and vice versa. Negation always produces a non-vacuous result
+   * (<code>isVacuousYes</code> is <code>false</code>), even when negating a <code>VacuousYes</code>.
+   * However, the original fact is preserved as the underlying fact, so double negation restores
+   * vacuousness: <code>!(!vacuousYes)</code> returns the original <code>VacuousYes</code>.
+   * </p>
+   *
+   * <p>
+   * When converted to type <code>Assertion</code>, a <code>No</code> results in a thrown
+   * <code>TestFailedException</code> (indicating test failure), which is already a stronger signal
+   * than the <code>TestCanceledException</code> thrown when converting <code>VacuousYes</code> to
+   * type <code>Assertion</code> (indicating the
+   * test didn't meaningfully execute). Since <code>Unary_!</code> preserves the underlying fact, double negation
+   * on a <code>VacuousYes</code> correctly remembers the vacuous nature of the resulting yes.
+   * </p>
+   *
+   * <p>
+   * The negation operator uses simplified messages instead of the regular fact messages. This is
+   * because some fact messages include information about what was expected. For example,
+   * <code>expectResult(3) { 4 }</code> produces the message "Expected 3, but got 4". If this is
+   * negated to <code>!expectResult(3) { 4 }</code>, saying "Expected 3" would be confusing,
+   * because now anything <em>except</em> 3 is expected. Instead, the simplified message is used,
+   * which would say "4 did not equal 3".
+   * </p>
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val fact = expect(score &lt; 100)     // Yes
+   * val negated = !fact                 // No
+   *
+   * negated.isYes  // false
+   * negated.isNo   // true
+   * </pre>
+   *
+   * @param underlying the <code>Fact</code> to negate
+   *
+   * @author Bill Venners
+   */
   // TODO: Write a test that ensures !(!(<vacuous yes>)).isVacuousYes stays true
   case class Unary_!(underlying: Fact) extends Fact {
 
@@ -1999,6 +2065,41 @@ object Fact {
    * @param left  The left-hand side `Fact` instance of the AND operation.
    * @param right The right-hand side `Fact` instance of the AND operation.
    * @param messageFun An optional message function to modify messages.
+   */
+  /**
+   * <p>
+   * Class representing the strict (non-short-circuiting) logical AND of two <code>Fact</code>s.
+   * </p>
+   *
+   * <p>
+   * A <code>Binary_&</code> evaluates both the left and right <code>Fact</code>s regardless of their
+   * values, then combines them with logical AND semantics. The result is <code>Yes</code> only if both
+   * facts are <code>Yes</code>. If the result is <code>Yes</code> and either operand is
+   * <code>VacuousYes</code>, the result becomes <code>VacuousYes</code>.
+   * </p>
+   *
+   * <p>
+   * This operator does <em>not</em> short-circuit, unlike <code>Binary_&&</code>. Both sides are
+   * always evaluated. This is useful when you want to ensure both assertions run, perhaps for their
+   * side effects or to see all failures at once.
+   * </p>
+   *
+   * <p>
+   * The <code>&</code> operator creates instances of this class:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val fact1 = expect(score &gt; 0)
+   * val fact2 = expect(score &lt; 100)
+   * val combined = fact1 & fact2   // Both facts evaluated
+   * </pre>
+   *
+   * @param left the left-hand <code>Fact</code>
+   * @param right the right-hand <code>Fact</code>
+   * @param messageFun an optional function to transform the combined message
+   *
+   * @author Bill Venners
    */
   class Binary_&(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Fact {
 
@@ -2136,12 +2237,48 @@ object Fact {
   }
 
   /**
-   * Represents a binary logical AND operation between two `Fact` instances, enforcing that the left-hand side `Fact` instance is `yes`.
+   * <p>
+   * Class representing the short-circuiting logical AND of two <code>Fact</code>s.
+   * </p>
    *
-   * @param left  The left-hand side `Fact` instance of the AND operation. It must be a `yes` fact.
-   * @param right The right-hand side `Fact` instance of the AND operation.
-   * @param messageFun An optional message function to modify the messages.
-   * @throws IllegalArgumentException If the `left` `Fact` instance is not a `yes` fact.
+   * <p>
+   * A <code>Binary_&&</code> extends <code>Binary_&</code> but adds a precondition: the left-hand
+   * <code>Fact</code> must be <code>Yes</code>. This class is only instantiated when the
+   * <code>&&</code> operator's short-circuit check passes (when the left side is <code>Yes</code>).
+   * </p>
+   *
+   * <p>
+   * The <code>&&</code> operator short-circuits: if the left fact is <code>No</code>, it returns
+   * the left side immediately without evaluating the right side. A <code>Binary_&&</code> is created
+   * to combine the two facts only when the left is <code>Yes</code>.
+   * </p>
+   *
+   * <p>
+   * By extending <code>Binary_&</code>, this class inherits all the logic for combining facts,
+   * message generation, and vacuous yes propagation. The only differences are the operator name
+   * (displayed as "&&" instead of "&") and the precondition that <code>left.isYes</code>.
+   * </p>
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val fact1 = expect(score &gt; 0)       // Yes
+   * val fact2 = expect(score &lt; 100)     // Yes
+   * val combined = fact1 && fact2        // Binary_&& created, both evaluated
+   *
+   * val fact3 = expect(score &lt; 0)       // No
+   * val combined2 = fact3 && fact2       // Returns fact3 immediately, fact2 not evaluated
+   * </pre>
+   *
+   * @param left the left-hand <code>Fact</code> (must be <code>Yes</code>)
+   * @param right the right-hand <code>Fact</code>
+   * @param messageFun an optional function to transform the combined message
+   * @throws IllegalArgumentException if <code>left.isYes</code> is <code>false</code>
+   *
+   * @author Bill Venners
    */
   class Binary_&&(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Binary_&(left, right, messageFun) {
     require(left.isYes)
@@ -2178,6 +2315,41 @@ object Fact {
     def apply(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]): Fact = new Binary_&&(left, right, messageFun)
   }
 
+  /**
+   * <p>
+   * Class representing the strict (non-short-circuiting) logical OR of two <code>Fact</code>s.
+   * </p>
+   *
+   * <p>
+   * A <code>Binary_|</code> evaluates both the left and right <code>Fact</code>s regardless of their
+   * values, then combines them with logical OR semantics. The result is <code>Yes</code> if either
+   * fact is <code>Yes</code>. If the result is <code>Yes</code> and at least one operand is
+   * <code>VacuousYes</code>, the result becomes <code>VacuousYes</code>.
+   * </p>
+   *
+   * <p>
+   * This operator does <em>not</em> short-circuit, unlike <code>Binary_||</code>. Both sides are
+   * always evaluated. This is useful when you want to ensure both assertions run, perhaps for their
+   * side effects or to see all results.
+   * </p>
+   *
+   * <p>
+   * The <code>|</code> operator creates instances of this class:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val fact1 = expect(score &lt; 0)
+   * val fact2 = expect(score &lt; 100)
+   * val combined = fact1 | fact2   // Both facts evaluated, result is Yes
+   * </pre>
+   *
+   * @param left the left-hand <code>Fact</code>
+   * @param right the right-hand <code>Fact</code>
+   * @param messageFun an optional function to transform the combined message
+   *
+   * @author Bill Venners
+   */
   class Binary_|(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Fact {
 
     private[scalatest] def operatorName: String = "|"
@@ -2236,6 +2408,50 @@ object Fact {
     def apply(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]): Fact = new Binary_|(left, right, messageFun)
   }
 
+  /**
+   * <p>
+   * Class representing the short-circuiting logical OR of two <code>Fact</code>s.
+   * </p>
+   *
+   * <p>
+   * A <code>Binary_||</code> extends <code>Binary_|</code> but adds a precondition: the left-hand
+   * <code>Fact</code> must be <code>No</code>. This class is only instantiated when the
+   * <code>||</code> operator's short-circuit check passes (when the left side is <code>No</code>).
+   * </p>
+   *
+   * <p>
+   * The <code>||</code> operator short-circuits: if the left fact is <code>Yes</code>, it returns
+   * the left side immediately without evaluating the right side. A <code>Binary_||</code> is created
+   * to combine the two facts only when the left is <code>No</code>.
+   * </p>
+   *
+   * <p>
+   * By extending <code>Binary_|</code>, this class inherits all the logic for combining facts,
+   * message generation, and vacuous yes propagation. The only differences are the operator name
+   * (displayed as "||" instead of "|") and the precondition that <code>left.isNo</code>.
+   * </p>
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val fact1 = expect(score &lt; 0)       // No
+   * val fact2 = expect(score &lt; 100)     // Yes
+   * val combined = fact1 || fact2        // Binary_|| created, both evaluated
+   *
+   * val fact3 = expect(score &gt; 0)       // Yes
+   * val combined2 = fact3 || fact2       // Returns fact3 immediately, fact2 not evaluated
+   * </pre>
+   *
+   * @param left the left-hand <code>Fact</code> (must be <code>No</code>)
+   * @param right the right-hand <code>Fact</code>
+   * @param messageFun an optional function to transform the combined message
+   * @throws IllegalArgumentException if <code>left.isNo</code> is <code>false</code>
+   *
+   * @author Bill Venners
+   */
   class Binary_||(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Binary_|(left, right, messageFun) {
     require(left.isNo)
     override private[scalatest] def operatorName: String = "||"
@@ -2250,10 +2466,51 @@ object Fact {
     def apply(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]): Fact = new Binary_||(left, right, messageFun)
   }
 
-/*
-  Yes implies No // x, but y
-  Yes implies Yes // x, and y
-*/
+  /**
+   * <p>
+   * Class representing logical implication between two <code>Fact</code>s.
+   * </p>
+   *
+   * <p>
+   * An <code>Implies</code> represents the logical implication "if premise then consequent" (left ⇒ right).
+   * The implication is <code>No</code> only when the premise (left side) is <code>Yes</code> and the
+   * consequent (right side) is <code>No</code>. In all other cases, it is <code>Yes</code> (or
+   * <code>VacuousYes</code>).
+   * </p>
+   *
+   * <p>
+   * The <code>implies</code> method creates instances of this class only when the premise is <code>Yes</code>.
+   * If the premise is <code>No</code>, the method returns a <code>VacuousYes</code> without creating an
+   * <code>Implies</code> instance, because a false premise makes any implication vacuously true.
+   * </p>
+   *
+   * <p>
+   * Vacuous yes propagation: if the result would be <code>Yes</code> and either the premise or consequent
+   * is <code>VacuousYes</code>, the result becomes <code>VacuousYes</code>.
+   * </p>
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val premise = expect(score &gt; 0)        // Yes
+   * val consequent = expect(score &lt; 100)   // Yes
+   * val implication = premise implies consequent  // Yes (both true)
+   *
+   * val premise2 = expect(score &gt; 50)      // Yes
+   * val consequent2 = expect(score &lt; 50)   // No
+   * val implication2 = premise2 implies consequent2  // No (premise true, consequent false)
+   * </pre>
+   *
+   * @param left the premise (left-hand <code>Fact</code>, must be <code>Yes</code>)
+   * @param right the consequent (right-hand <code>Fact</code>)
+   * @param messageFun an optional function to transform the combined message
+   * @throws IllegalArgumentException if <code>left.isYes</code> is <code>false</code>
+   *
+   * @author Bill Venners
+   */
   class Implies(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Fact {
 
     require(left.isYes)
@@ -2323,6 +2580,51 @@ object Fact {
     def apply(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]): Fact = new Implies(left, right, messageFun)
   }
 
+  /**
+   * <p>
+   * Class representing logical equivalence (biconditional) between two <code>Fact</code>s.
+   * </p>
+   *
+   * <p>
+   * An <code>IsEqvTo</code> represents the logical equivalence "left if and only if right" (left ⇔ right).
+   * The equivalence is <code>Yes</code> when both facts have the same boolean value (both <code>Yes</code>
+   * or both <code>No</code>). It is <code>No</code> when the facts have different boolean values.
+   * </p>
+   *
+   * <p>
+   * Logical equivalence can be understood as: (<code>left</code> implies <code>right</code>) AND
+   * (<code>right</code> implies <code>left</code>). The result is <code>Yes</code> when both
+   * implications would hold.
+   * </p>
+   *
+   * <p>
+   * Vacuous yes propagation: if the result would be <code>Yes</code> and either fact is
+   * <code>VacuousYes</code>, the result becomes <code>VacuousYes</code>.
+   * </p>
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val fact1 = expect(score &gt; 0)        // Yes
+   * val fact2 = expect(score &lt; 100)      // Yes
+   * val equiv = fact1 isEqvTo fact2       // Yes (both are Yes)
+   *
+   * val fact3 = expect(score &lt; 0)        // No
+   * val fact4 = expect(score &gt; 200)      // No
+   * val equiv2 = fact3 isEqvTo fact4      // Yes (both are No)
+   *
+   * val equiv3 = fact1 isEqvTo fact3      // No (one Yes, one No)
+   * </pre>
+   *
+   * @param left the left-hand <code>Fact</code>
+   * @param right the right-hand <code>Fact</code>
+   * @param messageFun an optional function to transform the combined message
+   *
+   * @author Bill Venners
+   */
   class IsEqvTo(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Fact {
 
     val rawFactMessage: String = {
