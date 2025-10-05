@@ -1503,7 +1503,7 @@ trait AnyFlatSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
   protected final class InAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb) {
 
     import resultOfStringPassedToVerb.rest
-import resultOfStringPassedToVerb.verb
+    import resultOfStringPassedToVerb.verb
 
     /**
      * Supports the registration of tests in shorthand form.
@@ -1527,9 +1527,8 @@ import resultOfStringPassedToVerb.verb
       registerTestToRun(verb.trim + " " + rest.trim, "in", List(), () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + rest.trim, "in", List(), () => testFun, pos) }) } 
-    //DOTTY-ONLY }
+    //DOTTY-ONLY def in(testFun: => Any /* Assertion */)(using pos: source.Position): Unit = 
+    //DOTTY-ONLY   registerTestToRun(verb.trim + " " + rest.trim, "in", List(), () => testFun, pos)
 
     /**
      * Supports the registration of ignored tests in shorthand form.
@@ -1593,8 +1592,10 @@ import resultOfStringPassedToVerb.verb
   //DOTTY-ONLY    * in the main documentation for trait <code>AnyFlatSpec</code>.
   //DOTTY-ONLY    * </p>
   //DOTTY-ONLY    */ 
-  //DOTTY-ONLY   inline infix def in(testFun: => Any /* Assertion */)(using pos: source.Position): Unit =
-  //DOTTY-ONLY     convertToInAndIgnoreMethods(resultOfStringPassedToVerb).in(testFun)
+  //DOTTY-ONLY   inline infix def in(testFun: => Any /* Assertion */): Unit =
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => 
+  //DOTTY-ONLY       convertToInAndIgnoreMethods(resultOfStringPassedToVerb).in(testFun)(using pos)
+  //DOTTY-ONLY     }) }
   //DOTTY-ONLY   /**
   //DOTTY-ONLY     * Supports the registration of tagged, ignored tests in shorthand form.
   //DOTTY-ONLY     *
@@ -1685,9 +1686,8 @@ import resultOfStringPassedToVerb.verb
       registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, () => testFun, pos) }) } 
-    //DOTTY-ONLY }
+    //DOTTY-ONLY def in(testFun: => Any /* Assertion */)(using pos: source.Position): Unit = 
+    //DOTTY-ONLY   registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, () => testFun, pos)
 
     /**
      * Supports the registration of tagged, ignored tests in shorthand form.
@@ -1751,8 +1751,10 @@ import resultOfStringPassedToVerb.verb
   //DOTTY-ONLY    * in the main documentation for trait <code>AnyFlatSpec</code>.
   //DOTTY-ONLY    * </p>
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   inline infix def in(testFun: => Any /* Assertion */)(using pos: source.Position): Unit =
-  //DOTTY-ONLY     convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).in(testFun)
+  //DOTTY-ONLY   inline infix def in(testFun: => Any /* Assertion */): Unit =
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
+  //DOTTY-ONLY       convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).in(testFun)(using pos)
+  //DOTTY-ONLY     }) }
   //DOTTY-ONLY   /**
   //DOTTY-ONLY    * Supports the registration of tagged, ignored tests in shorthand form.
   //DOTTY-ONLY    *
@@ -1776,6 +1778,7 @@ import resultOfStringPassedToVerb.verb
   //DOTTY-ONLY     convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).ignore(testFun)
   //DOTTY-ONLY }
 
+
   /**
    * Supports the shorthand form of test registration.
    *
@@ -1798,7 +1801,7 @@ import resultOfStringPassedToVerb.verb
    * the function, respectively).
    * </p>
    */
-  // SKIP-DOTTY-START 
+  // SKIP-DOTTY-START
   protected implicit val shorthandTestRegistrationFunction: StringVerbStringInvocation =
   // SKIP-DOTTY-END
   //DOTTY-ONLY  protected val shorthandTestRegistrationFunction: StringVerbStringInvocation =
