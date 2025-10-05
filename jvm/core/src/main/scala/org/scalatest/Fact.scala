@@ -758,9 +758,9 @@ sealed abstract class Fact {
   }
 
   /**
-   * Negates this Fact, creating a version with the opposite value.
+   * Negates this Fact.
    *
-   * @return A version of this Fact with the opposite value.
+   * @return A Fact with the opposite value.
    */ 
   def unary_! : Fact = Fact.Unary_!(this)
 
