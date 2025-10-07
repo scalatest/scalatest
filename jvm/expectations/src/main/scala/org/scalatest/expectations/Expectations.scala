@@ -657,7 +657,33 @@ trait Expectations {
 
 
 /**
- * The companion object for the `Expectation` trait.
+ * Companion object that facilitates the importing of <code>Expectations</code> members as
+ * an alternative to mixing in the trait. One use case is to import <code>Expectations</code> members so you
+ * can use them in the Scala interpreter:
+ *
+ * <pre class="stREPL">
+ * scala&gt; import org.scalatest.expectations.Expectations._
+ * import org.scalatest.expectations.Expectations._
+ * &nbsp;
+ * scala&gt; expectResult(2) { 1 + 1 }
+ * val res0: org.scalatest.Fact = Yes(Expected 2, and got 2)
+ * &nbsp;
+ * scala&gt; expectResult(3) { 1 + 3 }
+ * val res1: org.scalatest.Fact = No(Expected 3, but got 4)
+ * &nbsp;
+ * scala&gt; val fact = expectResult(2) { 1 + 3 }
+ * val fact: org.scalatest.Fact = No(Expected 2, but got 4)
+ * &nbsp;
+ * scala&gt; fact.toAssertion
+ * org.scalatest.exceptions.TestFailedException: Expected 2, but got 4
+ *      at org.scalatest.Fact.toAssertion(Fact.scala:...)
+ *      at ... .&lt;init&gt;(&lt;console&gt;:...)
+ * &nbsp;
+ * scala&gt; val caught = expectThrows[StringIndexOutOfBoundsException] { "hi".charAt(-1) }
+ * val caught: org.scalatest.Expectation = Yes(Exception "java.lang.StringIndexOutOfBoundsException" was thrown)
+ * </pre>
+ *
+ * @author Bill Venners
  */
 object Expectations extends Expectations {
 
