@@ -1975,7 +1975,7 @@ $columnsOfTwos$
           "rows"
       val forEveryImplTemplate: String =
         methodTemplate + """ = {
-                               |  doExists[Tuple$n$[$alphaUpper$]](List($heading$), $rows$, Resources.tableDrivenForEveryFailed _, "TableAsserting.scala", "doExists", 2, prettifier, pos)((row: $rowType$) => fun($row$))
+                               |  doExists[Tuple$n$[$alphaUpper$]](List($heading$), $rows$, Resources.tableDrivenExistsFailed _, "TableAsserting.scala", "doExists", 2, prettifier, pos)((row: $rowType$) => fun($row$))
                                |}
                                """.stripMargin
 
