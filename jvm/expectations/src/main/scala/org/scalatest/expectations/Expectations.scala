@@ -409,15 +409,15 @@ trait Expectations {
           )
         else
           Yes(
-            rawFactMessage = Resources.rawExceptionExpected,
+            rawFactMessage = Resources.rawFactExceptionWasThrown,
             rawSimplifiedFactMessage = Resources.rawFactExceptionWasThrown,
-            rawMidSentenceFactMessage = Resources.rawMidSentenceExpectedExceptionWasThrown,
+            rawMidSentenceFactMessage = Resources.rawMidSentenceFactExceptionWasThrown,
             rawMidSentenceSimplifiedFactMessage = Resources.rawMidSentenceFactExceptionWasThrown,
             factMessageArgs = Vector(clazz.getName),
             simplifiedFactMessageArgs = Vector(clazz.getName),
             midSentenceFactMessageArgs = Vector(clazz.getName),
             midSentenceSimplifiedFactMessageArgs = Vector(clazz.getName),
-            cause = Some(u), 
+            cause = Some(u),
             prettifier
           )
       }

@@ -900,7 +900,7 @@ sealed abstract class Fact {
    */
   def factDiagram(level: Int): String = {
     // This one makes sense for Yes and No only. The other subclassess override it.
-    val msg = midSentenceFactMessage // just compute this once
+    val msg = factMessage // just compute this once
     val padding = "  " * level
     if (msg.contains("\n")) {
       val padding = "  " * (level)
