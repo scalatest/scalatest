@@ -58,13 +58,20 @@ class FactToStringSpec extends AnyFunSpec with Expectations {
   describe("Fact.toString for expectThrows") {
     it("should use capitalized message when exception is thrown (success case)") {
       val s = "hi"
+      // SKIP-SCALATESTJS-START
       val fact = expectThrows[IndexOutOfBoundsException] {
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val fact = expectThrows[Error] {  
         s.charAt(-1)
       }
 
       // Should show "Exception ... was thrown" with capital E
       // The class name gets quoted by the prettifier
+      // SKIP-SCALATESTJS-START
       assert(fact.toString == "Yes(Exception \"java.lang.IndexOutOfBoundsException\" was thrown)")
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(fact.toString == "Yes(Exception \"java.lang.Error\" was thrown)")
+      
     }
 
     it("should use capitalized message when no exception is thrown (failure case)") {
@@ -79,13 +86,19 @@ class FactToStringSpec extends AnyFunSpec with Expectations {
     }
 
     it("should use capitalized message when wrong exception is thrown (failure case)") {
+      // SKIP-SCALATESTJS-START
       val fact = expectThrows[IllegalArgumentException] {
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val fact = expectThrows[IllegalArgumentException] {
         "test".charAt(100) // throws IndexOutOfBoundsException, not IllegalArgumentException
       }
 
       // Should show "Expected exception ... to be thrown, but ... was thrown" with capital E
       // Class names get quoted by the prettifier
+      // SKIP-SCALATESTJS-START
       assert(fact.toString.startsWith("No(Expected exception \"java.lang.IllegalArgumentException\" to be thrown, but \"java.lang.StringIndexOutOfBoundsException\" was thrown"))
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY assert(fact.toString.startsWith("No(Expected exception \"java.lang.IllegalArgumentException\" to be thrown, but \"org.scalajs.linker.runtime.UndefinedBehaviorError\" was thrown"))
     }
   }
 
