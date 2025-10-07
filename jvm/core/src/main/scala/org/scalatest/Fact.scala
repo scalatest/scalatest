@@ -841,7 +841,7 @@ sealed abstract class Fact {
    * @param rhs The Fact representing the implication's consequent.
    * @return A new Fact representing the implication between this Fact and the provided Fact.
    */
-  final def implies(rhs: => Fact): Fact = if (isNo) Fact.VacuousYes(this) else Fact.Implies(this, rhs)
+  final /* DOTTY-ONLY infix */ def implies(rhs: => Fact): Fact = if (isNo) Fact.VacuousYes(this) else Fact.Implies(this, rhs)
 
   /**
    * Creates a new Fact that represents the equivalence (eqv) between this Fact and the provided Fact.
@@ -849,7 +849,7 @@ sealed abstract class Fact {
    * @param rhs The Fact representing the other side of the equivalence.
    * @return A new Fact representing the equivalence between this Fact and the provided Fact.
    */
-  final def isEqvTo(rhs: Fact): Fact = Fact.IsEqvTo(this, rhs)
+  final /* DOTTY-ONLY infix */ def isEqvTo(rhs: Fact): Fact = Fact.IsEqvTo(this, rhs)
 
   /**
    * Construct failure message to report if a fact fails, using <code>rawFactMessage</code>, <code>factMessageArgs</code> and <code>prettifier</code>
