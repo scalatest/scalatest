@@ -661,6 +661,7 @@ import org.scalatest.exceptions._
  * </p>
  *
  * @author Bill Venners
+ * @author Chua Chee Seng
  */
 sealed abstract class Fact {
   // As it stands, this should not extend Product with Serializable because
@@ -964,6 +965,7 @@ object Fact {
    * @throws IllegalArgumentException if <code>isVacuousYes</code> is <code>true</code> but <code>isYes</code> is <code>false</code>
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   case class Leaf(
     rawFactMessage: String,
@@ -1133,6 +1135,7 @@ object Fact {
    * @throws IllegalArgumentException if the underlying fact's <code>isNo</code> is <code>false</code>
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   class VacuousYes(underlying: Fact) extends Fact {
 
@@ -1205,6 +1208,7 @@ object Fact {
    * Companion object for the <code>VacuousYes</code> class, which provides a factory method to create <code>VacuousYes</code> instances.
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   object VacuousYes {
     /**
@@ -1222,6 +1226,7 @@ object Fact {
    * representing failed (no) assertions.
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   object No {
 
@@ -1595,6 +1600,7 @@ object Fact {
    * representing successful (yes) assertions.
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   object Yes {
   
@@ -2025,6 +2031,7 @@ object Fact {
    * @param underlying the <code>Fact</code> to negate
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   // TODO: Write a test that ensures !(!(<vacuous yes>)).isVacuousYes stays true
   case class Unary_!(underlying: Fact) extends Fact {
@@ -2104,6 +2111,7 @@ object Fact {
    * @param messageFun an optional function to transform the combined message
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   class Binary_&(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Fact {
 
@@ -2221,6 +2229,7 @@ object Fact {
    * <code>Binary_&</code> instances.
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   object Binary_& {
     /**
@@ -2285,6 +2294,7 @@ object Fact {
    * @throws IllegalArgumentException if <code>left.isYes</code> is <code>false</code>
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   class Binary_&&(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Binary_&(left, right, messageFun) {
     require(left.isYes)
@@ -2300,6 +2310,7 @@ object Fact {
    * <code>Binary_&&</code> instances.
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   object Binary_&& {
     /**
@@ -2357,6 +2368,7 @@ object Fact {
    * @param messageFun an optional function to transform the combined message
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   class Binary_|(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Fact {
 
@@ -2416,6 +2428,7 @@ object Fact {
    * <code>Binary_|</code> instances.
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   object Binary_| {
     def apply(left: Fact, right: Fact): Fact = new Binary_|(left, right, None)
@@ -2465,6 +2478,7 @@ object Fact {
    * @throws IllegalArgumentException if <code>left.isNo</code> is <code>false</code>
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   class Binary_||(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Binary_|(left, right, messageFun) {
     require(left.isNo)
@@ -2480,6 +2494,7 @@ object Fact {
    * <code>Binary_||</code> instances.
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   object Binary_|| {
     def apply(left: Fact, right: Fact): Fact = new Binary_||(left, right, None)
@@ -2530,6 +2545,7 @@ object Fact {
    * @throws IllegalArgumentException if <code>left.isYes</code> is <code>false</code>
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   class Implies(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Fact {
 
@@ -2600,6 +2616,7 @@ object Fact {
    * <code>Implies</code> instances.
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   object Implies {
     def apply(left: Fact, right: Fact): Fact = new Implies(left, right, None)
@@ -2650,6 +2667,7 @@ object Fact {
    * @param messageFun an optional function to transform the combined message
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   class IsEqvTo(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Fact {
 
@@ -2707,6 +2725,7 @@ object Fact {
    * <code>IsEqvTo</code> instances.
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   object IsEqvTo {
     def apply(left: Fact, right: Fact): Fact = new IsEqvTo(left, right, None)

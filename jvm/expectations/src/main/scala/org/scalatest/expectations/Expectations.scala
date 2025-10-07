@@ -267,6 +267,7 @@ import org.scalactic.Requirements.requireNonNull
  * </p>
  *
  * @author Bill Venners
+ * @author Chua Chee Seng
  */
 trait Expectations {
   
@@ -684,6 +685,7 @@ trait Expectations {
  * </pre>
  *
  * @author Bill Venners
+ * @author Chua Chee Seng
  */
 object Expectations extends Expectations {
 
