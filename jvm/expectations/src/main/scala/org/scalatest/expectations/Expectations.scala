@@ -480,7 +480,7 @@ trait Expectations {
   import scala.language.implicitConversions
 
   /**
-   * Implicitly converts a boolean expression to a [[Fact]] for assertion purposes, which makes (x &gt; 0) implies expect(x &gt; -1) syntax works
+   * Implicitly converts a boolean expression to a [[Fact]] for assertion purposes, which makes (x &gt; 0) implies expect(x &gt; -1) syntax work.
    *
    * @param expression the boolean expression to be evaluated
    * @param prettifier the prettifier used to pretty-print the values
