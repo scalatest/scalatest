@@ -271,13 +271,16 @@ import org.scalactic.Requirements.requireNonNull
 trait Expectations {
   
   /**
-   * Expects that `actual` is equal to `expected` using default equality.
+   * Expect that the value passed as <code>expected</code> equals the value passed as <code>actual</code>.
+   * If the <code>actual</code> value equals the <code>expected</code> value
+   * (as determined by <code>==</code>), <code>expectResult</code> returns a <code>Yes</code> <code>Fact</code>.
+   * Else, <code>expectResult</code> returns a <code>No</code> <code>Fact</code> that includes the expected and actual values.
    *
    * @param expected the expected value
-   * @param actual the actual value
-   * @param prettifier the prettifier used to pretty-print the values
-   * @param pos the source position
-   * @return a [[Fact]] representing the result of the assertion
+   * @param actual the actual value, which should equal the passed <code>expected</code> value
+   * @param prettifier an implicit <code>Prettifier</code> used to prettify error messages
+   * @param pos an implicit <code>Position</code> that represents the source code location
+   * @return a <code>Yes</code> <code>Fact</code> if the passed <code>actual</code> value equals the passed <code>expected</code> value, else a <code>No</code> <code>Fact</code>.
    */
   def expectResult(expected: Any)(actual: Any)(implicit prettifier: Prettifier, pos: source.Position): Fact = {
     if (!DefaultEquality.areEqualComparingArraysStructurally(actual, expected)) {
@@ -319,14 +322,18 @@ trait Expectations {
   }
 
   /**
-   * Expects that `actual` is equal to `expected` using default equality.
+   * Expect that the value passed as <code>expected</code> equals the value passed as <code>actual</code>.
+   * If the <code>actual</code> equals the <code>expected</code>
+   * (as determined by <code>==</code>), <code>expectResult</code> returns a <code>Yes</code> <code>Fact</code>.
+   * Else, <code>expectResult</code> returns a <code>No</code> <code>Fact</code> that includes the expected and actual values, as well as the <code>String</code>
+   * obtained by invoking <code>toString</code> on the passed <code>clue</code>.
    *
    * @param expected the expected value
-   * @param clue an object whose <code>toString</code> method returns a message to be appended to the result [[Fact]]'s message
-   * @param actual the actual value
-   * @param prettifier the prettifier used to pretty-print the values
-   * @param pos the source position
-   * @return a [[Fact]] representing the result of the assertion
+   * @param clue An object whose <code>toString</code> method returns a message to include in the <code>Fact</code>'s message.
+   * @param actual the actual value, which should equal the passed <code>expected</code> value
+   * @param prettifier an implicit <code>Prettifier</code> used to prettify error messages
+   * @param pos an implicit <code>Position</code> that represents the source code location
+   * @return a <code>Yes</code> <code>Fact</code> if the passed <code>actual</code> value equals the passed <code>expected</code> value, else a <code>No</code> <code>Fact</code>.
    */
   def expectResult(expected: Any, clue: Any)(actual: Any)(implicit prettifier: Prettifier, pos: source.Position): Fact = {
     requireNonNull(clue)
@@ -369,12 +376,26 @@ trait Expectations {
   }
 
   /**
-   * Asserts that a block of code throws an exception of type `T`.
+   * Ensure that an expected exception is thrown by the passed function value. The thrown exception must be an instance of the
+   * type specified by the type parameter of this method. This method invokes the passed
+   * function. If the function throws an exception that's an instance of the specified type,
+   * this method returns a <code>Yes</code> <code>Fact</code>. Else, whether the passed function returns normally
+   * or completes abruptly with a different exception, this method returns a <code>No</code> <code>Fact</code>.
    *
-   * @param f the block of code to be executed
-   * @param classTag the class tag representing the exception type `T`
-   * @param prettifier the prettifier used to pretty-print the values
-   * @return an [[Expectation]] representing the result of the assertion
+   * <p>
+   * Note that the type specified as this method's type parameter may represent any subtype of
+   * <code>AnyRef</code>, not just <code>Throwable</code> or one of its subclasses. In
+   * Scala, exceptions can be caught based on traits they implement, so it may at times make sense
+   * to specify a trait that the expected exception's class must mix in. If a class instance is
+   * passed for a type that could not possibly be used to catch an exception (such as <code>String</code>,
+   * for example), this method will return a <code>No</code> <code>Fact</code>.
+   * </p>
+   *
+   * @param f the function value that should throw the expected exception
+   * @param classTag an implicit <code>ClassTag</code> representing the type of the specified
+   * type parameter.
+   * @param prettifier an implicit <code>Prettifier</code> used to prettify error messages
+   * @return a <code>Yes</code> <code>Fact</code> if an exception of the expected type is thrown, else a <code>No</code> <code>Fact</code>.
    */
   def expectThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], prettifier: Prettifier): Expectation = {
     val clazz = classTag.runtimeClass
@@ -427,75 +448,211 @@ trait Expectations {
   import language.experimental.macros
 
   /**
-   * Expects that a boolean expression is `true`.
+   * Expect that a boolean condition is true.
+   * If the condition is <code>true</code>, this method returns a <code>Yes</code> <code>Fact</code>.
+   * Else, it returns a <code>No</code> <code>Fact</code>.
    *
-   * @param expression the boolean expression to be evaluated
-   * @param prettifier the prettifier used to pretty-print the values
-   * @param pos the source position
-   * @return a [[Fact]] representing the result of the assertion
+   * <p>
+   * This method is implemented in terms of a Scala macro that will generate a more helpful error message
+   * for expressions of this form:
+   * </p>
+   *
+   * <ul>
+   * <li>expect(a == b)</li>
+   * <li>expect(a != b)</li>
+   * <li>expect(a === b)</li>
+   * <li>expect(a !== b)</li>
+   * <li>expect(a &gt; b)</li>
+   * <li>expect(a &gt;= b)</li>
+   * <li>expect(a &lt; b)</li>
+   * <li>expect(a &lt;= b)</li>
+   * <li>expect(a startsWith "prefix")</li>
+   * <li>expect(a endsWith "postfix")</li>
+   * <li>expect(a contains "something")</li>
+   * <li>expect(a eq b)</li>
+   * <li>expect(a ne b)</li>
+   * <li>expect(a &gt; 0 &amp;&amp; b &gt; 5)</li>
+   * <li>expect(a &gt; 0 || b &gt; 5)</li>
+   * <li>expect(a.isEmpty)</li>
+   * <li>expect(!a.isEmpty)</li>
+   * <li>expect(a.isInstanceOf[String])</li>
+   * <li>expect(a.length == 8)</li>
+   * <li>expect(a.size == 8)</li>
+   * <li>expect(a.exists(_ == 8))</li>
+   * </ul>
+   *
+   * <p>
+   * At this time, any other form of expression will just get a <code>Fact</code> with message saying the given
+   * expression was false.
+   * </p>
+   *
+   * @param condition the boolean condition to expect
+   * @param prettifier an implicit <code>Prettifier</code> used to prettify error messages
+   * @param pos an implicit <code>Position</code> that represents the source code location
+   * @return a <code>Yes</code> <code>Fact</code> if the condition is <code>true</code>, else a <code>No</code> <code>Fact</code>.
    */
   def expect(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro ExpectationsMacro.expect
 
   /**
-   * Expects that a boolean expression is `true`, message included in the returned [[Fact]] will be appended with <code>clue</code>'s <code>toString</code>.
+   * Expect that a boolean condition is true.
+   * If the condition is <code>true</code>, this method returns a <code>Yes</code> <code>Fact</code>.
+   * Else, it returns a <code>No</code> <code>Fact</code> that includes the <code>String</code> obtained
+   * by invoking <code>toString</code> on the passed <code>clue</code> as well as information about the expression.
    *
-   * @param expression the boolean expression to be evaluated
-   * @param clue An object whose <code>toString</code> method returns a message to be appended to the result [[Fact]]'s message
-   * @param prettifier the prettifier used to pretty-print the values
-   * @param pos the source position
-   * @return a [[Fact]] representing the result of the assertion
+   * <p>
+   * This method is implemented in terms of a Scala macro that will generate a more helpful error message.
+   * See the documentation for the parameterless <code>expect</code> method for the list of expressions that
+   * will generate helpful error messages.
+   * </p>
+   *
+   * @param condition the boolean condition to expect
+   * @param clue An object whose <code>toString</code> method returns a message to include in the <code>Fact</code>'s message.
+   * @param prettifier an implicit <code>Prettifier</code> used to prettify error messages
+   * @param pos an implicit <code>Position</code> that represents the source code location
+   * @return a <code>Yes</code> <code>Fact</code> if the condition is <code>true</code>, else a <code>No</code> <code>Fact</code>.
    */
   def expect(expression: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro ExpectationsMacro.expectWithClue
 
   /**
-   * Expects that a given code snippet does not compile.
+   * Expect that a given string snippet of code does not pass either the Scala parser or type checker.
    *
-   * @param code the code snippet to be compiled
-   * @param prettifier the prettifier used to pretty-print the values
-   * @param pos the source position
-   * @return a [[Fact]] representing the result of the assertion
+   * <p>
+   * Often when creating libraries you may wish to ensure that certain arrangements of code that
+   * represent potential &ldquo;user errors&rdquo; do not compile, so that your library is more error resistant.
+   * ScalaTest's <code>Expectations</code> trait includes the following syntax for that purpose:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * expectDoesNotCompile("val a: String = \"a string")
+   * </pre>
+   *
+   * <p>
+   * Although <code>expectDoesNotCompile</code> is implemented with a macro that determines at compile time whether
+   * the snippet of code represented by the passed string doesn't compile, it returns a <code>Fact</code> at runtime
+   * that indicates whether the snippet compiled or not. A <code>Yes</code> <code>Fact</code> is returned if the snippet
+   * does not compile (<em>i.e.</em>, the expected behavior), and a <code>No</code> <code>Fact</code> is returned if the snippet
+   * <em>does</em> compile (unexpected behavior).
+   * </p>
+   *
+   * <p>
+   * Note that the difference between <code>expectTypeError</code> and <code>expectDoesNotCompile</code> is
+   * that <code>expectDoesNotCompile</code> will return a <code>Yes</code> <code>Fact</code> if the given code does not compile for any reason,
+   * whereas <code>expectTypeError</code> will only return a <code>Yes</code> <code>Fact</code> if the given code does not compile because of
+   * a type error. If the given code does not compile because of a syntax error, for example, <code>expectDoesNotCompile</code>
+   * will return a <code>Yes</code> <code>Fact</code> but <code>expectTypeError</code> will return a <code>No</code> <code>Fact</code>.
+   * </p>
+   *
+   * @param code the snippet of code that should not compile
+   * @param prettifier an implicit <code>Prettifier</code> used to prettify error messages
+   * @param pos an implicit <code>Position</code> that represents the source code location
+   * @return a <code>Yes</code> <code>Fact</code> if the snippet does not compile, else a <code>No</code> <code>Fact</code>.
    */
   def expectDoesNotCompile(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro CompileMacro.expectDoesNotCompileImpl
 
   /**
-   * Expects that a given code snippet compiles successfully.
+   * Expect that a given string snippet of code passes both the Scala parser and type checker.
    *
-   * @param code the code snippet to be compiled
-   * @param prettifier the prettifier used to pretty-print the values
-   * @param pos the source position
-   * @return a [[Fact]] representing the result of the assertion
+   * <p>
+   * You can use this to make sure a snippet of code compiles:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * expectCompiles("val a: Int = 1")
+   * </pre>
+   *
+   * <p>
+   * Although <code>expectCompiles</code> is implemented with a macro that determines at compile time whether
+   * the snippet of code represented by the passed string compiles, it returns a <code>Fact</code> at runtime
+   * that indicates whether the snippet compiled or not. A <code>Yes</code> <code>Fact</code> is returned if the snippet
+   * does compile (<em>i.e.</em>, the expected behavior), and a <code>No</code> <code>Fact</code> is returned if the snippet
+   * <em>does not</em> compile (unexpected behavior).
+   * </p>
+   *
+   * @param code the snippet of code that should compile
+   * @param prettifier an implicit <code>Prettifier</code> used to prettify error messages
+   * @param pos an implicit <code>Position</code> that represents the source code location
+   * @return a <code>Yes</code> <code>Fact</code> if the snippet compiles, else a <code>No</code> <code>Fact</code>.
    */
   def expectCompiles(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro CompileMacro.expectCompilesImpl
 
   /**
-   * Expects that a given code snippet results in a type error during compilation.
+   * Expect that a given string snippet of code does not pass the Scala type checker, failing if the given snippet does not pass the Scala parser.
    *
-   * @param code the code snippet to be compiled
-   * @param prettifier the prettifier used to pretty-print the values
-   * @param pos the source position
-   * @return a [[Fact]] representing the result of the assertion
+   * <p>
+   * Often when creating libraries you may wish to ensure that certain arrangements of code that
+   * represent potential &ldquo;user errors&rdquo; do not compile, so that your library is more error resistant.
+   * ScalaTest's <code>Expectations</code> trait includes the following syntax for that purpose:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * expectTypeError("val a: String = 1")
+   * </pre>
+   *
+   * <p>
+   * Although <code>expectTypeError</code> is implemented with a macro that determines at compile time whether
+   * the snippet of code represented by the passed string type checks, it returns a <code>Fact</code> at runtime
+   * that indicates whether the snippet type checked or not. A <code>Yes</code> <code>Fact</code> is returned if the snippet
+   * does <em>not</em> type check (<em>i.e.</em>, the expected behavior), and a <code>No</code> <code>Fact</code> is returned if the snippet
+   * <em>does</em> type check (unexpected behavior).
+   * </p>
+   *
+   * <p>
+   * Note that the difference between <code>expectTypeError</code> and <code>expectDoesNotCompile</code> is
+   * that <code>expectDoesNotCompile</code> will return a <code>Yes</code> <code>Fact</code> if the given code does not compile for any reason,
+   * whereas <code>expectTypeError</code> will only return a <code>Yes</code> <code>Fact</code> if the given code does not compile because of
+   * a type error. If the given code does not compile because of a syntax error, for example, <code>expectDoesNotCompile</code>
+   * will return a <code>Yes</code> <code>Fact</code> but <code>expectTypeError</code> will return a <code>No</code> <code>Fact</code>.
+   * </p>
+   *
+   * @param code the snippet of code that should not type check
+   * @param prettifier an implicit <code>Prettifier</code> used to prettify error messages
+   * @param pos an implicit <code>Position</code> that represents the source code location
+   * @return a <code>Yes</code> <code>Fact</code> if the snippet does not type check, else a <code>No</code> <code>Fact</code>.
    */
   def expectTypeError(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro CompileMacro.expectTypeErrorImpl
 
   import scala.language.implicitConversions
 
   /**
-   * Implicitly converts a boolean expression to a [[Fact]] for assertion purposes, which makes (x &gt; 0) implies expect(x &gt; -1) syntax work.
+   * Implicitly converts a <code>Boolean</code> value to a <code>Fact</code> for use in logical expressions.
    *
-   * @param expression the boolean expression to be evaluated
-   * @param prettifier the prettifier used to pretty-print the values
-   * @param pos the source position
-   * @return a [[Fact]] representing the result of the assertion
-   */  
+   * <p>
+   * This implicit conversion enables the use of boolean expressions in logical fact compositions,
+   * such as <code>(x &gt; 0) implies expect(x &gt; -1)</code>. The boolean value on the left side
+   * of <code>implies</code> is implicitly converted to a <code>Fact</code> so it can be combined
+   * with the <code>Fact</code> returned by <code>expect</code>.
+   * </p>
+   *
+   * <p>
+   * This method is implemented in terms of a Scala macro that will generate helpful error messages
+   * similar to the <code>expect</code> macro.
+   * </p>
+   *
+   * @param expression the boolean expression to be converted
+   * @param prettifier an implicit <code>Prettifier</code> used to prettify error messages
+   * @param pos an implicit <code>Position</code> that represents the source code location
+   * @return a <code>Yes</code> <code>Fact</code> if the expression is <code>true</code>, else a <code>No</code> <code>Fact</code>.
+   */
   implicit def booleanToFact(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro ExpectationsMacro.expect
   
   /**
-   * Implicitly converts an [[Expectation]] to an [[Assertion]].
+   * Implicitly converts an <code>Expectation</code> to an <code>Assertion</code>.
    *
-   * @param exp the expectation to be converted
-   * @return an [[Assertion]] representing the result of the expectation
+   * <p>
+   * This implicit conversion allows <code>Expectation</code> (which is a type alias for <code>Fact</code>)
+   * to be used in contexts where an <code>Assertion</code> is expected. The conversion is performed by
+   * calling the <code>toAssertion</code> method on the <code>Fact</code>, which returns <code>Succeeded</code>
+   * if the fact is <code>Yes</code>, throws <code>TestFailedException</code> if the fact is <code>No</code>,
+   * or throws <code>TestCanceledException</code> if the fact is <code>VacuousYes</code>.
+   * </p>
+   *
+   * @param exp the <code>Expectation</code> (which is a <code>Fact</code>) to be converted
+   * @param pos an implicit <code>Position</code> that represents the source code location
+   * @return <code>Succeeded</code> if the <code>Expectation</code> is a <code>Yes</code> fact
+   * @throws TestFailedException if the <code>Expectation</code> is a <code>No</code> fact
+   * @throws TestCanceledException if the <code>Expectation</code> is a <code>VacuousYes</code> fact
    */
-  implicit def convertExpectationToAssertion(exp: Expectation): Assertion = exp.toAssertion
+  implicit def convertExpectationToAssertion(exp: Expectation)(implicit pos: source.Position): Assertion = exp.toAssertion
 }
 
 
