@@ -836,16 +836,16 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
 
     "toString method" - {
 
-      "should display midSentenceFactMessage enclosed with opening and closing bracket" in {
+      "should display factMessage enclosed with opening and closing bracket" in {
         val yes = Yes("fact message", "simplified fact message", "mid-sentence fact message", "simplified mid-sentence fact message", Prettifier.default)
-        yes.toString shouldBe "Yes(mid-sentence fact message)"
+        yes.toString shouldBe "Yes(fact message)"
 
         val no = No("fact message", "simplified fact message", "mid-sentence fact message", "simplified mid-sentence fact message", Prettifier.default)
-        no.toString shouldBe "No(mid-sentence fact message)"
+        no.toString shouldBe "No(fact message)"
       }
 
-      "should prefix new line to midSentenceFactMessage in toString when the midSentenceFactMessage contains \\n" in {
-        val fact = Yes("fact message", "simplified fact message", "line 1\nline 2\nline 3", "simplified mid-sentence fact message", Prettifier.default)
+      "should prefix new line to factMessage in toString when the factMessage contains \\n" in {
+        val fact = Yes("line 1\nline 2\nline 3", "simplified fact message", "mid-sentence fact message", "simplified mid-sentence fact message", Prettifier.default)
         fact.toString shouldBe "Yes(" + NEWLINE + "  line 1\n  line 2\n  line 3" + NEWLINE + ")"
       }
     }
@@ -1150,6 +1150,40 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
         fact.isLeaf should be (false)
         fact.isYes shouldBe (true)
         fact.isVacuousYes shouldBe (false)
+      }
+
+      "for Yes implies VacuousYes" in {
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), Prettifier.default)
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('f', 'g'),Vector('f', 'g'),Vector('f', 'g'),Vector('f', 'g'), Prettifier.default)
+        val rightSideVacuousYes = VacuousYes(rightSideNo)
+        val fact = leftSideYes implies rightSideVacuousYes
+        fact shouldBe a [Implies]
+        fact.isYes shouldBe true
+        fact.isVacuousYes shouldBe (true)
+        fact.isLeaf should be (false)
+      }
+
+      "for VacuousYes implies Yes" in {
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('f', 'g'),Vector('f', 'g'),Vector('f', 'g'),Vector('f', 'g'), Prettifier.default)
+        val leftSideVacuousYes = VacuousYes(leftSideNo)
+        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), Prettifier.default)
+        val fact = leftSideVacuousYes implies rightSideYes
+        fact shouldBe a [Implies]
+        fact.isYes shouldBe true
+        fact.isVacuousYes shouldBe (true)
+        fact.isLeaf should be (false)
+      }
+
+      "for VacuousYes implies VacuousYes" in {
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('f', 'g'),Vector('f', 'g'),Vector('f', 'g'),Vector('f', 'g'), Prettifier.default)
+        val leftSideVacuousYes = VacuousYes(leftSideNo)
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('h', 'i'),Vector('h', 'i'),Vector('h', 'i'),Vector('h', 'i'), Prettifier.default)
+        val rightSideVacuousYes = VacuousYes(rightSideNo)
+        val fact = leftSideVacuousYes implies rightSideVacuousYes
+        fact shouldBe a [Implies]
+        fact.isYes shouldBe true
+        fact.isVacuousYes shouldBe (true)
+        fact.isLeaf should be (false)
       }
     }
 

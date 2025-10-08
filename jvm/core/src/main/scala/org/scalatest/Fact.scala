@@ -19,20 +19,649 @@ import org.scalactic.{UnquotedString => _, _}
 import org.scalatest.exceptions._
 
 /**
- * An abstract class representing a Fact that can be evaluated as either is yes or no.
- * 
- * @param rawSimplifiedFactMessage 
- * @param rawMidSentenceFactMessage 
- * @param rawMidSentenceSimplifiedFactMessage 
- * @param factMessageArgs 
- * @param simplifiedFactMessageArgs 
- * @param midSentenceFactMessageArgs 
- * @param midSentenceSimplifiedFactMessageArgs 
- * @param isLeaf 
- * @param isVacuousYes 
- * @param prettifier 
- * @param cause 
- * @param isYes 
+ * Represents the result of an assertion as a value that is either "yes" (true) or "no" (false).
+ *
+ * <p>
+ * A <code>Fact</code> is a composable alternative to traditional assertions that throw exceptions.
+ * Rather than immediately throwing <code>TestFailedException</code> on failure, a <code>Fact</code>
+ * carries information about whether an assertion succeeded or failed, along with detailed messages
+ * explaining the result.
+ * </p>
+ *
+ * <p>
+ * <code>Fact</code>s are created by the expectation methods in trait
+ * <a href="expectations/Expectations.html"><code>Expectations</code></a>, such as
+ * <code>expect</code>, <code>expectResult</code>, and <code>expectThrows</code>. You can compose
+ * <code>Fact</code>s using logical operators like <code>&&</code>, <code>||</code>, and <code>!</code>,
+ * and convert them to traditional <code>Assertion</code>s by calling <code>toAssertion</code>.
+ * </p>
+ *
+ * <a name="yesAndNo"></a>
+ * <h2>Yes and No</h2>
+ *
+ * <p>
+ * Every <code>Fact</code> is either a "yes" (<code>isYes</code> returns <code>true</code>) indicating
+ * the assertion passed, or a "no" (<code>isNo</code> returns <code>true</code>) indicating it failed.
+ * Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * import org.scalatest.expectations.Expectations._
+ *
+ * val fact1 = expect(2 + 2 == 4)
+ * fact1.isYes  // true
+ *
+ * val fact2 = expect(2 + 2 == 5)
+ * fact2.isNo   // true
+ * </pre>
+ *
+ * <p>
+ * The <code>isNo</code> method is defined as <code>!isYes</code>, so every <code>Fact</code> is
+ * always either yes or no, never both or neither.
+ * </p>
+ *
+ * <a name="composingFacts"></a>
+ * <h2>Composing Facts</h2>
+ *
+ * <p>
+ * You can combine <code>Fact</code>s using logical operators to build complex assertions.
+ * <code>Fact</code> provides both short-circuiting and strict evaluation operators:
+ * </p>
+ *
+ * <table style="border-collapse: collapse; border: 1px solid black">
+ * <tr>
+ *   <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Operator
+ *   </th>
+ *   <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Description
+ *   </th>
+ *   <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Evaluation
+ *   </th>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     <code>&&</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Logical AND
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Short-circuits (right not evaluated if left is no)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     <code>&amp;</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Logical AND
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Strict (always evaluates both sides)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     <code>||</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Logical OR
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Short-circuits (right not evaluated if left is yes)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     <code>|</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Logical OR
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Strict (always evaluates both sides)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     <code>!</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Logical NOT
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Negates the fact
+ *   </td>
+ * </tr>
+ * </table>
+ *
+ * <p>
+ * Here's an example showing composition:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * val x = 5
+ * val fact1 = expect(x &gt; 0)
+ * val fact2 = expect(x &lt; 10)
+ * val both = fact1 && fact2
+ * both.isYes  // true, because both facts are yes
+ *
+ * val fact3 = expect(x &gt; 10)
+ * val either = fact1 || fact3
+ * either.isYes  // true, because at least one fact is yes
+ *
+ * val negated = !fact3
+ * negated.isYes  // true, because fact3 was no
+ * </pre>
+ *
+ * <p>
+ * The short-circuiting operators (<code>&&</code> and <code>||</code>) take by-name parameters,
+ * so the right-hand side is only evaluated when needed. This can prevent errors when the
+ * right-hand assertion would fail if the left-hand condition doesn't hold. For example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * val nums = List.empty[Int]
+ * val fact = expect(nums.nonEmpty) && expect(nums.head &gt; 0)
+ * // fact.isNo is true, but nums.head was never evaluated
+ * </pre>
+ *
+ * <a name="implication"></a>
+ * <h2>Implication</h2>
+ *
+ * <p>
+ * The <code>implies</code> method represents logical implication (if premise then consequent).
+ * It is particularly useful for conditional assertions in property-based testing, where you
+ * want to test a property only when certain preconditions hold.
+ * </p>
+ *
+ * <p>
+ * Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * def validateScore(score: Int): Fact = {
+ *   val isPositive = expect(score &gt; 0)
+ *   val isReasonable = expect(score &lt;= 100)
+ *   isPositive implies isReasonable
+ * }
+ * </pre>
+ *
+ * <p>
+ * The <code>implies</code> method follows the truth table of logical implication:
+ * </p>
+ *
+ * <table style="border-collapse: collapse; border: 1px solid black">
+ * <tr>
+ *   <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Premise
+ *   </th>
+ *   <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Consequent
+ *   </th>
+ *   <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Result
+ *   </th>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Yes
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Yes
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Yes (meaningful success)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Yes
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     No
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     No (real failure)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     No
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Yes
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     VacuousYes (vacuously true)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     No
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     No
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     VacuousYes (vacuously true)
+ *   </td>
+ * </tr>
+ * </table>
+ *
+ * <p>
+ * When the premise is no, <code>implies</code> returns a <code>VacuousYes</code> without
+ * evaluating the consequent. This follows the principle of classical logic that "false implies
+ * anything" (<em>ex falso quodlibet</em>). See the <a href="#vacuousYes">Vacuous Yes</a> section
+ * below for more details.
+ * </p>
+ *
+ * <a name="equivalence"></a>
+ * <h2>Equivalence</h2>
+ *
+ * <p>
+ * The <code>isEqvTo</code> method tests whether two <code>Fact</code>s have the same truth value,
+ * representing logical equivalence (if and only if).
+ * </p>
+ *
+ * <p>
+ * Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * val x = 0
+ * val fact1 = expect(x == 0)
+ * val fact2 = expect(x &gt;= 0 && x &lt;= 0)
+ * val equiv = fact1 isEqvTo fact2
+ * equiv.isYes  // true, because both facts have the same truth value
+ * </pre>
+ *
+ * <p>
+ * The <code>isEqvTo</code> method follows the truth table of logical equivalence:
+ * </p>
+ *
+ * <table style="border-collapse: collapse; border: 1px solid black">
+ * <tr>
+ *   <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Left
+ *   </th>
+ *   <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Right
+ *   </th>
+ *   <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Result
+ *   </th>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Yes
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Yes
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Yes (both true)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Yes
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     No
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     No (different truth values)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     No
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Yes
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     No (different truth values)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     No
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     No
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Yes (both false)
+ *   </td>
+ * </tr>
+ * </table>
+ *
+ * <p>
+ * If either <code>Fact</code> is a <code>VacuousYes</code>, the result will also be a
+ * <code>VacuousYes</code> (when the result would otherwise be yes).
+ * </p>
+ *
+ * <a name="vacuousYes"></a>
+ * <h2>Vacuous Yes</h2>
+ *
+ * <p>
+ * A <code>VacuousYes</code> is a special kind of yes that indicates an assertion was technically
+ * true, but didn't test anything meaningful. The most common way to create a <code>VacuousYes</code>
+ * is by using <code>implies</code> with a false premise. When the premise is false, the implication
+ * is vacuously true according to classical logic, following the principle of <em>ex falso quodlibet</em>
+ * ("from falsehood, anything follows").
+ * </p>
+ *
+ * <p>
+ * You can check whether a <code>Fact</code> is vacuous by calling <code>isVacuousYes</code>:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * val score = -5
+ * val fact = expect(score &gt; 0) implies expect(score &lt;= 100)
+ * fact.isYes         // true (vacuously)
+ * fact.isVacuousYes  // true (because premise was false)
+ * </pre>
+ *
+ * <p>
+ * When converted to an <code>Assertion</code>, a <code>VacuousYes</code> throws
+ * <code>TestCanceledException</code> to indicate the test was skipped because its precondition
+ * wasn't met:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * fact.toAssertion  // throws TestCanceledException
+ * </pre>
+ *
+ * <p>
+ * This behavior is useful in property-based testing, where you want to distinguish between:
+ * </p>
+ *
+ * <ul>
+ * <li>Tests that passed meaningfully (Yes)</li>
+ * <li>Tests that failed (No)</li>
+ * <li>Tests that were skipped because preconditions weren't met (VacuousYes)</li>
+ * </ul>
+ *
+ * <a name="vacuousPropagation"></a>
+ * <h3>Vacuous Yes Propagation</h3>
+ *
+ * <p>
+ * When you combine <code>Fact</code>s using logical operators, the vacuous property tends to
+ * propagate through the operations. The general rule is: <em>if the result is yes and either
+ * operand is vacuous, the result is also vacuous</em>. This ensures that vacuous truth is
+ * not hidden by subsequent operations.
+ * </p>
+ *
+ * <p>
+ * Here's how vacuous yes propagates through each operator:
+ * </p>
+ *
+ * <table style="border-collapse: collapse; border: 1px solid black">
+ * <tr>
+ *   <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Operator
+ *   </th>
+ *   <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Vacuous Propagation Rule
+ *   </th>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     <code>&&</code> or <code>&amp;</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Result is VacuousYes if result is Yes AND (left is VacuousYes OR right is VacuousYes)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     <code>||</code> or <code>|</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Result is VacuousYes if (left is VacuousYes AND right is VacuousYes) OR<br/>
+ *     (left is VacuousYes AND right is No) OR (left is No AND right is VacuousYes)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     <code>implies</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Result is VacuousYes if premise is No (regardless of consequent), OR<br/>
+ *     result is Yes AND (premise is VacuousYes OR consequent is VacuousYes)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     <code>isEqvTo</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Result is VacuousYes if result is Yes AND (left is VacuousYes OR right is VacuousYes)
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     <code>!</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black">
+ *     Negation always produces a non-vacuous result
+ *   </td>
+ * </tr>
+ * </table>
+ *
+ * <p>
+ * Here's an example showing vacuous propagation:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * val x = -5
+ * val premise = expect(x &gt; 0)
+ * val consequent = expect(x &lt; 100)
+ * val implication = premise implies consequent  // VacuousYes
+ *
+ * val anotherFact = expect(true)
+ * val combined = implication && anotherFact     // Still VacuousYes!
+ * combined.isVacuousYes  // true - vacuousness propagated
+ * </pre>
+ *
+ * <p>
+ * This propagation ensures that if any part of a complex assertion was vacuously true, the
+ * overall result will be marked as vacuous, preventing false confidence in test coverage.
+ * </p>
+ *
+ * <a name="messages"></a>
+ * <h2>Fact Messages</h2>
+ *
+ * <p>
+ * Every <code>Fact</code> carries detailed messages that explain the assertion result. These
+ * messages are used when converting a <code>Fact</code> to an <code>Assertion</code> or when
+ * displaying a <code>Fact</code> diagram.
+ * </p>
+ *
+ * <p>
+ * A <code>Fact</code> maintains four different message templates, each serving a specific purpose:
+ * </p>
+ *
+ * <ul>
+ * <li><code>rawFactMessage</code> - The primary message, used for top-level assertions</li>
+ * <li><code>rawSimplifiedFactMessage</code> - A simplified version, used when the fact is negated</li>
+ * <li><code>rawMidSentenceFactMessage</code> - For use mid-sentence in composite fact diagrams</li>
+ * <li><code>rawMidSentenceSimplifiedFactMessage</code> - Simplified mid-sentence version</li>
+ * </ul>
+ *
+ * <p>
+ * Each message template has corresponding argument collections (<code>factMessageArgs</code>,
+ * <code>simplifiedFactMessageArgs</code>, <em>etc.</em>) that are formatted into the templates
+ * using the <code>prettifier</code> to produce the final messages.
+ * </p>
+ *
+ * <p>
+ * The simplified messages are used when a <code>Fact</code> is negated because the regular
+ * message might contain confusing language. For example, "Expected 3, but got 4" makes sense
+ * as a failure message, but when negated it would imply we expected something <em>other</em>
+ * than 3. The simplified message "3 did not equal 4" works correctly in both cases.
+ * </p>
+ *
+ * <p>
+ * You can obtain the formatted messages by calling:
+ * </p>
+ *
+ * <ul>
+ * <li><code>factMessage</code> - formats <code>rawFactMessage</code> with <code>factMessageArgs</code></li>
+ * <li><code>simplifiedFactMessage</code> - formats <code>rawSimplifiedFactMessage</code> with <code>simplifiedFactMessageArgs</code></li>
+ * <li><code>midSentenceFactMessage</code> - formats <code>rawMidSentenceFactMessage</code> with <code>midSentenceFactMessageArgs</code></li>
+ * <li><code>midSentenceSimplifiedFactMessage</code> - formats <code>rawMidSentenceSimplifiedFactMessage</code> with <code>midSentenceSimplifiedFactMessageArgs</code></li>
+ * </ul>
+ *
+ * <a name="factDiagrams"></a>
+ * <h2>Fact Diagrams</h2>
+ *
+ * <p>
+ * The <code>factDiagram</code> method generates a textual representation of a <code>Fact</code>
+ * and its structure. For simple leaf <code>Fact</code>s, this is just the message. For composite
+ * <code>Fact</code>s created with operators like <code>&&</code> or <code>||</code>, it shows
+ * the tree structure of the assertion.
+ * </p>
+ *
+ * <p>
+ * Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * val x = 3
+ * val fact1 = expect(x &gt; 0)
+ * val fact2 = expect(x &lt; 2)
+ * val both = fact1 && fact2
+ * println(both.factDiagram(0))
+ * </pre>
+ *
+ * <p>
+ * This will print:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * No(
+ *   Yes(3 was greater than 0) &&
+ *   No(3 was not less than 2)
+ * )
+ * </pre>
+ *
+ * <p>
+ * The diagram shows the overall result (<code>No</code>), the operator (<code>&&</code>),
+ * and the results of each operand, making it easy to see which part of a complex assertion failed.
+ * </p>
+ *
+ * <a name="conversionToAssertion"></a>
+ * <h2>Converting to Assertion</h2>
+ *
+ * <p>
+ * You can convert a <code>Fact</code> to a traditional ScalaTest <code>Assertion</code> by calling
+ * <code>toAssertion</code>. The behavior of <code>toAssertion</code> depends on the <code>Fact</code>'s state:
+ * </p>
+ *
+ * <ul>
+ * <li>If <code>isYes</code> is <code>true</code> and <code>isVacuousYes</code> is <code>false</code>,
+ *     returns <code>Succeeded</code></li>
+ * <li>If <code>isVacuousYes</code> is <code>true</code>, throws <code>TestCanceledException</code>
+ *     with the fact's message</li>
+ * <li>If <code>isNo</code> is <code>true</code>, throws <code>TestFailedException</code> with
+ *     the fact's message</li>
+ * </ul>
+ *
+ * <p>
+ * This conversion will be applied implicitly if you import <code>org.scalatest.expectations.Expectations._</code>,
+ * so long as the expected test result type is <code>Assertion</code>. For example, style traits like
+ * <a href="funsuite/AnyFunSuite.html"><code>FunSuite</code></a>,
+ * <a href="funspec/AnyFunSpec.html"><code>FunSpec</code></a>, and
+ * <a href="featurespec/AnyFeatureSpec.html"><code>FeatureSpec</code></a> expect test result type
+ * <code>Assertion</code>. As a result, you need not explicitly call <code>toAssertion</code> when
+ * using expectations in these styles. Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * import org.scalatest.funsuite.FunSuite
+ * import org.scalatest.expectations.Expectations._
+ *
+ * class ExampleSuite extends FunSuite {
+ *   test("addition") {
+ *     val fact = expect(2 + 2 == 4)
+ *     // Implicit conversion to Assertion happens here
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * By contrast, style traits whose names start with <code>Any</code>, such as
+ * <a href="funsuite/AnyFunSuite.html"><code>AnyFunSuite</code></a> and
+ * <a href="featurespec/AnyFeatureSpec.html"><code>AnyFeatureSpec</code></a>, have <code>Any</code>
+ * as the expected test result type. You should use assertions or matchers with these styles, not
+ * expectations.
+ * </p>
+ *
+ * <p>
+ * You can also convert a <code>Fact</code> to a <code>Boolean</code> by calling <code>toBoolean</code>,
+ * which simply returns the value of <code>isYes</code>.
+ * </p>
+ *
+ * <a name="leafAndComposite"></a>
+ * <h2>Leaf and Composite Facts</h2>
+ *
+ * <p>
+ * <code>Fact</code>s are organized in a tree structure. A <em>leaf</em> <code>Fact</code> is one
+ * created directly by an expectation method like <code>expect</code> or <code>expectResult</code>.
+ * A <em>composite</em> <code>Fact</code> is one created by combining other <code>Fact</code>s with
+ * operators like <code>&&</code>, <code>||</code>, <code>!</code>, <code>implies</code>, or
+ * <code>isEqvTo</code>.
+ * </p>
+ *
+ * <p>
+ * You can check whether a <code>Fact</code> is a leaf by calling <code>isLeaf</code>. This is
+ * useful when generating fact diagrams or analyzing assertion structure.
+ * </p>
+ *
+ * <p>
+ * Leaf <code>Fact</code>s are created using the factory methods in the <a href="Fact$.html">
+ * <code>Fact</code> companion object</a>:
+ * </p>
+ *
+ * <ul>
+ * <li><code>Fact.Yes</code> - creates a yes leaf fact</li>
+ * <li><code>Fact.No</code> - creates a no leaf fact</li>
+ * <li><code>Fact.VacuousYes</code> - creates a vacuous yes by wrapping a no fact</li>
+ * </ul>
+ *
+ * <a name="modifyingMessages"></a>
+ * <h2>Modifying Messages</h2>
+ *
+ * <p>
+ * The <code>modifyMessage</code> method allows you to transform a <code>Fact</code>'s messages
+ * using a function. This is useful for adding clues or context to assertion messages.
+ * </p>
+ *
+ * <p>
+ * Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * val fact = expect(x &gt; 0)
+ * val withClue = fact.modifyMessage { msgOpt =&gt;
+ *   msgOpt.map(msg =&gt; s"$msg (while validating user input)")
+ * }
+ * </pre>
+ *
+ * <p>
+ * The function receives an <code>Option[String]</code> containing the current message (or
+ * <code>None</code> if there is no message) and returns an <code>Option[String]</code> with
+ * the modified message.
+ * </p>
+ *
+ * @author Bill Venners
+ * @author Chua Chee Seng
  */
 sealed abstract class Fact {
   // As it stands, this should not extend Product with Serializable because
@@ -130,41 +759,71 @@ sealed abstract class Fact {
   }
 
   /**
-   * Negates this Fact, creating a version with the opposite value.
+   * Negates this Fact.
    *
-   * @return A version of this Fact with the opposite value.
+   * @return A Fact with the opposite value.
    */ 
   def unary_! : Fact = Fact.Unary_!(this)
 
   /**
-   * Creates a new Fact that represents a logical OR between this Fact and the provided Fact.
+   * <p>
+   * Returns a new <code>Fact</code> that represents the logical OR of this <code>Fact</code> and the given <code>Fact</code>.
+   * </p>
    *
-   * @param rhs The Fact to be combined with this Fact using a logical OR.
-   * @return A new Fact representing the logical OR between this Fact and the provided Fact.
+   * <p>
+   * This operator short-circuits, just like the <code>||</code> operator on <code>Boolean</code>. If this
+   * <code>Fact</code> is <code>Yes</code>, the right-hand side will not be evaluated and this <code>Fact</code>
+   * will be returned.
+   * </p>
+   *
+   * @param rhs the right-hand side <code>Fact</code> (evaluated by-name)
+   * @return a <code>Fact</code> representing the logical OR of this and the right-hand side
    */
   final def ||(rhs: => Fact): Fact = if (isYes) this else Fact.Binary_||(this, rhs)
 
   /**
-   * Creates a new Fact that represents a logical AND between this Fact and the provided Fact.
+   * <p>
+   * Returns a new <code>Fact</code> that represents the logical AND of this <code>Fact</code> and the given <code>Fact</code>.
+   * </p>
    *
-   * @param rhs The Fact to be combined with this Fact using a logical AND.
-   * @return A new Fact representing the logical AND between this Fact and the provided Fact.
+   * <p>
+   * This operator short-circuits, just like the <code>&&</code> operator on <code>Boolean</code>. If this
+   * <code>Fact</code> is <code>No</code>, the right-hand side will not be evaluated and this <code>Fact</code>
+   * will be returned.
+   * </p>
+   *
+   * @param rhs the right-hand side <code>Fact</code> (evaluated by-name)
+   * @return a <code>Fact</code> representing the logical AND of this and the right-hand side
    */
   final def &&(rhs: => Fact): Fact = if (isNo) this else Fact.Binary_&&(this, rhs)
 
   /**
-   * Creates a new Fact that represents a logical OR between this Fact and the provided Fact.
+   * <p>
+   * Returns a new <code>Fact</code> that represents the logical OR of this <code>Fact</code> and the given <code>Fact</code>.
+   * </p>
    *
-   * @param rhs The Fact to be combined with this Fact using a logical OR.
-   * @return A new Fact representing the logical OR between this Fact and the provided Fact.
+   * <p>
+   * This operator does <em>not</em> short-circuit, just like the <code>|</code> operator on <code>Boolean</code>.
+   * Both the left-hand and right-hand sides will be evaluated regardless of their values.
+   * </p>
+   *
+   * @param rhs the right-hand side <code>Fact</code>
+   * @return a new <code>Fact</code> representing the logical OR of this and the right-hand side
    */
   final def |(rhs: Fact): Fact = Fact.Binary_|(this, rhs)
 
   /**
-   * Creates a new Fact that represents a logical AND between this Fact and the provided Fact.
+   * <p>
+   * Returns a new <code>Fact</code> that represents the logical AND of this <code>Fact</code> and the given <code>Fact</code>.
+   * </p>
    *
-   * @param rhs The Fact to be combined with this Fact using a logical AND.
-   * @return A new Fact representing the logical AND between this Fact and the provided Fact.
+   * <p>
+   * This operator does <em>not</em> short-circuit, just like the <code>&</code> operator on <code>Boolean</code>.
+   * Both the left-hand and right-hand sides will be evaluated regardless of their values.
+   * </p>
+   *
+   * @param rhs the right-hand side <code>Fact</code>
+   * @return a new <code>Fact</code> representing the logical AND of this and the right-hand side
    */
   final def &(rhs: Fact): Fact = Fact.Binary_&(this, rhs)
 
@@ -183,7 +842,7 @@ sealed abstract class Fact {
    * @param rhs The Fact representing the implication's consequent.
    * @return A new Fact representing the implication between this Fact and the provided Fact.
    */
-  final def implies(rhs: => Fact): Fact = if (isNo) Fact.VacuousYes(this) else Fact.Implies(this, rhs)
+  final /* DOTTY-ONLY infix */ def implies(rhs: => Fact): Fact = if (isNo) Fact.VacuousYes(this) else Fact.Implies(this, rhs)
 
   /**
    * Creates a new Fact that represents the equivalence (eqv) between this Fact and the provided Fact.
@@ -191,7 +850,7 @@ sealed abstract class Fact {
    * @param rhs The Fact representing the other side of the equivalence.
    * @return A new Fact representing the equivalence between this Fact and the provided Fact.
    */
-  final def isEqvTo(rhs: Fact): Fact = Fact.IsEqvTo(this, rhs)
+  final /* DOTTY-ONLY infix */ def isEqvTo(rhs: Fact): Fact = Fact.IsEqvTo(this, rhs)
 
   /**
    * Construct failure message to report if a fact fails, using <code>rawFactMessage</code>, <code>factMessageArgs</code> and <code>prettifier</code>
@@ -242,7 +901,7 @@ sealed abstract class Fact {
    */
   def factDiagram(level: Int): String = {
     // This one makes sense for Yes and No only. The other subclassess override it.
-    val msg = midSentenceFactMessage // just compute this once
+    val msg = factMessage // just compute this once
     val padding = "  " * level
     if (msg.contains("\n")) {
       val padding = "  " * (level)
@@ -266,21 +925,47 @@ sealed abstract class Fact {
 object Fact {
 
   /**
-   * Represents a leaf node in the Fact tree, which is a concrete Fact with known boolean values.
+   * <p>
+   * Case class representing a leaf node in the <code>Fact</code> tree.
+   * </p>
    *
-   * @param rawFactMessage The raw message representing the fact.
-   * @param rawSimplifiedFactMessage The raw simplified message representing the fact.
-   * @param rawMidSentenceFactMessage The raw mid-sentence message representing the fact.
-   * @param rawMidSentenceSimplifiedFactMessage The raw mid-sentence simplified message representing the fact.
-   * @param factMessageArgs Arguments used to format the rawFactMessage.
-   * @param simplifiedFactMessageArgs Arguments used to format the rawSimplifiedFactMessage.
-   * @param midSentenceFactMessageArgs Arguments used to format the rawMidSentenceFactMessage.
-   * @param midSentenceSimplifiedFactMessageArgs Arguments used to format the rawMidSentenceSimplifiedFactMessage.
-   * @param isYes Indicates whether the fact is evaluated to true.
-   * @param isVacuousYes Indicates whether the fact is a vacuous yes, which means true in a sense but without meaningful assertions.
-   * @param prettifier A prettifier used to format the messages when constructing failure messages.
-   * @param cause An optional cause Throwable associated with the fact.
-   * @throws IllegalArgumentException if `isVacuousYes` is true but `isYes` is false.
+   * <p>
+   * A <code>Leaf</code> is an atomic <code>Fact</code> created directly by expectation methods like
+   * <code>expect</code>, <code>expectResult</code>, or <code>expectThrows</code>. Unlike composite
+   * <code>Fact</code>s (which are created by combining other <code>Fact</code>s with operators like
+   * <code>&&</code>, <code>||</code>, or <code>implies</code>), a <code>Leaf</code> represents a
+   * single assertion result.
+   * </p>
+   *
+   * <p>
+   * You can check whether a <code>Fact</code> is a leaf by calling <code>isLeaf</code>. The
+   * <code>isLeaf</code> method will return <code>true</code> only if the <code>Fact</code> is
+   * a <code>Leaf</code>.
+   * </p>
+   *
+   * <p>
+   * Leaf facts are used for message formatting decisions. When combining two leaf facts with operators,
+   * ScalaTest can generate simplified comma-separated messages like "3 was not equal to 4, and 5 was
+   * greater than 2". When combining composite facts, full fact diagrams are used instead to show the
+   * nested logical structure.
+   * </p>
+   *
+   * @param rawFactMessage the raw message representing the fact
+   * @param rawSimplifiedFactMessage the raw simplified message representing the fact (used when negated)
+   * @param rawMidSentenceFactMessage the raw message for use mid-sentence
+   * @param rawMidSentenceSimplifiedFactMessage the raw simplified message for use mid-sentence
+   * @param factMessageArgs arguments used to format <code>rawFactMessage</code>
+   * @param simplifiedFactMessageArgs arguments used to format <code>rawSimplifiedFactMessage</code>
+   * @param midSentenceFactMessageArgs arguments used to format <code>rawMidSentenceFactMessage</code>
+   * @param midSentenceSimplifiedFactMessageArgs arguments used to format <code>rawMidSentenceSimplifiedFactMessage</code>
+   * @param isYes <code>true</code> if this fact represents a yes (passing) assertion, <code>false</code> for no (failing)
+   * @param isVacuousYes <code>true</code> if this is a vacuous yes, <code>false</code> otherwise
+   * @param prettifier the <code>Prettifier</code> used to format messages
+   * @param cause an optional <code>Throwable</code> cause associated with this fact
+   * @throws IllegalArgumentException if <code>isVacuousYes</code> is <code>true</code> but <code>isYes</code> is <code>false</code>
+   *
+   * @author Bill Venners
+   * @author Chua Chee Seng
    */
   case class Leaf(
     rawFactMessage: String,
@@ -323,11 +1008,134 @@ object Fact {
   }
 
   /**
-   * Represents a vacuous "Yes" Fact, which is a special case of Fact where the underlying Fact is No,
-   * but it is treated as Yes without meaningful assertions.
+   * <p>
+   * Class representing a vacuously true <code>Fact</code>.
+   * </p>
    *
-   * @param underlying The underlying Fact that is treated as No but represented as Yes.
-   * @throws IllegalArgumentException if the underlying Fact's <code>isNo</code> is <code>false</code>.
+   * <p>
+   * A <code>VacuousYes</code> is a special kind of yes <code>Fact</code> that indicates an assertion
+   * was technically true, but something wasn't meaningfully tested. A <code>VacuousYes</code> has
+   * <code>isYes</code> returning <code>true</code> and <code>isVacuousYes</code> also returning
+   * <code>true</code>.
+   * </p>
+   *
+   * <a name="creation"></a>
+   * <h2>How VacuousYes is Created</h2>
+   *
+   * <p>
+   * A <code>VacuousYes</code> first comes into being when the premise of an <code>implies</code>
+   * operation is <code>No</code>. In classical logic, a false premise makes an implication
+   * vacuously true regardless of the consequent. This principle is known as
+   * <em>ex falso quodlibet</em> ("from falsehood, anything follows").
+   * </p>
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val premise = expect(score &lt; 0)      // No
+   * val consequent = expect(score &lt; 100) // Would be Yes, but won't be evaluated
+   * val result = premise implies consequent
+   *
+   * result.isYes         // true
+   * result.isVacuousYes  // true
+   * </pre>
+   *
+   * <p>
+   * In this example, because the premise (<code>score &lt; 0</code>) is <code>No</code>, the
+   * implication returns a <code>VacuousYes</code> without even evaluating the consequent. The
+   * assertion is technically true in a logical sense, but the result does not include any
+   * information from the consequent expectation.
+   * </p>
+   *
+   * <a name="propagation"></a>
+   * <h2>VacuousYes Propagation</h2>
+   *
+   * <p>
+   * Once a <code>VacuousYes</code> is created, it propagates through subsequent logical operations.
+   * If you combine a <code>VacuousYes</code> with other <code>Fact</code>s using operators like
+   * <code>&&</code>, <code>&</code>, <code>implies</code>, or <code>isEqvTo</code>, and the result
+   * would be <code>Yes</code>, it becomes <code>VacuousYes</code> instead.
+   * </p>
+   *
+   * <p>
+   * Here's an example showing propagation:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val premise = expect(score &lt; 0)        // No
+   * val implication = premise implies expect(score &lt; 100)  // VacuousYes
+   *
+   * val anotherFact = expect(score &gt; 0)    // Yes
+   * val combined = implication && anotherFact  // VacuousYes (propagated!)
+   *
+   * combined.isYes         // true
+   * combined.isVacuousYes  // true - vacuousness carried through
+   * </pre>
+   *
+   * <p>
+   * This propagation is important because it prevents false confidence in test coverage. Even though
+   * the combined fact is "yes," the <code>VacuousYes</code> marker indicates that something wasn't
+   * meaningfully tested.
+   * </p>
+   *
+   * <a name="conversion"></a>
+   * <h2>Converting to Assertion</h2>
+   *
+   * <p>
+   * When you convert a <code>VacuousYes</code> to an <code>Assertion</code> (either explicitly
+   * via <code>toAssertion</code> or implicitly in test styles that expect <code>Assertion</code>
+   * result type), it throws <code>TestCanceledException</code> rather than succeeding. This
+   * signals that the test didn't meaningfully execute.
+   * </p>
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val premise = expect(score &lt; 0)  // No
+   * val result = premise implies expect(score &lt; 100)  // VacuousYes
+   *
+   * result.toAssertion  // throws TestCanceledException
+   * </pre>
+   *
+   * <p>
+   * This behavior is particularly useful in property-based testing, where you might write:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * forAll { (n: Int) =&gt;
+   *   val isEven = n % 2 == 0
+   *   expect(isEven) implies expect(n % 4 == 0 || n % 4 == 2)
+   * }
+   * </pre>
+   *
+   * <p>
+   * For odd values of <code>n</code>, the premise is false, so the implication returns
+   * <code>VacuousYes</code>. When converted to <code>Assertion</code>, this throws
+   * <code>TestCanceledException</code>, which ScalaTest counts separately from test failures.
+   * This lets you see how many test cases were actually verified versus vacuously true.
+   * </p>
+   *
+   * <a name="implementation"></a>
+   * <h2>Implementation Details</h2>
+   *
+   * <p>
+   * A <code>VacuousYes</code> wraps an underlying <code>No</code> fact. The underlying fact's
+   * messages are preserved, which provides context about what condition was false that led to
+   * the vacuous result. You can access these messages through the standard fact message properties.
+   * </p>
+   *
+   * @param underlying the underlying <code>No</code> fact that this <code>VacuousYes</code> wraps
+   * @throws IllegalArgumentException if the underlying fact's <code>isNo</code> is <code>false</code>
+   *
+   * @author Bill Venners
+   * @author Chua Chee Seng
    */
   class VacuousYes(underlying: Fact) extends Fact {
 
@@ -397,7 +1205,10 @@ object Fact {
   }
 
   /**
-   * A companion object for the <code>VacuousYes</code> class, providing factory methods to create instances of <code>VacuousYes</code> fact.
+   * Companion object for the <code>VacuousYes</code> class, which provides a factory method to create <code>VacuousYes</code> instances.
+   *
+   * @author Bill Venners
+   * @author Chua Chee Seng
    */
   object VacuousYes {
     /**
@@ -411,9 +1222,11 @@ object Fact {
   }
 
   /**
-   * Companion object for the <code>No</code> case class.
+   * Object that contains factory methods for creating <code>Leaf</code> instances
+   * representing failed (no) assertions.
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   object No {
 
@@ -783,9 +1596,11 @@ object Fact {
   }
   
   /**
-   * Companion object for the <code>Yes</code> case class.
+   * Object that contains factory methods for creating <code>Leaf</code> instances
+   * representing successful (yes) assertions.
    *
    * @author Bill Venners
+   * @author Chua Chee Seng
    */
   object Yes {
   
@@ -1169,13 +1984,55 @@ object Fact {
       )
   }
 
-  // The simplified Fact message is used when a Fact is negated, because
-  // sometimes factMessage can include info about what was expected, as in
-  // "Expected 3, but got 4", for expectResult(3) { x } . But if this is inverted
-  // to !expectResult(3) { x }, then it is confusing to say Expected 3 (because
-  // now anything *but* 3 is expected. So the simplified message just says, "3 did not equal 4".
-  // Of course, that means x was 4, and so the inverted form would be a Yes. But if x were 3, then
-  // the regular factMessage would be "Expected 3, but got 3" and the simplified fact message would be "3 equaled 3"
+  /**
+   * <p>
+   * Case class representing the logical negation of a <code>Fact</code>.
+   * </p>
+   *
+   * <p>
+   * A <code>Unary_!</code> inverts a <code>Fact</code>: if the underlying fact is <code>Yes</code>,
+   * the negation is <code>No</code>, and vice versa. Negation always produces a non-vacuous result
+   * (<code>isVacuousYes</code> is <code>false</code>), even when negating a <code>VacuousYes</code>.
+   * However, the original fact is preserved as the underlying fact, so double negation restores
+   * vacuousness: <code>!(!vacuousYes)</code> returns the original <code>VacuousYes</code>.
+   * </p>
+   *
+   * <p>
+   * When converted to type <code>Assertion</code>, a <code>No</code> results in a thrown
+   * <code>TestFailedException</code> (indicating test failure), which is already a stronger signal
+   * than the <code>TestCanceledException</code> thrown when converting <code>VacuousYes</code> to
+   * type <code>Assertion</code> (indicating the
+   * test didn't meaningfully execute). Since <code>Unary_!</code> preserves the underlying fact, double negation
+   * on a <code>VacuousYes</code> correctly remembers the vacuous nature of the resulting yes.
+   * </p>
+   *
+   * <p>
+   * The negation operator uses simplified messages instead of the regular fact messages. This is
+   * because some fact messages include information about what was expected. For example,
+   * <code>expectResult(3) { 4 }</code> produces the message "Expected 3, but got 4". If this is
+   * negated to <code>!expectResult(3) { 4 }</code>, saying "Expected 3" would be confusing,
+   * because now anything <em>except</em> 3 is expected. Instead, the simplified message is used,
+   * which would say "4 did not equal 3".
+   * </p>
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val fact = expect(score &lt; 100)     // Yes
+   * val negated = !fact                 // No
+   *
+   * negated.isYes  // false
+   * negated.isNo   // true
+   * </pre>
+   *
+   * @param underlying the <code>Fact</code> to negate
+   *
+   * @author Bill Venners
+   * @author Chua Chee Seng
+   */
   // TODO: Write a test that ensures !(!(<vacuous yes>)).isVacuousYes stays true
   case class Unary_!(underlying: Fact) extends Fact {
 
@@ -1219,6 +2076,42 @@ object Fact {
    * @param left  The left-hand side `Fact` instance of the AND operation.
    * @param right The right-hand side `Fact` instance of the AND operation.
    * @param messageFun An optional message function to modify messages.
+   */
+  /**
+   * <p>
+   * Class representing the strict (non-short-circuiting) logical AND of two <code>Fact</code>s.
+   * </p>
+   *
+   * <p>
+   * A <code>Binary_&</code> evaluates both the left and right <code>Fact</code>s regardless of their
+   * values, then combines them with logical AND semantics. The result is <code>Yes</code> only if both
+   * facts are <code>Yes</code>. If the result is <code>Yes</code> and either operand is
+   * <code>VacuousYes</code>, the result becomes <code>VacuousYes</code>.
+   * </p>
+   *
+   * <p>
+   * This operator does <em>not</em> short-circuit, unlike <code>Binary_&&</code>. Both sides are
+   * always evaluated. This is useful when you want to ensure both assertions run, perhaps for their
+   * side effects or to see all failures at once.
+   * </p>
+   *
+   * <p>
+   * The <code>&</code> operator creates instances of this class:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val fact1 = expect(score &gt; 0)
+   * val fact2 = expect(score &lt; 100)
+   * val combined = fact1 & fact2   // Both facts evaluated
+   * </pre>
+   *
+   * @param left the left-hand <code>Fact</code>
+   * @param right the right-hand <code>Fact</code>
+   * @param messageFun an optional function to transform the combined message
+   *
+   * @author Bill Venners
+   * @author Chua Chee Seng
    */
   class Binary_&(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Fact {
 
@@ -1332,8 +2225,11 @@ object Fact {
   }
 
   /**
-   * Represents a binary logical AND operation between two `Fact` instances.
-   * This is a factory object used to create `Binary_&` instances.
+   * Companion object for the <code>Binary_&</code> class, which contains factory methods for creating
+   * <code>Binary_&</code> instances.
+   *
+   * @author Bill Venners
+   * @author Chua Chee Seng
    */
   object Binary_& {
     /**
@@ -1356,12 +2252,49 @@ object Fact {
   }
 
   /**
-   * Represents a binary logical AND operation between two `Fact` instances, enforcing that the left-hand side `Fact` instance is `yes`.
+   * <p>
+   * Class representing the short-circuiting logical AND of two <code>Fact</code>s.
+   * </p>
    *
-   * @param left  The left-hand side `Fact` instance of the AND operation. It must be a `yes` fact.
-   * @param right The right-hand side `Fact` instance of the AND operation.
-   * @param messageFun An optional message function to modify the messages.
-   * @throws IllegalArgumentException If the `left` `Fact` instance is not a `yes` fact.
+   * <p>
+   * A <code>Binary_&&</code> extends <code>Binary_&</code> but adds a precondition: the left-hand
+   * <code>Fact</code> must be <code>Yes</code>. This class is only instantiated when the
+   * <code>&&</code> operator's short-circuit check passes (when the left side is <code>Yes</code>).
+   * </p>
+   *
+   * <p>
+   * The <code>&&</code> operator short-circuits: if the left fact is <code>No</code>, it returns
+   * the left side immediately without evaluating the right side. A <code>Binary_&&</code> is created
+   * to combine the two facts only when the left is <code>Yes</code>.
+   * </p>
+   *
+   * <p>
+   * By extending <code>Binary_&</code>, this class inherits all the logic for combining facts,
+   * message generation, and vacuous yes propagation. The only differences are the operator name
+   * (displayed as "&&" instead of "&") and the precondition that <code>left.isYes</code>.
+   * </p>
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val fact1 = expect(score &gt; 0)       // Yes
+   * val fact2 = expect(score &lt; 100)     // Yes
+   * val combined = fact1 && fact2        // Binary_&& created, both evaluated
+   *
+   * val fact3 = expect(score &lt; 0)       // No
+   * val combined2 = fact3 && fact2       // Returns fact3 immediately, fact2 not evaluated
+   * </pre>
+   *
+   * @param left the left-hand <code>Fact</code> (must be <code>Yes</code>)
+   * @param right the right-hand <code>Fact</code>
+   * @param messageFun an optional function to transform the combined message
+   * @throws IllegalArgumentException if <code>left.isYes</code> is <code>false</code>
+   *
+   * @author Bill Venners
+   * @author Chua Chee Seng
    */
   class Binary_&&(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Binary_&(left, right, messageFun) {
     require(left.isYes)
@@ -1373,8 +2306,11 @@ object Fact {
   }
 
   /**
-   * Represents a binary logical AND operation between two `Fact` instances, enforcing that the left-hand side `Fact` instance is `yes`.
-   * This is a factory object used to create `Binary_&&` instances.
+   * Companion object for the <code>Binary_&&</code> class, which contains factory methods for creating
+   * <code>Binary_&&</code> instances.
+   *
+   * @author Bill Venners
+   * @author Chua Chee Seng
    */
   object Binary_&& {
     /**
@@ -1398,6 +2334,42 @@ object Fact {
     def apply(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]): Fact = new Binary_&&(left, right, messageFun)
   }
 
+  /**
+   * <p>
+   * Class representing the strict (non-short-circuiting) logical OR of two <code>Fact</code>s.
+   * </p>
+   *
+   * <p>
+   * A <code>Binary_|</code> evaluates both the left and right <code>Fact</code>s regardless of their
+   * values, then combines them with logical OR semantics. The result is <code>Yes</code> if either
+   * fact is <code>Yes</code>. If the result is <code>Yes</code> and at least one operand is
+   * <code>VacuousYes</code>, the result becomes <code>VacuousYes</code>.
+   * </p>
+   *
+   * <p>
+   * This operator does <em>not</em> short-circuit, unlike <code>Binary_||</code>. Both sides are
+   * always evaluated. This is useful when you want to ensure both assertions run, perhaps for their
+   * side effects or to see all results.
+   * </p>
+   *
+   * <p>
+   * The <code>|</code> operator creates instances of this class:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val fact1 = expect(score &lt; 0)
+   * val fact2 = expect(score &lt; 100)
+   * val combined = fact1 | fact2   // Both facts evaluated, result is Yes
+   * </pre>
+   *
+   * @param left the left-hand <code>Fact</code>
+   * @param right the right-hand <code>Fact</code>
+   * @param messageFun an optional function to transform the combined message
+   *
+   * @author Bill Venners
+   * @author Chua Chee Seng
+   */
   class Binary_|(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Fact {
 
     private[scalatest] def operatorName: String = "|"
@@ -1451,11 +2423,63 @@ object Fact {
     def modifyMessage(fun: Option[String] => Option[String]): Fact = new Binary_|(left, right, Some(fun))
   }
 
+  /**
+   * Companion object for the <code>Binary_|</code> class, which contains factory methods for creating
+   * <code>Binary_|</code> instances.
+   *
+   * @author Bill Venners
+   * @author Chua Chee Seng
+   */
   object Binary_| {
     def apply(left: Fact, right: Fact): Fact = new Binary_|(left, right, None)
     def apply(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]): Fact = new Binary_|(left, right, messageFun)
   }
 
+  /**
+   * <p>
+   * Class representing the short-circuiting logical OR of two <code>Fact</code>s.
+   * </p>
+   *
+   * <p>
+   * A <code>Binary_||</code> extends <code>Binary_|</code> but adds a precondition: the left-hand
+   * <code>Fact</code> must be <code>No</code>. This class is only instantiated when the
+   * <code>||</code> operator's short-circuit check passes (when the left side is <code>No</code>).
+   * </p>
+   *
+   * <p>
+   * The <code>||</code> operator short-circuits: if the left fact is <code>Yes</code>, it returns
+   * the left side immediately without evaluating the right side. A <code>Binary_||</code> is created
+   * to combine the two facts only when the left is <code>No</code>.
+   * </p>
+   *
+   * <p>
+   * By extending <code>Binary_|</code>, this class inherits all the logic for combining facts,
+   * message generation, and vacuous yes propagation. The only differences are the operator name
+   * (displayed as "||" instead of "|") and the precondition that <code>left.isNo</code>.
+   * </p>
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val fact1 = expect(score &lt; 0)       // No
+   * val fact2 = expect(score &lt; 100)     // Yes
+   * val combined = fact1 || fact2        // Binary_|| created, both evaluated
+   *
+   * val fact3 = expect(score &gt; 0)       // Yes
+   * val combined2 = fact3 || fact2       // Returns fact3 immediately, fact2 not evaluated
+   * </pre>
+   *
+   * @param left the left-hand <code>Fact</code> (must be <code>No</code>)
+   * @param right the right-hand <code>Fact</code>
+   * @param messageFun an optional function to transform the combined message
+   * @throws IllegalArgumentException if <code>left.isNo</code> is <code>false</code>
+   *
+   * @author Bill Venners
+   * @author Chua Chee Seng
+   */
   class Binary_||(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Binary_|(left, right, messageFun) {
     require(left.isNo)
     override private[scalatest] def operatorName: String = "||"
@@ -1465,15 +2489,64 @@ object Fact {
     override def modifyMessage(fun: Option[String] => Option[String]): Fact = new Binary_||(left, right, Some(fun))
   }
 
+  /**
+   * Companion object for the <code>Binary_||</code> class, which contains factory methods for creating
+   * <code>Binary_||</code> instances.
+   *
+   * @author Bill Venners
+   * @author Chua Chee Seng
+   */
   object Binary_|| {
     def apply(left: Fact, right: Fact): Fact = new Binary_||(left, right, None)
     def apply(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]): Fact = new Binary_||(left, right, messageFun)
   }
 
-/*
-  Yes implies No // x, but y
-  Yes implies Yes // x, and y
-*/
+  /**
+   * <p>
+   * Class representing logical implication between two <code>Fact</code>s.
+   * </p>
+   *
+   * <p>
+   * An <code>Implies</code> represents the logical implication "if premise then consequent" (left ⇒ right).
+   * The implication is <code>No</code> only when the premise (left side) is <code>Yes</code> and the
+   * consequent (right side) is <code>No</code>. In all other cases, it is <code>Yes</code> (or
+   * <code>VacuousYes</code>).
+   * </p>
+   *
+   * <p>
+   * The <code>implies</code> method creates instances of this class only when the premise is <code>Yes</code>.
+   * If the premise is <code>No</code>, the method returns a <code>VacuousYes</code> without creating an
+   * <code>Implies</code> instance, because a false premise makes any implication vacuously true.
+   * </p>
+   *
+   * <p>
+   * Vacuous yes propagation: if the result would be <code>Yes</code> and either the premise or consequent
+   * is <code>VacuousYes</code>, the result becomes <code>VacuousYes</code>.
+   * </p>
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val premise = expect(score &gt; 0)        // Yes
+   * val consequent = expect(score &lt; 100)   // Yes
+   * val implication = premise implies consequent  // Yes (both true)
+   *
+   * val premise2 = expect(score &gt; 50)      // Yes
+   * val consequent2 = expect(score &lt; 50)   // No
+   * val implication2 = premise2 implies consequent2  // No (premise true, consequent false)
+   * </pre>
+   *
+   * @param left the premise (left-hand <code>Fact</code>, must be <code>Yes</code>)
+   * @param right the consequent (right-hand <code>Fact</code>)
+   * @param messageFun an optional function to transform the combined message
+   * @throws IllegalArgumentException if <code>left.isYes</code> is <code>false</code>
+   *
+   * @author Bill Venners
+   * @author Chua Chee Seng
+   */
   class Implies(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Fact {
 
     require(left.isYes)
@@ -1519,10 +2592,10 @@ object Fact {
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = midSentenceFactMessageArgs
 
     val isLeaf: Boolean = false
-    val isVacuousYes: Boolean = false // TODO
     val prettifier: Prettifier = left.prettifier
 
     val isYes: Boolean = left.isYes && right.isYes
+    val isVacuousYes: Boolean = isYes && (left.isVacuousYes || right.isVacuousYes)
 
     override def factDiagram(level: Int): String = {
       val padding = "  " * level
@@ -1538,11 +2611,64 @@ object Fact {
     def modifyMessage(fun: Option[String] => Option[String]): Fact = new Implies(left, right, Some(fun))
   }
 
+  /**
+   * Companion object for the <code>Implies</code> class, which contains factory methods for creating
+   * <code>Implies</code> instances.
+   *
+   * @author Bill Venners
+   * @author Chua Chee Seng
+   */
   object Implies {
     def apply(left: Fact, right: Fact): Fact = new Implies(left, right, None)
     def apply(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]): Fact = new Implies(left, right, messageFun)
   }
 
+  /**
+   * <p>
+   * Class representing logical equivalence (biconditional) between two <code>Fact</code>s.
+   * </p>
+   *
+   * <p>
+   * An <code>IsEqvTo</code> represents the logical equivalence "left if and only if right" (left ⇔ right).
+   * The equivalence is <code>Yes</code> when both facts have the same boolean value (both <code>Yes</code>
+   * or both <code>No</code>). It is <code>No</code> when the facts have different boolean values.
+   * </p>
+   *
+   * <p>
+   * Logical equivalence can be understood as: (<code>left</code> implies <code>right</code>) AND
+   * (<code>right</code> implies <code>left</code>). The result is <code>Yes</code> when both
+   * implications would hold.
+   * </p>
+   *
+   * <p>
+   * Vacuous yes propagation: if the result would be <code>Yes</code> and either fact is
+   * <code>VacuousYes</code>, the result becomes <code>VacuousYes</code>.
+   * </p>
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val score = 85
+   * val fact1 = expect(score &gt; 0)        // Yes
+   * val fact2 = expect(score &lt; 100)      // Yes
+   * val equiv = fact1 isEqvTo fact2       // Yes (both are Yes)
+   *
+   * val fact3 = expect(score &lt; 0)        // No
+   * val fact4 = expect(score &gt; 200)      // No
+   * val equiv2 = fact3 isEqvTo fact4      // Yes (both are No)
+   *
+   * val equiv3 = fact1 isEqvTo fact3      // No (one Yes, one No)
+   * </pre>
+   *
+   * @param left the left-hand <code>Fact</code>
+   * @param right the right-hand <code>Fact</code>
+   * @param messageFun an optional function to transform the combined message
+   *
+   * @author Bill Venners
+   * @author Chua Chee Seng
+   */
   class IsEqvTo(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Fact {
 
     val rawFactMessage: String = {
@@ -1594,6 +2720,13 @@ object Fact {
     def modifyMessage(fun: Option[String] => Option[String]): Fact = new IsEqvTo(left, right, Some(fun))
   }
 
+  /**
+   * Companion object for the <code>IsEqvTo</code> class, which contains factory methods for creating
+   * <code>IsEqvTo</code> instances.
+   *
+   * @author Bill Venners
+   * @author Chua Chee Seng
+   */
   object IsEqvTo {
     def apply(left: Fact, right: Fact): Fact = new IsEqvTo(left, right, None)
     def apply(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]): Fact = new IsEqvTo(left, right, messageFun)

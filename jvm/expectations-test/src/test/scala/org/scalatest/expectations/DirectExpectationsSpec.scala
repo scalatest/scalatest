@@ -130,7 +130,7 @@ class DirectExpectationsSpec extends AnyFunSpec {
       assert(fact.midSentenceSimplifiedFactMessageArgs == Vector(3, 4))
       assert(fact.isLeaf)
       assert(!fact.isVacuousYes)
-      assert(fact.toString == "No(expected 3, but got 4)")
+      assert(fact.toString == "No(Expected 3, but got 4)")
     }
     it("should still give a basic error message after negating a leaf with !") {
       val fact = !org.scalatest.expectations.Expectations.expectResult(3) { 3 }
@@ -151,7 +151,7 @@ class DirectExpectationsSpec extends AnyFunSpec {
       assert(!fact.isVacuousYes)
       assert(fact.toString ==
         "No(" + NEWLINE +
-        "  !Yes(expected 3, and got 3)" + NEWLINE +
+        "  !Yes(Expected 3, and got 3)" + NEWLINE +
         ")"
       )
     }
@@ -161,8 +161,8 @@ class DirectExpectationsSpec extends AnyFunSpec {
       assert(fact1.factMessage  == "3 equaled 3, but 3 did not equal 4")
       assert(fact1.toString ==
         "No(" + NEWLINE +
-        "  Yes(expected 3, and got 3) &&" + NEWLINE +
-        "  No(expected 3, but got 4)" + NEWLINE +
+        "  Yes(Expected 3, and got 3) &&" + NEWLINE +
+        "  No(Expected 3, but got 4)" + NEWLINE +
         ")"
       )
       assert(!fact1.isVacuousYes)
@@ -172,9 +172,9 @@ class DirectExpectationsSpec extends AnyFunSpec {
       assert(fact2.factMessage  == "3 equaled 3, but 4 equaled 4")
       assert(fact2.toString ==
         "No(" + NEWLINE + 
-        "  Yes(expected 3, and got 3) &&" + NEWLINE + 
+        "  Yes(Expected 3, and got 3) &&" + NEWLINE + 
         "  No(" + NEWLINE + 
-        "    !Yes(expected 4, and got 4)" + NEWLINE + 
+        "    !Yes(Expected 4, and got 4)" + NEWLINE + 
         "  )" + NEWLINE + 
         ")"
       )
@@ -186,8 +186,8 @@ class DirectExpectationsSpec extends AnyFunSpec {
       assert(fact1.factMessage  == "3 equaled 3, but 3 did not equal 4")
       assert(fact1.toString ==
         "No(" + NEWLINE +
-          "  Yes(expected 3, and got 3) &" + NEWLINE +
-          "  No(expected 3, but got 4)" + NEWLINE +
+          "  Yes(Expected 3, and got 3) &" + NEWLINE +
+          "  No(Expected 3, but got 4)" + NEWLINE +
           ")"
       )
       assert(!fact1.isVacuousYes)
@@ -197,9 +197,9 @@ class DirectExpectationsSpec extends AnyFunSpec {
       assert(fact2.factMessage  == "3 equaled 3, but 4 equaled 4")
       assert(fact2.toString ==
         "No(" + NEWLINE +
-          "  Yes(expected 3, and got 3) &" + NEWLINE +
+          "  Yes(Expected 3, and got 3) &" + NEWLINE +
           "  No(" + NEWLINE +
-          "    !Yes(expected 4, and got 4)" + NEWLINE +
+          "    !Yes(Expected 4, and got 4)" + NEWLINE +
           "  )" + NEWLINE +
           ")"
       )
@@ -210,19 +210,19 @@ class DirectExpectationsSpec extends AnyFunSpec {
       assert(fact.factMessage ==
         "No(" + NEWLINE +
         "  No(" + NEWLINE +
-        "    Yes(expected 3, and got 3) &&" + NEWLINE +
-        "    No(expected 3, but got 4)" + NEWLINE +
+        "    Yes(Expected 3, and got 3) &&" + NEWLINE +
+        "    No(Expected 3, but got 4)" + NEWLINE +
         "  ) ||" + NEWLINE +
-        "  No(expected 5, but got 6)" + NEWLINE +
+        "  No(Expected 5, but got 6)" + NEWLINE +
         ")"
       )
       assert(fact.toString ==
         "No(" + NEWLINE +
         "  No(" + NEWLINE +
-        "    Yes(expected 3, and got 3) &&" + NEWLINE +
-        "    No(expected 3, but got 4)" + NEWLINE +
+        "    Yes(Expected 3, and got 3) &&" + NEWLINE +
+        "    No(Expected 3, but got 4)" + NEWLINE +
         "  ) ||" + NEWLINE +
-        "  No(expected 5, but got 6)" + NEWLINE +
+        "  No(Expected 5, but got 6)" + NEWLINE +
         ")"
       )
       assert(!fact.isVacuousYes)
@@ -232,19 +232,19 @@ class DirectExpectationsSpec extends AnyFunSpec {
       assert(fact.factMessage ==
         "No(" + NEWLINE +
           "  No(" + NEWLINE +
-          "    Yes(expected 3, and got 3) &" + NEWLINE +
-          "    No(expected 3, but got 4)" + NEWLINE +
+          "    Yes(Expected 3, and got 3) &" + NEWLINE +
+          "    No(Expected 3, but got 4)" + NEWLINE +
           "  ) |" + NEWLINE +
-          "  No(expected 5, but got 6)" + NEWLINE +
+          "  No(Expected 5, but got 6)" + NEWLINE +
           ")"
       )
       assert(fact.toString ==
         "No(" + NEWLINE +
           "  No(" + NEWLINE +
-          "    Yes(expected 3, and got 3) &" + NEWLINE +
-          "    No(expected 3, but got 4)" + NEWLINE +
+          "    Yes(Expected 3, and got 3) &" + NEWLINE +
+          "    No(Expected 3, but got 4)" + NEWLINE +
           "  ) |" + NEWLINE +
-          "  No(expected 5, but got 6)" + NEWLINE +
+          "  No(Expected 5, but got 6)" + NEWLINE +
           ")"
       )
       assert(!fact.isVacuousYes)
@@ -254,23 +254,23 @@ class DirectExpectationsSpec extends AnyFunSpec {
       assert(fact.factMessage ==
         "No(" + NEWLINE +
         "  No(" + NEWLINE +
-        "    Yes(expected 3, and got 3) &&" + NEWLINE +
+        "    Yes(Expected 3, and got 3) &&" + NEWLINE +
         "    No(" + NEWLINE +
-        "      !Yes(expected 4, and got 4)" + NEWLINE +
+        "      !Yes(Expected 4, and got 4)" + NEWLINE +
         "    )" + NEWLINE +
         "  ) ||" + NEWLINE +
-        "  No(expected 5, but got 6)" + NEWLINE + 
+        "  No(Expected 5, but got 6)" + NEWLINE + 
         ")"
       )
       assert(fact.toString ==
         "No(" + NEWLINE +
         "  No(" + NEWLINE +
-        "    Yes(expected 3, and got 3) &&" + NEWLINE +
+        "    Yes(Expected 3, and got 3) &&" + NEWLINE +
         "    No(" + NEWLINE +
-        "      !Yes(expected 4, and got 4)" + NEWLINE +
+        "      !Yes(Expected 4, and got 4)" + NEWLINE +
         "    )" + NEWLINE +
         "  ) ||" + NEWLINE +
-        "  No(expected 5, but got 6)" + NEWLINE +
+        "  No(Expected 5, but got 6)" + NEWLINE +
         ")"
       )
       assert(!fact.isVacuousYes)
