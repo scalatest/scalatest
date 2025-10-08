@@ -472,10 +472,15 @@ trait FixtureAnyFeatureSpecLike extends org.scalatest.FixtureTestSuite with Info
    */
   protected def ScenariosFor(unit: Unit): Unit = {}
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   /**
+  // SKIP-DOTTY-START
    * Implicitly converts a function that takes no parameters and results in <code>PendingStatement</code> to
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY * Converts a function that takes no parameters and results in <code>PendingStatement</code> to
    * a function from <code>FixtureParam</code> to <code>Any</code>, to enable pending tests to registered as by-name parameters
    * by methods that require a test function that takes a <code>FixtureParam</code>.
    *
@@ -487,9 +492,25 @@ trait FixtureAnyFeatureSpecLike extends org.scalatest.FixtureTestSuite with Info
    * @param f a function
    * @return a function of <code>FixtureParam => Any</code>
    */
+  // SKIP-DOTTY-START    
   protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): FixtureParam => Any /* Assertion */ = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY protected def convertPendingToFixtureFunction(f: => PendingStatement): FixtureParam => Any /* Assertion */ = {
     fixture => { f; Succeeded }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Given conversion that converts a function that takes no parameters and results in <code>PendingStatement</code> to
+  //DOTTY-ONLY  * a function from <code>FixtureParam</code> to <code>Any</code>, to enable pending tests to registered as by-name parameters
+  //DOTTY-ONLY  * by methods that require a test function that takes a <code>FixtureParam</code>.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * <p>
+  //DOTTY-ONLY  * This method makes it possible to write pending tests as simply <code>(pending)</code>, without needing
+  //DOTTY-ONLY  * to write <code>(fixture => pending)</code>.
+  //DOTTY-ONLY  * </p>
+  //DOTTY-ONLY  * @param f a function
+  //DOTTY-ONLY  * @return a function of <code>FixtureParam => Any</code>
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY given Conversion[PendingStatement, FixtureParam => Any /* Assertion */] = convertPendingToFixtureFunction
 
   // I need this implicit because the function is passed to scenario as the 2nd parameter list, and
   // I can't overload on that. I could if I took the ScenarioWord approach, but that has possibly a worse

@@ -73,7 +73,10 @@ object Retrying {
   /**
     * Provides implicit <code>Retrying</code> implementation for <code>Future[T]</code>.
     */
+  // SKIP-DOTTY-START
   implicit def retryingNatureOfFutureT[T](implicit execCtx: ExecutionContext): Retrying[Future[T]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def retryingNatureOfFutureT[T](using execCtx: ExecutionContext): Retrying[Future[T]] =
     new Retrying[Future[T]] {
       def retry(timeout: Span, interval: Span, pos: source.Position)(fun: => Future[T]): Future[T] = {
         val startNanos = System.nanoTime
@@ -171,11 +174,15 @@ object Retrying {
         tryTryAgain(1)
       }
     }
+  //DOTTY-ONLY given given_retryingNatureOfFutureT[T](using execCtx: ExecutionContext): Retrying[Future[T]] = retryingNatureOfFutureT(using execCtx)
 
   /**
     * Provides implicit <code>Retrying</code> implementation for <code>T</code>.
     */
+  // SKIP-DOTTY-START
   implicit def retryingNatureOfT[T]: Retrying[T] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def retryingNatureOfT[T]: Retrying[T] =
     new Retrying[T] {
       def retry(timeout: Span, interval: Span, pos: source.Position)(fun: => T): T = {
         val startNanos = System.nanoTime
@@ -226,5 +233,6 @@ object Retrying {
         tryTryAgain(1)
       }
     }
+  //DOTTY-ONLY given given_retryingNatureOfT[T]: Retrying[T] = retryingNatureOfT  
 
 }

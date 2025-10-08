@@ -80,12 +80,89 @@ trait InspectorAsserting[T] {
 abstract class UnitInspectorAsserting {
 
   /**
+   // SKIP-DOTTY-START
+   * Provides an implicit <code>InspectorAsserting</code> instance for any type that did not match a
+   // SKIP-DOTTY-END
+   /DOTTY-ONLY * Provides <code>InspectorAsserting</code> instance for any type that did not match a
+   * higher priority implicit provider, enabling inspector syntax that has result type <code>Unit</code>.
+   */
+  // SKIP-DOTTY-START
+  implicit def assertingNatureOfT[T]: InspectorAsserting[T] { type Result = Unit } =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def assertingNatureOfT[T]: InspectorAsserting[T] { type Result = Unit } =
+    new InspectorAsserting.InspectorAssertingImpl[T] {
+      type Result = Unit
+      def indicateSuccess(message: => String): Unit = ()
+      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): Unit = {
+        val msg: String = message
+        throw new TestFailedException(
+          (_: StackDepthException) => Some(msg),
+          optionalCause,
+          pos
+        )
+      }
+      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position, analysis: scala.collection.immutable.IndexedSeq[String]): Unit = {
+        val msg: String = message
+        throw new TestFailedException(
+          (_: StackDepthException) => Some(msg),
+          optionalCause,
+          Left(pos),
+          None,
+          analysis
+        )
+      }
+    }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given <code>InspectorAsserting</code> instance for any type that did not match a
+  //DOTTY-ONLY   * higher priority implicit provider, enabling inspector syntax that has result type <code>Unit</code>.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [T]: InspectorAsserting[T] { type Result = Unit } = assertingNatureOfT[T]  
+}
+
+/**
+ * Abstract class that in the future will hold an intermediate priority <code>InspectorAsserting</code> implicit, which will enable inspector expressions
+ * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
+ */
+abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
+
+  /**
+   // SKIP-DOTTY-START
+   * Provides an implicit <code>InspectorAsserting</code> instance for type <code>Expectation</code>,
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * Provides <code>InspectorAsserting</code> instance for type <code>Expectation</code>,
+   * enabling inspector syntax that has result type <code>Expectation</code>.
+   */
+  // SKIP-DOTTY-START
+  implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): InspectorAsserting[Expectation] { type Result = Expectation } = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def assertingNatureOfExpectation(using prettifier: Prettifier): InspectorAsserting[Expectation] { type Result = Expectation } = {
+    new InspectorAsserting.InspectorAssertingImpl[Expectation] {
+      type Result = Expectation
+      def indicateSuccess(message: => String): Expectation = Fact.Yes(message, prettifier)
+      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: org.scalactic.source.Position): Expectation = Fact.No(message, prettifier)
+      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position, analysis: scala.collection.immutable.IndexedSeq[String]): Expectation = Fact.No(message, prettifier)
+    }
+  }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given <code>InspectorAsserting</code> instance for type <code>Expectation</code>,
+  //DOTTY-ONLY   * enabling inspector syntax that has result type <code>Expectation</code>.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given (using prettifier: Prettifier): InspectorAsserting[Expectation] = assertingNatureOfExpectation
+}
+
+/**
+ * Companion object to <code>InspectorAsserting</code> that provides two implicit providers, a higher priority one for passed functions that have result
+ * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
+ */
+object InspectorAsserting extends ExpectationInspectorAsserting {
+
+  /**
    * Abstract subclass of <code>InspectorAsserting</code> that provides the bulk of the implementations of <code>InspectorAsserting</code>
    * methods.
    */
   abstract class InspectorAssertingImpl[T] extends InspectorAsserting[T] {
-
-    import InspectorAsserting._
 
     // Inherit Scaladoc for now. See later if can just make this implementation class private[scalatest].
     def forAll[E](xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result = {
@@ -311,61 +388,16 @@ abstract class UnitInspectorAsserting {
   }
 
   /**
-   * Provides an implicit <code>InspectorAsserting</code> instance for any type that did not match a
-   * higher priority implicit provider, enabling inspector syntax that has result type <code>Unit</code>.
-   */
-  implicit def assertingNatureOfT[T]: InspectorAsserting[T] { type Result = Unit } =
-    new InspectorAssertingImpl[T] {
-      type Result = Unit
-      def indicateSuccess(message: => String): Unit = ()
-      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): Unit = {
-        val msg: String = message
-        throw new TestFailedException(
-          (_: StackDepthException) => Some(msg),
-          optionalCause,
-          pos
-        )
-      }
-      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position, analysis: scala.collection.immutable.IndexedSeq[String]): Unit = {
-        val msg: String = message
-        throw new TestFailedException(
-          (_: StackDepthException) => Some(msg),
-          optionalCause,
-          Left(pos),
-          None,
-          analysis
-        )
-      }
-    }
-}
-
-/**
- * Abstract class that in the future will hold an intermediate priority <code>InspectorAsserting</code> implicit, which will enable inspector expressions
- * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
- */
-abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
-
-  private[scalatest] implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): InspectorAsserting[Expectation] { type Result = Expectation } = {
-    new InspectorAssertingImpl[Expectation] {
-      type Result = Expectation
-      def indicateSuccess(message: => String): Expectation = Fact.Yes(message, prettifier)
-      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: org.scalactic.source.Position): Expectation = Fact.No(message, prettifier)
-      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position, analysis: scala.collection.immutable.IndexedSeq[String]): Expectation = Fact.No(message, prettifier)
-    }
-  }
-}
-
-/**
- * Companion object to <code>InspectorAsserting</code> that provides two implicit providers, a higher priority one for passed functions that have result
- * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
- */
-object InspectorAsserting extends ExpectationInspectorAsserting {
-
-  /**
+   // SKIP-DOTTY-START
    * Provides an implicit <code>InspectorAsserting</code> instance for type <code>Assertion</code>,
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * Provides <code>InspectorAsserting</code> instance for type <code>Assertion</code>,
    * enabling inspector syntax that has result type <code>Assertion</code>.
    */
+  // SKIP-DOTTY-START
   implicit def assertingNatureOfAssertion: InspectorAsserting[Assertion] { type Result = Assertion } =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def assertingNatureOfAssertion: InspectorAsserting[Assertion] { type Result = Assertion } =
     new InspectorAssertingImpl[Assertion] {
       type Result = Assertion
       def indicateSuccess(message: => String): Assertion = Succeeded
@@ -389,6 +421,12 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
       }
     }
 
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given <code>InspectorAsserting</code> instance for type <code>Assertion</code>, 
+  //DOTTY-ONLY   * enabling inspector syntax that has result type <code>Assertion</code>.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given InspectorAsserting[Assertion] = assertingNatureOfAssertion
+
   /**
     * Abstract subclass of <code>InspectorAsserting</code> that provides the bulk of the implementations of <code>InspectorAsserting</code>
     * methods.
@@ -397,7 +435,10 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
 
     type Result = Future[T]
 
+    // SKIP-DOTTY-START
     implicit def executionContext: ExecutionContext
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY given executionContext: ExecutionContext
 
     // Inherit Scaladoc for now. See later if can just make this implementation class private[scalatest].
     def forAll[E](xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
@@ -624,7 +665,17 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
     private[scalatest] def indicateFailureFuture(message: => String, optionalCause: Option[Throwable], pos: source.Position): T
   }
 
+  /**
+   // SKIP-DOTTY-START
+   * Provides an implicit <code>InspectorAsserting</code> instance for type <code>Future[Assertion]</code>,
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * Provides <code>InspectorAsserting</code> instance for type <code>Future[Assertion]</code>,
+   * enabling inspector syntax that has result type <code>Future[Assertion]</code>.
+   */
+  // SKIP-DOTTY-START
   implicit def assertingNatureOfFutureAssertion(implicit execCtx: ExecutionContext): InspectorAsserting[Future[Assertion]] { type Result = Future[Assertion] } =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def assertingNatureOfFutureAssertion(using execCtx: ExecutionContext): InspectorAsserting[Future[Assertion]] { type Result = Future[Assertion] } =
     new FutureInspectorAssertingImpl[Assertion] {
       val executionContext = execCtx
       def indicateSuccessFuture(message: => String): Assertion = Succeeded
@@ -647,6 +698,12 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
         }
       }
     }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given <code>InspectorAsserting</code> instance for type <code>Future[Assertion]</code>,
+  //DOTTY-ONLY   * enabling inspector syntax that has result type <code>Assertion</code>.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given (using execCtx: ExecutionContext): InspectorAsserting[Future[Assertion]] = assertingNatureOfFutureAssertion
 
   private[scalatest] final def indentErrorMessages(messages: IndexedSeq[String]) = indentLines(1, messages)
 

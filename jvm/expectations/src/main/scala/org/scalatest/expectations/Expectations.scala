@@ -612,13 +612,22 @@ trait Expectations {
    */
   def expectTypeError(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro CompileMacro.expectTypeErrorImpl
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   /**
+  // SKIP-DOTTY-START
    * Implicitly converts a <code>Boolean</code> value to a <code>Fact</code> for use in logical expressions.
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY  * Converts a <code>Boolean</code> value to a <code>Fact</code> for use in logical expressions.
    *
    * <p>
+  // SKIP-DOTTY-START
    * This implicit conversion enables the use of boolean expressions in logical fact compositions,
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY  * This conversion enables the use of boolean expressions in logical fact compositions,
+   * 
    * such as <code>(x &gt; 0) implies expect(x &gt; -1)</code>. The boolean value on the left side
    * of <code>implies</code> is implicitly converted to a <code>Fact</code> so it can be combined
    * with the <code>Fact</code> returned by <code>expect</code>.
@@ -634,10 +643,20 @@ trait Expectations {
    * @param pos an implicit <code>Position</code> that represents the source code location
    * @return a <code>Yes</code> <code>Fact</code> if the expression is <code>true</code>, else a <code>No</code> <code>Fact</code>.
    */
+  // SKIP-DOTTY-START 
   implicit def booleanToFact(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro ExpectationsMacro.expect
-  
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def booleanToFact(expression: Boolean)(using prettifier: Prettifier, pos: source.Position): Fact = macro ExpectationsMacro.expect
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Given conversion that converts a boolean expression to a [[Fact]] for assertion purposes, which makes (x &gt; 0) implies expect(x &gt; -1) syntax works
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY given Conversion[Boolean, Fact] = booleanToFact
+
   /**
+  // SKIP-DOTTY-START
    * Implicitly converts an <code>Expectation</code> to an <code>Assertion</code>.
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY  * Converts an <code>Expectation</code> to an <code>Assertion</code>.
    *
    * <p>
    * This implicit conversion allows <code>Expectation</code> (which is a type alias for <code>Fact</code>)
@@ -653,7 +672,14 @@ trait Expectations {
    * @throws TestFailedException if the <code>Expectation</code> is a <code>No</code> fact
    * @throws TestCanceledException if the <code>Expectation</code> is a <code>VacuousYes</code> fact
    */
+  // SKIP-DOTTY-START 
   implicit def convertExpectationToAssertion(exp: Expectation)(implicit pos: source.Position): Assertion = exp.toAssertion
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertExpectationToAssertion(exp: Expectation)(using pos: source.Position): Assertion = exp.toAssertion(using pos)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Given conversion that converts an [[Expectation]] to an [[Assertion]].
+  //DOTTY-ONLY  */  
+  //DOTTY-ONLY given Conversion[Expectation, Assertion](using pos: source.Position) = convertExpectationToAssertion(using pos)
 }
 
 

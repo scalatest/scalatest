@@ -1531,12 +1531,10 @@ import resultOfStringPassedToVerb.verb
      */
     // SKIP-DOTTY-START
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY def in(testFun: => Future[compatible.Assertion])(using pos: source.Position): Unit = {
       registerTestToRun(verb.trim + " " + rest.trim, "in", List(), () => testFun, pos)
     }
-    // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + rest.trim, "in", List(), () => testFun, pos) }) } 
-    //DOTTY-ONLY }
 
     /**
      * Supports the registration of ignored tests in shorthand form.
@@ -1557,23 +1555,80 @@ import resultOfStringPassedToVerb.verb
      */
     // SKIP-DOTTY-START
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY def ignore(testFun: => Future[compatible.Assertion])(using pos: source.Position): Unit = {
       registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", () => testFun, pos)
     }
-    // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(testFun: => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", () => testFun, pos) }) } 
-    //DOTTY-ONLY }
   }
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   /**
+  // SKIP-DOTTY-START
    * Implicitly converts an object of type <code>ResultOfStringPassedToVerb</code> to an
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY  * Converts an object of type <code>ResultOfStringPassedToVerb</code> to an
    * <code>InAndIgnoreMethods</code>, to enable <code>in</code> and <code>ignore</code>
    * methods to be invokable on that object.
    */
+  // SKIP-DOTTY-START 
   protected implicit def convertToInAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb): InAndIgnoreMethods =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY protected def convertToInAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb): InAndIgnoreMethods =
     new InAndIgnoreMethods(resultOfStringPassedToVerb)
+  
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for `ResultOfStringPassedToVerb` providing `in` and `ignore` for Dotty.
+  //DOTTY-ONLY  * Enables syntax like `"A Stack" must "pop values" in { ... }` and `"A Stack" must "pop values" ignore { ... }`.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension (resultOfStringPassedToVerb: ResultOfStringPassedToVerb) {
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports the registration of tagged tests in shorthand form.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack" must "pop values in last-in-first-out order" taggedAs(SlowTest) in { ... }
+  //DOTTY-ONLY    *                                                                           ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For examples of tagged test registration, see the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def in(testFun: => Future[compatible.Assertion]): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
+  //DOTTY-ONLY       convertToInAndIgnoreMethods(resultOfStringPassedToVerb).in(testFun)(using pos)
+  //DOTTY-ONLY     }) }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports the registration of tagged, ignored tests in shorthand form.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack" must "pop values in last-in-first-out order" taggedAs(SlowTest) ignore { ... }
+  //DOTTY-ONLY    *                                                                           ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For examples of ignored test registration, see the <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
+  //DOTTY-ONLY    * For examples of tagged test registration, see the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def ignore(testFun: => Future[compatible.Assertion]): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
+  //DOTTY-ONLY       convertToInAndIgnoreMethods(resultOfStringPassedToVerb).ignore(testFun)(using pos)
+  //DOTTY-ONLY     }) }
+  //DOTTY-ONLY }
 
   /**
    * Class that supports tagged test registration in shorthand form.
@@ -1639,12 +1694,10 @@ import resultOfStringPassedToVerb.verb
      */
     // SKIP-DOTTY-START
     def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY def in(testFun: => Future[compatible.Assertion])(using pos: source.Position): Unit = {
       registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, () => testFun, pos)
     }
-    // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, () => testFun, pos) }) } 
-    //DOTTY-ONLY }
 
     /**
      * Supports the registration of tagged, ignored tests in shorthand form.
@@ -1667,21 +1720,76 @@ import resultOfStringPassedToVerb.verb
      */
     // SKIP-DOTTY-START
     def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY def ignore(testFun: => Future[compatible.Assertion])(using pos: source.Position): Unit = {
       registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", () => testFun, pos)
     }
-    // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(testFun: => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", () => testFun, pos) }) } 
-    //DOTTY-ONLY }
   }
 
   /**
+  // SKIP-DOTTY-START
    * Implicitly converts an object of type <code>ResultOfTaggedAsInvocation</code> to an
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY  * Converts an object of type <code>ResultOfTaggedAsInvocation</code> to an
    * <code>InAndIgnoreMethodsAfterTaggedAs</code>, to enable <code>in</code> and <code>ignore</code>
    * methods to be invokable on that object.
    */
+  // SKIP-DOTTY-START
   protected implicit def convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation): InAndIgnoreMethodsAfterTaggedAs =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY protected def convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation): InAndIgnoreMethodsAfterTaggedAs =
     new InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for `ResultOfTaggedAsInvocation` providing `in` and `ignore` for Dotty.
+  //DOTTY-ONLY  * Enables syntax like `"A Stack" must "pop values" taggedAs(SlowTest) in { ... }` and `"A Stack" must "pop values" taggedAs(SlowTest) ignore { ... }`.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension (resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation) {
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY    * Supports the registration of tagged tests in shorthand form.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack" must "pop values in last-in-first-out order" taggedAs(SlowTest) in { ... }
+  //DOTTY-ONLY    *                                                                           ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For examples of tagged test registration, see the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def in(testFun: => Future[compatible.Assertion]): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
+  //DOTTY-ONLY       convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).in(testFun)(using pos)
+  //DOTTY-ONLY     }) }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY    * Supports the registration of tagged, ignored tests in shorthand form.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * This method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack" must "pop values in last-in-first-out order" taggedAs(SlowTest) ignore { ... }
+  //DOTTY-ONLY    *                                                                           ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For examples of ignored test registration, see the <a href="AsyncFlatSpec.html#ignoredTests">Ignored tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
+  //DOTTY-ONLY    * For examples of tagged test registration, see the <a href="AsyncFlatSpec.html#taggingTests">Tagging tests section</a>
+  //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def ignore(testFun: => Future[compatible.Assertion]): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
+  //DOTTY-ONLY       convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).ignore(testFun)(using pos)
+  //DOTTY-ONLY     }) }
+  //DOTTY-ONLY }
 
   /**
    * Supports the shorthand form of test registration.
@@ -1705,7 +1813,10 @@ import resultOfStringPassedToVerb.verb
    * the function, respectively).
    * </p>
    */
+  // SKIP-DOTTY-START 
   protected implicit val shorthandTestRegistrationFunction: StringVerbStringInvocation =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY protected val shorthandTestRegistrationFunction: StringVerbStringInvocation =
     new StringVerbStringInvocation {
       def apply(subject: String, verb: String, rest: String, pos: source.Position): ResultOfStringPassedToVerb = {
         registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, pos)
@@ -1731,6 +1842,7 @@ import resultOfStringPassedToVerb.verb
         }
       }
     }
+  //DOTTY-ONLY given StringVerbStringInvocation = shorthandTestRegistrationFunction
 
   /**
    * Supports the shorthand form of shared test registration.
@@ -1752,13 +1864,17 @@ import resultOfStringPassedToVerb.verb
    * subject description (the  parameter to the function) and returns a <code>BehaveWord</code>.
    * </p>
    */
+  // SKIP-DOTTY-START 
   protected implicit val shorthandSharedTestRegistrationFunction: StringVerbBehaveLikeInvocation =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY protected val shorthandSharedTestRegistrationFunction: StringVerbBehaveLikeInvocation =
     new StringVerbBehaveLikeInvocation {
       def apply(subject: String, pos: source.Position): BehaveWord = {
         registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, pos)
         new BehaveWord
       }
     }
+  //DOTTY-ONLY given StringVerbBehaveLikeInvocation = shorthandSharedTestRegistrationFunction  
 
   // TODO: I got a:
   // runsuite:

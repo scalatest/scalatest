@@ -59,8 +59,6 @@ trait Messaging[T] {
  */
 object Messaging {
 
-  //DOTTY-ONLY import scala.reflect.Selectable.reflectiveSelectable
-
   // SKIP-DOTTY-START
   /**
    * Enable <code>Messaging</code> implementation for <code>java.lang.Throwable</code>
@@ -72,9 +70,9 @@ object Messaging {
     new Messaging[EX] {
       def messageOf(exception: EX): String = exception.getMessage()
     }
+  // SKIP-DOTTY-END
 
   import scala.language.reflectiveCalls
-  // SKIP-DOTTY-END
 
   /**
    * Provides <code>Messaging</code> implementation for any arbitrary object with a <code>message()</code> method that returns <code>String</code>
@@ -82,10 +80,14 @@ object Messaging {
    * @tparam T any type that has a <code>message()</code> method that returns <code>String</code>
    * @return <code>Messaging[T]</code> that supports <code>T</code> in <code>have message</code> syntax
    */ 
+  // SKIP-DOTTY-START
   implicit def messagingNatureOfAnyRefWithMessageMethod[T <: AnyRef { def message(): String}]: Messaging[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def messagingNatureOfAnyRefWithMessageMethod[T <: AnyRef { def message(): String}]: Messaging[T] = 
     new Messaging[T] {
       def messageOf(obj: T): String = obj.message()
     }
+  //DOTTY-ONLY given given_messagingNatureOfAnyRefWithMessageMethod[T <: AnyRef { def message(): String}]: Messaging[T] = messagingNatureOfAnyRefWithMessageMethod
 
   /**
    * Provides <code>Messaging</code> implementation for any arbitrary object with a parameterless <code>message</code> method that returns <code>String</code>
@@ -93,10 +95,14 @@ object Messaging {
    * @tparam T any type that has a parameterless <code>message</code> method that returns <code>String</code>
    * @return <code>Messaging[T]</code> that supports <code>T</code> in <code>have message</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def messagingNatureOfAnyRefWithParameterlessMessageMethod[T <: AnyRef { def message: String}]: Messaging[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def messagingNatureOfAnyRefWithParameterlessMessageMethod[T <: AnyRef { def message: String}]: Messaging[T] = 
     new Messaging[T] {
       def messageOf(obj: T): String = obj.message
     }
+  //DOTTY-ONLY given given_messagingNatureOfAnyRefWithParameterlessMessageMethod[T <: AnyRef { def message: String}]: Messaging[T] = messagingNatureOfAnyRefWithParameterlessMessageMethod
 
   /**
    * Provides <code>Messaging</code> implementation for any arbitrary object with a <code>getMessage()</code> method that returns <code>String</code>
@@ -104,10 +110,14 @@ object Messaging {
    * @tparam T any type that has a <code>getMessage()</code> method that returns <code>String</code>
    * @return <code>Messaging[T]</code> that supports <code>T</code> in <code>have message</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def messagingNatureOfAnyRefWithGetMessageMethod[T <: AnyRef { def getMessage(): String}]: Messaging[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def messagingNatureOfAnyRefWithGetMessageMethod[T <: AnyRef { def getMessage(): String}]: Messaging[T] = 
     new Messaging[T] {
       def messageOf(obj: T): String = obj.getMessage()
     }
+  //DOTTY-ONLY given given_messagingNatureOfAnyRefWithGetMessageMethod[T <: AnyRef { def getMessage(): String}]: Messaging[T] = messagingNatureOfAnyRefWithGetMessageMethod  
 
   /**
    * Provides <code>Messaging</code> implementation for any arbitrary object with a parameterless <code>getMessage</code> method that returns <code>String</code>
@@ -115,10 +125,14 @@ object Messaging {
    * @tparam T any type that has a parameterless <code>getMessage</code> method that returns <code>String</code>
    * @return <code>Messaging[T]</code> that supports <code>T</code> in <code>have message</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def messagingNatureOfAnyRefWithParameterlessGetMessageMethod[T <: AnyRef { def getMessage: String}]: Messaging[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def messagingNatureOfAnyRefWithParameterlessGetMessageMethod[T <: AnyRef { def getMessage: String}]: Messaging[T] = 
     new Messaging[T] {
       def messageOf(obj: T): String = obj.getMessage
     }
+  //DOTTY-ONLY given given_messagingNatureOfAnyRefWithParameterlessGetMessageMethod[T <: AnyRef { def getMessage: String}]: Messaging[T] = messagingNatureOfAnyRefWithParameterlessGetMessageMethod  
 }
 
 

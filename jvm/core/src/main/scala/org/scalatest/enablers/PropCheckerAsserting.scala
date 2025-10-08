@@ -126,12 +126,40 @@ trait PropCheckerAsserting[T] {
 
 }
 
-/**
-  * Class holding the lowest priority <code>CheckerAsserting</code> implicit, which enables [[org.scalatest.prop.GeneratorDrivenPropertyChecks GeneratorDrivenPropertyChecks]] expressions that have result type <code>Unit</code>.
-  */
-abstract class UnitPropCheckerAsserting {
+abstract class ExpectationPropCheckerAsserting {
 
-  import PropCheckerAsserting._
+  import PropCheckerAsserting.PropCheckerAssertingImpl
+
+  // SKIP-DOTTY-START
+  implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): PropCheckerAsserting[Expectation] { type Result = Expectation } = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def assertingNatureOfExpectation(using prettifier: Prettifier): PropCheckerAsserting[Expectation] { type Result = Expectation } = {
+    new PropCheckerAssertingImpl[Expectation] {
+      type Result = Expectation
+      def discard(result: Expectation): Boolean = result.isVacuousYes
+      def succeed(result: Expectation): (Boolean, Option[Throwable]) = (result.isYes, result.cause)
+      private[scalatest] def indicateSuccess(message: => String): Expectation = Fact.Yes(message, prettifier)
+      private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Expectation = {
+        val gdpcfe =
+          new GeneratorDrivenPropertyCheckFailedException(
+            messageFun,
+            optionalCause,
+            pos,
+            None,
+            undecoratedMessage,
+            scalaCheckArgs,
+            None,
+            scalaCheckLabels.toList
+          )
+        val message: String = gdpcfe.getMessage
+        Fact.No(message, prettifier)
+      }
+    }
+  }
+  //DOTTY-ONLY given given_assertingNatureOfExpectation(using prettifier: Prettifier): PropCheckerAsserting[Expectation] { type Result = Expectation } = assertingNatureOfExpectation(using prettifier)
+}
+
+object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
 
   abstract class PropCheckerAssertingImpl[T] extends PropCheckerAsserting[T] {
 
@@ -915,12 +943,6 @@ abstract class UnitPropCheckerAsserting {
     private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Result
 
   }
-
-}
-
-trait FuturePropCheckerAsserting {
-
-  import PropCheckerAsserting._
 
   abstract class FuturePropCheckerAssertingImpl[T] extends PropCheckerAsserting[Future[T]] {
 
@@ -2174,38 +2196,10 @@ trait FuturePropCheckerAsserting {
 
   }
 
-}
-
-abstract class ExpectationPropCheckerAsserting extends UnitPropCheckerAsserting {
-
-  implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): PropCheckerAsserting[Expectation] { type Result = Expectation } = {
-    new PropCheckerAssertingImpl[Expectation] {
-      type Result = Expectation
-      def discard(result: Expectation): Boolean = result.isVacuousYes
-      def succeed(result: Expectation): (Boolean, Option[Throwable]) = (result.isYes, result.cause)
-      private[scalatest] def indicateSuccess(message: => String): Expectation = Fact.Yes(message, prettifier)
-      private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Expectation = {
-        val gdpcfe =
-          new GeneratorDrivenPropertyCheckFailedException(
-            messageFun,
-            optionalCause,
-            pos,
-            None,
-            undecoratedMessage,
-            scalaCheckArgs,
-            None,
-            scalaCheckLabels.toList
-          )
-        val message: String = gdpcfe.getMessage
-        Fact.No(message, prettifier)
-      }
-    }
-  }
-}
-
-object PropCheckerAsserting extends ExpectationPropCheckerAsserting with FuturePropCheckerAsserting {
-
+  // SKIP-DOTTY-START
   implicit def assertingNatureOfAssertion: PropCheckerAsserting[Assertion] { type Result = Assertion } = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def assertingNatureOfAssertion: PropCheckerAsserting[Assertion] { type Result = Assertion } = { 
     new PropCheckerAssertingImpl[Assertion] {
       type Result = Assertion
       def discard(result: Assertion): Boolean = false
@@ -2225,8 +2219,12 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting with FutureP
       }
     }
   }
+  //DOTTY-ONLY given given_assertingNatureOfAssertion: PropCheckerAsserting[Assertion] { type Result = Assertion } = assertingNatureOfAssertion
 
+  // SKIP-DOTTY-START
   implicit def assertingNatureOfFutureAssertion(implicit exeCtx: scala.concurrent.ExecutionContext): PropCheckerAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def assertingNatureOfFutureAssertion(using exeCtx: scala.concurrent.ExecutionContext): PropCheckerAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
     new FuturePropCheckerAssertingImpl[Assertion] {
       implicit val executionContext = exeCtx
       def discard(result: Assertion): Boolean = false
@@ -2246,6 +2244,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting with FutureP
       }
     }
   }
+  //DOTTY-ONLY given given_assertingNatureOfFutureAssertion(using exeCtx: scala.concurrent.ExecutionContext): PropCheckerAsserting[Future[Assertion]] { type Result = Future[Assertion] } = assertingNatureOfFutureAssertion(using exeCtx)
 
   private[enablers] def argsAndLabels(result: PropertyCheckResult): (List[PropertyArgument], List[String]) = {
 

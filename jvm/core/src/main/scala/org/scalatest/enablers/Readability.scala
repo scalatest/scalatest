@@ -58,18 +58,20 @@ trait Readability[-T] {
  */
 object Readability {
 
-  //DOTTY-ONLY import scala.reflect.Selectable.reflectiveSelectable
-
   /**
    * Enable <code>Readability</code> implementation for <code>java.io.File</code>.
    *
    * @tparam FILE any subtype of <code>java.io.File</code>
    * @return <code>Readability[FILE]</code> that supports <code>java.io.File</code> in <code>be readable</code> syntax
-   */
+   */ 
+  // SKIP-DOTTY-START
   implicit def readabilityOfFile[FILE <: java.io.File]: Readability[FILE] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def readabilityOfFile[FILE <: java.io.File]: Readability[FILE] =
     new Readability[FILE] {
       def isReadable(file: FILE): Boolean = file.canRead
     }
+  //DOTTY-ONLY given given_readabilityOfFile[FILE <: java.io.File]: Readability[FILE] = readabilityOfFile  
 
   import scala.language.reflectiveCalls
 
@@ -79,10 +81,14 @@ object Readability {
    * @tparam T any type that has a <code>isReadable()</code> method that returns <code>Boolean</code>
    * @return <code>Readability[T]</code> that supports <code>T</code> in <code>be readable</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def readabilityOfAnyRefWithIsReadableMethod[T <: AnyRef { def isReadable(): Boolean}]: Readability[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def readabilityOfAnyRefWithIsReadableMethod[T <: AnyRef { def isReadable(): Boolean}]: Readability[T] = 
     new Readability[T] {
       def isReadable(obj: T): Boolean = obj.isReadable()
     }
+  //DOTTY-ONLY given given_readabilityOfAnyRefWithIsReadableMethod[T <: AnyRef { def isReadable(): Boolean}]: Readability[T] = readabilityOfAnyRefWithIsReadableMethod
 
   /**
    * Enable <code>Readability</code> implementation for any arbitrary object with a parameterless <code>isReadable</code> method that returns <code>Boolean</code>
@@ -90,9 +96,13 @@ object Readability {
    * @tparam T any type that has a parameterless <code>isReadable</code> method that returns <code>Boolean</code>
    * @return <code>Readability[T]</code> that supports <code>T</code> in <code>be readable</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def readabilityOfAnyRefWithParameterlessIsReadableMethod[T <: AnyRef { def isReadable: Boolean}]: Readability[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def readabilityOfAnyRefWithParameterlessIsReadableMethod[T <: AnyRef { def isReadable: Boolean}]: Readability[T] = 
     new Readability[T] {
       def isReadable(obj: T): Boolean = obj.isReadable
     }
+  //DOTTY-ONLY given given_readabilityOfAnyRefWithParameterlessIsReadableMethod[T <: AnyRef { def isReadable: Boolean}]: Readability[T] = readabilityOfAnyRefWithParameterlessIsReadableMethod
 }
 

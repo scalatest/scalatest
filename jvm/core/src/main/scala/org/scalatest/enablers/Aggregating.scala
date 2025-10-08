@@ -214,14 +214,48 @@ trait AggregatingImpls {
 trait AggregatingJavaImplicits extends AggregatingImpls {
 
   /**
+    // SKIP-DOTTY-START
     * Implicit to support <code>Aggregating</code> nature of <code>java.util.Collection</code>.
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY   * To support <code>Aggregating</code> nature of <code>java.util.Collection</code>.
     *
     * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>java.util.Collection</code>
     * @tparam E the type of the element in the <code>java.util.Collection</code>
     * @tparam JCOL any subtype of <code>java.util.Collection</code>
     * @return <code>Aggregating[JCOL[E]]</code> that supports <code>java.util.Collection</code> in relevant <code>contain</code> syntax
     */
+  // SKIP-DOTTY-START
   implicit def aggregatingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]](implicit equality: Equality[E]): Aggregating[JCOL[E]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def aggregatingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]](using equality: Equality[E]): Aggregating[JCOL[E]] =
+    convertEqualityToJavaCollectionAggregating(equality)
+
+  /**
+    // SKIP-DOTTY-START
+    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY * converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+    * into <code>Aggregating</code> of type <code>JCOL[E]</code>, where <code>JCOL</code> is a subtype of <code>java.util.Collection</code>.
+    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+    *
+    * <pre class="stHighlight">
+    * val javaList = new java.util.ArrayList[String]()
+    * javaList.add("hi")
+    * (javaList should contain ("HI")) (after being lowerCased)
+    * </pre>
+    *
+    * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
+    * and this implicit conversion will convert it into <code>Aggregating[java.util.ArrayList[String]]</code>.
+    *
+    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+    * @tparam E type of elements in the <code>java.util.Collection</code>
+    * @tparam JCOL subtype of <code>java.util.Collection</code>
+    * @return <code>Aggregating</code> of type <code>JCOL[E]</code>
+    */
+  // SKIP-DOTTY-START
+  implicit def convertEqualityToJavaCollectionAggregating[E, JCOL[e] <: java.util.Collection[e]](equality: Equality[E]): Aggregating[JCOL[E]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertEqualityToJavaCollectionAggregating[E, JCOL[e] <: java.util.Collection[e]](equality: Equality[E]): Aggregating[JCOL[E]] =
     new Aggregating[JCOL[E]] {
       def containsAtLeastOneOf(col: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
         col.asScala.exists((e: E) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
@@ -240,30 +274,44 @@ trait AggregatingJavaImplicits extends AggregatingImpls {
       }
     }
 
-  /**
-    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
-    * into <code>Aggregating</code> of type <code>JCOL[E]</code>, where <code>JCOL</code> is a subtype of <code>java.util.Collection</code>.
-    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
-    *
-    * <pre class="stHighlight">
-    * val javaList = new java.util.ArrayList[String]()
-    * javaList.add("hi")
-    * (javaList should contain ("HI")) (after being lowerCased)
-    * </pre>
-    *
-    * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
-    * and this implicit conversion will convert it into <code>Aggregating[java.util.ArrayList[String]]</code>.
-    *
-    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
-    * @tparam E type of elements in the <code>java.util.Collection</code>
-    * @tparam JCOL subtype of <code>java.util.Collection</code>
-    * @return <code>Aggregating</code> of type <code>JCOL[E]</code>
-    */
-  implicit def convertEqualityToJavaCollectionAggregating[E, JCOL[e] <: java.util.Collection[e]](equality: Equality[E]): Aggregating[JCOL[E]] =
-    aggregatingNatureOfJavaCollection(equality)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Aggregating</code> nature of <code>java.util.Collection</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>java.util.Collection</code>
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>java.util.Collection</code>
+  //DOTTY-ONLY   * @tparam JCOL any subtype of <code>java.util.Collection</code>
+  //DOTTY-ONLY   * @return <code>Aggregating[JCOL[E]]</code> that supports <code>java.util.Collection</code> in relevant <code>contain</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [E, JCOL[e] <: java.util.Collection[e]] (using equality: Equality[E]): Aggregating[JCOL[E]] = convertEqualityToJavaCollectionAggregating(equality)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+  //DOTTY-ONLY   * into <code>Aggregating</code> of type <code>JCOL[E]</code>, where <code>JCOL</code> is a subtype of <code>java.util.Collection</code>.
+  //DOTTY-ONLY   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <pre class="stHighlight">
+  //DOTTY-ONLY   * val javaList = new java.util.ArrayList[String]()
+  //DOTTY-ONLY   * javaList.add("hi")
+  //DOTTY-ONLY   * (javaList should contain ("HI")) (after being lowerCased)
+  //DOTTY-ONLY   * </pre>
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
+  //DOTTY-ONLY   * and this implicit conversion will convert it into <code>Aggregating[java.util.ArrayList[String]]</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+  //DOTTY-ONLY   * @tparam E type of elements in the <code>java.util.Collection</code>
+  //DOTTY-ONLY   * @tparam JCOL subtype of <code>java.util.Collection</code>
+  //DOTTY-ONLY   * @return <code>Aggregating</code> of type <code>JCOL[E]</code>
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given equalityJavaCollectionAggregating[E, JCOL[e] <: java.util.Collection[e]]: Conversion[Equality[E], Aggregating[JCOL[E]]] with {
+  //DOTTY-ONLY   def apply(equality: Equality[E]): Aggregating[JCOL[E]] = convertEqualityToJavaCollectionAggregating(equality)
+  //DOTTY-ONLY }  
 
   /**
+    // SKIP-DOTTY-START
     * Implicit to support <code>Aggregating</code> nature of <code>java.util.Map</code>.
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY * To support <code>Aggregating</code> nature of <code>java.util.Map</code>.
     *
     * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of entry in the <code>java.util.Map</code>
     * @tparam K the type of the key in the <code>java.util.Map</code>
@@ -271,7 +319,40 @@ trait AggregatingJavaImplicits extends AggregatingImpls {
     * @tparam JMAP any subtype of <code>java.util.Map</code>
     * @return <code>Aggregating[JMAP[K, V]]</code> that supports <code>java.util.Map</code> in relevant <code>contain</code> syntax
     */
+  // SKIP-DOTTY-START
   implicit def aggregatingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]](implicit equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def aggregatingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]](using equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] =
+    convertEqualityToJavaMapAggregating(equality)
+
+  /**
+    // SKIP-DOTTY-START
+    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY * Converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
+    * into <code>Aggregating</code> of type <code>JMAP[K, V]</code>, where <code>JMAP</code> is a subtype of <code>java.util.Map</code>.
+    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+    *
+    * <pre class="stHighlight">
+    * val javaMap = new java.util.HashMap[Int, String]()
+    * javaMap.put(1, "one")
+    * // lowerCased needs to be implemented as Normalization[java.util.Map.Entry[K, V]]
+    * (javaMap should contain (Entry(1, "ONE"))) (after being lowerCased)
+    * </pre>
+    *
+    * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>java.util.Map.Entry[Int, String]</code></a>
+    * and this implicit conversion will convert it into <code>Aggregating[java.util.HashMap[Int, String]]</code>.
+    *
+    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
+    * @tparam K the type of the key in the <code>java.util.Map</code>
+    * @tparam V the type of the value in the <code>java.util.Map</code>
+    * @tparam JMAP any subtype of <code>java.util.Map</code>
+    * @return <code>Aggregating</code> of type <code>JMAP[K, V]</code>
+    */
+  // SKIP-DOTTY-START
+  implicit def convertEqualityToJavaMapAggregating[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertEqualityToJavaMapAggregating[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] =
     new Aggregating[JMAP[K, V]] {
 
       import scala.collection.JavaConverters._
@@ -292,30 +373,41 @@ trait AggregatingJavaImplicits extends AggregatingImpls {
       }
     }
 
-  /**
-    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
-    * into <code>Aggregating</code> of type <code>JMAP[K, V]</code>, where <code>JMAP</code> is a subtype of <code>java.util.Map</code>.
-    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
-    *
-    * <pre class="stHighlight">
-    * val javaMap = new java.util.HashMap[Int, String]()
-    * javaMap.put(1, "one")
-    * // lowerCased needs to be implemented as Normalization[java.util.Map.Entry[K, V]]
-    * (javaMap should contain (Entry(1, "ONE"))) (after being lowerCased)
-    * </pre>
-    *
-    * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>java.util.Map.Entry[Int, String]</code></a>
-    * and this implicit conversion will convert it into <code>Aggregating[java.util.HashMap[Int, String]]</code>.
-    *
-    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
-    * @tparam K the type of the key in the <code>java.util.Map</code>
-    * @tparam V the type of the value in the <code>java.util.Map</code>
-    * @tparam JMAP any subtype of <code>java.util.Map</code>
-    * @return <code>Aggregating</code> of type <code>JMAP[K, V]</code>
-    */
-  implicit def convertEqualityToJavaMapAggregating[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] =
-    aggregatingNatureOfJavaMap(equality)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Aggregating</code> nature of <code>java.util.Map</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of entry in the <code>java.util.Map</code>
+  //DOTTY-ONLY   * @tparam K the type of the key in the <code>java.util.Map</code>
+  //DOTTY-ONLY   * @tparam V the type of the value in the <code>java.util.Map</code>
+  //DOTTY-ONLY   * @tparam JMAP any subtype of <code>java.util.Map</code>
+  //DOTTY-ONLY   * @return <code>Aggregating[JMAP[K, V]]</code> that supports <code>java.util.Map</code> in relevant <code>contain</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [K, V, JMAP[k, v] <: java.util.Map[k, v]] (using equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] = convertEqualityToJavaMapAggregating(equality)
 
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
+  //DOTTY-ONLY   * into <code>Aggregating</code> of type <code>JMAP[K, V]</code>, where <code>JMAP</code> is a subtype of <code>java.util.Map</code>.
+  //DOTTY-ONLY   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <pre class="stHighlight">
+  //DOTTY-ONLY   * val javaMap = new java.util.HashMap[Int, String]()
+  //DOTTY-ONLY   * javaMap.put(1, "one")
+  //DOTTY-ONLY   * // lowerCased needs to be implemented as Normalization[java.util.Map.Entry[K, V]]
+  //DOTTY-ONLY   * (javaMap should contain (Entry(1, "ONE"))) (after being lowerCased)
+  //DOTTY-ONLY   * </pre>
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>java.util.Map.Entry[Int, String]</code></a>
+  //DOTTY-ONLY   * and this implicit conversion will convert it into <code>Aggregating[java.util.HashMap[Int, String]]</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
+  //DOTTY-ONLY   * @tparam K the type of the key in the <code>java.util.Map</code>
+  //DOTTY-ONLY   * @tparam V the type of the value in the <code>java.util.Map</code>
+  //DOTTY-ONLY   * @tparam JMAP any subtype of <code>java.util.Map</code>
+  //DOTTY-ONLY   * @return <code>Aggregating</code> of type <code>JMAP[K, V]</code>
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given equalityJavaMapAggregating[K, V, JMAP[k, v] <: java.util.Map[k, v]]: Conversion[Equality[java.util.Map.Entry[K, V]], Aggregating[JMAP[K, V]]] with {
+  //DOTTY-ONLY   def apply(equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] = convertEqualityToJavaMapAggregating(equality)
+  //DOTTY-ONLY }  
 
 }
 

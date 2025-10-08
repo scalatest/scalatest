@@ -57,18 +57,20 @@ trait Writability[-T] {
  */
 object Writability {
 
-  //DOTTY-ONLY import scala.reflect.Selectable.reflectiveSelectable
-
   /**
    * Enable <code>Writability</code> implementation for <code>java.io.File</code>.
    *
    * @tparam FILE any subtype of <code>java.io.File</code>
    * @return <code>Writability[FILE]</code> that supports <code>java.io.File</code> in <code>be</code> <code>writable</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def writabilityOfFile[FILE <: java.io.File]: Writability[FILE] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def writabilityOfFile[FILE <: java.io.File]: Writability[FILE] =
     new Writability[FILE] {
       def isWritable(file: FILE): Boolean = file.canWrite
     }
+  //DOTTY-ONLY given [FILE <: java.io.File]: Writability[FILE] = writabilityOfFile  
 
   import scala.language.reflectiveCalls
 
@@ -78,10 +80,14 @@ object Writability {
    * @tparam T any type that has a <code>isWritable()</code> method that returns <code>Boolean</code>
    * @return <code>Writability[T]</code> that supports <code>T</code> in <code>be</code> <code>writable</code> syntax
    */
+  // SKIP-DOTTY-START 
   implicit def writabilityOfAnyRefWithIsWritableMethod[T <: AnyRef { def isWritable(): Boolean}]: Writability[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def writabilityOfAnyRefWithIsWritableMethod[T <: AnyRef { def isWritable(): Boolean}]: Writability[T] = 
     new Writability[T] {
       def isWritable(obj: T): Boolean = obj.isWritable()
     }
+  //DOTTY-ONLY given given_writabilityOfAnyRefWithIsWritableMethod[T <: AnyRef { def isWritable(): Boolean}]: Writability[T] = writabilityOfAnyRefWithIsWritableMethod
 
   /**
    * Enable <code>Writability</code> implementation for any arbitrary object with a parameterless <code>isWritable</code> method that returns <code>Boolean</code>
@@ -89,9 +95,13 @@ object Writability {
    * @tparam T any type that has a parameterless <code>isWritable</code> method that returns <code>Boolean</code>
    * @return <code>Writability[T]</code> that supports <code>T</code> in <code>be</code> <code>writable</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def writabilityOfAnyRefWithParameterlessIsWritableMethod[T <: AnyRef { def isWritable: Boolean}]: Writability[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def writabilityOfAnyRefWithParameterlessIsWritableMethod[T <: AnyRef { def isWritable: Boolean}]: Writability[T] = 
     new Writability[T] {
       def isWritable(obj: T): Boolean = obj.isWritable
     }
+  //DOTTY-ONLY given given_writabilityOfAnyRefWithParameterlessIsWritableMethod[T <: AnyRef { def isWritable: Boolean}]: Writability[T] = writabilityOfAnyRefWithParameterlessIsWritableMethod  
 }
 
