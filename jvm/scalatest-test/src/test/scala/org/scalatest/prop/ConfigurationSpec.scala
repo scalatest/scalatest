@@ -30,7 +30,8 @@ class ConfigurationSpec extends AnyFunSpec with Matchers with GeneratorDrivenPro
         minSize <- posZInts
         sizeRange <- posZIntsBetween(0, PosZInt.ensuringValid(PosZInt.MaxValue - minSize))
         workers <- posInts
-      } yield Configuration.Parameter(minSuccessful, maxDiscardedFactor, minSize, sizeRange, workers)
+        intialSeed <- Generator.longGenerator.map(Seed(_))
+      } yield Configuration.Parameter(minSuccessful, maxDiscardedFactor, minSize, sizeRange, workers, intialSeed)
 
     it("should offer a maxSize method that is minSize + SizeRange") {
       forAll { (param: Configuration.Parameter) =>
@@ -40,7 +41,7 @@ class ConfigurationSpec extends AnyFunSpec with Matchers with GeneratorDrivenPro
 
     it("should throw IllegalArgumentException when the result of minSize + sizeRange goes out of range") {
       assertThrows[IllegalArgumentException] {
-        Configuration.Parameter(PosInt(5), PosZDouble(0.5), PosZInt.MaxValue, PosZInt(1), PosInt(1))
+        Configuration.Parameter(PosInt(5), PosZDouble(0.5), PosZInt.MaxValue, PosZInt(1), PosInt(1), Seed(2L))
       }
     }
   }
