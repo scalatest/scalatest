@@ -28,7 +28,7 @@ trait GenResources {
 
   def failureMessagesTemplate(methods: String): String
 
-  def resourcesKeyValueTemplate(kv: KeyValue, paramCount: Int): String
+  def resourcesKeyValueTemplate(kv: KeyValue, paramCount: Int, scalaVersion: String): String
 
   def failureMessagesKeyValueTemplate(kv: KeyValue, paramCount: Int): String
 
@@ -63,7 +63,7 @@ trait GenResources {
         val kv = KeyValueParser.parse(line)
         val paramTokens = paramRegex.findAllIn(kv.value)
         val paramCount = if (paramTokens.isEmpty) 0 else paramTokens.map(t => t.substring(1, t.length - 1).toInt).max + 1
-        resourcesKeyValueTemplate(kv, paramCount)
+        resourcesKeyValueTemplate(kv, paramCount, scalaVersion)
       }.mkString("\n\n")
 
     val resourcesFile = new File(targetDir, "Resources.scala")
@@ -153,7 +153,7 @@ trait GenResourcesJVM extends GenResources {
        |}
     """.stripMargin
 
-  def resourcesKeyValueTemplate(kv: KeyValue, paramCount: Int): String =
+  def resourcesKeyValueTemplate(kv: KeyValue, paramCount: Int, scalaVersion: String): String =
     (
       if (paramCount > 0)
         "def " + kv.key + "(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = makeString(\"" + kv.key + "\", Array(" + (for (i <- 0 until paramCount) yield s"param$i").mkString(", ") + "))"
@@ -245,14 +245,19 @@ trait GenResourcesJSVM extends GenResources {
         |}
     """.stripMargin
 
-  def replaceResourcesValue(value: String): String = 
+  def replaceResourcesValue(value: String, scalaVersion: String): String = {
+    val replacedQuotes = 
     value.replaceAllLiterally("\"", "\\\"")
          .replaceAllLiterally("''", "'")
-         .replace(": _*", "*")
-         .replace(":_*", "*")  
+    if (scalaVersion.startsWith("3")) 
+      replacedQuotes.replace(": _*", "*")
+                    .replace(":_*", "*")
+    else
+      replacedQuotes
+  }
 
-  def resourcesKeyValueTemplate(kv: KeyValue, paramCount: Int): String =
-    "final val raw" + kv.key.capitalize + " = \"" + replaceResourcesValue(kv.value) + "\"\n\n" +
+  def resourcesKeyValueTemplate(kv: KeyValue, paramCount: Int, scalaVersion: String): String =
+    "final val raw" + kv.key.capitalize + " = \"" + replaceResourcesValue(kv.value, scalaVersion) + "\"\n\n" +
     (
       if (paramCount == 0 )
         "final val " + kv.key + " = raw" + kv.key.capitalize

@@ -2,7 +2,7 @@ addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.3.1")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-osgi" % "0.9.6")
 
-val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.19.0")
+val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.20.1")
 
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion)
 
