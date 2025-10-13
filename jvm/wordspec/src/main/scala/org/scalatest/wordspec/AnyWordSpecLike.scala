@@ -1367,7 +1367,7 @@ one error found
   // SKIP-DOTTY-START 
   protected implicit val subjectRegistrationFunction: StringVerbBlockRegistration =
   // SKIP-DOTTY-END
-  //DOTTY-ONLY protected given StringVerbBlockRegistration = 
+  //DOTTY-ONLY protected given subjectRegistrationFunction: StringVerbBlockRegistration = 
     new StringVerbBlockRegistration {
       def apply(left: String, verb: String, pos: source.Position, f: () => Unit): Unit = registerBranch(left, Some(verb), verb, "apply", 6, -2, pos, f)
     }
@@ -1397,7 +1397,7 @@ one error found
   // SKIP-DOTTY-START 
   protected implicit val subjectWithAfterWordRegistrationFunction: SubjectWithAfterWordRegistration =
   // SKIP-DOTTY-END
-  //DOTTY-ONLY protected given SubjectWithAfterWordRegistration =
+  //DOTTY-ONLY protected given subjectWithAfterWordRegistrationFunction: SubjectWithAfterWordRegistration =
     new SubjectWithAfterWordRegistration {
       def apply(left: String, verb: String, resultOfAfterWordApplication: ResultOfAfterWordApplication, pos: source.Position): Unit = {
         val afterWordFunction =
