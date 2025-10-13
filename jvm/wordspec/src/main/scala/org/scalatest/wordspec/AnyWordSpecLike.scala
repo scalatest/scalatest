@@ -1108,7 +1108,10 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
   // SKIP-DOTTY-END
 
   /**
+   // SKIP-DOTTY-START
    * Implicitly converts <code>String</code>s to <code>WordSpecStringWrapper</code>, which enables
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY  * Converts <code>String</code>s to <code>WordSpecStringWrapper</code>, which enables
    * methods <code>when</code>, <code>which</code>, <code>in</code>, <code>is</code>, <code>taggedAs</code>
    * and <code>ignore</code> to be invoked on <code>String</code>s.
    */
