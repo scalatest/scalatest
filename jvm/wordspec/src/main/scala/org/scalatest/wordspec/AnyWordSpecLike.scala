@@ -1153,7 +1153,10 @@ one error found
    * subject and executes the block.
    * </p>
    */
+  // SKIP-DOTTY-START 
   protected implicit val subjectRegistrationFunction: StringVerbBlockRegistration =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY protected given StringVerbBlockRegistration = 
     new StringVerbBlockRegistration {
       def apply(left: String, verb: String, pos: source.Position, f: () => Unit): Unit = registerBranch(left, Some(verb), verb, "apply", 6, -2, pos, f)
     }
