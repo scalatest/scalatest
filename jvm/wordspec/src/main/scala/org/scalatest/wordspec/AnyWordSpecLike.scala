@@ -398,8 +398,8 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerTestToRun(string, List(), "in", () => f, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(f: => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(string, List(), "in", () => f, pos)}) } 
+    //DOTTY-ONLY def in(f: => Any /* Assertion */)(using pos: source.Position): Unit = {
+    //DOTTY-ONLY  registerTestToRun(string, List(), "in", () => f, pos)
     //DOTTY-ONLY }
 
     /**
@@ -423,8 +423,8 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerTestToIgnore(string, List(), "ignore", () => f, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(f: => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(string, List(), "ignore", () => f, pos)}) } 
+    //DOTTY-ONLY def ignore(f: => Any /* Assertion */)(using pos: source.Position): Unit = {
+    //DOTTY-ONLY   registerTestToIgnore(string, List(), "ignore", () => f, pos)
     //DOTTY-ONLY }
 
     /**
@@ -448,8 +448,8 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerTestToRun(string, List(), "is", () => { f; succeed }, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def is(f: => PendingStatement): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(string, List(), "is", () => { f; succeed }, pos)}) } 
+    //DOTTY-ONLY def is(f: => PendingStatement)(using pos: source.Position): Unit = {
+    //DOTTY-ONLY   registerTestToRun(string, List(), "is", () => { f; succeed }, pos) 
     //DOTTY-ONLY }
 
     /**
@@ -468,7 +468,6 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
      * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
-    //DOTTY-ONLY     infix  
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
       val tagList = firstTestTag :: otherTestTags.toList
       new ResultOfTaggedAsInvocationOnString(string, tagList)
@@ -499,8 +498,8 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerBranch(string, Some("when"), "when", "when", stackDepth, -2, pos, () => f)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def when(f: => Unit): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string, Some("when"), "when", "when", 4, -2, pos, () => f)}) } 
+    //DOTTY-ONLY def when(f: => Unit)(using pos: source.Position): Unit = {
+    //DOTTY-ONLY   registerBranch(string, Some("when"), "when", "when", 4, -2, pos, () => f) 
     //DOTTY-ONLY }
 
     /**
@@ -526,8 +525,8 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", "when", 4, -2, pos, resultOfAfterWordApplication.f)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def when(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", "when", 4, -2, pos, resultOfAfterWordApplication.f)}) } 
+    //DOTTY-ONLY def when(resultOfAfterWordApplication: ResultOfAfterWordApplication)(using pos: source.Position): Unit = {
+    //DOTTY-ONLY   registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", "when", 4, -2, pos, resultOfAfterWordApplication.f)
     //DOTTY-ONLY }
 
     /**
@@ -555,8 +554,8 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerBranch(string.trim + " that", None, "that", "that", stackDepth, -2, pos, () => f)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def that(f: => Unit): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " that", None, "that", "that", 4, -2, pos, () => f)}) } 
+    //DOTTY-ONLY def that(f: => Unit)(using pos: source.Position): Unit = {
+    //DOTTY-ONLY   registerBranch(string.trim + " that", None, "that", "that", 4, -2, pos, () => f)
     //DOTTY-ONLY }
 
     /**
@@ -584,8 +583,8 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerBranch(string.trim + " which", None, "which", "which", stackDepth, -2, pos, () => f)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def which(f: => Unit): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " which", None, "which", "which", 4, -2, pos, () => f)}) } 
+    //DOTTY-ONLY def which(f: => Unit)(using pos: source.Position): Unit = {
+    //DOTTY-ONLY   registerBranch(string.trim + " which", None, "which", "which", 4, -2, pos, () => f)
     //DOTTY-ONLY }
 
     /**
@@ -611,8 +610,8 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", "that", 4, -2, pos, resultOfAfterWordApplication.f)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def that(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", "that", 4, -2, pos, resultOfAfterWordApplication.f)}) } 
+    //DOTTY-ONLY def that(resultOfAfterWordApplication: ResultOfAfterWordApplication)(using pos: source.Position): Unit = {
+    //DOTTY-ONLY   registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", "that", 4, -2, pos, resultOfAfterWordApplication.f)
     //DOTTY-ONLY }
     
     /**
@@ -638,8 +637,8 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", "which", 4, -2, pos, resultOfAfterWordApplication.f)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def which(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", "which", 4, -2, pos, resultOfAfterWordApplication.f)}) } 
+    //DOTTY-ONLY def which(resultOfAfterWordApplication: ResultOfAfterWordApplication)(using pos: source.Position): Unit = {
+    //DOTTY-ONLY   registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", "which", 4, -2, pos, resultOfAfterWordApplication.f)
     //DOTTY-ONLY }
   }
 
@@ -1113,7 +1112,217 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
    * methods <code>when</code>, <code>which</code>, <code>in</code>, <code>is</code>, <code>taggedAs</code>
    * and <code>ignore</code> to be invoked on <code>String</code>s.
    */
+  // SKIP-DOTTY-START
   protected implicit def convertToWordSpecStringWrapper(s: String): WordSpecStringWrapper = new WordSpecStringWrapper(s)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY protected def convertToWordSpecStringWrapper(s: String): WordSpecStringWrapper = new WordSpecStringWrapper(s)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods that provide methods that can be invoked on <code>String</code>s, such as <code>in</code>, <code>is</code>, <code>taggedAs</code>, and <code>ignore</code>.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * <p>
+  //DOTTY-ONLY  * The extension methods enables syntax such as the following test registration:
+  //DOTTY-ONLY  * </p>
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * <pre class="stHighlight">
+  //DOTTY-ONLY  * "A Stack" when { ... }
+  //DOTTY-ONLY  * 
+  //DOTTY-ONLY  * "should pop values in last-in-first-out order" in { ... }
+  //DOTTY-ONLY  * ^
+  //DOTTY-ONLY  * </pre>
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * <p>
+  //DOTTY-ONLY  * For more information and examples of the use of this syntax, see the main documentation 
+  //DOTTY-ONLY  * for <code>AnyWordSpec</code>.
+  //DOTTY-ONLY  * </p>
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension (s: String) {
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports test registration.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "complain on peek" in { ... }
+  //DOTTY-ONLY    *                    ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   infix inline def in(f: => Any /* Assertion */): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => new WordSpecStringWrapper(s).in(f)(using pos)}) }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports ignored test registration.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "complain on peek" ignore { ... }
+  //DOTTY-ONLY    *                    ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   infix inline def ignore(f: => Any /* Assertion */): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => new WordSpecStringWrapper(s).ignore(f)(using pos)}) }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports pending test registration.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "complain on peek" is (pending)
+  //DOTTY-ONLY    *                    ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   infix inline def is(f: => PendingStatement): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => new WordSpecStringWrapper(s).is(f)(using pos)}) }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports tagged test registration.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "complain on peek" taggedAs(SlowTest) in { ... }
+  //DOTTY-ONLY    *                    ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   infix def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = new WordSpecStringWrapper(s).taggedAs(firstTestTag, otherTestTags*)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Registers a <code>when</code> clause.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack" when { ... }
+  //DOTTY-ONLY    *           ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   infix inline def when(f: => Unit): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => new WordSpecStringWrapper(s).when(f)(using pos)}) }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Registers a <code>when</code> clause that is followed by an <em>after word</em>.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * val theUser = afterWord("the user")
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * "A Stack" when theUser { ... }
+  //DOTTY-ONLY    *           ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   infix inline def when(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => new WordSpecStringWrapper(s).when(resultOfAfterWordApplication)(using pos)}) }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Registers a <code>that</code> clause.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "a rerun button" that {
+  //DOTTY-ONLY    *                  ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   infix inline def that(f: => Unit): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => new WordSpecStringWrapper(s).that(f)(using pos)}) }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Registers a <code>which</code> clause.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "a rerun button," which {
+  //DOTTY-ONLY    *                  ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   infix inline def which(f: => Unit): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => new WordSpecStringWrapper(s).which(f)(using pos)}) }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Registers a <code>that</code> clause that is followed by an <em>after word</em>.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * def is = afterWord("is")
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * "a rerun button" that is {
+  //DOTTY-ONLY    *                  ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   infix inline def that(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => new WordSpecStringWrapper(s).that(resultOfAfterWordApplication)(using pos)}) }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Registers a <code>which</code> clause that is followed by an <em>after word</em>.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * def is = afterWord("is")
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * "a rerun button," which is {
+  //DOTTY-ONLY    *                  ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   infix inline def which(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => new WordSpecStringWrapper(s).which(resultOfAfterWordApplication)(using pos)}) }
+  //DOTTY-ONLY }
 
   // Used to enable should/can/must to take a block (except one that results in type string. May
   // want to mention this as a gotcha.)
