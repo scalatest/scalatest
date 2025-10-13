@@ -1104,7 +1104,9 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
    */
   protected val they = new TheyWord
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   /**
    * Implicitly converts <code>String</code>s to <code>WordSpecStringWrapper</code>, which enables
@@ -1183,7 +1185,10 @@ one error found
    * subject and executes the block.
    * </p>
    */
+  // SKIP-DOTTY-START 
   protected implicit val subjectWithAfterWordRegistrationFunction: SubjectWithAfterWordRegistration =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY protected given SubjectWithAfterWordRegistration =
     new SubjectWithAfterWordRegistration {
       def apply(left: String, verb: String, resultOfAfterWordApplication: ResultOfAfterWordApplication, pos: source.Position): Unit = {
         val afterWordFunction =
