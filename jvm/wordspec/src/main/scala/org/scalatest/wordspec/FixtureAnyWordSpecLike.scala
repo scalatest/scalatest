@@ -1296,7 +1296,9 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
    */
   protected val they = new TheyWord
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   /**
    * Implicitly converts <code>String</code>s to <code>WordSpecStringWrapper</code>, which enables
@@ -1306,7 +1308,291 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
    * @param s <code>String</code> to be wrapped
    * @return an instance of <code>WordSpecStringWrapper</code>
    */
+  // SKIP-DOTTY-START
   protected implicit def convertToWordSpecStringWrapper(s: String): WordSpecStringWrapper = new WordSpecStringWrapper(s)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY protected def convertToWordSpecStringWrapper(s: String): WordSpecStringWrapper = new WordSpecStringWrapper(s)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension that enables methods <code>when</code>, <code>which</code>, <code>in</code>, <code>is</code>, <code>taggedAs</code>
+  //DOTTY-ONLY  * and <code>ignore</code> to be invoked on <code>String</code>s.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * <p>
+  //DOTTY-ONLY  * This class provides much of the syntax for <code>FixtureAnyWordSpec</code>, however, it does not add
+  //DOTTY-ONLY  * the verb methods (<code>should</code>, <code>must</code>, and <code>can</code>) to <code>String</code>.
+  //DOTTY-ONLY  * Instead, these are added via the <code>ShouldVerb</code>, <code>MustVerb</code>, and <code>CanVerb</code>
+  //DOTTY-ONLY  * traits, which <code>FixtureAnyWordSpec</code> mixes in, to avoid a conflict with implicit conversions provided
+  //DOTTY-ONLY  * in <code>Matchers</code> and <code>MustMatchers</code>.
+  //DOTTY-ONLY  * </p>
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @param string the string that is being extended
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @author Bill Venners
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension (string: String) {
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports test registration.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "complain on peek" in { fixture => ... }
+  //DOTTY-ONLY    *                    ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="FixtureAnyWordSpec.html">main documentation</a> for trait <code>FixtureAnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param testFun the test function
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(string, List(), "in", testFun, pos)}) } 
+  //DOTTY-ONLY   }
+  //DOTTY-ONLY   private final def inImpl(testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
+  //DOTTY-ONLY     registerTestToRun(string, List(), "in", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
+  //DOTTY-ONLY   }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports registration of tests that take no fixture.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "complain on peek" in { () => ... }
+  //DOTTY-ONLY    *                    ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="FixtureAnyWordSpec.html">main documentation</a> for trait <code>FixtureAnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param testFun the test function
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def in(testFun: () => Any /* Assertion */): Unit = {
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
+  //DOTTY-ONLY   }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports pending test registration.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "complain on peek" is (pending)
+  //DOTTY-ONLY    *                    ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="FixtureAnyWordSpec.html">main documentation</a> for trait <code>FixtureAnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param testFun the test function
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def is(testFun: => PendingStatement): Unit = {
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToRun(string, List(), "is", unusedFixtureParam => testFun, pos)}) } 
+  //DOTTY-ONLY   }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports ignored test registration.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "complain on peek" ignore { fixture => ... }
+  //DOTTY-ONLY    *                    ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="FixtureAnyWordSpec.html">main documentation</a> for trait <code>FixtureAnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param testFun the test function
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = {
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(string, List(), "ignore", testFun, pos)}) } 
+  //DOTTY-ONLY   }
+  //DOTTY-ONLY   private final def ignoreImpl(testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
+  //DOTTY-ONLY     registerTestToIgnore(string, List(), "ignore", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
+  //DOTTY-ONLY   }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports registration of ignored tests that take no fixture.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "complain on peek" ignore { () => ... }
+  //DOTTY-ONLY    *                    ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="FixtureAnyWordSpec.html">main documentation</a> for trait <code>FixtureAnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param testFun the test function
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def ignore(testFun: () => Any /* Assertion */): Unit = {
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
+  //DOTTY-ONLY   }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports tagged test registration.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "complain on peek" taggedAs(SlowTest) in { fixture => ... }
+  //DOTTY-ONLY    *                    ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="FixtureAnyWordSpec.html">main documentation</a> for trait <code>FixtureAnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param firstTestTag the first mandatory test tag
+  //DOTTY-ONLY    * @param otherTestTags the others additional test tags
+  //DOTTY-ONLY    * @return an new instance of <code>ResultOfTaggedAsInvocationOnString</code>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   infix def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
+  //DOTTY-ONLY     val tagList = firstTestTag :: otherTestTags.toList
+  //DOTTY-ONLY     new ResultOfTaggedAsInvocationOnString(string, tagList)
+  //DOTTY-ONLY   }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Registers a <code>when</code> clause.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "A Stack" when { ... }
+  //DOTTY-ONLY    *           ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="FixtureAnyWordSpec.html">main documentation</a> for trait <code>FixtureAnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param f the function which is the body of the scope
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def when(f: => Unit): Unit = {
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string, Some("when"), "when", "when", 4, -2, pos, () => f)}) } 
+  //DOTTY-ONLY   }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Registers a <code>when</code> clause that is followed by an <em>after word</em>.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * val theUser = afterWord("the user")
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * "A Stack" when theUser { ... }
+  //DOTTY-ONLY    *           ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="FixtureAnyWordSpec.html">main documentation</a> for trait <code>FixtureAnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param resultOfAfterWordApplication a <code>ResultOfAfterWordApplication</code>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def when(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = {
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", "when", 4, -2, pos, resultOfAfterWordApplication.f)}) } 
+  //DOTTY-ONLY   }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Registers a <code>that</code> clause.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "a rerun button" that {
+  //DOTTY-ONLY    *                  ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="FixtureAnyWordSpec.html">main documentation</a> for trait <code>FixtureAnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param f the function which is the body of the scope
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def that(f: => Unit): Unit = {
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " that", None, "that", "that", stackDepth, -2, pos, () => f)}) } 
+  //DOTTY-ONLY   }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Registers a <code>which</code> clause.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "a rerun button," which {
+  //DOTTY-ONLY    *                  ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="FixtureAnyWordSpec.html">main documentation</a> for trait <code>FixtureAnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param f the function which is the body of the scope
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def which(f: => Unit): Unit = {
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " which", None, "which", "which", stackDepth, -2, pos, () => f)}) } 
+  //DOTTY-ONLY   }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Registers a <code>that</code> clause.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "a rerun button," that {
+  //DOTTY-ONLY    *                  ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="FixtureAnyWordSpec.html">main documentation</a> for trait <code>FixtureAnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param resultOfAfterWordApplication a <code>ResultOfAfterWordApplication</code>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def that(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = {
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", "that", 4, -2, pos, resultOfAfterWordApplication.f)}) } 
+  //DOTTY-ONLY   }
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Registers a <code>which</code> clause.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "a rerun button," which {
+  //DOTTY-ONLY    *                  ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="FixtureAnyWordSpec.html">main documentation</a> for trait <code>FixtureAnyWordSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * @param resultOfAfterWordApplication a <code>ResultOfAfterWordApplication</code>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   inline infix def which(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = {
+  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", "which", 4, -2, pos, resultOfAfterWordApplication.f)}) } 
+  //DOTTY-ONLY   }
+  //DOTTY-ONLY }
 
   /**
    * Supports the registration of subjects.
@@ -1328,7 +1614,10 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
    * subject and executes the block.
    * </p>
    */
+  // SKIP-DOTTY-START 
   protected implicit val subjectRegistrationFunction: StringVerbBlockRegistration =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY protected given subjectRegistrationFunction: StringVerbBlockRegistration =
     new StringVerbBlockRegistration {
       def apply(left: String, verb: String, pos: source.Position, f: () => Unit): Unit = registerBranch(left, Some(verb), verb, "apply", 6, -2, pos, f)
     }
@@ -1355,7 +1644,10 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
    * subject and executes the block.
    * </p>
    */
+  // SKIP-DOTTY-START 
   protected implicit val subjectWithAfterWordRegistrationFunction: SubjectWithAfterWordRegistration =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY protected given subjectWithAfterWordRegistrationFunction: SubjectWithAfterWordRegistration =
     new SubjectWithAfterWordRegistration {
       def apply(left: String, verb: String, resultOfAfterWordApplication: ResultOfAfterWordApplication, pos: source.Position): Unit = {
         val afterWordFunction =

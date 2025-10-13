@@ -1112,6 +1112,20 @@ trait AsyncWordSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
   protected implicit def convertToWordSpecStringWrapper(s: String): WordSpecStringWrapper = new WordSpecStringWrapper(s)
   // SKIP-DOTTY-END
   //DOTTY-ONLY protected def convertToWordSpecStringWrapper(s: String): WordSpecStringWrapper = new WordSpecStringWrapper(s)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension that  enables methods <code>when</code>, <code>which</code>, <code>in</code>, <code>is</code>, <code>taggedAs</code>
+  //DOTTY-ONLY  * and <code>ignore</code> to be invoked on <code>String</code>s.
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * <p>
+  //DOTTY-ONLY  * This class provides much of the syntax for <code>AsyncWordSpec</code>, however, it does not add
+  //DOTTY-ONLY  * the verb methods (<code>should</code>, <code>must</code>, and <code>can</code>) to <code>String</code>.
+  //DOTTY-ONLY  * Instead, these are added via the <code>ShouldVerb</code>, <code>MustVerb</code>, and <code>CanVerb</code>
+  //DOTTY-ONLY  * traits, which <code>AsyncWordSpec</code> mixes in, to avoid a conflict with implicit conversions provided
+  //DOTTY-ONLY  * in <code>Matchers</code> and <code>MustMatchers</code>.
+  //DOTTY-ONLY  * </p>
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @author Bill Venners
+  //DOTTY-ONLY  */
   //DOTTY-ONLY extension (s: String) {
   //DOTTY-ONLY   /**
   //DOTTY-ONLY    * Supports test registration.

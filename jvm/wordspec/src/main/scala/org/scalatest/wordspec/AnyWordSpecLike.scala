@@ -1121,7 +1121,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
   //DOTTY-ONLY protected def convertToWordSpecStringWrapper(s: String): WordSpecStringWrapper = new WordSpecStringWrapper(s)
 
   //DOTTY-ONLY /**
-  //DOTTY-ONLY  * Extension methods that provide methods that can be invoked on <code>String</code>s, such as <code>in</code>, <code>is</code>, <code>taggedAs</code>, and <code>ignore</code>.
+  //DOTTY-ONLY  * Extension that provide methods that can be invoked on <code>String</code>s, such as <code>in</code>, <code>is</code>, <code>taggedAs</code>, and <code>ignore</code>.
   //DOTTY-ONLY  *
   //DOTTY-ONLY  * <p>
   //DOTTY-ONLY  * The extension methods enables syntax such as the following test registration:
