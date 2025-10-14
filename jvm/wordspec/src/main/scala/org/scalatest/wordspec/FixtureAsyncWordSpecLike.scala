@@ -1254,7 +1254,9 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
    */
   protected val they = new TheyWord
 
+  // SKIP-DOTTY-START 
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   /**
   // SKIP-DOTTY-START
