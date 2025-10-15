@@ -84,6 +84,9 @@ trait MatcherProducers {
   implicit def convertToComposifier[T](f: T => Matcher[T]): Composifier[T] = new Composifier(f)
   // SKIP-DOTTY-END
   //DOTTY-ONLY def convertToComposifier[T](f: T => Matcher[T]): Composifier[T] = new Composifier(f)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension to support methods provided by <code>MatcherProducers.Composifier</code>.
+  //DOTTY-ONLY  */
   //DOTTY-ONLY extension [T](f: T => Matcher[T]) {
   //DOTTY-ONLY   /**
   //DOTTY-ONLY    * See the documentation for method <code>composeTwice</code> in class <code>MatcherProducers.Composifier</code>.
