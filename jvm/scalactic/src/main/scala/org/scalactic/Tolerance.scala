@@ -51,31 +51,52 @@ trait Tolerance {
   implicit def convertNumericToPlusOrMinusWrapper[T : Numeric](pivot: T): PlusOrMinusWrapper[T] = new PlusOrMinusWrapper(pivot)
   // SKIP-DOTTY-END
   //DOTTY-ONLY def convertNumericToPlusOrMinusWrapper[T : Numeric](pivot: T): PlusOrMinusWrapper[T] = new PlusOrMinusWrapper(pivot)
+  
   //DOTTY-ONLY /**
-  //DOTTY-ONLY  * Extension methods for <code>Numeric</code> types to enable the <code>+-</code> method.
+  //DOTTY-ONLY  * Extension methods for <code>Int</code> types to enable the <code>+-</code> method.
   //DOTTY-ONLY  */
-
   //DOTTY-ONLY extension (pivot: Int) {
   //DOTTY-ONLY   def +-(tolerance: Int): Spread[Int] = convertNumericToPlusOrMinusWrapper(pivot).+-(tolerance)
   //DOTTY-ONLY }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for <code>Long</code> types to enable the <code>+-</code> method.
+  //DOTTY-ONLY  */
   //DOTTY-ONLY extension (pivot: Long) {
   //DOTTY-ONLY   def +-(tolerance: Long): Spread[Long] = convertNumericToPlusOrMinusWrapper(pivot).+-(tolerance)
   //DOTTY-ONLY }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for <code>Short</code> types to enable the <code>+-</code> method.
+  //DOTTY-ONLY  */
   //DOTTY-ONLY extension (pivot: Short) {
   //DOTTY-ONLY   def +-(tolerance: Short): Spread[Short] = convertNumericToPlusOrMinusWrapper(pivot).+-(tolerance)
   //DOTTY-ONLY }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for <code>Byte</code> types to enable the <code>+-</code> method.
+  //DOTTY-ONLY  */
   //DOTTY-ONLY extension (pivot: Byte) {
   //DOTTY-ONLY   def +-(tolerance: Byte): Spread[Byte] = convertNumericToPlusOrMinusWrapper(pivot).+-(tolerance)
   //DOTTY-ONLY }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for <code>Char</code> types to enable the <code>+-</code> method.
+  //DOTTY-ONLY  */
   //DOTTY-ONLY extension (pivot: Char) {
   //DOTTY-ONLY   def +-(tolerance: Char): Spread[Char] = convertNumericToPlusOrMinusWrapper(pivot).+-(tolerance)
   //DOTTY-ONLY }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for <code>Float</code> types to enable the <code>+-</code> method.
+  //DOTTY-ONLY  */
   //DOTTY-ONLY extension (pivot: Float) {
   //DOTTY-ONLY   def +-(tolerance: Float): Spread[Float] = convertNumericToPlusOrMinusWrapper(pivot).+-(tolerance)
   //DOTTY-ONLY }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for <code>Double</code> types to enable the <code>+-</code> method.
+  //DOTTY-ONLY  */
   //DOTTY-ONLY extension (pivot: Double) {
   //DOTTY-ONLY   def +-(tolerance: Double): Spread[Double] = convertNumericToPlusOrMinusWrapper(pivot).+-(tolerance)
   //DOTTY-ONLY }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for general <code>Numeric</code> types to enable the <code>+-</code> method.
+  //DOTTY-ONLY  */
   //DOTTY-ONLY extension [T: Numeric](pivot: T) {
   //DOTTY-ONLY   def +-(tolerance: T): Spread[T] = convertNumericToPlusOrMinusWrapper(pivot).+-(tolerance)
   //DOTTY-ONLY }
