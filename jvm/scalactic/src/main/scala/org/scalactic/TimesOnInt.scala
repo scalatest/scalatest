@@ -67,6 +67,49 @@ package org.scalactic
  */
 trait TimesOnInt {
 
+  import TimesOnInt.Repeater
+
+  // SKIP-DOTTY-START
+  import scala.language.implicitConversions
+  // SKIP-DOTTY-END
+
+  /**
+   * Implicit conversion that adds a <code>times</code> method to <code>Int</code>s that
+   * will repeat a given side-effecting operation multiple times.
+   *
+   * @param num the integer to which the <code>times</code> method will be added.
+   */
+  // SKIP-DOTTY-START 
+  implicit def convertIntToRepeater(num: Int): Repeater = new Repeater(num)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertIntToRepeater(num: Int): Repeater = new Repeater(num)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Extension methods for <code>Int</code> to enable the <code>times</code> method.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension (num: Int) {
+  //DOTTY-ONLY   def times(fun: => Unit): Unit = convertIntToRepeater(num).times(fun)
+  //DOTTY-ONLY }
+}
+
+/**
+ * Companion object that facilitates the importing of <code>TimesOnInt</code> members as an alternative to mixing it in.
+ *
+ * <p>
+ * One use case of this companion object is to import <code>TimesOnInt</code> members so you can use them in the Scala interpreter.
+ * Here's an example: 
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; import org.scalatest.TimesOnInt._
+ * import org.scalatest.TimesOnInt._
+ * 
+ * scala&gt; 3 times println("Hello again, world!")
+ * Hello again, world!
+ * Hello again, world!
+ * Hello again, world!
+ * </pre>
+ */
+object TimesOnInt extends TimesOnInt {
   /**
    * Class used via an implicit conversion to enable a <code>times</code> method to be invoked
    * on <code>Int</code>s to repeat a given side-effecting operation multiple times.
@@ -104,35 +147,5 @@ trait TimesOnInt {
       }
     }
   }
-
-  import scala.language.implicitConversions
-
-  /**
-   * Implicit conversion that adds a <code>times</code> method to <code>Int</code>s that
-   * will repeat a given side-effecting operation multiple times.
-   *
-   * @param num the integer to which the <code>times</code> method will be added.
-   */
-  implicit def convertIntToRepeater(num: Int): Repeater = new Repeater(num)
 }
-
-/**
- * Companion object that facilitates the importing of <code>TimesOnInt</code> members as an alternative to mixing it in.
- *
- * <p>
- * One use case of this companion object is to import <code>TimesOnInt</code> members so you can use them in the Scala interpreter.
- * Here's an example: 
- * </p>
- *
- * <pre class="stREPL">
- * scala&gt; import org.scalatest.TimesOnInt._
- * import org.scalatest.TimesOnInt._
- * 
- * scala&gt; 3 times println("Hello again, world!")
- * Hello again, world!
- * Hello again, world!
- * Hello again, world!
- * </pre>
- */
-object TimesOnInt extends TimesOnInt
 
