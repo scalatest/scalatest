@@ -74,10 +74,13 @@ trait TimesOnInt {
   // SKIP-DOTTY-END
 
   /**
+  // SKIP-DOTTY-START
    * Implicit conversion that adds a <code>times</code> method to <code>Int</code>s that
    * will repeat a given side-effecting operation multiple times.
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY * Convert an <code>Int</code> to a <code>Repeater</code>.
    *
-   * @param num the integer to which the <code>times</code> method will be added.
+   * @param num the integer to be converted.
    */
   // SKIP-DOTTY-START 
   implicit def convertIntToRepeater(num: Int): Repeater = new Repeater(num)
