@@ -120,14 +120,26 @@ import TripleEqualsSupport._
  */
 trait TripleEquals extends TripleEqualsSupport {
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   // Inherit the Scaladoc for these methods
 
+  // SKIP-DOTTY-START
   implicit override def convertToEqualizer[T](left: T): Equalizer[T] = new Equalizer(left)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertToEqualizer[T](left: T): Equalizer[T] = new Equalizer(left)
+  //DOTTY-ONLY given[T]: Conversion[T, Equalizer[T]] with {
+  //DOTTY-ONLY   def apply(left: T): Equalizer[T] = convertToEqualizer(left)
+  //DOTTY-ONLY }
   override def convertToCheckingEqualizer[T](left: T): CheckingEqualizer[T] = new CheckingEqualizer(left)
 
+  // SKIP-DOTTY-START
   implicit override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): A CanEqual B = new EqualityConstraint[A, B](equalityOfA)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY override def unconstrainedEquality[A, B](using equalityOfA: Equality[A]): A CanEqual B = new EqualityConstraint[A, B](equalityOfA)
+  //DOTTY-ONLY given[A, B](using equalityOfA: Equality[A]): (A CanEqual B) = unconstrainedEquality(using equalityOfA)
 
   override def lowPriorityTypeCheckedConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): A CanEqual B = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
   override def convertEquivalenceToAToBConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): A CanEqual B = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
