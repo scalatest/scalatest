@@ -661,7 +661,6 @@ object $typeName$ {
     if ($typeName$Macro.isValid(value)) new $typeName$(value) else default
 
   import language.experimental.macros
-  import scala.language.implicitConversions
 
   /**
    * A factory method, implemented via a macro, that produces a
