@@ -22,6 +22,9 @@ object GenEvery {
       if (scalaVersion.startsWith("3.")) 
         scala213Compatible.replace(": _*", "*")
                           .replace("uncheckedVariance => uV", "uncheckedVariance as uV")
+                          .replace("import scala.language.implicitConversions", "")
+                          .replace("implicit def everyToIterableOnce[E](every: Every[E]): scala.collection.immutable.IndexedSeq[E] = every.toVector", 
+                                   "given everyToIterableOnce[E]: Conversion[Every[E], scala.collection.immutable.IndexedSeq[E]] with { def apply(every: Every[E]): scala.collection.immutable.IndexedSeq[E] = every.toVector}")
       else
         scala213Compatible      
     }
