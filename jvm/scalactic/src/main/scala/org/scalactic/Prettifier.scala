@@ -365,7 +365,10 @@ object Prettifier {
    * For anything else, it returns the result of invoking `toString`.
    * </p>
    */
+  // SKIP-DOTTY-START
   implicit val default: Prettifier = new DefaultPrettifier()
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given default: Prettifier = new DefaultPrettifier()
 
   def withEscapingDiffer(p: Prettifier): Prettifier = 
     new Prettifier {
