@@ -186,8 +186,11 @@ object NonEmptyArray {
       * @param other the <code>IterableOnce</code> to append
       * @return a new <code>NonEmptyArray</code> that contains all the elements of this <code>NonEmptyArray</code> followed by all elements of <code>other</code>.
       */
-    infix def ++[U >: T](other: IterableOnce[U])(using classTag: ClassTag[U]): NonEmptyArray[U] =
-      NonEmptyArray(nonEmptyArray.head, nonEmptyArray.tail.toSeq.appendedAll(other.toArray)*)
+    infix def ++[U >: T](other: IterableOnce[U])(using classTag: ClassTag[U]): NonEmptyArray[U] = {
+      val arr: Array[T] = nonEmptyArray  // transparent inside scope
+      arr.appendedAll(other).asInstanceOf[NonEmptyArray[U]]
+    }
+
     /**
     * The length of this <code>NonEmptyArray</code>.
     *
