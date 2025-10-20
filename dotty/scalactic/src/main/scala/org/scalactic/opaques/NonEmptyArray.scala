@@ -176,6 +176,22 @@ object NonEmptyArray {
       def isDefinedAt(idx: Int): Boolean = nonEmptyArray.isDefinedAt(idx)
     }
 
+  extension [T](element: T) {
+    /**
+      * Returns a new <code>NonEmptyArray</code> with the given element prepended.
+      *
+      * <p>
+      * Note that :-ending operators are right associative. A mnemonic for <code>+:</code> <em>vs.</em> <code>:+</code> is: the COLon goes on the COLlection side.
+      * </p>
+      *
+      * @param element the element to prepend to this <code>NonEmptyArray</code>
+      * @return a new <code>NonEmptyArray</code> consisting of <code>element</code> followed by all elements of this <code>NonEmptyArray</code>.
+      */
+    infix def +:[U >: T](array: NonEmptyArray[U])(using ClassTag[U]): NonEmptyArray[U] = {
+      (array: Array[U]).prepended(element).asInstanceOf[NonEmptyArray[U]]  
+    }
+  }
+
   extension [T] (nonEmptyArray: NonEmptyArray[T]) {
     /**
       * Returns a new <code>NonEmptyArray</code> containing the elements of this <code>NonEmptyArray</code> followed by the elements of the passed <code>IterableOnce</code>.
@@ -186,7 +202,7 @@ object NonEmptyArray {
       * @param other the <code>IterableOnce</code> to append
       * @return a new <code>NonEmptyArray</code> that contains all the elements of this <code>NonEmptyArray</code> followed by all elements of <code>other</code>.
       */
-    infix def ++[U >: T](other: IterableOnce[U])(using classTag: ClassTag[U]): NonEmptyArray[U] = {
+    infix final def ++[U >: T](other: IterableOnce[U])(using classTag: ClassTag[U]): NonEmptyArray[U] = {
       val arr: Array[T] = nonEmptyArray  // transparent inside scope
       arr.appendedAll(other).asInstanceOf[NonEmptyArray[U]]
     }
