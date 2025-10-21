@@ -241,7 +241,7 @@ class NonEmptyArraySpec extends UnitSpec {
     fn(0) shouldBe 2
     fn(1) shouldBe 3
   }
-  /*it should "have a contains method" in {
+  it should "have a contains method" in {
     val e = NonEmptyArray(1, 2, 3)
     e.contains(-1) shouldBe false
     e.contains(0) shouldBe false
@@ -252,17 +252,13 @@ class NonEmptyArraySpec extends UnitSpec {
     val es = NonEmptyArray("one", "two", "three")
     es.contains("one") shouldBe true;
     es.contains("ONE") shouldBe false;
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.contains("one") shouldBe true;
     es.contains("ONE") shouldBe false
-    // SKIP-DOTTY-END
   }
   // Decided to just overload one for GenSeq and one for Every. Could have done
   // what that has a Slicing nature, but that's a bit too fancy pants.
-  it should "have a containsSlice method that takes GenSeq" in {
+  /*it should "have a containsSlice method that takes GenSeq" in {
     val nonEmptyArray = NonEmptyArray(1, 2, 3, 4, 5)
     nonEmptyArray.containsSlice(Array(2, 3)) shouldBe true
     nonEmptyArray.containsSlice(Array(2, 3, 5)) shouldBe false

@@ -231,6 +231,17 @@ object NonEmptyArray {
     }
 
     /**
+      * Indicates whether this <code>NonEmptyArray</code> contains a given value as an element.
+      *
+      * @param elem the element to look for
+      * @return true if this <code>NonEmptyArray</code> has an element that is equal (as determined by <code>==)</code> to <code>elem</code>, false otherwise. 
+      */
+    final def contains(elem: T): Boolean = {
+      val arr: Array[T] = nonEmptyArray  // transparent inside scope
+      new scala.collection.ArrayOps(arr).contains(elem)
+    }
+
+    /**
     * The length of this <code>NonEmptyArray</code>.
     *
     * <p>
