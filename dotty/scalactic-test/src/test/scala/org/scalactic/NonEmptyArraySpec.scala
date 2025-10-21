@@ -185,11 +185,11 @@ class NonEmptyArraySpec extends UnitSpec {
     pf1.isDefinedAt(0) shouldBe true
     pf1.isDefinedAt(1) shouldBe false
   }
-  /*it should "have a :+ method" in {
+  it should "have a :+ method" in {
     NonEmptyArray(1) :+ 2 shouldBe NonEmptyArray(1, 2)
     NonEmptyArray(1, 2) :+ 3 shouldBe NonEmptyArray(1, 2, 3)
   }
-  it should "have 3 addString methods" in {
+  /*it should "have 3 addString methods" in {
     NonEmptyArray("hi").addString(new StringBuilder) shouldBe new StringBuilder("hi")
     NonEmptyArray(1, 2, 3).addString(new StringBuilder) shouldBe new StringBuilder("123")
 

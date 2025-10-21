@@ -216,6 +216,21 @@ object NonEmptyArray {
     }
 
     /**
+      * Returns a new <code>NonEmptyArray</code> with the given element appended.
+      *
+      * <p>
+      * Note a mnemonic for <code>+:</code> <em>vs.</em> <code>:+</code> is: the COLon goes on the COLlection side.
+      * </p>
+      *
+      * @param element the element to append to this <code>NonEmptyArray</code>
+      * @return a new <code>NonEmptyArray</code> consisting of all elements of this <code>NonEmptyArray</code> followed by <code>element</code>.
+      */
+    def :+[U >: T](element: U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] = { 
+      val arr: Array[T] = nonEmptyArray  // transparent inside scope
+      arr.appended(element)
+    }
+
+    /**
     * The length of this <code>NonEmptyArray</code>.
     *
     * <p>
