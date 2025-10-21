@@ -16,6 +16,7 @@
 package org.scalactic.opaques
 
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
+import scala.annotation.targetName
 import scala.collection.GenSeq
 import org.scalactic.ColCompatHelper.{Iterable, IterableOnce, GenIterable}
 import scala.collection.generic.CanBuildFrom
@@ -23,6 +24,7 @@ import scala.collection.mutable.Buffer
 import scala.reflect.ClassTag
 import scala.collection.immutable
 import scala.collection.mutable.ArrayBuffer
+import scala.collection.ArrayOps
 import org.scalactic.{Every, Resources}
 import scala.language.higherKinds
 
@@ -237,8 +239,53 @@ object NonEmptyArray {
       * @return true if this <code>NonEmptyArray</code> has an element that is equal (as determined by <code>==)</code> to <code>elem</code>, false otherwise. 
       */
     final def contains(elem: T): Boolean = {
-      val arr: Array[T] = nonEmptyArray  // transparent inside scope
-      new scala.collection.ArrayOps(arr).contains(elem)
+      val arrOps = new ArrayOps(nonEmptyArray)
+      arrOps.contains(elem)
+    }
+
+    /**
+      * Indicates whether this <code>NonEmptyArray</code> contains a given <code>GenSeq</code> as a slice.
+      *
+      * @param that the <code>GenSeq</code> slice to look for
+      * @return true if this <code>NonEmptyArray</code> contains a slice with the same elements as <code>that</code>, otherwise <code>false</code>.
+      */
+    final def containsSlice[B](that: GenSeq[B]): Boolean = {
+      val col = Vector(nonEmptyArray*)
+      col.containsSlice(that)
+    }
+
+    /**
+      * Indicates whether this <code>NonEmptyArray</code> contains a given <code>Every</code> as a slice.
+      *
+      * @param that the <code>Every</code> slice to look for
+      * @return true if this <code>NonEmptyArray</code> contains a slice with the same elements as <code>that</code>, otherwise <code>false</code>.
+      */
+    final def containsSlice[B](that: Every[B]): Boolean = {
+      val col = Vector(nonEmptyArray*)
+      col.containsSlice(that)
+    }
+
+    /**
+      * Indicates whether this <code>NonEmptyArray</code> contains a given <code>Array</code> as a slice.
+      *
+      * @param that the <code>Array</code> slice to look for
+      * @return true if this <code>NonEmptyArray</code> contains a slice with the same elements as <code>that</code>, otherwise <code>false</code>.
+      */
+    final def containsSlice[B](that: Array[B]): Boolean = {
+      val col = Vector(nonEmptyArray*)
+      col.containsSlice(that)
+    }
+
+    /**
+      * Indicates whether this <code>NonEmptyArray</code> contains a given <code>NonEmptyArray</code> as a slice.
+      *
+      * @param that the <code>NonEmptyArray</code> slice to look for
+      * @return true if this <code>NonEmptyArray</code> contains a slice with the same elements as <code>that</code>, otherwise <code>false</code>.
+      */
+    @targetName("containsSliceNonEmptyArray")  // need this to compile
+    final def containsSlice[B](that: NonEmptyArray[B]): Boolean = {
+      val col = Vector(nonEmptyArray*)
+      col.containsSlice(that)
     }
 
     /**

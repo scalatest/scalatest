@@ -258,7 +258,7 @@ class NonEmptyArraySpec extends UnitSpec {
   }
   // Decided to just overload one for GenSeq and one for Every. Could have done
   // what that has a Slicing nature, but that's a bit too fancy pants.
-  /*it should "have a containsSlice method that takes GenSeq" in {
+  it should "have a containsSlice method that takes GenSeq" in {
     val nonEmptyArray = NonEmptyArray(1, 2, 3, 4, 5)
     nonEmptyArray.containsSlice(Array(2, 3)) shouldBe true
     nonEmptyArray.containsSlice(Array(2, 3, 5)) shouldBe false
@@ -282,7 +282,7 @@ class NonEmptyArraySpec extends UnitSpec {
     nonEmptyArray.containsSlice(NonEmptyArray(2, 3, 5)) shouldBe false
     nonEmptyArray.containsSlice(NonEmptyArray(3)) shouldBe true
   }
-  it should "have 3 copyToArray methods" in {
+  /*it should "have 3 copyToArray methods" in {
 
     val arr1 = Array.fill(5)(-1)
     NonEmptyArray(1, 2, 3, 4, 5).copyToArray(arr1)
