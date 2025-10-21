@@ -170,11 +170,19 @@ object NonEmptyArray {
 
   implicit def nonEmptyArrayToIterable[E](nonEmptyArray: NonEmptyArray[E]): scala.collection.Iterable[E] = Vector(nonEmptyArray*)
 
-  implicit def nonEmptyArrayToPartialFunction[E](nonEmptyArray: NonEmptyArray[E]): PartialFunction[Int, E] = 
-    new PartialFunction[Int, E] {
-      def apply(idx: Int): E = nonEmptyArray(idx)
-      def isDefinedAt(idx: Int): Boolean = idx >= 0 && idx < nonEmptyArray.length
-    }
+  /**
+    * Given conversion from <code>NonEmptyArray</code> to <code>PartialFunction</code>.
+    *
+    * @param nonEmptyArray the <code>NonEmptyArray</code> to convert
+    * @return the <code>PartialFunction</code> 
+    */
+  given [E]: Conversion[NonEmptyArray[E], PartialFunction[Int, E]] with {
+    def apply(nonEmptyArray: NonEmptyArray[E]): PartialFunction[Int, E] =
+      new PartialFunction[Int, E] {
+        def apply(idx: Int): E = nonEmptyArray(idx)
+        def isDefinedAt(idx: Int): Boolean = idx >= 0 && idx < nonEmptyArray.length
+      }
+  }
 
   extension [T](element: T) {
     /**
@@ -217,23 +225,5 @@ object NonEmptyArray {
     * @return the number of elements in this <code>NonEmptyArray</code>. 
     */
     final def length: Int = nonEmptyArray.length
-
-    /**
-    * Selects an element by its index in the <code>NonEmptyArray</code>.
-    *
-    * @return the element of this <code>NonEmptyArray</code> at index <code>idx</code>, where 0 indicates the first element.
-    */
-    final def apply(idx: Int): T = nonEmptyArray(idx)
-
-    /**
-      * Tests whether this <code>NonEmptyArray</code> contains given index.
-      *
-      * @param idx the index to test
-      * @return true if this <code>NonEmptyArray</code> contains an element at position <code>idx</code>, <code>false</code> otherwise. 
-      */
-    /*final def isDefinedAt(idx: Int): Boolean = {
-      val arr: Array[T] = nonEmptyArray  // transparent inside scope
-      arr.isDefinedAt(idx)
-    }*/
   }
 }
