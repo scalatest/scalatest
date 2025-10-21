@@ -189,7 +189,7 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(1) :+ 2 shouldBe NonEmptyArray(1, 2)
     NonEmptyArray(1, 2) :+ 3 shouldBe NonEmptyArray(1, 2, 3)
   }
-  /*it should "have 3 addString methods" in {
+  it should "have 3 addString methods" in {
     NonEmptyArray("hi").addString(new StringBuilder) shouldBe new StringBuilder("hi")
     NonEmptyArray(1, 2, 3).addString(new StringBuilder) shouldBe new StringBuilder("123")
 
@@ -241,7 +241,7 @@ class NonEmptyArraySpec extends UnitSpec {
     fn(0) shouldBe 2
     fn(1) shouldBe 3
   }
-  it should "have a contains method" in {
+  /*it should "have a contains method" in {
     val e = NonEmptyArray(1, 2, 3)
     e.contains(-1) shouldBe false
     e.contains(0) shouldBe false
