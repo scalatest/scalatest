@@ -180,12 +180,12 @@ class NonEmptyArraySpec extends UnitSpec {
     0 +: NonEmptyArray(1, 2) shouldBe NonEmptyArray(0, 1, 2)
     "zero" +: NonEmptyArray("one", "two") shouldBe NonEmptyArray("zero", "one", "two")
   }
-  /*it should "implement PartialFunction[Int, T]" in {
+  it should "implement PartialFunction[Int, T]" in {
     val pf1: PartialFunction[Int, Int] = NonEmptyArray(1)
     pf1.isDefinedAt(0) shouldBe true
     pf1.isDefinedAt(1) shouldBe false
   }
-  it should "have a :+ method" in {
+  /*it should "have a :+ method" in {
     NonEmptyArray(1) :+ 2 shouldBe NonEmptyArray(1, 2)
     NonEmptyArray(1, 2) :+ 3 shouldBe NonEmptyArray(1, 2, 3)
   }
