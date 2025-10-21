@@ -196,7 +196,7 @@ object NonEmptyArray {
       * @return a new <code>NonEmptyArray</code> consisting of <code>element</code> followed by all elements of this <code>NonEmptyArray</code>.
       */
     infix def +:[U >: T](array: NonEmptyArray[U])(using ClassTag[U]): NonEmptyArray[U] = {
-      (array: Array[U]).prepended(element).asInstanceOf[NonEmptyArray[U]]  
+      (array: Array[U]).prepended(element)
     }
   }
 
@@ -212,7 +212,7 @@ object NonEmptyArray {
       */
     infix final def ++[U >: T](other: IterableOnce[U])(using classTag: ClassTag[U]): NonEmptyArray[U] = {
       val arr: Array[T] = nonEmptyArray  // transparent inside scope
-      arr.appendedAll(other).asInstanceOf[NonEmptyArray[U]]
+      arr.appendedAll(other)
     }
 
     /**
