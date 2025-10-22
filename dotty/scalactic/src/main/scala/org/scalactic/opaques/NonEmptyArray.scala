@@ -512,5 +512,39 @@ object NonEmptyArray {
       * @return the string <code>"NonEmptyArray"</code>
       */
     def stringPrefix: String = "NonEmptyArray"
+
+    /**
+      * Converts this <code>NonEmptyArray</code> of pairs into two <code>NonEmptyArray</code>s of the first and second half of each pair. 
+      *
+      * @tparam L the type of the first half of the element pairs
+      * @tparam R the type of the second half of the element pairs
+      * @param asPair an implicit conversion that asserts that the element type of this <code>NonEmptyArray</code> is a pair.
+      * @return a pair of <code>NonEmptyArray</code>s, containing the first and second half, respectively, of each element pair of this <code>NonEmptyArray</code>. 
+      */
+    final def unzip[L, R](implicit asPair: T => (L, R), classTagL: ClassTag[L], classTagR: ClassTag[R]): (NonEmptyArray[L], NonEmptyArray[R]) = {
+      val unzipped = new ArrayOps(nonEmptyArray).unzip
+      val left: NonEmptyArray[L] = unzipped._1.toArray
+      val right: NonEmptyArray[R] = unzipped._2.toArray
+      (left, right)
+    }
+
+    /**
+      * Converts this <code>NonEmptyArray</code> of triples into three <code>NonEmptyArray</code>s of the first, second, and and third element of each triple. 
+      *
+      * @tparam L the type of the first member of the element triples
+      * @tparam R the type of the second member of the element triples
+      * @tparam R the type of the third member of the element triples
+      * @param asTriple an implicit conversion that asserts that the element type of this <code>NonEmptyArray</code> is a triple.
+      * @return a triple of <code>NonEmptyArray</code>s, containing the first, second, and third member, respectively, of each element triple of this <code>NonEmptyArray</code>. 
+      */
+    final def unzip3[L, M, R](implicit asTriple: T => (L, M, R), classTagL: ClassTag[L], classTagM: ClassTag[M], classTagR: ClassTag[R]): (NonEmptyArray[L], NonEmptyArray[M], NonEmptyArray[R]) = {
+      val unzipped = new ArrayOps(nonEmptyArray).unzip3
+      val left: NonEmptyArray[L] = unzipped._1.toArray
+      val middle: NonEmptyArray[M] = unzipped._2.toArray
+      val right: NonEmptyArray[R] = unzipped._3.toArray
+      (left, middle, right)
+    }
+
+    
   }
 }
