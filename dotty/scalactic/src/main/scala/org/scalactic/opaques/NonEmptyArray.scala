@@ -175,7 +175,10 @@ object NonEmptyArray {
     */
   given [E]: Conversion[NonEmptyArray[E], scala.collection.GenSeq[E]] with {
     def apply(nonEmptyArray: NonEmptyArray[E]): scala.collection.GenSeq[E] =
-      Vector(nonEmptyArray*)
+      new scala.collection.IndexedSeq[E] {
+        def apply(i: Int): E = nonEmptyArray(i)
+        def length: Int = nonEmptyArray.length
+      }
   }
 
   extension [T](element: T) {
