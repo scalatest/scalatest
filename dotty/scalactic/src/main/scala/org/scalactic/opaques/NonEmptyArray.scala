@@ -359,5 +359,13 @@ object NonEmptyArray {
       */
     final def permutations: Iterator[NonEmptyArray[T]] =
       (new ArrayOps(nonEmptyArray)).permutations
+
+    /**
+      * Returns new <code>NonEmptyArray</code> with elements in reverse order.
+      *
+      * @return a new <code>NonEmptyArray</code> with all elements of this <code>NonEmptyArray</code> in reversed order. 
+      */
+    final def reverse: NonEmptyArray[T] =
+      (new ArrayOps(nonEmptyArray)).reverse
   }
 }

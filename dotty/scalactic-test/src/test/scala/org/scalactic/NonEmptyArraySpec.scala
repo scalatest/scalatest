@@ -887,7 +887,7 @@ class NonEmptyArraySpec extends UnitSpec {
     r3.next shouldBe NonEmptyArray(2, 1)
     r3.hasNext shouldBe false
   }
-  /*it should "have a prefixLength method" in {
+  it should "have a prefixLength method" in {
     NonEmptyArray(1, 2, 3, 4, 5).prefixLength(_ == 1) shouldBe 1
     NonEmptyArray(1, 2, 3, 4, 5).prefixLength(_ == 2) shouldBe 0
     NonEmptyArray(1, 2, 3, 4, 5).prefixLength(_ <= 2) shouldBe 2
@@ -944,7 +944,7 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(33).reverse shouldBe NonEmptyArray(33)
     NonEmptyArray(33, 34, 35).reverse shouldBe NonEmptyArray(35, 34, 33)
   }
-  it should "have a reverseIterator method" in {
+  /*it should "have a reverseIterator method" in {
     NonEmptyArray(3).reverseIterator.toStream shouldBe Stream(3)
     NonEmptyArray(1, 2, 3).reverseIterator.toStream shouldBe Stream(3, 2, 1)
   }
