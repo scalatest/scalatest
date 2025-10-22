@@ -167,27 +167,15 @@ object NonEmptyArray {
       case Some(first) => Some((first +: seq.tail).toArray)
     }
 
-  import scala.language.implicitConversions
   /**
     * Given conversion from <code>NonEmptyArray</code> to <code>GenSeq</code>.
     *
     * @param nonEmptyArray the <code>NonEmptyArray</code> to convert
     * @return the <code>GenSeq</code>
     */
-  implicit def nonEmptyArrayToGenSeq[E](nonEmptyArray: NonEmptyArray[E]): scala.collection.GenSeq[E] = Vector(nonEmptyArray*)
-
-  /**
-    * Given conversion from <code>NonEmptyArray</code> to <code>PartialFunction</code>.
-    *
-    * @param nonEmptyArray the <code>NonEmptyArray</code> to convert
-    * @return the <code>PartialFunction</code> 
-    */
-  given [E]: Conversion[NonEmptyArray[E], PartialFunction[Int, E]] with {
-    def apply(nonEmptyArray: NonEmptyArray[E]): PartialFunction[Int, E] =
-      new PartialFunction[Int, E] {
-        def apply(idx: Int): E = nonEmptyArray(idx)
-        def isDefinedAt(idx: Int): Boolean = idx >= 0 && idx < nonEmptyArray.length
-      }
+  given [E]: Conversion[NonEmptyArray[E], scala.collection.GenSeq[E]] with {
+    def apply(nonEmptyArray: NonEmptyArray[E]): scala.collection.GenSeq[E] =
+      Vector(nonEmptyArray*)
   }
 
   extension [T](element: T) {
@@ -244,49 +232,5 @@ object NonEmptyArray {
       val arrOps = new ArrayOps(nonEmptyArray)
       arrOps.contains(elem)
     }
-
-    /**
-      * Indicates whether this <code>NonEmptyArray</code> contains a given <code>GenSeq</code> as a slice.
-      *
-      * @param that the <code>GenSeq</code> slice to look for
-      * @return true if this <code>NonEmptyArray</code> contains a slice with the same elements as <code>that</code>, otherwise <code>false</code>.
-      */
-    final def containsSlice[B](that: GenSeq[B]): Boolean = {
-      val col = Vector(nonEmptyArray*)
-      col.containsSlice(that)
-    }
-
-    /**
-      * Indicates whether this <code>NonEmptyArray</code> contains a given <code>Every</code> as a slice.
-      *
-      * @param that the <code>Every</code> slice to look for
-      * @return true if this <code>NonEmptyArray</code> contains a slice with the same elements as <code>that</code>, otherwise <code>false</code>.
-      */
-    final def containsSlice[B](that: Every[B]): Boolean = {
-      val col = Vector(nonEmptyArray*)
-      col.containsSlice(that)
-    }
-
-    /**
-      * Indicates whether this <code>NonEmptyArray</code> contains a given <code>NonEmptyArray</code> as a slice.
-      *
-      * @param that the <code>NonEmptyArray</code> slice to look for
-      * @return true if this <code>NonEmptyArray</code> contains a slice with the same elements as <code>that</code>, otherwise <code>false</code>.
-      */
-    final def containsSlice[B](that: NonEmptyArray[B]): Boolean = {
-      val col = Vector(nonEmptyArray*)
-      col.containsSlice(that)
-    }
-
-    /**
-    * The length of this <code>NonEmptyArray</code>.
-    *
-    * <p>
-    * Note: <code>length</code> and <code>size</code> yield the same result, which will be <code>&gt;</code>= 1. 
-    * </p>
-    *
-    * @return the number of elements in this <code>NonEmptyArray</code>. 
-    */
-    final def length: Int = nonEmptyArray.length
   }
 }
