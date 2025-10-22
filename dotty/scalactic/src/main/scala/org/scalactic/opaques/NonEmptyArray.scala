@@ -321,5 +321,17 @@ object NonEmptyArray {
       val itOfArray = (new ArrayOps(nonEmptyArray)).grouped(size)
       itOfArray.map { list => NonEmptyArray(list.head, list.tail.toList*) }
     }
+
+    /**
+      * A copy of this <code>NonEmptyArray</code> with an element value appended until a given target length is reached.
+      *
+      * @param len the target length 
+      * @param elem he padding value
+      * @return a new <code>NonEmptyArray</code> consisting of all elements of this <code>NonEmptyArray</code> followed by the minimal number of occurrences
+      *     of <code>elem</code> so that the resulting <code>NonEmptyArray</code> has a length of at least <code>len</code>. 
+      */
+    final def padTo[U >: T](len: Int, elem: U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] = {
+      (new ArrayOps(nonEmptyArray)).padTo(len, elem)
+    }
   }
 }
