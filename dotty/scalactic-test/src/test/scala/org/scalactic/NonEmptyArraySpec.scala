@@ -1021,7 +1021,7 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(1, 2, 3).scanRight("z")(_.toString + _.toString) shouldBe NonEmptyArray("123z", "23z", "3z", "z")
     NonEmptyArray(0).scanRight("z")(_.toString + _.toString) shouldBe NonEmptyArray("0z", "z")
   }
-  /*it should "have a segmentLength method" in {
+  it should "have a segmentLength method" in {
     NonEmptyArray(1, 2, 3, 4, 5, 6, 6, 7, 8, 10).segmentLength(_ > 7, 0) shouldBe 0
     NonEmptyArray(1, 2, 3, 4, 5, 6, 6, 7, 8, 10).segmentLength(_ == 7, 0) shouldBe 0
     NonEmptyArray(1, 2, 3, 4, 5, 6, 6, 7, 8, 10).segmentLength(_ > 0, 0) shouldBe 10
@@ -1176,7 +1176,7 @@ class NonEmptyArraySpec extends UnitSpec {
     r25.next shouldBe NonEmptyArray(5)
     r25.hasNext shouldBe false
   }
-  it should "have a sortBy method" in {
+  /*it should "have a sortBy method" in {
     val regFun: String => Int = {
       case "one" => 1
       case "two" => 2

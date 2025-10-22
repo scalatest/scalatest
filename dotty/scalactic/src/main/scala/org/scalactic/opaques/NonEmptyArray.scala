@@ -446,6 +446,26 @@ object NonEmptyArray {
       * @return a new <code>NonEmptyArray</code> containing the intermediate results of inserting <code>op</code> between consecutive elements of this <code>NonEmptyArray</code>,
       *     going right to left, with the start value, <code>z</code>, on the right.
       */
-    final def scanRight[B](z: B)(op: (T, B) => B)(implicit classTag: ClassTag[B]): NonEmptyArray[B] = new ArrayOps(nonEmptyArray).scanRight(z)(op)  
+    final def scanRight[B](z: B)(op: (T, B) => B)(implicit classTag: ClassTag[B]): NonEmptyArray[B] = new ArrayOps(nonEmptyArray).scanRight(z)(op)
+
+    /**
+      * Groups elements in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.)
+      *
+      * @param size the number of elements per group
+      * @return an iterator producing <code>NonEmptyArray</code>s of size <code>size</code>, except the last and the only element will be truncated
+      *     if there are fewer elements than <code>size</code>.
+      */
+    final def sliding(size: Int)(using classTag: ClassTag[T]): Iterator[NonEmptyArray[T]] = new ArrayOps(nonEmptyArray).sliding(size).map(l => NonEmptyArray(l.head, l.tail.toList*))
+
+    /**
+      * Groups elements in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.),
+      * moving the sliding window by a given <code>step</code> each time.
+      *
+      * @param size the number of elements per group
+      * @param step the distance between the first elements of successive groups
+      * @return an iterator producing <code>NonEmptyArray</code>s of size <code>size</code>, except the last and the only element will be truncated
+      *     if there are fewer elements than <code>size</code>.
+      */
+    final def sliding(size: Int, step: Int)(using classTag: ClassTag[T]): Iterator[NonEmptyArray[T]] = new ArrayOps(nonEmptyArray).sliding(size, step).map(l => NonEmptyArray(l.head, l.tail.toList*))
   }
 }
