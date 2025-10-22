@@ -245,5 +245,48 @@ object NonEmptyArray {
       val arrOps = new ArrayOps(nonEmptyArray)
       arrOps.distinct
     }
+
+    /**
+      * Builds a new <code>NonEmptyArray</code> by applying a function to all elements of this <code>NonEmptyArray</code> and using the elements of the resulting <code>NonEmptyArray</code>s.
+      *
+      * @tparam U the element type of the returned <code>NonEmptyArray</code>
+      * @param f the function to apply to each element.
+      * @return a new <code>NonEmptyArray</code> containing elements obtained by applying the given function <code>f</code> to each element of this <code>NonEmptyArray</code> and concatenating
+      *    the elements of resulting <code>NonEmptyArray</code>s. 
+      */
+    final def flatMap[U](f: T => NonEmptyArray[U])(implicit classTag: ClassTag[U]): NonEmptyArray[U] = {
+      val buf = new ArrayBuffer[U]
+      for (ele <- nonEmptyArray)
+        buf ++= f(ele).toArray
+      buf.toArray
+    }
+
+    /**
+      * Converts this <code>NonEmptyArray</code> of <code>NonEmptyArray</code>s into a <code>NonEmptyArray</code>
+      * formed by the elements of the nested <code>NonEmptyArray</code>s.
+      *
+      * <p>
+      * Note: You cannot use this <code>flatten</code> method on a <code>NonEmptyArray</code> that contains a <code>IterableOnce</code>s, because 
+      * if all the nested <code>IterableOnce</code>s were empty, you'd end up with an empty <code>NonEmptyArray</code>.
+      * </p>
+      *
+      * @tparm B the type of the elements of each nested <code>NonEmptyArray</code>
+      * @return a new <code>NonEmptyArray</code> resulting from concatenating all nested <code>NonEmptyArray</code>s.
+      */
+    final def flatten[B](implicit ev: T <:< NonEmptyArray[B], classTag: ClassTag[B]): NonEmptyArray[B] = flatMap(ev)
+
+    /**
+      * Builds a new <code>NonEmptyArray</code> by applying a function to all elements of this <code>NonEmptyArray</code>.
+      *
+      * @tparam U the element type of the returned <code>NonEmptyArray</code>.
+      * @param f the function to apply to each element. 
+      * @return a new <code>NonEmptyArray</code> resulting from applying the given function <code>f</code> to each element of this <code>NonEmptyArray</code> and collecting the results. 
+      */
+    final def map[U](f: T => U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] ={
+      val buf = new ArrayBuffer[U]
+      for (ele <- nonEmptyArray)
+        buf += f(ele)
+      buf.toArray
+    }
   }
 }

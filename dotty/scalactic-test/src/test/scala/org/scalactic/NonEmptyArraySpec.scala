@@ -354,7 +354,7 @@ class NonEmptyArraySpec extends UnitSpec {
     scala> Vector(1, 2, 3).dropWhile(_ < 10)
     res2: scala.collection.immutable.Vector[Int] = Vector()
   */
-  /*it should "have an endsWith method that takes a GenSeq" in {
+  it should "have an endsWith method that takes a GenSeq" in {
     NonEmptyArray(1).endsWith(Array(1)) shouldBe true
     NonEmptyArray(1).endsWith(Array(1, 2)) shouldBe false
     NonEmptyArray(1, 2).endsWith(Array(1, 2)) shouldBe true
@@ -429,7 +429,7 @@ class NonEmptyArraySpec extends UnitSpec {
     Array(NonEmptyArray(1, 2, 3), NonEmptyArray(1, 2, 3)).par.flatten shouldBe Array(1, 2, 3, 1, 2, 3).par
     // SKIP-SCALATESTJS,NATIVE-END
   }
-  it should "have a fold method" in {
+  /*it should "have a fold method" in {
     NonEmptyArray(1).fold(0)(_ + _) shouldBe 1
     NonEmptyArray(1).fold(1)(_ * _) shouldBe 1
     NonEmptyArray(2).fold(0)(_ + _) shouldBe 2
