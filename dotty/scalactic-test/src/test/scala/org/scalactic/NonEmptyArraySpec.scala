@@ -868,7 +868,7 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(1, 2, 3, 4, 5).patch(0, NonEmptyArray(-3, -4), 2) shouldBe NonEmptyArray(-3, -4, 3, 4, 5)
     NonEmptyArray(1, 2, 3, 4, 5).patch(0, NonEmptyArray(-3, -4), 3) shouldBe NonEmptyArray(-3, -4, 4, 5)
   }
-  /*it should "have a permutations method" in {
+  it should "have a permutations method" in {
     val r1 = NonEmptyArray(1, 2, 3).permutations
     r1.next shouldBe NonEmptyArray(1, 2, 3)
     r1.next shouldBe NonEmptyArray(1, 3, 2)
@@ -887,7 +887,7 @@ class NonEmptyArraySpec extends UnitSpec {
     r3.next shouldBe NonEmptyArray(2, 1)
     r3.hasNext shouldBe false
   }
-  it should "have a prefixLength method" in {
+  /*it should "have a prefixLength method" in {
     NonEmptyArray(1, 2, 3, 4, 5).prefixLength(_ == 1) shouldBe 1
     NonEmptyArray(1, 2, 3, 4, 5).prefixLength(_ == 2) shouldBe 0
     NonEmptyArray(1, 2, 3, 4, 5).prefixLength(_ <= 2) shouldBe 2

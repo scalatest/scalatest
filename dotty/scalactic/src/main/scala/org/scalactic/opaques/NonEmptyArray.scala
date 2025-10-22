@@ -343,5 +343,21 @@ object NonEmptyArray {
       */
     final def patch[U >: T](from: Int, that: NonEmptyArray[U], replaced: Int)(implicit classTag: ClassTag[U]): NonEmptyArray[U] =
       (new ArrayOps(nonEmptyArray)).patch(from, that.toArray, replaced)
+
+    /**
+      * Iterates over distinct permutations. 
+      *
+      * <p>
+      * Here's an example:
+      * </p>
+      *
+      * <pre class="stHighlight">
+      * NonEmptyArray('a', 'b', 'b').permutations.toArray = Array(NonEmptyArray(a, b, b), NonEmptyArray(b, a, b), NonEmptyArray(b, b, a))
+      * </pre>
+      *
+      * @return an iterator that traverses the distinct permutations of this <code>NonEmptyArray</code>.
+      */
+    final def permutations: Iterator[NonEmptyArray[T]] =
+      (new ArrayOps(nonEmptyArray)).permutations
   }
 }
