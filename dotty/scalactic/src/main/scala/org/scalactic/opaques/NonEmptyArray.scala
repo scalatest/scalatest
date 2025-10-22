@@ -16,7 +16,6 @@
 package org.scalactic.opaques
 
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
-import scala.annotation.targetName
 import scala.collection.GenSeq
 import org.scalactic.ColCompatHelper.{Iterable, IterableOnce, GenIterable}
 import scala.collection.generic.CanBuildFrom
@@ -169,8 +168,13 @@ object NonEmptyArray {
     }
 
   import scala.language.implicitConversions
-
-  implicit def nonEmptyArrayToIterable[E](nonEmptyArray: NonEmptyArray[E]): scala.collection.Iterable[E] = Vector(nonEmptyArray*)
+  /**
+    * Given conversion from <code>NonEmptyArray</code> to <code>GenSeq</code>.
+    *
+    * @param nonEmptyArray the <code>NonEmptyArray</code> to convert
+    * @return the <code>GenSeq</code>
+    */
+  implicit def nonEmptyArrayToGenSeq[E](nonEmptyArray: NonEmptyArray[E]): scala.collection.GenSeq[E] = Vector(nonEmptyArray*)
 
   /**
     * Given conversion from <code>NonEmptyArray</code> to <code>PartialFunction</code>.
@@ -198,7 +202,7 @@ object NonEmptyArray {
       * @return a new <code>NonEmptyArray</code> consisting of <code>element</code> followed by all elements of this <code>NonEmptyArray</code>.
       */
     infix def +:[U >: T](array: NonEmptyArray[U])(using ClassTag[U]): NonEmptyArray[U] = {
-      (array: Array[U]).prepended(element)
+      ArrayOps(array).prepended(element)
     }
   }
 
@@ -213,8 +217,7 @@ object NonEmptyArray {
       * @return a new <code>NonEmptyArray</code> that contains all the elements of this <code>NonEmptyArray</code> followed by all elements of <code>other</code>.
       */
     infix final def ++[U >: T](other: IterableOnce[U])(using classTag: ClassTag[U]): NonEmptyArray[U] = {
-      val arr: Array[T] = nonEmptyArray  // transparent inside scope
-      arr.appendedAll(other)
+      ArrayOps(nonEmptyArray).appendedAll(other)
     }
 
     /**
@@ -228,8 +231,7 @@ object NonEmptyArray {
       * @return a new <code>NonEmptyArray</code> consisting of all elements of this <code>NonEmptyArray</code> followed by <code>element</code>.
       */
     def :+[U >: T](element: U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] = { 
-      val arr: Array[T] = nonEmptyArray  // transparent inside scope
-      arr.appended(element)
+      ArrayOps(nonEmptyArray).appended(element)
     }
 
     /**
@@ -266,23 +268,11 @@ object NonEmptyArray {
     }
 
     /**
-      * Indicates whether this <code>NonEmptyArray</code> contains a given <code>Array</code> as a slice.
-      *
-      * @param that the <code>Array</code> slice to look for
-      * @return true if this <code>NonEmptyArray</code> contains a slice with the same elements as <code>that</code>, otherwise <code>false</code>.
-      */
-    final def containsSlice[B](that: Array[B]): Boolean = {
-      val col = Vector(nonEmptyArray*)
-      col.containsSlice(that)
-    }
-
-    /**
       * Indicates whether this <code>NonEmptyArray</code> contains a given <code>NonEmptyArray</code> as a slice.
       *
       * @param that the <code>NonEmptyArray</code> slice to look for
       * @return true if this <code>NonEmptyArray</code> contains a slice with the same elements as <code>that</code>, otherwise <code>false</code>.
       */
-    @targetName("containsSliceNonEmptyArray")  // need this to compile
     final def containsSlice[B](that: NonEmptyArray[B]): Boolean = {
       val col = Vector(nonEmptyArray*)
       col.containsSlice(that)
