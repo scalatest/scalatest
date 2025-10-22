@@ -467,5 +467,43 @@ object NonEmptyArray {
       *     if there are fewer elements than <code>size</code>.
       */
     final def sliding(size: Int, step: Int)(using classTag: ClassTag[T]): Iterator[NonEmptyArray[T]] = new ArrayOps(nonEmptyArray).sliding(size, step).map(l => NonEmptyArray(l.head, l.tail.toList*))
+
+    /**
+      * Sorts this <code>NonEmptyArray</code> according to the <code>Ordering</code> of the result of applying the given function to every element.
+      *
+      * @tparam U the target type of the transformation <code>f</code>, and the type where the <code>Ordering</code> <code>ord</code> is defined.
+      * @param f the transformation function mapping elements to some other domain <code>U</code>.
+      * @param ord the ordering assumed on domain <code>U</code>.
+      * @return a <code>NonEmptyArray</code> consisting of the elements of this <code>NonEmptyArray</code> sorted according to the <code>Ordering</code> where
+      *    <code>x &lt; y if ord.lt(f(x), f(y))</code>. 
+      */
+    final def sortBy[U](f: T => U)(using ord: Ordering[U]): NonEmptyArray[T] = new ArrayOps(nonEmptyArray).sortBy(f)
+
+    /**
+      * Sorts this <code>NonEmptyArray</code> according to a comparison function.
+      *
+      * <p>
+      * The sort is stable. That is, elements that are equal (as determined by <code>lt</code>) appear in the same order in the
+      * sorted <code>NonEmptyArray</code> as in the original. 
+      * </p>
+      *
+      * @param the comparison function that tests whether its first argument precedes its second argument in the desired ordering.
+      * @return a <code>NonEmptyArray</code> consisting of the elements of this <code>NonEmptyArray</code> sorted according to the comparison function <code>lt</code>.
+      */
+    final def sortWith(lt: (T, T) => Boolean): NonEmptyArray[T] = new ArrayOps(nonEmptyArray).sortWith(lt)
+
+    /**
+      * Sorts this <code>NonEmptyArray</code> according to an <code>Ordering</code>.
+      *
+      * <p>
+      * The sort is stable. That is, elements that are equal (as determined by <code>lt</code>) appear in the same order in the
+      * sorted <code>NonEmptyArray</code> as in the original. 
+      * </p>
+      *
+      * @param ord the <code>Ordering</code> to be used to compare elements.
+      * @param the comparison function that tests whether its first argument precedes its second argument in the desired ordering.
+      * @return a <code>NonEmptyArray</code> consisting of the elements of this <code>NonEmptyArray</code> sorted according to the comparison function <code>lt</code>.
+      */
+    final def sorted(using ord: Ordering[T]): NonEmptyArray[T] = new ArrayOps(nonEmptyArray).sorted(ord)
   }
 }

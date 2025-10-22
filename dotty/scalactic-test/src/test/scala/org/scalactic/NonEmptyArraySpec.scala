@@ -1176,7 +1176,7 @@ class NonEmptyArraySpec extends UnitSpec {
     r25.next shouldBe NonEmptyArray(5)
     r25.hasNext shouldBe false
   }
-  /*it should "have a sortBy method" in {
+  it should "have a sortBy method" in {
     val regFun: String => Int = {
       case "one" => 1
       case "two" => 2
@@ -1225,7 +1225,7 @@ class NonEmptyArraySpec extends UnitSpec {
     scala> Vector(1, 2, 3, 4, 5).splitAt(0)
     res106: (scala.collection.immutable.Vector[Int], scala.collection.immutable.Vector[Int]) = (Vector(),Vector(1, 2, 3, 4, 5))
   */
-  it should "have 2 startsWith methods that take a GenSeq" in {
+  /*it should "have 2 startsWith methods that take a GenSeq" in {
     NonEmptyArray(1, 2, 3).startsWith(Array(1)) shouldBe true
     NonEmptyArray(1, 2, 3).startsWith(Array(1, 2)) shouldBe true
     NonEmptyArray(1, 2, 3).startsWith(Array(1, 2, 3)) shouldBe true
