@@ -429,7 +429,7 @@ class NonEmptyArraySpec extends UnitSpec {
     Array(NonEmptyArray(1, 2, 3), NonEmptyArray(1, 2, 3)).par.flatten shouldBe Array(1, 2, 3, 1, 2, 3).par
     // SKIP-SCALATESTJS,NATIVE-END
   }
-  /*it should "have a fold method" in {
+  it should "have a fold method" in {
     NonEmptyArray(1).fold(0)(_ + _) shouldBe 1
     NonEmptyArray(1).fold(1)(_ * _) shouldBe 1
     NonEmptyArray(2).fold(0)(_ + _) shouldBe 2
@@ -530,7 +530,7 @@ class NonEmptyArraySpec extends UnitSpec {
     r7.next shouldBe NonEmptyArray(1)
     r7.hasNext shouldBe false
   }
-  it should "have a hasDefiniteSize method" in {
+  /*it should "have a hasDefiniteSize method" in {
     NonEmptyArray(1).hasDefiniteSize shouldBe true
     NonEmptyArray(1, 2).hasDefiniteSize shouldBe true
   }

@@ -288,5 +288,38 @@ object NonEmptyArray {
         buf += f(ele)
       buf.toArray
     }
+
+    /**
+      * Partitions this <code>NonEmptyArray</code> into a map of <code>NonEmptyArray</code>s according to some discriminator function.
+      *
+      * @tparam K the type of keys returned by the discriminator function.
+      * @param f the discriminator function.
+      * @return A map from keys to <code>NonEmptyArray</code>s such that the following invariant holds:
+      *
+      * <pre>
+      * (nonEmptyArray.toArray partition f)(k) = xs filter (x =&gt; f(x) == k)
+      * </pre>
+      *
+      * <p>
+      * That is, every key <code>k</code> is bound to a <code>NonEmptyArray</code> of those elements <code>x</code> for which <code>f(x)</code> equals <code>k</code>.
+      * </p>
+      */
+    final def groupBy[K](f: T => K)(implicit classTag: ClassTag[T]): Map[K, NonEmptyArray[T]] = {
+      val mapKToArray = (new ArrayOps(nonEmptyArray)).groupBy(f)
+      (mapKToArray.mapValues{ list => NonEmptyArray(list.head, list.tail.toList*) }).toMap
+    }
+
+    /**
+      * Partitions elements into fixed size <code>NonEmptyArray</code>s.
+      *
+      * @param size the number of elements per group
+      * @return An iterator producing <code>NonEmptyArray</code>s of size <code>size</code>, except the last will be truncated if the elements don't divide evenly. 
+      */
+    final def grouped(size: Int)(implicit classTag: ClassTag[T]): Iterator[NonEmptyArray[T]] = {
+      if (size < 1)
+        throw new IllegalArgumentException(Resources.invalidSize(size))
+      val itOfArray = (new ArrayOps(nonEmptyArray)).grouped(size)
+      itOfArray.map { list => NonEmptyArray(list.head, list.tail.toList*) }
+    }
   }
 }
