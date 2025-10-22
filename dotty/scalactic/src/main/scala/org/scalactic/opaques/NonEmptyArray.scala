@@ -167,19 +167,19 @@ object NonEmptyArray {
       case Some(first) => Some((first +: seq.tail).toArray)
     }
 
+  import scala.language.implicitConversions  
+
   /**
-    * Given conversion from <code>NonEmptyArray</code> to <code>GenSeq</code>.
+    * Implicit conversion from <code>NonEmptyArray</code> to <code>GenSeq</code>.
     *
     * @param nonEmptyArray the <code>NonEmptyArray</code> to convert
     * @return the <code>GenSeq</code>
     */
-  given [E]: Conversion[NonEmptyArray[E], scala.collection.GenSeq[E]] with {
-    def apply(nonEmptyArray: NonEmptyArray[E]): scala.collection.GenSeq[E] =
-      new scala.collection.IndexedSeq[E] {
-        def apply(i: Int): E = nonEmptyArray(i)
-        def length: Int = nonEmptyArray.length
-      }
-  }
+  implicit def nonEmptyArrayToGenSeq[E](nonEmptyArray: NonEmptyArray[E]): scala.collection.GenSeq[E] = // given Conversion just won't work!
+    new scala.collection.IndexedSeq[E] {
+      def apply(i: Int): E = nonEmptyArray(i)
+      def length: Int = nonEmptyArray.length
+    }
 
   extension [T](element: T) {
     /**
@@ -234,6 +234,16 @@ object NonEmptyArray {
     final def contains(elem: T): Boolean = {
       val arrOps = new ArrayOps(nonEmptyArray)
       arrOps.contains(elem)
+    }
+
+    /**
+    * Builds a new <code>NonEmptyArray</code> from this <code>NonEmptyArray</code> without any duplicate elements.
+    *
+    * @return A new <code>NonEmptyArray</code> that contains the first occurrence of every element of this <code>NonEmptyArray</code>. 
+    */
+    final def distinct: NonEmptyArray[T] = {
+      val arrOps = new ArrayOps(nonEmptyArray)
+      arrOps.distinct
     }
   }
 }

@@ -282,7 +282,7 @@ class NonEmptyArraySpec extends UnitSpec {
     nonEmptyArray.containsSlice(NonEmptyArray(2, 3, 5)) shouldBe false
     nonEmptyArray.containsSlice(NonEmptyArray(3)) shouldBe true
   }
-  /*it should "have 3 copyToArray methods" in {
+  it should "have 3 copyToArray methods" in {
 
     val arr1 = Array.fill(5)(-1)
     NonEmptyArray(1, 2, 3, 4, 5).copyToArray(arr1)
@@ -354,7 +354,7 @@ class NonEmptyArraySpec extends UnitSpec {
     scala> Vector(1, 2, 3).dropWhile(_ < 10)
     res2: scala.collection.immutable.Vector[Int] = Vector()
   */
-  it should "have an endsWith method that takes a GenSeq" in {
+  /*it should "have an endsWith method that takes a GenSeq" in {
     NonEmptyArray(1).endsWith(Array(1)) shouldBe true
     NonEmptyArray(1).endsWith(Array(1, 2)) shouldBe false
     NonEmptyArray(1, 2).endsWith(Array(1, 2)) shouldBe true
