@@ -952,10 +952,9 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(3).reverseMap(_ + 1) shouldBe NonEmptyArray(4)
     NonEmptyArray(1, 2, 3).reverseMap(_ + 1) shouldBe NonEmptyArray(4, 3, 2)
   }
-  /*it should "have a runWith method, inherited from PartialFunction" in {
-    // TODO: What is this? Seems to be testing Vector or Array instead of Every or NonEmptyArray.
+  it should "have a runWith method, inherited from PartialFunction" in {
     var x = 0
-    val f = Array(1, 2, 3).runWith(x += _)
+    val f = NonEmptyArray(1, 2, 3).runWith(x += _)
 
     f(0) shouldBe true
     x shouldBe 1
@@ -969,7 +968,7 @@ class NonEmptyArraySpec extends UnitSpec {
     f(3) shouldBe false
 
     var y = 0
-    val g = Array(3).runWith(y += _)
+    val g = NonEmptyArray(3).runWith(y += _)
 
     g(0) shouldBe true
     y shouldBe 3
@@ -1022,7 +1021,7 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(1, 2, 3).scanRight("z")(_.toString + _.toString) shouldBe NonEmptyArray("123z", "23z", "3z", "z")
     NonEmptyArray(0).scanRight("z")(_.toString + _.toString) shouldBe NonEmptyArray("0z", "z")
   }
-  it should "have a segmentLength method" in {
+  /*it should "have a segmentLength method" in {
     NonEmptyArray(1, 2, 3, 4, 5, 6, 6, 7, 8, 10).segmentLength(_ > 7, 0) shouldBe 0
     NonEmptyArray(1, 2, 3, 4, 5, 6, 6, 7, 8, 10).segmentLength(_ == 7, 0) shouldBe 0
     NonEmptyArray(1, 2, 3, 4, 5, 6, 6, 7, 8, 10).segmentLength(_ > 0, 0) shouldBe 10
