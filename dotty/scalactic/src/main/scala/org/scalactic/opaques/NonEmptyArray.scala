@@ -333,5 +333,15 @@ object NonEmptyArray {
     final def padTo[U >: T](len: Int, elem: U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] = {
       (new ArrayOps(nonEmptyArray)).padTo(len, elem)
     }
+
+    /**
+      * Produces a new <code>NonEmptyArray</code> where a slice of elements in this <code>NonEmptyArray</code> is replaced by another <code>NonEmptyArray</code>
+      *
+      * @param from the index of the first replaced element 
+      * @param that the <code>NonEmptyArray</code> whose elements should replace a slice in this <code>NonEmptyArray</code>
+      * @param replaced the number of elements to drop in the original <code>NonEmptyArray</code>
+      */
+    final def patch[U >: T](from: Int, that: NonEmptyArray[U], replaced: Int)(implicit classTag: ClassTag[U]): NonEmptyArray[U] =
+      (new ArrayOps(nonEmptyArray)).patch(from, that.toArray, replaced)
   }
 }

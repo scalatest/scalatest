@@ -858,7 +858,7 @@ class NonEmptyArraySpec extends UnitSpec {
     scala> Vector(1, 2, 3, 4, 5).partition(_ > 10)
     res10: (scala.collection.immutable.Vector[Int], scala.collection.immutable.Vector[Int]) = (Vector(),Vector(1, 2, 3, 4, 5))
   */
-  /*it should "have a patch method" in {
+  it should "have a patch method" in {
     NonEmptyArray(1, 2, 3, 4, 5).patch(2, NonEmptyArray(-3, -4), 2) shouldBe NonEmptyArray(1, 2, -3, -4, 5)
     NonEmptyArray(1, 2, 3, 4, 5).patch(2, NonEmptyArray(-3, -4), 5) shouldBe NonEmptyArray(1, 2, -3, -4)
     NonEmptyArray(1, 2, 3, 4, 5).patch(2, NonEmptyArray(-3, -4), 1) shouldBe NonEmptyArray(1, 2, -3, -4, 4, 5)
@@ -868,7 +868,7 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(1, 2, 3, 4, 5).patch(0, NonEmptyArray(-3, -4), 2) shouldBe NonEmptyArray(-3, -4, 3, 4, 5)
     NonEmptyArray(1, 2, 3, 4, 5).patch(0, NonEmptyArray(-3, -4), 3) shouldBe NonEmptyArray(-3, -4, 4, 5)
   }
-  it should "have a permutations method" in {
+  /*it should "have a permutations method" in {
     val r1 = NonEmptyArray(1, 2, 3).permutations
     r1.next shouldBe NonEmptyArray(1, 2, 3)
     r1.next shouldBe NonEmptyArray(1, 3, 2)
