@@ -944,7 +944,7 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(33).reverse shouldBe NonEmptyArray(33)
     NonEmptyArray(33, 34, 35).reverse shouldBe NonEmptyArray(35, 34, 33)
   }
-  /*it should "have a reverseIterator method" in {
+  it should "have a reverseIterator method" in {
     NonEmptyArray(3).reverseIterator.toStream shouldBe Stream(3)
     NonEmptyArray(1, 2, 3).reverseIterator.toStream shouldBe Stream(3, 2, 1)
   }
@@ -952,7 +952,7 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(3).reverseMap(_ + 1) shouldBe NonEmptyArray(4)
     NonEmptyArray(1, 2, 3).reverseMap(_ + 1) shouldBe NonEmptyArray(4, 3, 2)
   }
-  it should "have a runWith method, inherited from PartialFunction" in {
+  /*it should "have a runWith method, inherited from PartialFunction" in {
     // TODO: What is this? Seems to be testing Vector or Array instead of Every or NonEmptyArray.
     var x = 0
     val f = Array(1, 2, 3).runWith(x += _)

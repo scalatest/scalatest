@@ -367,5 +367,20 @@ object NonEmptyArray {
       */
     final def reverse: NonEmptyArray[T] =
       (new ArrayOps(nonEmptyArray)).reverse
+
+    /**
+      * Builds a new <code>NonEmptyArray</code> by applying a function to all elements of this <code>NonEmptyArray</code> and collecting the results in reverse order.
+      *
+      * <p>
+      * Note: <code>nonEmptyArray.reverseMap(f)</code> is the same as <code>nonEmptyArray.reverse.map(f)</code>, but might be more efficient. 
+      * </p>
+      *
+      * @tparam U the element type of the returned <code>NonEmptyArray</code>.
+      * @param f the function to apply to each element. 
+      * @return a new <code>NonEmptyArray</code> resulting from applying the given function <code>f</code> to each element of this <code>NonEmptyArray</code>
+      *     and collecting the results in reverse order. 
+      */
+    final def reverseMap[U](f: T => U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] =
+      nonEmptyArrayToGenSeq(nonEmptyArray).reverseMap(f).toArray
   }
 }
