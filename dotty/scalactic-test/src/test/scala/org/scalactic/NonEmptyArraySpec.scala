@@ -1225,7 +1225,7 @@ class NonEmptyArraySpec extends UnitSpec {
     scala> Vector(1, 2, 3, 4, 5).splitAt(0)
     res106: (scala.collection.immutable.Vector[Int], scala.collection.immutable.Vector[Int]) = (Vector(),Vector(1, 2, 3, 4, 5))
   */
-  /*it should "have 2 startsWith methods that take a GenSeq" in {
+  it should "have 2 startsWith methods that take a GenSeq" in {
     NonEmptyArray(1, 2, 3).startsWith(Array(1)) shouldBe true
     NonEmptyArray(1, 2, 3).startsWith(Array(1, 2)) shouldBe true
     NonEmptyArray(1, 2, 3).startsWith(Array(1, 2, 3)) shouldBe true
@@ -1295,7 +1295,7 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(1).stringPrefix shouldBe "NonEmptyArray"
     NonEmptyArray(1, 2, 3).stringPrefix shouldBe "NonEmptyArray"
   }
-  it should "have a sum method" in {
+  /*it should "have a sum method" in {
     NonEmptyArray(1).sum shouldBe 1
     NonEmptyArray(5).sum shouldBe 5
     NonEmptyArray(1, 2, 3).sum shouldBe 6

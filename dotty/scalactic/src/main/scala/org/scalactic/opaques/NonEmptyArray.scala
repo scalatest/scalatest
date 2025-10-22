@@ -505,5 +505,12 @@ object NonEmptyArray {
       * @return a <code>NonEmptyArray</code> consisting of the elements of this <code>NonEmptyArray</code> sorted according to the comparison function <code>lt</code>.
       */
     final def sorted(using ord: Ordering[T]): NonEmptyArray[T] = new ArrayOps(nonEmptyArray).sorted(ord)
+
+    /**
+      * Returns <code>"NonEmptyArray"</code>, the prefix of this object's <code>toString</code> representation.
+      *
+      * @return the string <code>"NonEmptyArray"</code>
+      */
+    def stringPrefix: String = "NonEmptyArray"
   }
 }
