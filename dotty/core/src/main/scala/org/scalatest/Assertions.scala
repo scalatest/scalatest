@@ -25,7 +25,6 @@ import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.StackDepthException.toExceptionFunction
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
-import org.scalactic.anyvals.NonEmptyArray
 import scala.quoted.*
 import scala.compiletime.testing.{typeChecks, typeCheckErrors}
 import org.scalatest.compatible.Assertion

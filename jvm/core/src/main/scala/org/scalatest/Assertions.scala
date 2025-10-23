@@ -26,7 +26,6 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
 import org.scalatest.exceptions.TestCanceledException
 import ArrayHelper.deep
-import org.scalactic.anyvals.NonEmptyArray
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.
