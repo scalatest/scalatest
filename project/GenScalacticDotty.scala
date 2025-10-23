@@ -261,6 +261,7 @@ object GenScalacticDotty {
     copyDir("jvm/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
     copyDir("dotty/scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir, List.empty) ++
     copyDir("dotty/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty) ++
+    copyDir("dotty/scalactic/src/main/scala/org/scalactic/opaques", "org/scalactic/opaques", targetDir, List.empty) ++
     copyDirJS("dotty/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++ 
     copyDir("js/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty) 
 
@@ -339,6 +340,7 @@ object GenScalacticDotty {
         "OddIntMacro.scala",  // not used, scala2 macros
         "OddInt.scala"        // not used, scala2 macros
       )) ++
+    copyDirJS("dotty/scalactic-test/src/test/scala/org/scalactic/opaques", "org/scalactic/opaques", targetDir, List.empty) ++
     copyDirJS("jvm/scalactic-test/src/test/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)
 
   def genTestNative(targetDir: File, version: String, scalaVersion: String): Seq[File] =
