@@ -176,7 +176,10 @@ object GenScalaTestDotty {
     else if (line.trim.startsWith("//SCALATESTNATIVE-ONLY "))
       line.substring(line.indexOf("//SCALATESTNATIVE-ONLY ") + 23)    
     else
-      line.replaceAll("""/\*\s*DOTTY-ONLY\s*(.*?)\s*\*/""", "$1")
+      line.replaceAll("""import ([\w\.]+)\._""", """import $1.*""")
+          .replace(": _*", "*")
+          .replaceAll("""/\*\s*DOTTY-ONLY\s*(.*?)\s*\*/""", "$1")
+          
 
   private def transformLineNative(line: String): String =
     uncommentNativeExportNative(line)
