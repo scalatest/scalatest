@@ -545,6 +545,15 @@ object NonEmptyArray {
       (left, middle, right)
     }
 
-    
+    /**
+      * A copy of this <code>NonEmptyArray</code> with one single replaced element.
+      *
+      * @param idx the position of the replacement
+      * @param elem the replacing element
+      * @throws IndexOutOfBoundsException if the passed index is greater than or equal to the length of this <code>NonEmptyArray</code>
+      * @return a copy of this <code>NonEmptyArray</code> with the element at position <code>idx</code> replaced by <code>elem</code>. 
+      */
+    final def updated[U >: T](idx: Int, elem: U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] =
+      new ArrayOps(nonEmptyArray).updated(idx, elem)
   }
 }

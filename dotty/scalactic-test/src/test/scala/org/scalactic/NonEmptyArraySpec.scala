@@ -1439,7 +1439,7 @@ class NonEmptyArraySpec extends UnitSpec {
     r3._2 shouldBe NonEmptyArray(2, 5, 8)
     r3._3 shouldBe NonEmptyArray(3, 6, 9)
   }
-  /*it should "have an updated method" in {
+  it should "have an updated method" in {
     NonEmptyArray(1).updated(0, 2) shouldBe NonEmptyArray(2)
     def willThrowIndexOutOfBoundsException(): Unit = {
       NonEmptyArray(1).updated(1, 2)
@@ -1460,7 +1460,7 @@ class NonEmptyArraySpec extends UnitSpec {
       scala> Array(1) zip Nil
       res0: Array[(Int, Nothing)] = Array()
   */
-  it should "have a zipAll method that takes an Iterable" in {
+  /*it should "have a zipAll method that takes an Iterable" in {
 
     // Empty on right
     NonEmptyArray(1).zipAll(Nil, -1, -2) shouldBe NonEmptyArray((1, -2))
