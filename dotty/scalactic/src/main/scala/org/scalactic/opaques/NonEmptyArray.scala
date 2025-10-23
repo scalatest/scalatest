@@ -573,5 +573,12 @@ object NonEmptyArray {
       */
     final def zipAll[O, U >: T](other: collection.Iterable[O], thisElem: U, otherElem: O): NonEmptyArray[(U, O)] =
       new ArrayOps(nonEmptyArray).zipAll(other, thisElem, otherElem)
+
+    /**
+      * Zips this <code>NonEmptyArray</code>  with its indices.
+      *
+      * @return A new <code>NonEmptyArray</code> containing pairs consisting of all elements of this <code>NonEmptyArray</code> paired with their index. Indices start at 0.
+      */
+    final def zipWithIndex: NonEmptyArray[(T, Int)] = new ArrayOps(nonEmptyArray).zipWithIndex  
   }
 }

@@ -1506,9 +1506,9 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(1, 2, 3).zipAll(NonEmptyArray(10, 20), -1, -2) shouldBe NonEmptyArray((1,10), (2,20), (3,-2))
     NonEmptyArray(1, 2, 3, 4).zipAll(NonEmptyArray(10, 20, 30), -1, -2) shouldBe NonEmptyArray((1,10), (2,20), (3,30), (4,-2))
   }
-  /*it should "have a zipWithIndex method" in {
+  it should "have a zipWithIndex method" in {
     NonEmptyArray(99).zipWithIndex shouldBe NonEmptyArray((99,0))
     NonEmptyArray(1, 2, 3, 4, 5).zipWithIndex shouldBe NonEmptyArray((1,0), (2,1), (3,2), (4,3), (5,4))
-  }*/
+  }
 }
 
