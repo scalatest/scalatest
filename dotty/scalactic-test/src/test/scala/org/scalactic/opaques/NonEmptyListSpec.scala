@@ -62,7 +62,7 @@ class NonEmptyListSpec extends UnitSpec {
     0 :: 1 ::  2 :: End shouldBe NonEmptyList(0, 1, 2)
     "zero" :: "one" ::  "two" :: End shouldBe NonEmptyList("zero", "one", "two")
   }
-  /*it can "be deconstructed with NonEmptyList" in {
+  it can "be deconstructed with NonEmptyList" in {
     NonEmptyList(1) match {
       case NonEmptyList(x) => x shouldEqual 1
       case _ => fail()
@@ -150,7 +150,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(1, 2).length shouldBe 2
     NonEmptyList(1, 2, 3, 4, 5).length shouldBe 5
   }
-  it should "have a ++ method that takes another NonEmptyList" in {
+  /*it should "have a ++ method that takes another NonEmptyList" in {
     NonEmptyList(1, 2, 3) ++ NonEmptyList(4) shouldEqual NonEmptyList(1, 2, 3, 4)
     NonEmptyList(1, 2, 3) ++ NonEmptyList(4, 5) shouldEqual NonEmptyList(1, 2, 3, 4, 5)
     NonEmptyList(1, 2, 3) ++ NonEmptyList(4, 5, 6) shouldEqual NonEmptyList(1, 2, 3, 4, 5, 6)
