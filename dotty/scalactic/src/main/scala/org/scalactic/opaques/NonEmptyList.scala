@@ -17,6 +17,7 @@ package org.scalactic.opaques
 
 import scala.collection.GenSeq
 import scala.reflect.ClassTag
+import org.scalactic.Every
 
 /**
  * A non-empty list: an ordered, immutable, non-empty collection of elements with <code>LinearSeq</code> performance characteristics.
@@ -210,6 +211,38 @@ object NonEmptyList {
 
   extension [T] (nonEmptyList: NonEmptyList[T]) {
     /**
+      * Returns a new <code>NonEmptyList</code> containing the elements of this <code>NonEmptyList</code> followed by the elements of the passed <code>NonEmptyList</code>.
+      * The element type of the resulting <code>NonEmptyList</code> is the most specific superclass encompassing the element types of this and the passed <code>NonEmptyList</code>.
+      *
+      * @tparam U the element type of the returned <code>NonEmptyList</code>
+      * @param other the <code>NonEmptyList</code> to append
+      * @return a new <code>NonEmptyList</code> that contains all the elements of this <code>NonEmptyList</code> followed by all elements of <code>other</code>.
+      */
+    def ++[U >: T](other: NonEmptyList[U]): NonEmptyList[U] = nonEmptyList.appendedAll(other)
+
+    /**
+      * Returns a new <code>NonEmptyList</code> containing the elements of this <code>NonEmptyList</code> followed by the elements of the passed <code>Every</code>.
+      * The element type of the resulting <code>NonEmptyList</code> is the most specific superclass encompassing the element types of this <code>NonEmptyList</code> and the passed <code>Every</code>.
+      *
+      * @tparam U the element type of the returned <code>NonEmptyList</code>
+      * @param other the <code>Every</code> to append
+      * @return a new <code>NonEmptyList</code> that contains all the elements of this <code>NonEmptyList</code> followed by all elements of <code>other</code>.
+      */
+    def ++[U >: T](other: Every[U]): NonEmptyList[U] = nonEmptyList.appendedAll(other)
+
+    /**
+      * Returns a new <code>NonEmptyList</code> containing the elements of this <code>NonEmptyList</code> followed by the elements of the passed <code>IterableOnce</code>.
+      * The element type of the resulting <code>NonEmptyList</code> is the most specific superclass encompassing the element types of this <code>NonEmptyList</code>
+      * and the passed <code>IterableOnce</code>.
+      *
+      * @tparam U the element type of the returned <code>NonEmptyList</code>
+      * @param other the <code>IterableOnce</code> to append
+      * @return a new <code>NonEmptyList</code> that contains all the elements of this <code>NonEmptyList</code> followed by all elements of <code>other</code>.
+      */
+    def ++[U >: T](other: IterableOnce[U]): NonEmptyList[U] =
+      if (other.isEmpty) nonEmptyList else nonEmptyList.appendedAll(other)
+
+    /**
       * The length of this <code>NonEmptyList</code>.
       *
       * <p>
@@ -218,7 +251,7 @@ object NonEmptyList {
       *
       * @return the number of elements in this <code>NonEmptyList</code>. 
       */
-      final def length: Int = (nonEmptyList: List[T]).length
+    final def length: Int = (nonEmptyList: List[T]).length
 
       
   }

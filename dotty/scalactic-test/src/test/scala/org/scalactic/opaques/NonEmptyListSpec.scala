@@ -150,7 +150,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(1, 2).length shouldBe 2
     NonEmptyList(1, 2, 3, 4, 5).length shouldBe 5
   }
-  /*it should "have a ++ method that takes another NonEmptyList" in {
+  it should "have a ++ method that takes another NonEmptyList" in {
     NonEmptyList(1, 2, 3) ++ NonEmptyList(4) shouldEqual NonEmptyList(1, 2, 3, 4)
     NonEmptyList(1, 2, 3) ++ NonEmptyList(4, 5) shouldEqual NonEmptyList(1, 2, 3, 4, 5)
     NonEmptyList(1, 2, 3) ++ NonEmptyList(4, 5, 6) shouldEqual NonEmptyList(1, 2, 3, 4, 5, 6)
@@ -172,7 +172,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(1, 2, 3) ++ Set(4, 5) shouldEqual NonEmptyList(1, 2, 3, 4, 5)
     NonEmptyList(1, 2, 3) ++ Set(4, 5).iterator shouldEqual NonEmptyList(1, 2, 3, 4, 5)
   }
-  it should "have a +: method" in {
+  /*it should "have a +: method" in {
     0 +: NonEmptyList(1) shouldBe NonEmptyList(0, 1)
     0 +: NonEmptyList(1, 2) shouldBe NonEmptyList(0, 1, 2)
     "zero" +: NonEmptyList("one", "two") shouldBe NonEmptyList("zero", "one", "two")
