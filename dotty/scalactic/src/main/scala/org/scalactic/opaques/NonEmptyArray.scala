@@ -15,13 +15,8 @@
  */
 package org.scalactic.opaques
 
-import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.collection.GenSeq
-import org.scalactic.ColCompatHelper.{Iterable, IterableOnce, GenIterable}
-import scala.collection.generic.CanBuildFrom
-import scala.collection.mutable.Buffer
 import scala.reflect.ClassTag
-import scala.collection.immutable
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.ArrayOps
 import org.scalactic.{Every, Resources}
