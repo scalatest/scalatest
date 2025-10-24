@@ -205,8 +205,20 @@ object NonEmptyList {
       * @param element the element to prepend to this <code>NonEmptyArray</code>
       * @return a new <code>NonEmptyArray</code> consisting of <code>element</code> followed by all elements of this <code>NonEmptyArray</code>.
       */
-    infix def ::[U >: T](list: NonEmptyList[U])(using classTag: ClassTag[U]): NonEmptyList[U] = 
-      NonEmptyList(element, list*)
+    infix def ::[U >: T](nonEmptyList: NonEmptyList[U])(using classTag: ClassTag[U]): NonEmptyList[U] = 
+      NonEmptyList(element, nonEmptyList*)
+
+    /**
+      * Returns a new <code>NonEmptyList</code> with the given element prepended.
+      *
+      * <p>
+      * Note that :-ending operators are right associative. A mnemonic for <code>+:</code> <em>vs.</em> <code>:+</code> is: the COLon goes on the COLlection side.
+      * </p>
+      *
+      * @param element the element to prepend to this <code>NonEmptyList</code>
+      * @return a new <code>NonEmptyList</code> consisting of <code>element</code> followed by all elements of this <code>NonEmptyList</code>.
+      */
+    infix def +:[U >: T](nonEmptyList: NonEmptyList[U]): NonEmptyList[U] = NonEmptyList(element, nonEmptyList*)  
   }  
 
   extension [T] (nonEmptyList: NonEmptyList[T]) {
