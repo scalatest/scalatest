@@ -216,7 +216,7 @@ object NonEmptyArray {
       * @param element the element to append to this <code>NonEmptyArray</code>
       * @return a new <code>NonEmptyArray</code> consisting of all elements of this <code>NonEmptyArray</code> followed by <code>element</code>.
       */
-    def :+[U >: T](element: U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] = { 
+    infix final def :+[U >: T](element: U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] = { 
       ArrayOps(nonEmptyArray).appended(element)
     }
 
