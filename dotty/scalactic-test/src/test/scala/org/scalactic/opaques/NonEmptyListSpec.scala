@@ -932,7 +932,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(3).reverseMap(_ + 1) shouldBe NonEmptyList(4)
     NonEmptyList(1, 2, 3).reverseMap(_ + 1) shouldBe NonEmptyList(4, 3, 2)
   }
-  /*it should "have a runWith method, inherited from PartialFunction" in {
+  it should "have a runWith method, inherited from PartialFunction" in {
  // TODO: What is this? Seems to be testing Vector or List instead of Every or NonEmptyList.
     var x = 0
     val f = List(1, 2, 3).runWith(x += _)
@@ -1002,7 +1002,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(1, 2, 3).scanRight("z")(_.toString + _.toString) shouldBe NonEmptyList("123z", "23z", "3z", "z")
     NonEmptyList(0).scanRight("z")(_.toString + _.toString) shouldBe NonEmptyList("0z", "z")
   }
-  it should "have a segmentLength method" in {
+  /*it should "have a segmentLength method" in {
     NonEmptyList(1, 2, 3, 4, 5, 6, 6, 7, 8, 10).segmentLength(_ > 7, 0) shouldBe 0
     NonEmptyList(1, 2, 3, 4, 5, 6, 6, 7, 8, 10).segmentLength(_ == 7, 0) shouldBe 0
     NonEmptyList(1, 2, 3, 4, 5, 6, 6, 7, 8, 10).segmentLength(_ > 0, 0) shouldBe 10
