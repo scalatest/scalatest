@@ -1002,7 +1002,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(1, 2, 3).scanRight("z")(_.toString + _.toString) shouldBe NonEmptyList("123z", "23z", "3z", "z")
     NonEmptyList(0).scanRight("z")(_.toString + _.toString) shouldBe NonEmptyList("0z", "z")
   }
-  /*it should "have a segmentLength method" in {
+  it should "have a segmentLength method" in {
     NonEmptyList(1, 2, 3, 4, 5, 6, 6, 7, 8, 10).segmentLength(_ > 7, 0) shouldBe 0
     NonEmptyList(1, 2, 3, 4, 5, 6, 6, 7, 8, 10).segmentLength(_ == 7, 0) shouldBe 0
     NonEmptyList(1, 2, 3, 4, 5, 6, 6, 7, 8, 10).segmentLength(_ > 0, 0) shouldBe 10
@@ -1106,7 +1106,7 @@ class NonEmptyListSpec extends UnitSpec {
     scala> Vector(1, 2, 3, 4, 5).splitAt(0)
     res106: (scala.collection.immutable.Vector[Int], scala.collection.immutable.Vector[Int]) = (Vector(),Vector(1, 2, 3, 4, 5))
   */
-  it should "have 2 startsWith methods that take a GenSeq" in {
+  /*it should "have 2 startsWith methods that take a GenSeq" in {
     NonEmptyList(1, 2, 3).startsWith(List(1)) shouldBe true
     NonEmptyList(1, 2, 3).startsWith(List(1, 2)) shouldBe true
     NonEmptyList(1, 2, 3).startsWith(List(1, 2, 3)) shouldBe true

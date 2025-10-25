@@ -392,7 +392,7 @@ object NonEmptyList {
       *
       * @return a new <code>NonEmptyList</code> with all elements of this <code>NonEmptyList</code> in reversed order. 
       */
-    final def reverse: NonEmptyList[T] =
+    def reverse: NonEmptyList[T] =
       (nonEmptyList: List[T]).reverse  
 
     /**
@@ -407,7 +407,7 @@ object NonEmptyList {
       * @return a new <code>NonEmptyList</code> resulting from applying the given function <code>f</code> to each element of this <code>NonEmptyList</code>
       *     and collecting the results in reverse order. 
       */
-    final def reverseMap[U](f: T => U): NonEmptyList[U] =
+    def reverseMap[U](f: T => U): NonEmptyList[U] =
       (nonEmptyList: List[T]).reverseMap(f)
 
     /**
@@ -433,7 +433,7 @@ object NonEmptyList {
       * @param op a binary operator that must be associative
       * @return a new <code>NonEmptyList</code> containing the prefix scan of the elements in this <code>NonEmptyList</code> 
       */
-    final def scan[U >: T](z: U)(op: (U, U) => U): NonEmptyList[U] = (nonEmptyList: List[T]).scan(z)(op)
+    def scan[U >: T](z: U)(op: (U, U) => U): NonEmptyList[U] = (nonEmptyList: List[T]).scan(z)(op)
 
     /**
       * Produces a <code>NonEmptyList</code> containing cumulative results of applying the operator going left to right.
@@ -453,7 +453,7 @@ object NonEmptyList {
       * @return a new <code>NonEmptyList</code> containing the intermediate results of inserting <code>op</code> between consecutive elements of this <code>NonEmptyList</code>,
       *     going left to right, with the start value, <code>z</code>, on the left.
       */ 
-    final def scanLeft[B](z: B)(op: (B, T) => B): NonEmptyList[B] = (nonEmptyList: List[T]).scanLeft(z)(op)
+    def scanLeft[B](z: B)(op: (B, T) => B): NonEmptyList[B] = (nonEmptyList: List[T]).scanLeft(z)(op)
 
     /**
       * Produces a <code>NonEmptyList</code> containing cumulative results of applying the operator going right to left.
@@ -473,7 +473,45 @@ object NonEmptyList {
       * @return a new <code>NonEmptyList</code> containing the intermediate results of inserting <code>op</code> between consecutive elements of this <code>NonEmptyList</code>,
       *     going right to left, with the start value, <code>z</code>, on the right.
       */
-    final def scanRight[B](z: B)(op: (T, B) => B): NonEmptyList[B] = (nonEmptyList: List[T]).scanRight(z)(op)
+    def scanRight[B](z: B)(op: (T, B) => B): NonEmptyList[B] = (nonEmptyList: List[T]).scanRight(z)(op)
+
+    /**
+      * Sorts this <code>NonEmptyList</code> according to the <code>Ordering</code> of the result of applying the given function to every element.
+      *
+      * @tparam U the target type of the transformation <code>f</code>, and the type where the <code>Ordering</code> <code>ord</code> is defined.
+      * @param f the transformation function mapping elements to some other domain <code>U</code>.
+      * @param ord the ordering assumed on domain <code>U</code>.
+      * @return a <code>NonEmptyList</code> consisting of the elements of this <code>NonEmptyList</code> sorted according to the <code>Ordering</code> where
+      *    <code>x &lt; y if ord.lt(f(x), f(y))</code>. 
+      */
+    final def sortBy[U](f: T => U)(implicit ord: Ordering[U]): NonEmptyList[T] = (nonEmptyList: List[T]).sortBy(f)
+
+    /**
+      * Sorts this <code>NonEmptyList</code> according to a comparison function.
+      *
+      * <p>
+      * The sort is stable. That is, elements that are equal (as determined by <code>lt</code>) appear in the same order in the
+      * sorted <code>NonEmptyList</code> as in the original. 
+      * </p>
+      *
+      * @param the comparison function that tests whether its first argument precedes its second argument in the desired ordering.
+      * @return a <code>NonEmptyList</code> consisting of the elements of this <code>NonEmptyList</code> sorted according to the comparison function <code>lt</code>.
+      */
+    final def sortWith(lt: (T, T) => Boolean): NonEmptyList[T] = (nonEmptyList: List[T]).sortWith(lt)
+
+    /**
+      * Sorts this <code>NonEmptyList</code> according to an <code>Ordering</code>.
+      *
+      * <p>
+      * The sort is stable. That is, elements that are equal (as determined by <code>lt</code>) appear in the same order in the
+      * sorted <code>NonEmptyList</code> as in the original. 
+      * </p>
+      *
+      * @param ord the <code>Ordering</code> to be used to compare elements.
+      * @param the comparison function that tests whether its first argument precedes its second argument in the desired ordering.
+      * @return a <code>NonEmptyList</code> consisting of the elements of this <code>NonEmptyList</code> sorted according to the comparison function <code>lt</code>.
+      */
+    final def sorted[U >: T](implicit ord: Ordering[U]): NonEmptyList[U] = (nonEmptyList: List[T]).sorted(ord)
   }
 
 }
