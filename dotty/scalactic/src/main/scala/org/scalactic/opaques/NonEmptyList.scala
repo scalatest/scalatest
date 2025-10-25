@@ -270,6 +270,18 @@ object NonEmptyList {
       if (other.isEmpty) nonEmptyList else nonEmptyList.appendedAll(other)
 
     /**
+      * Returns a new <code>NonEmptyList</code> with the given element appended.
+      *
+      * <p>
+      * Note a mnemonic for <code>+:</code> <em>vs.</em> <code>:+</code> is: the COLon goes on the COLlection side.
+      * </p>
+      *
+      * @param element the element to append to this <code>NonEmptyList</code>
+      * @return a new <code>NonEmptyList</code> consisting of all elements of this <code>NonEmptyList</code> followed by <code>element</code>.
+      */
+    def :+[U >: T](element: U): NonEmptyList[U] = nonEmptyList.appended(element)  
+
+    /**
       * The length of this <code>NonEmptyList</code>.
       *
       * <p>

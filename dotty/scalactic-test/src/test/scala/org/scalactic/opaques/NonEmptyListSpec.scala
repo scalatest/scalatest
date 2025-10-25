@@ -205,8 +205,7 @@ class NonEmptyListSpec extends UnitSpec {
     Set(1, 2) ::: NonEmptyList(3, 4, 5) shouldEqual NonEmptyList(1, 2, 3, 4, 5)
     Set(1, 2).iterator ::: NonEmptyList(3, 4, 5) shouldEqual NonEmptyList(1, 2, 3, 4, 5)
   }
-
-  /*it should "implement PartialFunction[Int, T]" in {
+  it should "implement PartialFunction[Int, T]" in {
     val pf1: PartialFunction[Int, Int] = NonEmptyList(1)
     pf1.isDefinedAt(0) shouldBe true
     pf1.isDefinedAt(1) shouldBe false
@@ -221,7 +220,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(1) :+ 2 shouldBe NonEmptyList(1, 2)
     NonEmptyList(1, 2) :+ 3 shouldBe NonEmptyList(1, 2, 3)
   }
-  it should "have a :\\ method" in {
+  /*it should "have a :\\ method" in {
     (NonEmptyList(1) :\ 0)(_ + _) shouldBe 1
     (NonEmptyList(1) :\ 1)(_ + _) shouldBe 2
     (NonEmptyList(1, 2, 3) :\ 0)(_ + _) shouldBe 6
