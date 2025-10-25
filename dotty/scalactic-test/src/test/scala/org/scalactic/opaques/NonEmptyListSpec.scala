@@ -862,7 +862,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(1, 2, 3, 4, 5).patch(0, NonEmptyList(-3, -4), 2) shouldBe NonEmptyList(-3, -4, 3, 4, 5)
     NonEmptyList(1, 2, 3, 4, 5).patch(0, NonEmptyList(-3, -4), 3) shouldBe NonEmptyList(-3, -4, 4, 5)
   }
-  /*it should "have a permutations method" in {
+  it should "have a permutations method" in {
     NonEmptyList(1, 2, 3).permutations.toStream shouldBe Stream(NonEmptyList(1, 2, 3), NonEmptyList(1, 3, 2), NonEmptyList(2, 1, 3), NonEmptyList(2, 3, 1), NonEmptyList(3, 1, 2), NonEmptyList(3, 2, 1))
     NonEmptyList(1).permutations.toStream shouldBe Stream(NonEmptyList(1))
     NonEmptyList(1, 2).permutations.toStream shouldBe Stream(NonEmptyList(1, 2), NonEmptyList(2, 1))
@@ -924,7 +924,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(33).reverse shouldBe NonEmptyList(33)
     NonEmptyList(33, 34, 35).reverse shouldBe NonEmptyList(35, 34, 33)
   }
-  it should "have a reverseIterator method" in {
+  /*it should "have a reverseIterator method" in {
     NonEmptyList(3).reverseIterator.toStream shouldBe Stream(3)
     NonEmptyList(1, 2, 3).reverseIterator.toList shouldBe Stream(3, 2, 1)
   }

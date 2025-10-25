@@ -386,6 +386,14 @@ object NonEmptyList {
       */
     def patch[U >: T](from: Int, that: NonEmptyList[U], replaced: Int): NonEmptyList[U] =
       (nonEmptyList: List[T]).patch(from, that.toVector, replaced)
+
+    /**
+      * Returns new <code>NonEmptyList</code> with elements in reverse order.
+      *
+      * @return a new <code>NonEmptyList</code> with all elements of this <code>NonEmptyList</code> in reversed order. 
+      */
+    final def reverse: NonEmptyList[T] =
+      (nonEmptyList: List[T]).reverse  
   }
 
 }
