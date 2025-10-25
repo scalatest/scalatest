@@ -363,7 +363,7 @@ object NonEmptyList {
       * @param f the function to apply to each element. 
       * @return a new <code>NonEmptyList</code> resulting from applying the given function <code>f</code> to each element of this <code>NonEmptyList</code> and collecting the results. 
       */
-    final def map[U](f: T => U): NonEmptyList[U] =
+    def map[U](f: T => U): NonEmptyList[U] =
       (nonEmptyList: List[T]).map(f)
 
     /**
@@ -374,8 +374,18 @@ object NonEmptyList {
       * @return a new <code>NonEmptyList</code> consisting of all elements of this <code>NonEmptyList</code> followed by the minimal number of occurrences
       *     of <code>elem</code> so that the resulting <code>NonEmptyList</code> has a length of at least <code>len</code>. 
       */
-    final def padTo[U >: T](len: Int, elem: U): NonEmptyList[U] =
-      (nonEmptyList: List[T]).padTo(len, elem)  
+    def padTo[U >: T](len: Int, elem: U): NonEmptyList[U] =
+      (nonEmptyList: List[T]).padTo(len, elem)
+
+    /**
+      * Produces a new <code>NonEmptyList</code> where a slice of elements in this <code>NonEmptyList</code> is replaced by another <code>NonEmptyList</code>
+      *
+      * @param from the index of the first replaced element 
+      * @param that the <code>NonEmptyList</code> whose elements should replace a slice in this <code>NonEmptyList</code>
+      * @param replaced the number of elements to drop in the original <code>NonEmptyList</code>
+      */
+    def patch[U >: T](from: Int, that: NonEmptyList[U], replaced: Int): NonEmptyList[U] =
+      (nonEmptyList: List[T]).patch(from, that.toVector, replaced)
   }
 
 }
