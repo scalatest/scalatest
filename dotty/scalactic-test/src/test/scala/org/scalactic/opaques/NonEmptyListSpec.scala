@@ -391,7 +391,7 @@ class NonEmptyListSpec extends UnitSpec {
     scala> Vector(1, 2, 3).dropWhile(_ < 10)
     res2: scala.collection.immutable.Vector[Int] = Vector()
   */
-  /*it should "have an endsWith method that takes a GenSeq" in {
+  it should "have an endsWith method that takes a GenSeq" in {
     NonEmptyList(1).endsWith(List(1)) shouldBe true
     NonEmptyList(1).endsWith(List(1, 2)) shouldBe false
     NonEmptyList(1, 2).endsWith(List(1, 2)) shouldBe true
@@ -466,7 +466,7 @@ class NonEmptyListSpec extends UnitSpec {
     List(NonEmptyList(1, 2, 3), NonEmptyList(1, 2, 3)).par.flatten shouldBe List(1, 2, 3, 1, 2, 3).par
     // SKIP-SCALATESTJS,NATIVE-END
   }
-  it should "have a fold method" in {
+  /*it should "have a fold method" in {
     NonEmptyList(1).fold(0)(_ + _) shouldBe 1
     NonEmptyList(1).fold(1)(_ * _) shouldBe 1
     NonEmptyList(2).fold(0)(_ + _) shouldBe 2
