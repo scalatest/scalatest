@@ -278,9 +278,7 @@ object NonEmptyList {
       *
       * @return the number of elements in this <code>NonEmptyList</code>. 
       */
-    final def length: Int = (nonEmptyList: List[T]).length
-
-      
+    def length: Int = (nonEmptyList: List[T]).length  
   }
 
 }

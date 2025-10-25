@@ -202,7 +202,7 @@ object NonEmptyArray {
       * @param other the <code>IterableOnce</code> to append
       * @return a new <code>NonEmptyArray</code> that contains all the elements of this <code>NonEmptyArray</code> followed by all elements of <code>other</code>.
       */
-    infix final def ++[U >: T](other: IterableOnce[U])(using classTag: ClassTag[U]): NonEmptyArray[U] = {
+    infix def ++[U >: T](other: IterableOnce[U])(using classTag: ClassTag[U]): NonEmptyArray[U] = {
       ArrayOps(nonEmptyArray).appendedAll(other)
     }
 
@@ -216,7 +216,7 @@ object NonEmptyArray {
       * @param element the element to append to this <code>NonEmptyArray</code>
       * @return a new <code>NonEmptyArray</code> consisting of all elements of this <code>NonEmptyArray</code> followed by <code>element</code>.
       */
-    infix final def :+[U >: T](element: U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] = { 
+    infix def :+[U >: T](element: U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] = { 
       ArrayOps(nonEmptyArray).appended(element)
     }
 
@@ -226,7 +226,7 @@ object NonEmptyArray {
       * @param elem the element to look for
       * @return true if this <code>NonEmptyArray</code> has an element that is equal (as determined by <code>==)</code> to <code>elem</code>, false otherwise. 
       */
-    final def contains(elem: T): Boolean = {
+    def contains(elem: T): Boolean = {
       val arrOps = new ArrayOps(nonEmptyArray)
       arrOps.contains(elem)
     }
@@ -236,7 +236,7 @@ object NonEmptyArray {
     *
     * @return A new <code>NonEmptyArray</code> that contains the first occurrence of every element of this <code>NonEmptyArray</code>. 
     */
-    final def distinct: NonEmptyArray[T] = {
+    def distinct: NonEmptyArray[T] = {
       val arrOps = new ArrayOps(nonEmptyArray)
       arrOps.distinct
     }
@@ -249,7 +249,7 @@ object NonEmptyArray {
       * @return a new <code>NonEmptyArray</code> containing elements obtained by applying the given function <code>f</code> to each element of this <code>NonEmptyArray</code> and concatenating
       *    the elements of resulting <code>NonEmptyArray</code>s. 
       */
-    final def flatMap[U](f: T => NonEmptyArray[U])(implicit classTag: ClassTag[U]): NonEmptyArray[U] = {
+    def flatMap[U](f: T => NonEmptyArray[U])(implicit classTag: ClassTag[U]): NonEmptyArray[U] = {
       val buf = new ArrayBuffer[U]
       for (ele <- nonEmptyArray)
         buf ++= f(ele).toArray
@@ -268,7 +268,7 @@ object NonEmptyArray {
       * @tparm B the type of the elements of each nested <code>NonEmptyArray</code>
       * @return a new <code>NonEmptyArray</code> resulting from concatenating all nested <code>NonEmptyArray</code>s.
       */
-    final def flatten[B](implicit ev: T <:< NonEmptyArray[B], classTag: ClassTag[B]): NonEmptyArray[B] = flatMap(ev)
+    def flatten[B](implicit ev: T <:< NonEmptyArray[B], classTag: ClassTag[B]): NonEmptyArray[B] = flatMap(ev)
 
     /**
       * Builds a new <code>NonEmptyArray</code> by applying a function to all elements of this <code>NonEmptyArray</code>.
@@ -277,7 +277,7 @@ object NonEmptyArray {
       * @param f the function to apply to each element. 
       * @return a new <code>NonEmptyArray</code> resulting from applying the given function <code>f</code> to each element of this <code>NonEmptyArray</code> and collecting the results. 
       */
-    final def map[U](f: T => U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] ={
+    def map[U](f: T => U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] ={
       val buf = new ArrayBuffer[U]
       for (ele <- nonEmptyArray)
         buf += f(ele)
@@ -299,7 +299,7 @@ object NonEmptyArray {
       * That is, every key <code>k</code> is bound to a <code>NonEmptyArray</code> of those elements <code>x</code> for which <code>f(x)</code> equals <code>k</code>.
       * </p>
       */
-    final def groupBy[K](f: T => K)(implicit classTag: ClassTag[T]): Map[K, NonEmptyArray[T]] = {
+    def groupBy[K](f: T => K)(implicit classTag: ClassTag[T]): Map[K, NonEmptyArray[T]] = {
       val mapKToArray = (new ArrayOps(nonEmptyArray)).groupBy(f)
       (mapKToArray.mapValues{ list => NonEmptyArray(list.head, list.tail.toList*) }).toMap
     }
@@ -310,7 +310,7 @@ object NonEmptyArray {
       * @param size the number of elements per group
       * @return An iterator producing <code>NonEmptyArray</code>s of size <code>size</code>, except the last will be truncated if the elements don't divide evenly. 
       */
-    final def grouped(size: Int)(implicit classTag: ClassTag[T]): Iterator[NonEmptyArray[T]] = {
+    def grouped(size: Int)(implicit classTag: ClassTag[T]): Iterator[NonEmptyArray[T]] = {
       if (size < 1)
         throw new IllegalArgumentException(Resources.invalidSize(size))
       val itOfArray = (new ArrayOps(nonEmptyArray)).grouped(size)
@@ -325,7 +325,7 @@ object NonEmptyArray {
       * @return a new <code>NonEmptyArray</code> consisting of all elements of this <code>NonEmptyArray</code> followed by the minimal number of occurrences
       *     of <code>elem</code> so that the resulting <code>NonEmptyArray</code> has a length of at least <code>len</code>. 
       */
-    final def padTo[U >: T](len: Int, elem: U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] = {
+    def padTo[U >: T](len: Int, elem: U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] = {
       (new ArrayOps(nonEmptyArray)).padTo(len, elem)
     }
 
@@ -336,7 +336,7 @@ object NonEmptyArray {
       * @param that the <code>NonEmptyArray</code> whose elements should replace a slice in this <code>NonEmptyArray</code>
       * @param replaced the number of elements to drop in the original <code>NonEmptyArray</code>
       */
-    final def patch[U >: T](from: Int, that: NonEmptyArray[U], replaced: Int)(implicit classTag: ClassTag[U]): NonEmptyArray[U] =
+    def patch[U >: T](from: Int, that: NonEmptyArray[U], replaced: Int)(implicit classTag: ClassTag[U]): NonEmptyArray[U] =
       (new ArrayOps(nonEmptyArray)).patch(from, that.toArray, replaced)
 
     /**
@@ -352,7 +352,7 @@ object NonEmptyArray {
       *
       * @return an iterator that traverses the distinct permutations of this <code>NonEmptyArray</code>.
       */
-    final def permutations: Iterator[NonEmptyArray[T]] =
+    def permutations: Iterator[NonEmptyArray[T]] =
       (new ArrayOps(nonEmptyArray)).permutations
 
     /**
@@ -360,7 +360,7 @@ object NonEmptyArray {
       *
       * @return a new <code>NonEmptyArray</code> with all elements of this <code>NonEmptyArray</code> in reversed order. 
       */
-    final def reverse: NonEmptyArray[T] =
+    def reverse: NonEmptyArray[T] =
       (new ArrayOps(nonEmptyArray)).reverse
 
     /**
@@ -375,7 +375,7 @@ object NonEmptyArray {
       * @return a new <code>NonEmptyArray</code> resulting from applying the given function <code>f</code> to each element of this <code>NonEmptyArray</code>
       *     and collecting the results in reverse order. 
       */
-    final def reverseMap[U](f: T => U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] =
+    def reverseMap[U](f: T => U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] =
       nonEmptyArrayToGenSeq(nonEmptyArray).reverseMap(f).toArray
 
     /**
@@ -401,7 +401,7 @@ object NonEmptyArray {
       * @param op a binary operator that must be associative
       * @return a new <code>NonEmptyArray</code> containing the prefix scan of the elements in this <code>NonEmptyArray</code> 
       */
-    final def scan[U >: T](z: U)(op: (U, U) => U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] = new ArrayOps(nonEmptyArray).scan(z)(op)
+    def scan[U >: T](z: U)(op: (U, U) => U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] = new ArrayOps(nonEmptyArray).scan(z)(op)
 
     /**
       * Produces a <code>NonEmptyArray</code> containing cumulative results of applying the operator going left to right.
@@ -421,7 +421,7 @@ object NonEmptyArray {
       * @return a new <code>NonEmptyArray</code> containing the intermediate results of inserting <code>op</code> between consecutive elements of this <code>NonEmptyArray</code>,
       *     going left to right, with the start value, <code>z</code>, on the left.
       */
-    final def scanLeft[B](z: B)(op: (B, T) => B)(implicit classTag: ClassTag[B]): NonEmptyArray[B] = new ArrayOps(nonEmptyArray).scanLeft(z)(op)
+    def scanLeft[B](z: B)(op: (B, T) => B)(implicit classTag: ClassTag[B]): NonEmptyArray[B] = new ArrayOps(nonEmptyArray).scanLeft(z)(op)
 
     /**
       * Produces a <code>NonEmptyArray</code> containing cumulative results of applying the operator going right to left.
@@ -441,7 +441,7 @@ object NonEmptyArray {
       * @return a new <code>NonEmptyArray</code> containing the intermediate results of inserting <code>op</code> between consecutive elements of this <code>NonEmptyArray</code>,
       *     going right to left, with the start value, <code>z</code>, on the right.
       */
-    final def scanRight[B](z: B)(op: (T, B) => B)(implicit classTag: ClassTag[B]): NonEmptyArray[B] = new ArrayOps(nonEmptyArray).scanRight(z)(op)
+    def scanRight[B](z: B)(op: (T, B) => B)(implicit classTag: ClassTag[B]): NonEmptyArray[B] = new ArrayOps(nonEmptyArray).scanRight(z)(op)
 
     /**
       * Groups elements in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.)
@@ -450,7 +450,7 @@ object NonEmptyArray {
       * @return an iterator producing <code>NonEmptyArray</code>s of size <code>size</code>, except the last and the only element will be truncated
       *     if there are fewer elements than <code>size</code>.
       */
-    final def sliding(size: Int)(using classTag: ClassTag[T]): Iterator[NonEmptyArray[T]] = new ArrayOps(nonEmptyArray).sliding(size).map(l => NonEmptyArray(l.head, l.tail.toList*))
+    def sliding(size: Int)(using classTag: ClassTag[T]): Iterator[NonEmptyArray[T]] = new ArrayOps(nonEmptyArray).sliding(size).map(l => NonEmptyArray(l.head, l.tail.toList*))
 
     /**
       * Groups elements in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.),
@@ -461,7 +461,7 @@ object NonEmptyArray {
       * @return an iterator producing <code>NonEmptyArray</code>s of size <code>size</code>, except the last and the only element will be truncated
       *     if there are fewer elements than <code>size</code>.
       */
-    final def sliding(size: Int, step: Int)(using classTag: ClassTag[T]): Iterator[NonEmptyArray[T]] = new ArrayOps(nonEmptyArray).sliding(size, step).map(l => NonEmptyArray(l.head, l.tail.toList*))
+    def sliding(size: Int, step: Int)(using classTag: ClassTag[T]): Iterator[NonEmptyArray[T]] = new ArrayOps(nonEmptyArray).sliding(size, step).map(l => NonEmptyArray(l.head, l.tail.toList*))
 
     /**
       * Sorts this <code>NonEmptyArray</code> according to the <code>Ordering</code> of the result of applying the given function to every element.
@@ -472,7 +472,7 @@ object NonEmptyArray {
       * @return a <code>NonEmptyArray</code> consisting of the elements of this <code>NonEmptyArray</code> sorted according to the <code>Ordering</code> where
       *    <code>x &lt; y if ord.lt(f(x), f(y))</code>. 
       */
-    final def sortBy[U](f: T => U)(using ord: Ordering[U]): NonEmptyArray[T] = new ArrayOps(nonEmptyArray).sortBy(f)
+    def sortBy[U](f: T => U)(using ord: Ordering[U]): NonEmptyArray[T] = new ArrayOps(nonEmptyArray).sortBy(f)
 
     /**
       * Sorts this <code>NonEmptyArray</code> according to a comparison function.
@@ -485,7 +485,7 @@ object NonEmptyArray {
       * @param the comparison function that tests whether its first argument precedes its second argument in the desired ordering.
       * @return a <code>NonEmptyArray</code> consisting of the elements of this <code>NonEmptyArray</code> sorted according to the comparison function <code>lt</code>.
       */
-    final def sortWith(lt: (T, T) => Boolean): NonEmptyArray[T] = new ArrayOps(nonEmptyArray).sortWith(lt)
+    def sortWith(lt: (T, T) => Boolean): NonEmptyArray[T] = new ArrayOps(nonEmptyArray).sortWith(lt)
 
     /**
       * Sorts this <code>NonEmptyArray</code> according to an <code>Ordering</code>.
@@ -499,7 +499,7 @@ object NonEmptyArray {
       * @param the comparison function that tests whether its first argument precedes its second argument in the desired ordering.
       * @return a <code>NonEmptyArray</code> consisting of the elements of this <code>NonEmptyArray</code> sorted according to the comparison function <code>lt</code>.
       */
-    final def sorted(using ord: Ordering[T]): NonEmptyArray[T] = new ArrayOps(nonEmptyArray).sorted(ord)
+    def sorted(using ord: Ordering[T]): NonEmptyArray[T] = new ArrayOps(nonEmptyArray).sorted(ord)
 
     /**
       * Returns <code>"NonEmptyArray"</code>, the prefix of this object's <code>toString</code> representation.
@@ -516,7 +516,7 @@ object NonEmptyArray {
       * @param asPair an implicit conversion that asserts that the element type of this <code>NonEmptyArray</code> is a pair.
       * @return a pair of <code>NonEmptyArray</code>s, containing the first and second half, respectively, of each element pair of this <code>NonEmptyArray</code>. 
       */
-    final def unzip[L, R](implicit asPair: T => (L, R), classTagL: ClassTag[L], classTagR: ClassTag[R]): (NonEmptyArray[L], NonEmptyArray[R]) = {
+    def unzip[L, R](implicit asPair: T => (L, R), classTagL: ClassTag[L], classTagR: ClassTag[R]): (NonEmptyArray[L], NonEmptyArray[R]) = {
       val unzipped = new ArrayOps(nonEmptyArray).unzip
       val left: NonEmptyArray[L] = unzipped._1.toArray
       val right: NonEmptyArray[R] = unzipped._2.toArray
@@ -532,7 +532,7 @@ object NonEmptyArray {
       * @param asTriple an implicit conversion that asserts that the element type of this <code>NonEmptyArray</code> is a triple.
       * @return a triple of <code>NonEmptyArray</code>s, containing the first, second, and third member, respectively, of each element triple of this <code>NonEmptyArray</code>. 
       */
-    final def unzip3[L, M, R](implicit asTriple: T => (L, M, R), classTagL: ClassTag[L], classTagM: ClassTag[M], classTagR: ClassTag[R]): (NonEmptyArray[L], NonEmptyArray[M], NonEmptyArray[R]) = {
+    def unzip3[L, M, R](implicit asTriple: T => (L, M, R), classTagL: ClassTag[L], classTagM: ClassTag[M], classTagR: ClassTag[R]): (NonEmptyArray[L], NonEmptyArray[M], NonEmptyArray[R]) = {
       val unzipped = new ArrayOps(nonEmptyArray).unzip3
       val left: NonEmptyArray[L] = unzipped._1.toArray
       val middle: NonEmptyArray[M] = unzipped._2.toArray
@@ -548,7 +548,7 @@ object NonEmptyArray {
       * @throws IndexOutOfBoundsException if the passed index is greater than or equal to the length of this <code>NonEmptyArray</code>
       * @return a copy of this <code>NonEmptyArray</code> with the element at position <code>idx</code> replaced by <code>elem</code>. 
       */
-    final def updated[U >: T](idx: Int, elem: U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] =
+    def updated[U >: T](idx: Int, elem: U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] =
       new ArrayOps(nonEmptyArray).updated(idx, elem)
 
     /**
@@ -566,7 +566,7 @@ object NonEmptyArray {
       *     is shorter than <code>that</code>, <code>thisElem</code> values are used to pad the result. If <code>that</code> is shorter than this
       *     <code>NonEmptyArray</code>, <code>thatElem</code> values are used to pad the result. 
       */
-    final def zipAll[O, U >: T](other: collection.Iterable[O], thisElem: U, otherElem: O): NonEmptyArray[(U, O)] =
+    def zipAll[O, U >: T](other: collection.Iterable[O], thisElem: U, otherElem: O): NonEmptyArray[(U, O)] =
       new ArrayOps(nonEmptyArray).zipAll(other, thisElem, otherElem)
 
     /**
@@ -574,6 +574,6 @@ object NonEmptyArray {
       *
       * @return A new <code>NonEmptyArray</code> containing pairs consisting of all elements of this <code>NonEmptyArray</code> paired with their index. Indices start at 0.
       */
-    final def zipWithIndex: NonEmptyArray[(T, Int)] = new ArrayOps(nonEmptyArray).zipWithIndex  
+    def zipWithIndex: NonEmptyArray[(T, Int)] = new ArrayOps(nonEmptyArray).zipWithIndex  
   }
 }
