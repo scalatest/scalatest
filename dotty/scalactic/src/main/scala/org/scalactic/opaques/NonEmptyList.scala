@@ -188,11 +188,12 @@ object NonEmptyList {
     * @param nonEmptyList the <code>NonEmptyList</code> to convert
     * @return the <code>GenSeq</code>
     */
-  implicit def nonEmptyListToGenSeq[E](nonEmptyList: NonEmptyList[E]): scala.collection.GenSeq[E] = // given Conversion just won't work!
-    new scala.collection.IndexedSeq[E] {
+  implicit def nonEmptyListToList[E](nonEmptyList: NonEmptyList[E]): List[E] = // given Conversion just won't work!
+    nonEmptyList
+    /*new scala.collection.IndexedSeq[E] {
       def apply(i: Int): E = nonEmptyList(i)
       def length: Int = nonEmptyList.length
-    }
+    }*/
 
   extension [T](element: T) {
     /**
@@ -218,8 +219,22 @@ object NonEmptyList {
       * @param element the element to prepend to this <code>NonEmptyList</code>
       * @return a new <code>NonEmptyList</code> consisting of <code>element</code> followed by all elements of this <code>NonEmptyList</code>.
       */
-    infix def +:[U >: T](nonEmptyList: NonEmptyList[U]): NonEmptyList[U] = NonEmptyList(element, nonEmptyList*)  
-  }  
+    infix def +:[U >: T](nonEmptyList: NonEmptyList[U]): NonEmptyList[U] = NonEmptyList(element, nonEmptyList*)
+  }
+
+  extension [T] (other: IterableOnce[T]) {
+    /**
+      * Returns a new <code>NonEmptyList</code> containing the elements of this <code>NonEmptyList</code> followed by the elements of the passed <code>IterableOnce</code>.
+      * The element type of the resulting <code>NonEmptyList</code> is the most specific superclass encompassing the element types of this <code>NonEmptyList</code>
+      * and the passed <code>IterableOnce</code>.
+      *
+      * @tparam U the element type of the returned <code>NonEmptyList</code>
+      * @param other the <code>IterableOnce</code> to append
+      * @return a new <code>NonEmptyList</code> that contains all the elements of this <code>NonEmptyList</code> followed by all elements of <code>other</code>.
+      */
+    infix def :::[U >: T](nonEmptyList: NonEmptyList[U]): NonEmptyList[U] =
+      if (other.isEmpty) nonEmptyList else other.toList ++ nonEmptyList  
+  } 
 
   extension [T] (nonEmptyList: NonEmptyList[T]) {
     /**
@@ -230,7 +245,7 @@ object NonEmptyList {
       * @param other the <code>NonEmptyList</code> to append
       * @return a new <code>NonEmptyList</code> that contains all the elements of this <code>NonEmptyList</code> followed by all elements of <code>other</code>.
       */
-    def ++[U >: T](other: NonEmptyList[U]): NonEmptyList[U] = nonEmptyList.appendedAll(other)
+    infix def ++[U >: T](other: NonEmptyList[U]): NonEmptyList[U] = nonEmptyList.appendedAll(other)
 
     /**
       * Returns a new <code>NonEmptyList</code> containing the elements of this <code>NonEmptyList</code> followed by the elements of the passed <code>Every</code>.
@@ -240,7 +255,7 @@ object NonEmptyList {
       * @param other the <code>Every</code> to append
       * @return a new <code>NonEmptyList</code> that contains all the elements of this <code>NonEmptyList</code> followed by all elements of <code>other</code>.
       */
-    def ++[U >: T](other: Every[U]): NonEmptyList[U] = nonEmptyList.appendedAll(other)
+    infix def ++[U >: T](other: Every[U]): NonEmptyList[U] = nonEmptyList.appendedAll(other)
 
     /**
       * Returns a new <code>NonEmptyList</code> containing the elements of this <code>NonEmptyList</code> followed by the elements of the passed <code>IterableOnce</code>.
@@ -251,7 +266,7 @@ object NonEmptyList {
       * @param other the <code>IterableOnce</code> to append
       * @return a new <code>NonEmptyList</code> that contains all the elements of this <code>NonEmptyList</code> followed by all elements of <code>other</code>.
       */
-    def ++[U >: T](other: IterableOnce[U]): NonEmptyList[U] =
+    infix def ++[U >: T](other: IterableOnce[U]): NonEmptyList[U] =
       if (other.isEmpty) nonEmptyList else nonEmptyList.appendedAll(other)
 
     /**
