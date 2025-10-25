@@ -282,6 +282,13 @@ object NonEmptyList {
     def :+[U >: T](element: U): NonEmptyList[U] = nonEmptyList.appended(element)  
 
     /**
+      * Builds a new <code>NonEmptyList</code> from this <code>NonEmptyList</code> without any duplicate elements.
+      *
+      * @return A new <code>NonEmptyList</code> that contains the first occurrence of every element of this <code>NonEmptyList</code>. 
+      */
+    final def distinct: NonEmptyList[T] = (nonEmptyList: List[T]).distinct
+
+    /**
       * The length of this <code>NonEmptyList</code>.
       *
       * <p>

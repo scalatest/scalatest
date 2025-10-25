@@ -220,7 +220,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(1) :+ 2 shouldBe NonEmptyList(1, 2)
     NonEmptyList(1, 2) :+ 3 shouldBe NonEmptyList(1, 2, 3)
   }
-  /*it should "have a :\\ method" in {
+  it should "have a :\\ method" in {
     (NonEmptyList(1) :\ 0)(_ + _) shouldBe 1
     (NonEmptyList(1) :\ 1)(_ + _) shouldBe 2
     (NonEmptyList(1, 2, 3) :\ 0)(_ + _) shouldBe 6
@@ -289,13 +289,9 @@ class NonEmptyListSpec extends UnitSpec {
     val es = NonEmptyList("one", "two", "three")
     es.contains("one") shouldBe true
     es.contains("ONE") shouldBe false
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.contains("one") shouldBe true
     es.contains("ONE") shouldBe false
-    // SKIP-DOTTY-END
   }
   // Decided to just overload one for GenSeq and one for Every. Could have done
   // what that has a Slicing nature, but that's a bit too fancy pants.
@@ -395,7 +391,7 @@ class NonEmptyListSpec extends UnitSpec {
     scala> Vector(1, 2, 3).dropWhile(_ < 10)
     res2: scala.collection.immutable.Vector[Int] = Vector()
   */
-  it should "have an endsWith method that takes a GenSeq" in {
+  /*it should "have an endsWith method that takes a GenSeq" in {
     NonEmptyList(1).endsWith(List(1)) shouldBe true
     NonEmptyList(1).endsWith(List(1, 2)) shouldBe false
     NonEmptyList(1, 2).endsWith(List(1, 2)) shouldBe true
