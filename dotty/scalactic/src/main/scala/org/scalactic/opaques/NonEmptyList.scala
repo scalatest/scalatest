@@ -365,6 +365,17 @@ object NonEmptyList {
       */
     final def map[U](f: T => U): NonEmptyList[U] =
       (nonEmptyList: List[T]).map(f)
+
+    /**
+      * A copy of this <code>NonEmptyList</code> with an element value appended until a given target length is reached.
+      *
+      * @param len the target length 
+      * @param elem he padding value
+      * @return a new <code>NonEmptyList</code> consisting of all elements of this <code>NonEmptyList</code> followed by the minimal number of occurrences
+      *     of <code>elem</code> so that the resulting <code>NonEmptyList</code> has a length of at least <code>len</code>. 
+      */
+    final def padTo[U >: T](len: Int, elem: U): NonEmptyList[U] =
+      (nonEmptyList: List[T]).padTo(len, elem)  
   }
 
 }

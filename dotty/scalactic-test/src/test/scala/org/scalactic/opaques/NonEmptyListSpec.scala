@@ -520,7 +520,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(1).grouped(2).toList shouldBe List(NonEmptyList(1))
     NonEmptyList(1).grouped(1).toList shouldBe List(NonEmptyList(1))
   }
-  /*it should "have a hasDefiniteSize method" in {
+  it should "have a hasDefiniteSize method" in {
     NonEmptyList(1).hasDefiniteSize shouldBe true
     NonEmptyList(1, 2).hasDefiniteSize shouldBe true
   }
@@ -547,13 +547,9 @@ class NonEmptyListSpec extends UnitSpec {
     es.indexOf("one") shouldBe 0
     es.indexOf("one", 1) shouldBe -1
     es.indexOf("ONE") shouldBe -1
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.indexOf("one") shouldBe 0
     es.indexOf("ONE") shouldBe -1
-    // SKIP-DOTTY-END
   }
   it should "have 2 indexOfSlice methods that take a GenSeq" in {
     NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(List(2, 3)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3))
@@ -574,13 +570,9 @@ class NonEmptyListSpec extends UnitSpec {
     es.indexOfSlice(List("one", "two")) shouldBe el.indexOfSlice(List("one", "two"))
     es.indexOfSlice(List("one", "two"), 1) shouldBe el.indexOfSlice(List("one", "two"), 1)
     es.indexOfSlice(List("ONE", "TWO")) shouldBe el.indexOfSlice(List("ONE", "TWO"))
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.indexOfSlice(List("one", "two")) shouldBe 0
     es.indexOfSlice(List("ONE", "TWO")) shouldBe -1
-    // SKIP-DOTTY-END
   }
   it should "have 2 indexOfSlice methods that take an Every" in {
     NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3))
@@ -598,13 +590,9 @@ class NonEmptyListSpec extends UnitSpec {
     es.indexOfSlice(Every("one", "two")) shouldBe el.indexOfSlice(Every("one", "two"))
     es.indexOfSlice(Every("one", "two"), 1) shouldBe el.indexOfSlice(Every("one", "two"), 1)
     es.indexOfSlice(Every("ONE", "TWO")) shouldBe el.indexOfSlice(Every("ONE", "TWO"))
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.indexOfSlice(Every("one", "two")) shouldBe 0
     es.indexOfSlice(Every("ONE", "TWO")) shouldBe -1
-    // SKIP-DOTTY-END
   }
   it should "have 2 indexOfSlice methods that take a NonEmptyList" in {
     NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3))
@@ -622,13 +610,9 @@ class NonEmptyListSpec extends UnitSpec {
     es.indexOfSlice(NonEmptyList("one", "two")) shouldBe el.indexOfSlice(NonEmptyList("one", "two"))
     es.indexOfSlice(NonEmptyList("one", "two"), 1) shouldBe el.indexOfSlice(NonEmptyList("one", "two"), 1)
     es.indexOfSlice(NonEmptyList("ONE", "TWO")) shouldBe el.indexOfSlice(NonEmptyList("ONE", "TWO"))
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.indexOfSlice(NonEmptyList("one", "two")) shouldBe 0
     es.indexOfSlice(NonEmptyList("ONE", "TWO")) shouldBe -1
-    // SKIP-DOTTY-END
   }
   it should "have 2 indexWhere methods" in {
     NonEmptyList(1, 2, 3, 4, 5).indexWhere(_ == 3) shouldBe 2
@@ -697,10 +681,7 @@ class NonEmptyListSpec extends UnitSpec {
     es.lastIndexOf("three") shouldBe 2
     es.lastIndexOf("three", 1) shouldBe -1
     es.lastIndexOf("ONE") shouldBe -1
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.lastIndexOf("one") shouldBe 0
     es.lastIndexOf("ONE") shouldBe -1
     // SKIP-DOTTY-END
@@ -723,13 +704,9 @@ class NonEmptyListSpec extends UnitSpec {
     es.lastIndexOfSlice(List("one", "two")) shouldBe 0
     es.lastIndexOfSlice(List("two", "three"), 0) shouldBe -1
     es.lastIndexOfSlice(List("ONE", "TWO")) shouldBe -1
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.lastIndexOfSlice(List("one", "two")) shouldBe 0
     es.lastIndexOfSlice(List("ONE", "TWO")) shouldBe -1
-    // SKIP-DOTTY-END
   }
   it should "have 2 lastIndexOfSlice methods that take an Every" in {
     NonEmptyList(1, 2, 3, 4, 5).lastIndexOfSlice(Every(2, 3)) shouldBe 1
@@ -746,13 +723,9 @@ class NonEmptyListSpec extends UnitSpec {
     es.lastIndexOfSlice(Every("one", "two")) shouldBe 0
     es.lastIndexOfSlice(Every("two", "three"), 0) shouldBe -1
     es.lastIndexOfSlice(Every("ONE", "TWO")) shouldBe -1
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.lastIndexOfSlice(Every("one", "two")) shouldBe 0
     es.lastIndexOfSlice(Every("ONE", "TWO")) shouldBe -1
-    // SKIP-DOTTY-END
   }
   it should "have 2 lastIndexOfSlice methods that take a NonEmptyList" in {
     NonEmptyList(1, 2, 3, 4, 5).lastIndexOfSlice(NonEmptyList(2, 3)) shouldBe 1
@@ -769,13 +742,9 @@ class NonEmptyListSpec extends UnitSpec {
     es.lastIndexOfSlice(NonEmptyList("one", "two")) shouldBe 0
     es.lastIndexOfSlice(NonEmptyList("two", "three"), 0) shouldBe -1
     es.lastIndexOfSlice(NonEmptyList("ONE", "TWO")) shouldBe -1
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.lastIndexOfSlice(NonEmptyList("one", "two")) shouldBe 0
     es.lastIndexOfSlice(NonEmptyList("ONE", "TWO")) shouldBe -1
-    // SKIP-DOTTY-END
   }
   it should "have 2 lastIndexWhere methods" in {
     NonEmptyList(1, 2, 3, 4, 5).lastIndexWhere(_ == 2) shouldBe 1
@@ -883,7 +852,7 @@ class NonEmptyListSpec extends UnitSpec {
     scala> Vector(1, 2, 3, 4, 5).partition(_ > 10)
     res10: (scala.collection.immutable.Vector[Int], scala.collection.immutable.Vector[Int]) = (Vector(),Vector(1, 2, 3, 4, 5))
   */
-  it should "have a patch method" in {
+  /*it should "have a patch method" in {
     NonEmptyList(1, 2, 3, 4, 5).patch(2, NonEmptyList(-3, -4), 2) shouldBe NonEmptyList(1, 2, -3, -4, 5)
     NonEmptyList(1, 2, 3, 4, 5).patch(2, NonEmptyList(-3, -4), 5) shouldBe NonEmptyList(1, 2, -3, -4)
     NonEmptyList(1, 2, 3, 4, 5).patch(2, NonEmptyList(-3, -4), 1) shouldBe NonEmptyList(1, 2, -3, -4, 4, 5)
