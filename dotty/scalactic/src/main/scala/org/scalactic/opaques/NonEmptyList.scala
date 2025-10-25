@@ -287,7 +287,7 @@ object NonEmptyList {
       *
       * @return A new <code>NonEmptyList</code> that contains the first occurrence of every element of this <code>NonEmptyList</code>. 
       */
-    final def distinct: NonEmptyList[T] = (nonEmptyList: List[T]).distinct
+    def distinct: NonEmptyList[T] = (nonEmptyList: List[T]).distinct
 
     /**
       * Builds a new <code>NonEmptyList</code> by applying a function to all elements of this <code>NonEmptyList</code> and using the elements of the resulting <code>NonEmptyList</code>s.
@@ -297,7 +297,7 @@ object NonEmptyList {
       * @return a new <code>NonEmptyList</code> containing elements obtained by applying the given function <code>f</code> to each element of this <code>NonEmptyList</code> and concatenating
       *    the elements of resulting <code>NonEmptyList</code>s. 
       */
-    final def flatMap[U](f: T => NonEmptyList[U]): NonEmptyList[U] = 
+    def flatMap[U](f: T => NonEmptyList[U]): NonEmptyList[U] = 
       (nonEmptyList: List[T]).flatMap(f)
 
     /**
@@ -312,7 +312,38 @@ object NonEmptyList {
       * @tparm B the type of the elements of each nested <code>NonEmptyList</code>
       * @return a new <code>NonEmptyList</code> resulting from concatenating all nested <code>NonEmptyList</code>s.
       */
-    final def flatten[B](implicit ev: T <:< NonEmptyList[B]): NonEmptyList[B] = flatMap(ev)
+    def flatten[B](implicit ev: T <:< NonEmptyList[B]): NonEmptyList[B] = flatMap(ev)
+
+    /**
+      * Partitions this <code>NonEmptyList</code> into a map of <code>NonEmptyList</code>s according to some discriminator function.
+      *
+      * @tparam K the type of keys returned by the discriminator function.
+      * @param f the discriminator function.
+      * @return A map from keys to <code>NonEmptyList</code>s such that the following invariant holds:
+      *
+      * <pre>
+      * (nonEmptyList.toList partition f)(k) = xs filter (x =&gt; f(x) == k)
+      * </pre>
+      *
+      * <p>
+      * That is, every key <code>k</code> is bound to a <code>NonEmptyList</code> of those elements <code>x</code> for which <code>f(x)</code> equals <code>k</code>.
+      * </p>
+      */
+    def groupBy[K](f: T => K): Map[K, NonEmptyList[T]] = {
+      val mapKToList = (nonEmptyList: List[T]).groupBy(f)
+      mapKToList.mapValues { list => NonEmptyList(list.head, list.tail*) }.toMap
+    }
+
+    /**
+      * Partitions elements into fixed size <code>NonEmptyList</code>s.
+      *
+      * @param size the number of elements per group
+      * @return An iterator producing <code>NonEmptyList</code>s of size <code>size</code>, except the last will be truncated if the elements don't divide evenly. 
+      */
+    def grouped(size: Int): Iterator[NonEmptyList[T]] = {
+      val itOfList = (nonEmptyList: List[T]).grouped(size)
+      itOfList.map { list => NonEmptyList(list.head, list.tail*) }
+    }
 
     /**
       * The length of this <code>NonEmptyList</code>.

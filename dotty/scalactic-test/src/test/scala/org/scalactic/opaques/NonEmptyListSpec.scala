@@ -466,7 +466,7 @@ class NonEmptyListSpec extends UnitSpec {
     List(NonEmptyList(1, 2, 3), NonEmptyList(1, 2, 3)).par.flatten shouldBe List(1, 2, 3, 1, 2, 3).par
     // SKIP-SCALATESTJS,NATIVE-END
   }
-  /*it should "have a fold method" in {
+  it should "have a fold method" in {
     NonEmptyList(1).fold(0)(_ + _) shouldBe 1
     NonEmptyList(1).fold(1)(_ * _) shouldBe 1
     NonEmptyList(2).fold(0)(_ + _) shouldBe 2
@@ -520,7 +520,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(1).grouped(2).toList shouldBe List(NonEmptyList(1))
     NonEmptyList(1).grouped(1).toList shouldBe List(NonEmptyList(1))
   }
-  it should "have a hasDefiniteSize method" in {
+  /*it should "have a hasDefiniteSize method" in {
     NonEmptyList(1).hasDefiniteSize shouldBe true
     NonEmptyList(1, 2).hasDefiniteSize shouldBe true
   }
