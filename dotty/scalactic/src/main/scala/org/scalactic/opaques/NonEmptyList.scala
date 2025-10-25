@@ -484,7 +484,7 @@ object NonEmptyList {
       * @return a <code>NonEmptyList</code> consisting of the elements of this <code>NonEmptyList</code> sorted according to the <code>Ordering</code> where
       *    <code>x &lt; y if ord.lt(f(x), f(y))</code>. 
       */
-    final def sortBy[U](f: T => U)(implicit ord: Ordering[U]): NonEmptyList[T] = (nonEmptyList: List[T]).sortBy(f)
+    def sortBy[U](f: T => U)(implicit ord: Ordering[U]): NonEmptyList[T] = (nonEmptyList: List[T]).sortBy(f)
 
     /**
       * Sorts this <code>NonEmptyList</code> according to a comparison function.
@@ -497,7 +497,7 @@ object NonEmptyList {
       * @param the comparison function that tests whether its first argument precedes its second argument in the desired ordering.
       * @return a <code>NonEmptyList</code> consisting of the elements of this <code>NonEmptyList</code> sorted according to the comparison function <code>lt</code>.
       */
-    final def sortWith(lt: (T, T) => Boolean): NonEmptyList[T] = (nonEmptyList: List[T]).sortWith(lt)
+    def sortWith(lt: (T, T) => Boolean): NonEmptyList[T] = (nonEmptyList: List[T]).sortWith(lt)
 
     /**
       * Sorts this <code>NonEmptyList</code> according to an <code>Ordering</code>.
@@ -511,7 +511,14 @@ object NonEmptyList {
       * @param the comparison function that tests whether its first argument precedes its second argument in the desired ordering.
       * @return a <code>NonEmptyList</code> consisting of the elements of this <code>NonEmptyList</code> sorted according to the comparison function <code>lt</code>.
       */
-    final def sorted[U >: T](implicit ord: Ordering[U]): NonEmptyList[U] = (nonEmptyList: List[T]).sorted(ord)
+    def sorted[U >: T](implicit ord: Ordering[U]): NonEmptyList[U] = (nonEmptyList: List[T]).sorted(ord)
+    
+    /**
+      * Returns <code>"NonEmptyList"</code>, the prefix of this object's <code>toString</code> representation.
+      *
+      * @return the string <code>"NonEmptyList"</code>
+      */
+    def stringPrefix: String = "NonEmptyList"
   }
 
 }

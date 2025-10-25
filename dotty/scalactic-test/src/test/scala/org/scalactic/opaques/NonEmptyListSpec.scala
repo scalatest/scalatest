@@ -1106,7 +1106,7 @@ class NonEmptyListSpec extends UnitSpec {
     scala> Vector(1, 2, 3, 4, 5).splitAt(0)
     res106: (scala.collection.immutable.Vector[Int], scala.collection.immutable.Vector[Int]) = (Vector(),Vector(1, 2, 3, 4, 5))
   */
-  /*it should "have 2 startsWith methods that take a GenSeq" in {
+  it should "have 2 startsWith methods that take a GenSeq" in {
     NonEmptyList(1, 2, 3).startsWith(List(1)) shouldBe true
     NonEmptyList(1, 2, 3).startsWith(List(1, 2)) shouldBe true
     NonEmptyList(1, 2, 3).startsWith(List(1, 2, 3)) shouldBe true
@@ -1214,7 +1214,7 @@ class NonEmptyListSpec extends UnitSpec {
     scala> Vector(1).takeWhile(_ > 10)
     res18: scala.collection.immutable.Vector[Int] = Vector()
 */
-  it should "have a to method" in {
+  /*it should "have a to method" in {
     import org.scalactic.ColCompatHelper.Factory._
     NonEmptyList(1).to(List) shouldBe List(1)
     NonEmptyList(1, 2, 3).to(List) shouldBe List(1, 2, 3)
