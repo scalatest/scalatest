@@ -394,6 +394,21 @@ object NonEmptyList {
       */
     final def reverse: NonEmptyList[T] =
       (nonEmptyList: List[T]).reverse  
+
+    /**
+      * Builds a new <code>NonEmptyList</code> by applying a function to all elements of this <code>NonEmptyList</code> and collecting the results in reverse order.
+      *
+      * <p>
+      * Note: <code>nonEmptyList.reverseMap(f)</code> is the same as <code>nonEmptyList.reverse.map(f)</code>, but might be more efficient. 
+      * </p>
+      *
+      * @tparam U the element type of the returned <code>NonEmptyList</code>.
+      * @param f the function to apply to each element. 
+      * @return a new <code>NonEmptyList</code> resulting from applying the given function <code>f</code> to each element of this <code>NonEmptyList</code>
+      *     and collecting the results in reverse order. 
+      */
+    final def reverseMap[U](f: T => U): NonEmptyList[U] =
+      (nonEmptyList: List[T]).reverseMap(f)
   }
 
 }

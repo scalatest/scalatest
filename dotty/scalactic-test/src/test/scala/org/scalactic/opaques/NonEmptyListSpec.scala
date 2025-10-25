@@ -924,7 +924,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(33).reverse shouldBe NonEmptyList(33)
     NonEmptyList(33, 34, 35).reverse shouldBe NonEmptyList(35, 34, 33)
   }
-  /*it should "have a reverseIterator method" in {
+  it should "have a reverseIterator method" in {
     NonEmptyList(3).reverseIterator.toStream shouldBe Stream(3)
     NonEmptyList(1, 2, 3).reverseIterator.toList shouldBe Stream(3, 2, 1)
   }
@@ -932,7 +932,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(3).reverseMap(_ + 1) shouldBe NonEmptyList(4)
     NonEmptyList(1, 2, 3).reverseMap(_ + 1) shouldBe NonEmptyList(4, 3, 2)
   }
-  it should "have a runWith method, inherited from PartialFunction" in {
+  /*it should "have a runWith method, inherited from PartialFunction" in {
  // TODO: What is this? Seems to be testing Vector or List instead of Every or NonEmptyList.
     var x = 0
     val f = List(1, 2, 3).runWith(x += _)
