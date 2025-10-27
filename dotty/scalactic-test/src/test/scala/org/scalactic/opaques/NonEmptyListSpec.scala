@@ -1285,7 +1285,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(NonEmptyList(1, 2), NonEmptyList(3, 4), NonEmptyList(5, 6), NonEmptyList(7, 8)).transpose.transpose shouldBe NonEmptyList(NonEmptyList(1, 2), NonEmptyList(3, 4), NonEmptyList(5, 6), NonEmptyList(7, 8))
     NonEmptyList(NonEmptyList(1, 2, 3), NonEmptyList(4, 5, 6), NonEmptyList(7, 8, 9)).transpose.transpose shouldBe NonEmptyList(NonEmptyList(1, 2, 3), NonEmptyList(4, 5, 6), NonEmptyList(7, 8, 9))
   }
-  /*it should "have a union method that takes a GenSeq" in {
+  it should "have a union method that takes a GenSeq" in {
     NonEmptyList(1) union List(1) shouldBe NonEmptyList(1, 1)
     NonEmptyList(1) union List(1, 2) shouldBe NonEmptyList(1, 1, 2)
     NonEmptyList(1, 2) union List(1, 2) shouldBe NonEmptyList(1, 2, 1, 2)
@@ -1309,7 +1309,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(1, 2) union NonEmptyList(3, 4, 5) shouldBe NonEmptyList(1, 2, 3, 4, 5)
     NonEmptyList(1, 2, 3) union NonEmptyList(3, 4, 5) shouldBe NonEmptyList(1, 2, 3, 3, 4, 5)
   }
-  it should "have an unzip method" in {
+  /*it should "have an unzip method" in {
     NonEmptyList((1, 2)).unzip shouldBe (NonEmptyList(1),NonEmptyList(2))
     NonEmptyList((1, 2), (3, 4)).unzip shouldBe (NonEmptyList(1, 3), NonEmptyList(2, 4))
     NonEmptyList((1, 2), (3, 4), (5, 6)).unzip shouldBe (NonEmptyList(1, 3, 5), NonEmptyList(2, 4, 6))

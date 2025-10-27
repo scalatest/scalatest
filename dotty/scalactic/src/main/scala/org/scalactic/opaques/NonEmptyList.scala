@@ -522,6 +522,24 @@ object NonEmptyList {
 
     final def transpose[U](implicit ev: T <:< NonEmptyList[U]): NonEmptyList[NonEmptyList[U]] = 
       (nonEmptyList: List[T]).transpose
+
+    /**
+      * Produces a new <code>NonEmptyList</code> that contains all elements of this <code>NonEmptyList</code> and also all elements of a given <code>GenSeq</code>.
+      *
+      * <p>
+      * <code>nonEmptyListX</code> <code>union</code> <code>ys</code> is equivalent to <code>nonEmptyListX</code> <code>++</code> <code>ys</code>.
+      * </p>
+      *
+      * <p>
+      * Another way to express this is that <code>nonEmptyListX</code> <code>union</code> <code>ys</code> computes the order-presevring multi-set union
+      * of <code>nonEmptyListX</code> and <code>ys</code>. This <code>union</code> method is hence a counter-part of <code>diff</code> and <code>intersect</code> that
+      * also work on multi-sets.
+      * </p>
+      *
+      * @param that the <code>GenSeq</code> to add.
+      * @return a new <code>NonEmptyList</code> that contains all elements of this <code>NonEmptyList</code> followed by all elements of <code>that</code> <code>GenSeq</code>.
+      */
+    final def union[U >: T](that: GenSeq[U]): NonEmptyList[U] = (nonEmptyList: List[T]).union(that)  
   }
 
 }
