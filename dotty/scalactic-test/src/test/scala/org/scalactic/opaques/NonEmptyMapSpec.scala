@@ -52,7 +52,7 @@ class NonEmptyMapSpec extends UnitSpec {
     NonEmptyMap.from(Map(1 -> "one", 2 -> "two", 3 -> "three").par) shouldBe Some(NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three"))
     // SKIP-SCALATESTJS,NATIVE-END
   }
-  /*it can "be deconstructed with NonEmptyMap" in {
+  it can "be deconstructed with NonEmptyMap" in {
     NonEmptyMap(1 -> "one") match {
       case NonEmptyMap((x, y)) =>
         x shouldEqual 1
@@ -141,7 +141,7 @@ class NonEmptyMapSpec extends UnitSpec {
       case _ => fail()
     }
   }
-  it should "have an apply method" in {
+  /*it should "have an apply method" in {
     NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three")(1) shouldEqual "one"
     NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three")(2) shouldEqual "two"
     NonEmptyMap("hi" -> "hello")("hi") shouldEqual "hello"

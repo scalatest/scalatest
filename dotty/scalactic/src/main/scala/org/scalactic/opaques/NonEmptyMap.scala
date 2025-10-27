@@ -113,6 +113,16 @@ object NonEmptyMap {
   def apply[K, V](firstElement: (K, V), otherElements: (K, V)*): NonEmptyMap[K, V] = otherElements.toMap + firstElement
 
   /**
+    * Variable argument extractor for <code>NonEmptyMap</code>s.
+    *
+    * @tparam K the type of the key contained in the <code>NonEmptyMap</code>
+    * @tparam V the type of the value contained in the <code>NonEmptyMap</code>
+    * @param nonEmptyMap: the <code>NonEmptyMap</code> containing the elements to extract
+    * @return an <code>Seq</code> containing this <code>NonEmptyMap</code>s elements, wrapped in a <code>Some</code> 
+    */
+  def unapplySeq[K, V](nonEmptyMap: NonEmptyMap[K, V]): Option[Seq[(K, V)]] = Some(nonEmptyMap.toSeq)
+
+  /**
     * Optionally construct a <code>NonEmptyMap</code> containing the elements, if any, of a given <code>GenSeq</code>.
     *
     * @tparam K the type of the key contained in the new <code>NonEmptyMap</code>
