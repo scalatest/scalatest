@@ -191,10 +191,6 @@ object NonEmptyList {
     */
   implicit def nonEmptyListToList[E](nonEmptyList: NonEmptyList[E]): List[E] = // given Conversion just won't work!
     nonEmptyList
-    /*new scala.collection.IndexedSeq[E] {
-      def apply(i: Int): E = nonEmptyList(i)
-      def length: Int = nonEmptyList.length
-    }*/
 
   extension [T](element: T) {
     /**
