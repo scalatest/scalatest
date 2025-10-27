@@ -567,6 +567,17 @@ object NonEmptyList {
       val unzipped = (nonEmptyList: List[T]).unzip3
       (unzipped._1, unzipped._2, unzipped._3)
     }
+
+    /**
+      * A copy of this <code>NonEmptyList</code> with one single replaced element.
+      *
+      * @param idx the position of the replacement
+      * @param elem the replacing element
+      * @throws IndexOutOfBoundsException if the passed index is greater than or equal to the length of this <code>NonEmptyList</code>
+      * @return a copy of this <code>NonEmptyList</code> with the element at position <code>idx</code> replaced by <code>elem</code>. 
+      */
+    final def updated[U >: T](idx: Int, elem: U): NonEmptyList[U] =
+      (nonEmptyList: List[T]).updated(idx, elem)
   }
 
 }

@@ -1319,7 +1319,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList((1, 2, 3), (4, 5, 6)).unzip3 shouldBe (NonEmptyList(1, 4), NonEmptyList(2, 5), NonEmptyList(3, 6))
     NonEmptyList((1, 2, 3), (4, 5, 6), (7, 8, 9)).unzip3 shouldBe (NonEmptyList(1, 4, 7), NonEmptyList(2, 5, 8), NonEmptyList(3, 6, 9))
   }
-  /*it should "have an updated method" in {
+  it should "have an updated method" in {
     NonEmptyList(1).updated(0, 2) shouldBe NonEmptyList(2)
     an [IndexOutOfBoundsException] should be thrownBy { NonEmptyList(1).updated(1, 2) }
     NonEmptyList(1, 1, 1).updated(1, 2) shouldBe NonEmptyList(1, 2, 1)
@@ -1334,7 +1334,7 @@ class NonEmptyListSpec extends UnitSpec {
     scala> List(1) zip Nil
     res0: List[(Int, Nothing)] = List()
 */
-  it should "have a zipAll method that takes an Iterable" in {
+  /*it should "have a zipAll method that takes an Iterable" in {
 
     // Empty on right
     NonEmptyList(1).zipAll(Nil, -1, -2) shouldBe NonEmptyList((1, -2))
