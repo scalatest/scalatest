@@ -141,7 +141,7 @@ class NonEmptyMapSpec extends UnitSpec {
       case _ => fail()
     }
   }
-  /*it should "have an apply method" in {
+  it should "have an apply method" in {
     NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three")(1) shouldEqual "one"
     NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three")(2) shouldEqual "two"
     NonEmptyMap("hi" -> "hello")("hi") shouldEqual "hello"
@@ -177,7 +177,7 @@ class NonEmptyMapSpec extends UnitSpec {
     (0, "zero") +: NonEmptyMap(1 -> "one", 2 -> "two") shouldBe NonEmptyMap(0 -> "zero", 1 -> "one", 2 -> "two")
     ("zero", 0) +: NonEmptyMap("one" -> 1, "two" -> 2) shouldBe NonEmptyMap("zero" -> 0, "one" -> 1, "two" -> 2)
   }
-  it should "implement PartialFunction[K, V]" in {
+  /*it should "implement PartialFunction[K, V]" in {
     val pf1: PartialFunction[Int, String] = NonEmptyMap(1 -> "one")
     pf1.isDefinedAt(1) shouldBe true
     pf1.isDefinedAt(0) shouldBe false

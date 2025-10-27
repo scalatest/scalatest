@@ -154,4 +154,18 @@ object NonEmptyMap {
   implicit def nonEmptyMapToMap[K, V](nonEmptyMap: NonEmptyMap[K, V]): Map[K, V] = // given Conversion just won't work!
     nonEmptyMap
 
+  extension [K, V](entry: (K, V)) {
+    /**
+      * Returns a new <code>NonEmptyMap</code> with the given entry added.
+      *
+      * <p>
+      * Note that :-ending operators are right associative. A mnemonic for <code>+:</code> <em>vs.</em> <code>:+</code> is: the COLon goes on the COLlection side.
+      * </p>
+      *
+      * @param entry the element to add to this <code>NonEmptyMap</code>
+      * @return a new <code>NonEmptyMap</code> consisting of <code>element</code> followed by all elements of this <code>NonEmptyMap</code>.
+      */
+    infix def +:[V1 >: V](nonEmptyMap: NonEmptyMap[K, V1]): NonEmptyMap[K, V1] = nonEmptyMap + entry
+  }  
+
 }
