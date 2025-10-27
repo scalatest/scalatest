@@ -519,6 +519,9 @@ object NonEmptyList {
       * @return the string <code>"NonEmptyList"</code>
       */
     def stringPrefix: String = "NonEmptyList"
+
+    final def transpose[U](implicit ev: T <:< NonEmptyList[U]): NonEmptyList[NonEmptyList[U]] = 
+      (nonEmptyList: List[T]).transpose
   }
 
 }
