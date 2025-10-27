@@ -863,8 +863,8 @@ class NonEmptyMapSpec extends UnitSpec {
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").zipAll(NonEmptyMap(10 -> "ten", 20 -> "twenty"), -1 -> "-1", -2 -> "-two") shouldBe NonEmptyMap((2 -> "2", (20, "twenty")), (3 -> "3", (10, "ten")), (1 -> "1", (-2, "-two")))
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3", 4 -> "4").zipAll(NonEmptyMap(10 -> "ten", 20 -> "twenty", 30 -> "thirty"), -1 -> "-1", -2 -> "-two") shouldBe NonEmptyMap((2 -> "2", (20, "twenty")), (3 -> "3", (30, "thirty")), (4 -> "4", (10, "ten")), (1 -> "1", (-2, "-two")))
   }
-  /*it should "have a zipWithIndex method" in {
+  it should "have a zipWithIndex method" in {
     NonEmptyMap(99 -> "99").zipWithIndex shouldBe NonEmptyMap((99 -> "99", 0))
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3", 4 -> "4", 5 -> "5").zipWithIndex shouldBe NonEmptyMap((5 -> "5", 0), (1 -> "1", 1), (2 -> "2", 2), (3 -> "3", 3), (4 -> "4", 4))
-  }*/
+  }
 }

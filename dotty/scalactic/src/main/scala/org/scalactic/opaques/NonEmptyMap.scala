@@ -273,7 +273,7 @@ object NonEmptyMap {
       * @param value the replacing value
       * @return a copy of this <code>NonEmptyMap</code> with the value at <code>key</code> replaced by the given <code>value</code>.
       */
-    final def updated[V1 >: V](key: K, value: V1): NonEmptyMap[K, V1] =
+    def updated[V1 >: V](key: K, value: V1): NonEmptyMap[K, V1] =
       (nonEmptyMap: Map[K, V1]).updated(key, value)
 
     /**
@@ -291,8 +291,15 @@ object NonEmptyMap {
       *     is shorter than <code>that</code>, <code>thisElem</code> values are used to pad the result. If <code>that</code> is shorter than this
       *     <code>NonEmptyMap</code>, <code>thatElem</code> values are used to pad the result. 
       */
-    final def zipAll[O, V1 >: V](other: collection.Iterable[O], thisElem: (K, V1), otherElem: O): NonEmptyMap[(K, V1), O] =
+    def zipAll[O, V1 >: V](other: collection.Iterable[O], thisElem: (K, V1), otherElem: O): NonEmptyMap[(K, V1), O] =
       (nonEmptyMap: Map[K, V1]).zipAll(other, thisElem, otherElem).toMap  
+
+    /**
+      * Zips this <code>NonEmptyMap</code>  with its indices.
+      *
+      * @return A new <code>NonEmptyMap</code> containing pairs consisting of all elements of this <code>NonEmptyMap</code> paired with their index. Indices start at 0.
+      */
+    def zipWithIndex[V1 >: V]: NonEmptyMap[(K, V1), Int] = (nonEmptyMap: Map[K, V1]).zipWithIndex.toMap  
   }
 
 }
