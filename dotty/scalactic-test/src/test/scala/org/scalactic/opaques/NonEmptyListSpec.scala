@@ -1334,7 +1334,7 @@ class NonEmptyListSpec extends UnitSpec {
     scala> List(1) zip Nil
     res0: List[(Int, Nothing)] = List()
 */
-  /*it should "have a zipAll method that takes an Iterable" in {
+  it should "have a zipAll method that takes an Iterable" in {
 
     // Empty on right
     NonEmptyList(1).zipAll(Nil, -1, -2) shouldBe NonEmptyList((1, -2))
@@ -1380,7 +1380,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(1, 2, 3).zipAll(NonEmptyList(10, 20), -1, -2) shouldBe NonEmptyList((1,10), (2,20), (3,-2))
     NonEmptyList(1, 2, 3, 4).zipAll(NonEmptyList(10, 20, 30), -1, -2) shouldBe NonEmptyList((1,10), (2,20), (3,30), (4,-2))
   }
-  it should "have a zipWithIndex method" in {
+  /*it should "have a zipWithIndex method" in {
     NonEmptyList(99).zipWithIndex shouldBe NonEmptyList((99,0))
     NonEmptyList(1, 2, 3, 4, 5).zipWithIndex shouldBe NonEmptyList((1,0), (2,1), (3,2), (4,3), (5,4))
   }*/
