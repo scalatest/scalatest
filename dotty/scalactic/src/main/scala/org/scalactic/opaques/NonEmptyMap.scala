@@ -275,6 +275,24 @@ object NonEmptyMap {
       */
     final def updated[V1 >: V](key: K, value: V1): NonEmptyMap[K, V1] =
       (nonEmptyMap: Map[K, V1]).updated(key, value)
+
+    /**
+      * Returns a <code>NonEmptyMap</code> formed from this <code>NonEmptyMap</code> and an iterable collection by combining corresponding
+      * entries in pairs. If one of the two collections is shorter than the other, placeholder entries will be used to extend the
+      * shorter collection to the length of the longer.
+      *
+      * @tparam O the type of the second half of the returned pairs
+      * @tparam V1 the subtype of the value type of this <code>NonEmptyMap</code>
+      * @param other the <code>Iterable</code> providing the second half of each result pair
+      * @param thisElem the element to be used to fill up the result if this <code>NonEmptyMap</code> is shorter than <code>that</code> <code>Iterable</code>.
+      * @param otherElem the element to be used to fill up the result if <code>that</code> <code>Iterable</code> is shorter than this <code>NonEmptyMap</code>.
+      * @return a new <code>NonEmptyMap</code> containing pairs consisting of corresponding entries of this <code>NonEmptyMap</code> and <code>that</code>. The
+      *     length of the returned collection is the maximum of the lengths of this <code>NonEmptyMap</code> and <code>that</code>. If this <code>NonEmptyMap</code>
+      *     is shorter than <code>that</code>, <code>thisElem</code> values are used to pad the result. If <code>that</code> is shorter than this
+      *     <code>NonEmptyMap</code>, <code>thatElem</code> values are used to pad the result. 
+      */
+    final def zipAll[O, V1 >: V](other: collection.Iterable[O], thisElem: (K, V1), otherElem: O): NonEmptyMap[(K, V1), O] =
+      (nonEmptyMap: Map[K, V1]).zipAll(other, thisElem, otherElem).toMap  
   }
 
 }
