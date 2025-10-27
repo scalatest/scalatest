@@ -334,7 +334,7 @@ class NonEmptyMapSpec extends UnitSpec {
     res17: scala.collection.immutable.Vector[Int] = Vector()
   */
   // TODO: Actually it would make sense to flatten Everys too
-  /*it should "have a fold method" in {
+  it should "have a fold method" in {
     NonEmptyMap(1 -> "1").fold(0 -> "0"){ case (t1, t2) => (t1._1 + t2._1, t1._2 + t2._2)} shouldBe (1, "01")
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").fold(0 -> "0"){ case (t1, t2) => (t1._1 + t2._1, t1._2 + t2._2)} shouldBe (6, "0231")
   }
@@ -491,7 +491,7 @@ class NonEmptyMapSpec extends UnitSpec {
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").mkString("<", "#", ">") shouldBe "<2 -> 2#3 -> 3#1 -> 1>"
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").mkString(" ( ", ", ", " ) ") shouldBe " ( 2 -> 2, 3 -> 3, 1 -> 1 ) "
   }
-  it should "have an nonEmpty method" in {
+  /*it should "have an nonEmpty method" in {
     NonEmptyMap("hi" -> "ho").nonEmpty shouldBe true
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").nonEmpty shouldBe true
   }

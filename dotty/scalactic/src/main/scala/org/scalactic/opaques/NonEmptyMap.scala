@@ -179,7 +179,7 @@ object NonEmptyMap {
       * @return a new <code>NonEmptyMap</code> containing entries obtained by applying the given function <code>f</code> to each entry of this <code>NonEmptyMap</code> and concatenating
       *    the entries of resulting <code>NonEmptyMap</code>s.
       */
-    final def flatMap[K1, V1](f: ((K, V)) => NonEmptyMap[K1, V1]): NonEmptyMap[K1, V1] = {
+    def flatMap[K1, V1](f: ((K, V)) => NonEmptyMap[K1, V1]): NonEmptyMap[K1, V1] = {
       val buf = new ArrayBuffer[(K1, V1)]
       for (ele <- nonEmptyMap)
         buf ++= f(ele).toMap
@@ -194,8 +194,34 @@ object NonEmptyMap {
       * @param f the function to apply to each element. 
       * @return a new <code>NonEmptyMap</code> resulting from applying the given function <code>f</code> to each element of this <code>NonEmptyMap</code> and collecting the results. 
       */
-    final def map[K1, V1](f: ((K, V)) => (K1, V1)): NonEmptyMap[K1, V1] =
+    def map[K1, V1](f: ((K, V)) => (K1, V1)): NonEmptyMap[K1, V1] =
       (nonEmptyMap: Map[K, V]).map(f)
+
+    /**
+      * Partitions this <code>NonEmptyMap</code> into a map of <code>NonEmptyMap</code>s according to some discriminator function.
+      *
+      * @param f the discriminator function.
+      * @return A map from keys to <code>NonEmptyMap</code>s such that the following invariant holds:
+      *
+      * <pre>
+      * (nonEmptyMap.toMap partition f)(k) = xs filter (x =&gt; f(x) == k)
+      * </pre>
+      *
+      * <p>
+      * That is, every key <code>k</code> is bound to a <code>NonEmptyMap</code> of those elements <code>x</code> for which <code>f(x)</code> equals <code>k</code>.
+      * </p>
+      */
+    def groupBy(f: ((K, V)) => K): Map[K, NonEmptyMap[K, V]] = 
+      (nonEmptyMap: Map[K, V]).groupBy(f)
+
+    /**
+      * Partitions entries into fixed size <code>NonEmptyMap</code>s.
+      *
+      * @param size the number of entries per group
+      * @return An iterator producing <code>NonEmptyMap</code>s of size <code>size</code>, except the last will be truncated if the entries don't divide evenly.
+      */
+    def grouped(size: Int): Iterator[NonEmptyMap[K, V]] = 
+      (nonEmptyMap: Map[K, V]).grouped(size)
   }
 
 }
