@@ -265,6 +265,16 @@ object NonEmptyMap {
       * @return the string <code>"NonEmptyMap"</code>
       */
     def stringPrefix: String = "NonEmptyMap"
+
+    /**
+      * A copy of this <code>NonEmptyMap</code> with one single replaced entry.
+      *
+      * @param key the key of the replacement
+      * @param value the replacing value
+      * @return a copy of this <code>NonEmptyMap</code> with the value at <code>key</code> replaced by the given <code>value</code>.
+      */
+    final def updated[V1 >: V](key: K, value: V1): NonEmptyMap[K, V1] =
+      (nonEmptyMap: Map[K, V1]).updated(key, value)
   }
 
 }

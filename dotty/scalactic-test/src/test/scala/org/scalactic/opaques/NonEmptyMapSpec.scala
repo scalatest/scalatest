@@ -786,10 +786,6 @@ class NonEmptyMapSpec extends UnitSpec {
     NonEmptyMap("a" -> "A", "b" -> "B").toStream should === (Stream("b" -> "B", "a" -> "A"))
     NonEmptyMap(1 -> "1").toStream should === (Stream(1 -> "1"))
   }
-  /*it should "have a toString method" in {
-    NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").toString should === ("NonEmptyMap(2 -> 2, 3 -> 3, 1 -> 1)")
-    NonEmptyMap(1 -> "1").toString should === ("NonEmptyMap(1 -> 1)")
-  }
   it should "have a toVector method" in {
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").toVector should === (Vector(2 -> "2", 3 -> "3", 1 -> "1"))
     NonEmptyMap("a" -> "A", "b" -> "B").toVector should === (Vector("b" -> "B", "a" -> "A"))
@@ -821,7 +817,7 @@ class NonEmptyMapSpec extends UnitSpec {
       scala> Map(1) zip Nil
       res0: Map[(Int, Nothing)] = Map()
   */
-  it should "have a zipAll method that takes an Iterable" in {
+  /*it should "have a zipAll method that takes an Iterable" in {
 
     // Empty on right
     NonEmptyMap(1 -> "1").zipAll(Nil, -1 -> "-1", -2) shouldBe NonEmptyMap((1, "1") -> -2)
