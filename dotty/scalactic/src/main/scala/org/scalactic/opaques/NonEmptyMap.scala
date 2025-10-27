@@ -222,6 +222,49 @@ object NonEmptyMap {
       */
     def grouped(size: Int): Iterator[NonEmptyMap[K, V]] = 
       (nonEmptyMap: Map[K, V]).grouped(size)
+
+    /**
+      * Checks if the given <code>Iterable</code> contains the same entries in the same order as this <code>NonEmptyMap</code>.
+      *
+      * @param that the <code>Iterable</code> with which to compare
+      * @return <code>true</code>, if both this <code>NonEmptyMap</code> and the given <code>Iterable</code> contain the same entries
+      *     in the same order, <code>false</code> otherwise. 
+      */
+    def sameElements[U >: (K, V)](that: Iterable[U]): Boolean = {
+      val thisIterator = nonEmptyMap.iterator
+      val thatIterator = that.iterator
+      
+      while (thisIterator.hasNext && thatIterator.hasNext) {
+        if (thisIterator.next() != thatIterator.next()) {
+          return false
+        }
+      }
+      
+      // Both must be exhausted for true equality
+      !thisIterator.hasNext && !thatIterator.hasNext
+    }
+
+    /**
+      * Computes a prefix scan of the entries of this <code>NonEmptyMap</code>.
+      *
+      * <p>
+      * Note: The neutral element z may be applied more than once. 
+      * </p>
+      *
+      * @param z a neutral element for the scan operation; may be added to the result an arbitrary number of
+      *     times, and must not change the result (<em>e.g.</em>, <code>Nil</code> for list concatenation,
+      *     0 for addition, or 1 for multiplication.)
+      * @param op a binary operator that must be associative
+      * @return a new <code>NonEmptyMap</code> containing the prefix scan of the elements in this <code>NonEmptyMap</code> 
+      */
+    def scan[V1 >: V](z: (K, V1))(op: ((K, V1), (K, V1)) => (K, V1)): NonEmptyMap[K, V1] = (nonEmptyMap: Map[K, V1]).scan(z)(op).toMap
+
+    /**
+      * Returns <code>"NonEmptyMap"</code>, the prefix of this object's <code>toString</code> representation.
+      *
+      * @return the string <code>"NonEmptyMap"</code>
+      */
+    def stringPrefix: String = "NonEmptyMap"
   }
 
 }

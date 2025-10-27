@@ -491,7 +491,7 @@ class NonEmptyMapSpec extends UnitSpec {
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").mkString("<", "#", ">") shouldBe "<2 -> 2#3 -> 3#1 -> 1>"
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").mkString(" ( ", ", ", " ) ") shouldBe " ( 2 -> 2, 3 -> 3, 1 -> 1 ) "
   }
-  /*it should "have an nonEmpty method" in {
+  it should "have an nonEmpty method" in {
     NonEmptyMap("hi" -> "ho").nonEmpty shouldBe true
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").nonEmpty shouldBe true
   }
@@ -576,7 +576,7 @@ class NonEmptyMapSpec extends UnitSpec {
     g("3") shouldBe true
     y shouldBe 6
   }
-  it should "have a sameElements method that takes a GenIterable" in {
+  it should "have a sameElements method that takes a Iterable" in {
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3", 4 -> "4", 5 -> "5").sameElements(List(5 -> "5", 1 -> "1", 2 -> "2", 3 -> "3", 4 -> "4")) shouldBe true
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3", 4 -> "4", 5 -> "5").sameElements(List(1 -> "1", 2 -> "2", 3 -> "3", 4 -> "4", 5 -> "5")) shouldBe false
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3", 4 -> "4", 5 -> "5").sameElements(List(1 -> "1", 2 -> "2", 3 -> "3", 4 -> "4")) shouldBe false
@@ -786,7 +786,7 @@ class NonEmptyMapSpec extends UnitSpec {
     NonEmptyMap("a" -> "A", "b" -> "B").toStream should === (Stream("b" -> "B", "a" -> "A"))
     NonEmptyMap(1 -> "1").toStream should === (Stream(1 -> "1"))
   }
-  it should "have a toString method" in {
+  /*it should "have a toString method" in {
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").toString should === ("NonEmptyMap(2 -> 2, 3 -> 3, 1 -> 1)")
     NonEmptyMap(1 -> "1").toString should === ("NonEmptyMap(1 -> 1)")
   }
