@@ -1309,7 +1309,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(1, 2) union NonEmptyList(3, 4, 5) shouldBe NonEmptyList(1, 2, 3, 4, 5)
     NonEmptyList(1, 2, 3) union NonEmptyList(3, 4, 5) shouldBe NonEmptyList(1, 2, 3, 3, 4, 5)
   }
-  /*it should "have an unzip method" in {
+  it should "have an unzip method" in {
     NonEmptyList((1, 2)).unzip shouldBe (NonEmptyList(1),NonEmptyList(2))
     NonEmptyList((1, 2), (3, 4)).unzip shouldBe (NonEmptyList(1, 3), NonEmptyList(2, 4))
     NonEmptyList((1, 2), (3, 4), (5, 6)).unzip shouldBe (NonEmptyList(1, 3, 5), NonEmptyList(2, 4, 6))
@@ -1319,7 +1319,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList((1, 2, 3), (4, 5, 6)).unzip3 shouldBe (NonEmptyList(1, 4), NonEmptyList(2, 5), NonEmptyList(3, 6))
     NonEmptyList((1, 2, 3), (4, 5, 6), (7, 8, 9)).unzip3 shouldBe (NonEmptyList(1, 4, 7), NonEmptyList(2, 5, 8), NonEmptyList(3, 6, 9))
   }
-  it should "have an updated method" in {
+  /*it should "have an updated method" in {
     NonEmptyList(1).updated(0, 2) shouldBe NonEmptyList(2)
     an [IndexOutOfBoundsException] should be thrownBy { NonEmptyList(1).updated(1, 2) }
     NonEmptyList(1, 1, 1).updated(1, 2) shouldBe NonEmptyList(1, 2, 1)

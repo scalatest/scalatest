@@ -540,6 +540,33 @@ object NonEmptyList {
       * @return a new <code>NonEmptyList</code> that contains all elements of this <code>NonEmptyList</code> followed by all elements of <code>that</code> <code>GenSeq</code>.
       */
     final def union[U >: T](that: GenSeq[U]): NonEmptyList[U] = (nonEmptyList: List[T]).union(that)  
+
+    /**
+      * Converts this <code>NonEmptyList</code> of pairs into two <code>NonEmptyList</code>s of the first and second half of each pair. 
+      *
+      * @tparam L the type of the first half of the element pairs
+      * @tparam R the type of the second half of the element pairs
+      * @param asPair an implicit conversion that asserts that the element type of this <code>NonEmptyList</code> is a pair.
+      * @return a pair of <code>NonEmptyList</code>s, containing the first and second half, respectively, of each element pair of this <code>NonEmptyList</code>. 
+      */
+    final def unzip[L, R](using asPair: T => (L, R)): (NonEmptyList[L], NonEmptyList[R]) = {
+      val unzipped = (nonEmptyList: List[T]).unzip
+      (unzipped._1, unzipped._2)
+    }
+
+    /**
+      * Converts this <code>NonEmptyList</code> of triples into three <code>NonEmptyList</code>s of the first, second, and and third element of each triple. 
+      *
+      * @tparam L the type of the first member of the element triples
+      * @tparam R the type of the second member of the element triples
+      * @tparam R the type of the third member of the element triples
+      * @param asTriple an implicit conversion that asserts that the element type of this <code>NonEmptyList</code> is a triple.
+      * @return a triple of <code>NonEmptyList</code>s, containing the first, second, and third member, respectively, of each element triple of this <code>NonEmptyList</code>. 
+      */
+    final def unzip3[L, M, R](using asTriple: T => (L, M, R)): (NonEmptyList[L], NonEmptyList[M], NonEmptyList[R]) = {
+      val unzipped = (nonEmptyList: List[T]).unzip3
+      (unzipped._1, unzipped._2, unzipped._3)
+    }
   }
 
 }
