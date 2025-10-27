@@ -177,7 +177,7 @@ class NonEmptyMapSpec extends UnitSpec {
     (0, "zero") +: NonEmptyMap(1 -> "one", 2 -> "two") shouldBe NonEmptyMap(0 -> "zero", 1 -> "one", 2 -> "two")
     ("zero", 0) +: NonEmptyMap("one" -> 1, "two" -> 2) shouldBe NonEmptyMap("zero" -> 0, "one" -> 1, "two" -> 2)
   }
-  /*it should "implement PartialFunction[K, V]" in {
+  it should "implement PartialFunction[K, V]" in {
     val pf1: PartialFunction[Int, String] = NonEmptyMap(1 -> "one")
     pf1.isDefinedAt(1) shouldBe true
     pf1.isDefinedAt(0) shouldBe false
@@ -246,13 +246,9 @@ class NonEmptyMapSpec extends UnitSpec {
     es.contains("one") shouldBe true
     es.contains("ONE") shouldBe false
 
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.contains("one") shouldBe true
     es.contains("ONE") shouldBe false
-    // SKIP-DOTTY-END
   }
   it should "have 3 copyToArray methods" in {
 
@@ -338,7 +334,7 @@ class NonEmptyMapSpec extends UnitSpec {
     res17: scala.collection.immutable.Vector[Int] = Vector()
   */
   // TODO: Actually it would make sense to flatten Everys too
-  it should "have a fold method" in {
+  /*it should "have a fold method" in {
     NonEmptyMap(1 -> "1").fold(0 -> "0"){ case (t1, t2) => (t1._1 + t2._1, t1._2 + t2._2)} shouldBe (1, "01")
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").fold(0 -> "0"){ case (t1, t2) => (t1._1 + t2._1, t1._2 + t2._2)} shouldBe (6, "0231")
   }

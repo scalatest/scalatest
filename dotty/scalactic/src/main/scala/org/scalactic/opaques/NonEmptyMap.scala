@@ -16,6 +16,7 @@
 package org.scalactic.opaques
 
 import scala.collection.GenSeq
+import scala.collection.mutable.ArrayBuffer
 
 /**
   * A non-empty map: an ordered, immutable, non-empty collection of key-value tuples with <code>LinearSeq</code> performance characteristics.
@@ -166,6 +167,35 @@ object NonEmptyMap {
       * @return a new <code>NonEmptyMap</code> consisting of <code>element</code> followed by all elements of this <code>NonEmptyMap</code>.
       */
     infix def +:[V1 >: V](nonEmptyMap: NonEmptyMap[K, V1]): NonEmptyMap[K, V1] = nonEmptyMap + entry
-  }  
+  }
+
+  extension [K, V] (nonEmptyMap: NonEmptyMap[K, V]) {
+    /**
+      * Builds a new <code>NonEmptyMap</code> by applying a function to all entries of this <code>NonEmptyMap</code> and using the entries of the resulting <code>NonEmptyMap</code>s.
+      *
+      * @tparam K1 the key type of the returned <code>NonEmptyMap</code>
+      * @tparam V1 the value type of the returned <code>NonEmptyMap</code>
+      * @param f the function to apply to each entry.
+      * @return a new <code>NonEmptyMap</code> containing entries obtained by applying the given function <code>f</code> to each entry of this <code>NonEmptyMap</code> and concatenating
+      *    the entries of resulting <code>NonEmptyMap</code>s.
+      */
+    final def flatMap[K1, V1](f: ((K, V)) => NonEmptyMap[K1, V1]): NonEmptyMap[K1, V1] = {
+      val buf = new ArrayBuffer[(K1, V1)]
+      for (ele <- nonEmptyMap)
+        buf ++= f(ele).toMap
+      buf.toMap
+    }
+
+    /**
+      * Builds a new <code>NonEmptyMap</code> by applying a function to all entries of this <code>NonEmptyMap</code>.
+      *
+      * @tparam K1 the key type of the returned <code>NonEmptyMap</code>.
+      * @tparam V1 the value type of the returned <code>NonEmptyMap</code>.
+      * @param f the function to apply to each element. 
+      * @return a new <code>NonEmptyMap</code> resulting from applying the given function <code>f</code> to each element of this <code>NonEmptyMap</code> and collecting the results. 
+      */
+    final def map[K1, V1](f: ((K, V)) => (K1, V1)): NonEmptyMap[K1, V1] =
+      (nonEmptyMap: Map[K, V]).map(f)
+  }
 
 }
