@@ -15,7 +15,9 @@
  */
 package org.scalactic.opaques
 
-import scala.collection.GenSeq
+import scala.collection.{GenSeq, StringOps}
+import org.scalactic.Every
+import scala.annotation.targetName
 
 /**
   * A non-empty list: an ordered, immutable, non-empty collection of elements with <code>LinearSeq</code> performance characteristics.
@@ -140,7 +142,7 @@ import scala.collection.GenSeq
   * </pre>
   *
   */
-opaque type NonEmptyString = String & { def length: Int & (1 | Int) }
+opaque type NonEmptyString = String
 
 /**
   * Companion object for class <code>NonEmptyString</code>.
@@ -160,7 +162,15 @@ object NonEmptyString {
     * @param firstChar the first character (with index 0) contained in this <code>NonEmptyString</code>
     * @param otherChars a varargs of zero or more other characters (with index 1, 2, 3, ...) contained in this <code>NonEmptyString</code>
     */
-  def apply(firstChar: Char, otherChars: Char*): NonEmptyString = apply(firstChar + otherChars.mkString)
+  def apply(firstChar: Char, otherChars: Char*): NonEmptyString = firstChar + otherChars.mkString
+
+  /**
+    * Variable argument extractor for <code>NonEmptyString</code>s.
+    *
+    * @param nonEmptyString: the <code>NonEmptyString</code> containing the elements to extract
+    * @return an <code>Seq</code> containing this <code>NonEmptyString</code>s elements, wrapped in a <code>Some</code> 
+    */
+  def unapplySeq(nonEmptyString: NonEmptyString): Option[Seq[String]] = Some(Seq(nonEmptyString))
 
   /**
     * Optionally construct a <code>NonEmptyString</code> containing the characters, if any, of a given <code>GenSeq</code>.
@@ -175,15 +185,53 @@ object NonEmptyString {
       case Some(first) => Some(NonEmptyString(seq.mkString))
     }
 
-  import scala.language.implicitConversions
-
-  implicit def nonEmptyStringToPartialFunction(nonEmptyString: NonEmptyString): PartialFunction[Int, Char] =
-    new PartialFunction[Int, Char] {
-      def isDefinedAt(idx: Int): Boolean = (nonEmptyString: String).isDefinedAt(idx)
-      def apply(idx: Int): Char = (nonEmptyString: String)(idx)
-    }
-
   extension [T] (theString: NonEmptyString) {
+
+    /**
+      * Selects a character by its index in the <code>NonEmptyString</code>.
+      *
+      * @return the character of this <code>NonEmptyString</code> at index <code>idx</code>, where 0 indicates the first element.
+      */
+    final def apply(idx: Int): Char = theString.charAt(idx)
+
+    def ++(other: Char): NonEmptyString = NonEmptyString(theString.toString ++ other.toString)
+
+    /**
+      * Returns a new <code>NonEmptyString</code> containing this <code>NonEmptyString</code> followed by the passed <code>NonEmptyString</code>.
+      *
+      * @param other the <code>NonEmptyString</code> to append
+      * @return a new <code>NonEmptyString</code> that contains this <code>NonEmptyString</code> followed by <code>other</code>.
+      */
+    def ++(other: NonEmptyString): NonEmptyString = NonEmptyString(theString.toString ++ other.toString)
+
+    /**
+      * Returns a new <code>NonEmptyString</code> containing this <code>NonEmptyString</code> followed by the passed <code>NonEmptyString</code>.
+      *
+      * @param other the <code>NonEmptyString</code> to append
+      * @return a new <code>NonEmptyString</code> that contains this <code>NonEmptyString</code> followed by <code>other</code>.
+      */
+    @targetName("plusPlusString")
+    def ++(other: String): NonEmptyString = NonEmptyString(theString.toString ++ other.toString)
+
+    /**
+      * Returns a new <code>NonEmptyString</code> containing this <code>NonEmptyString</code> followed by the characters of the passed <code>Every</code>.
+      *
+      * @param other the <code>Every</code> of <code>Char</code> to append
+      * @return a new <code>NonEmptyString</code> that contains this <code>NonEmptyString</code> followed by all characters of <code>other</code>.
+      */
+    def ++(other: Every[Char]): NonEmptyString = NonEmptyString(theString.toString ++ other.mkString)
+
+    // TODO: Have I added these extra ++, etc. methods to Every that take a NonEmptyString?
+
+    /**
+      * Returns a new <code>NonEmptyString</code> containing this <code>NonEmptyString</code> followed by the characters of the passed <code>IterableOnce</code>.
+      *
+      * @param other the <code>IterableOnce</code> of <code>Char</code> to append
+      * @return a new <code>NonEmptyString</code> that contains this <code>NonEmptyString</code> followed by all characters of <code>other</code>.
+      */
+    def ++(other: IterableOnce[Char]): NonEmptyString =
+      if (other.isEmpty) theString else NonEmptyString(new StringOps(theString) ++ other.mkString)
+
     /**
       * The length of this <code>NonEmptyString</code>.
       *
@@ -193,7 +241,7 @@ object NonEmptyString {
       *
       * @return the number of characters in this <code>NonEmptyString</code>.
       */
-    def length: Int = (theString: String).length
+    def length: Int = theString.toString.length
   }
 
 }

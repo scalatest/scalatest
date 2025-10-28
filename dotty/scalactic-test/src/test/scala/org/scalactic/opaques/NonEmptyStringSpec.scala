@@ -63,7 +63,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString.from("1") shouldBe Some(NonEmptyString("1"))
     NonEmptyString.from("123") shouldBe Some(NonEmptyString("123"))
   }
-  /*it can "be deconstructed with NonEmptyString" in {
+  it can "be deconstructed with NonEmptyString" in {
     NonEmptyString("1") match {
       case NonEmptyString(x) => x shouldEqual "1"
       case _ => fail()
@@ -117,7 +117,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123") ++ Set('4', '5') shouldEqual NonEmptyString("12345")
     NonEmptyString("123") ++ Set('4', '5').iterator shouldEqual NonEmptyString("12345")
   }
-  it should "have a +: method" in {
+  /*it should "have a +: method" in {
     '0' +: NonEmptyString("1") shouldBe NonEmptyString("01")
     '0' +: NonEmptyString("12") shouldBe NonEmptyString("012")
     '0' +: NonEmptyString("onetwo") shouldBe NonEmptyString("0onetwo")
