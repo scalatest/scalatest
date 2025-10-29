@@ -339,6 +339,16 @@ object NonEmptyStrings {
         theString.find(c => pf.isDefinedAt(c)).map(c => pf(c))
       
       /**
+        * Creates a new <code>PartialFunction</code> by composing a given partial function with this <code>NonEmptyString</code>.
+        * @param k the partial function to compose with this <code>NonEmptyString</code>
+        * @return a new partial function resulting from composing the given partial function <code>k</code> with this <code>NonEmptyString</code>.
+        */
+      def compose[R](k: PartialFunction[R, Int]): PartialFunction[R, Char] = new PartialFunction[R, Char] {
+        def apply(x: R): Char = theString(k(x))
+        def isDefinedAt(x: R): Boolean = k.isDefinedAt(x) && theString.isDefinedAt(k(x))
+      }
+
+      /**
         * Tests whether this <code>NonEmptyString</code> contains given index.
         *
         * @param idx the index to test
