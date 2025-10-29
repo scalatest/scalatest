@@ -197,7 +197,7 @@ object NonEmptyStrings {
 
     }  
 
-    extension [T] (theString: NonEmptyString) {
+    extension (theString: NonEmptyString) {
 
       /**
         * Selects a character by its index in the <code>NonEmptyString</code>.
@@ -288,6 +288,17 @@ object NonEmptyStrings {
         * @return the string builder, <code>sb</code>, to which characters were appended.
         */
       def addString(sb: StringBuilder, start: String, sep: String, end: String): StringBuilder = new StringOps(theString).addString(sb, start, sep, end)
+
+      /**
+        * Creates a new <code>PartialFunction</code> by composing this <code>NonEmptyString</code> with a function.
+        *
+        * @param k the function to compose with this <code>NonEmptyString</code>
+        * @return a new partial function resulting from composing this <code>NonEmptyString</code> with the given function <code>k</code>.
+        */
+      def andThen[C](k: Char => C): PartialFunction[Int, C] = new PartialFunction[Int, C] {
+        def apply(x: Int): C = k(theString(x))
+        def isDefinedAt(x: Int): Boolean = theString.isDefinedAt(x)
+      }
 
       /**
         * Tests whether this <code>NonEmptyString</code> contains given index.
