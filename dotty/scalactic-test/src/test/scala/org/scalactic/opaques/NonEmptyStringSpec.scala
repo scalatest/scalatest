@@ -131,7 +131,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("1") :+ '2' shouldBe NonEmptyString("12")
     NonEmptyString("12") :+ '3' shouldBe NonEmptyString("123")
   }
-  /*it should "have 3 addString methods" in {
+  it should "have 3 addString methods" in {
     NonEmptyString("hi").addString(new StringBuilder) shouldBe new StringBuilder("hi")
     NonEmptyString("123").addString(new StringBuilder) shouldBe new StringBuilder("123")
 
@@ -143,7 +143,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").addString(new StringBuilder, "<", "#", ">") shouldBe new StringBuilder("<1#2#3>")
     NonEmptyString("123").addString(new StringBuilder, " ( ", ", ", " ) ") shouldBe new StringBuilder(" ( 1, 2, 3 ) ")
   }
-  it should "have an andThen method (inherited from PartialFunction)" in {
+  /*it should "have an andThen method (inherited from PartialFunction)" in {
     val pf1 = NonEmptyString("1") andThen (_ + 1)
     pf1(0) shouldEqual 50
     val pf2 = NonEmptyString("123") andThen (_ + 1)
