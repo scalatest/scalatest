@@ -189,7 +189,6 @@ class NonEmptyStringSpec extends UnitSpec {
   /*
    companion method not relevant. Has an empty and other GenTraverable stuff.
   */
-  // SKIP-DOTTY-START
   it should "have an compose method, inherited from PartialFunction" in {
     val fn: Int => Char = NonEmptyString("123").compose((idx: Int) => (idx + 1).toChar)
     fn(-1) shouldBe '1'
@@ -197,8 +196,7 @@ class NonEmptyStringSpec extends UnitSpec {
     fn(1) shouldBe '3'
     //fn(2) shouldBe '4'
   }
-  // SKIP-DOTTY-END
-  /*it should "have a contains method" in {
+  it should "have a contains method" in {
     val e = NonEmptyString("123")
     e.contains('5') shouldBe false
     e.contains('0') shouldBe false
@@ -209,7 +207,7 @@ class NonEmptyStringSpec extends UnitSpec {
   }
   // Decided to just overload one for GenSeq and one for Every. Could have done
   // what that has a Slicing nature, but that's a bit too fancy pants.
-  it should "have a containsSlice method that takes GenSeq" in {
+  /*it should "have a containsSlice method that takes GenSeq" in {
     val nonEmptyString = NonEmptyString("12345")
     nonEmptyString.containsSlice("23") shouldBe true
     nonEmptyString.containsSlice("235") shouldBe false

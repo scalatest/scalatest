@@ -349,6 +349,14 @@ object NonEmptyStrings {
       }
 
       /**
+        * Indicates whether this <code>NonEmptyString</code> contains a given value as an character.
+        *
+        * @param c the element to look for
+        * @return true if this <code>NonEmptyString</code> has an character that is equal (as determined by <code>==)</code> to <code>c</code>, false otherwise.
+        */
+      def contains(c: Char): Boolean = theString.indexOf(c) >= 0
+
+      /**
         * Tests whether this <code>NonEmptyString</code> contains given index.
         *
         * @param idx the index to test
