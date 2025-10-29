@@ -122,12 +122,12 @@ class NonEmptyStringSpec extends UnitSpec {
     '0' +: NonEmptyString("12") shouldBe NonEmptyString("012")
     '0' +: NonEmptyString("onetwo") shouldBe NonEmptyString("0onetwo")
   }
-  /*it should "implement PartialFunction[Int, Char]" in {
-    val pf1: PartialFunction[Int, Char] = NonEmptyString("1")
+  it should "have a isDefinedAt method" in {
+    val pf1 = NonEmptyString("1")
     pf1.isDefinedAt(0) shouldBe true
     pf1.isDefinedAt(1) shouldBe false
   }
-  it should "have a :+ method" in {
+  /*it should "have a :+ method" in {
     NonEmptyString("1") :+ '2' shouldBe NonEmptyString("12")
     NonEmptyString("12") :+ '3' shouldBe NonEmptyString("123")
   }

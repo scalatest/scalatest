@@ -245,6 +245,14 @@ object NonEmptyStrings {
         if (other.isEmpty) theString else NonEmptyString(new StringOps(theString) ++ other.mkString)
 
       /**
+        * Tests whether this <code>NonEmptyString</code> contains given index.
+        *
+        * @param idx the index to test
+        * @return true if this <code>NonEmptyString</code> contains an character at position <code>idx</code>, <code>false</code> otherwise.
+        */
+      def isDefinedAt(idx: Int): Boolean = theString.length > idx && idx >= 0
+
+      /**
         * The length of this <code>NonEmptyString</code>.
         *
         * <p>
