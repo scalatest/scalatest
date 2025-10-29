@@ -300,10 +300,26 @@ object NonEmptyStrings {
         def isDefinedAt(x: Int): Boolean = theString.isDefinedAt(x)
       }
 
+      /**
+        * Applies this <code>NonEmptyString</code> as a partial function to the given argument, or returns the result of invoking
+        * the <code>default</code> function if the argument is not contained in this <code>NonEmptyString</code>.
+        *
+        * @param x the function argument
+        * @param default the default function to apply if this <code>NonEmptyString</code> does not contain a character at position <code>x</code>
+        * @return the result of applying this <code>NonEmptyString</code> to <code>x</code>, if defined, else the result of applying <code>default</code> to <code>x</code>.
+        */
       def applyOrElse(x: Int, default: Int => Char): Char = {
         if (theString.length > x && x >= 0) theString.charAt(x)
         else default(x)
       }
+
+      /**
+        * Tests whether this <code>NonEmptyString</code> can be compared for equality with the given object.
+        *
+        * @param that the object to test
+        * @return true if this <code>NonEmptyString</code> can be compared for equality with <code>that</code>, false otherwise.
+        */
+      def canEqual(that: Any): Boolean = that.isInstanceOf[NonEmptyString] || that.isInstanceOf[String]
 
       /**
         * Tests whether this <code>NonEmptyString</code> contains given index.

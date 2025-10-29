@@ -158,8 +158,15 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").applyOrElse(3, (_: Int) => 'd') shouldEqual 'd'
     NonEmptyString("123").applyOrElse(4, (_: Int) => 'e') shouldEqual 'e'
   }
-  /*it should "have an canEqual method" is pending
-  it should "have an charAt method" in {
+  it should "have an canEqual method" in {
+    NonEmptyString("123").canEqual(NonEmptyString("456")) shouldBe true
+    NonEmptyString("123").canEqual("456") shouldBe true
+    NonEmptyString("123").canEqual(123) shouldBe false
+    NonEmptyString("123").canEqual(456L) shouldBe false
+    NonEmptyString("123").canEqual(456.0) shouldBe false
+    NonEmptyString("123").canEqual(456.0f) shouldBe false
+  }
+  /*it should "have an charAt method" in {
     val s = NonEmptyString("123")
     s.charAt(0) shouldBe '1'
     s.charAt(1) shouldBe '2'
