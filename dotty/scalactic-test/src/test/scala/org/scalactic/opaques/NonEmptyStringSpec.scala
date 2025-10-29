@@ -23,7 +23,7 @@ import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
 import org.scalactic.NormalizingEquality
 
-import org.scalatest.CompatParColls.Converters._
+import org.scalactic.opaques.NonEmptyStrings.NonEmptyString
 
 class NonEmptyStringSpec extends UnitSpec {
   "A NonEmptyString" can "be constructed with one character" in {
