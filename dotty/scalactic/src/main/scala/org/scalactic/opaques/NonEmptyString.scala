@@ -322,6 +322,13 @@ object NonEmptyStrings {
       def canEqual(that: Any): Boolean = that.isInstanceOf[NonEmptyString] || that.isInstanceOf[String]
 
       /**
+        * Gets a character by its index in the <code>NonEmptyString</code>.
+        *
+        * @return the character of this <code>NonEmptyString</code> at index <code>idx</code>, where 0 indicates the first element.
+        */
+      def charAt(idx: Int): Char = theString.charAt(idx)
+
+      /**
         * Tests whether this <code>NonEmptyString</code> contains given index.
         *
         * @param idx the index to test

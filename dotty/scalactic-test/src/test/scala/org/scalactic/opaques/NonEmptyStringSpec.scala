@@ -166,7 +166,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").canEqual(456.0) shouldBe false
     NonEmptyString("123").canEqual(456.0f) shouldBe false
   }
-  /*it should "have an charAt method" in {
+  it should "have an charAt method" in {
     val s = NonEmptyString("123")
     s.charAt(0) shouldBe '1'
     s.charAt(1) shouldBe '2'
@@ -178,7 +178,7 @@ class NonEmptyStringSpec extends UnitSpec {
   scala> Vector(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i / 2 }
   res1: scala.collection.immutable.Vector[Int] = Vector()
   */
-  it should "have an collectFirst method" in {
+  /*it should "have an collectFirst method" in {
     NonEmptyString("12345678910") collectFirst { case i if i.toString.toInt > 10 => i / 2 } shouldBe None
     NonEmptyString("123456789101112") collectFirst { case i if i.toString.toInt > 6 => i.toString.toInt / 2 } shouldBe Some(3)
   }
