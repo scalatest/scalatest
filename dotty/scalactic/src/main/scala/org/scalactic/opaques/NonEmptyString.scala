@@ -300,6 +300,11 @@ object NonEmptyStrings {
         def isDefinedAt(x: Int): Boolean = theString.isDefinedAt(x)
       }
 
+      def applyOrElse(x: Int, default: Int => Char): Char = {
+        if (theString.length > x && x >= 0) theString.charAt(x)
+        else default(x)
+      }
+
       /**
         * Tests whether this <code>NonEmptyString</code> contains given index.
         *

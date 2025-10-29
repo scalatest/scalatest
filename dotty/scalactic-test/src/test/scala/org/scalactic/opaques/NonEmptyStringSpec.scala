@@ -151,14 +151,14 @@ class NonEmptyStringSpec extends UnitSpec {
     pf2(1) shouldEqual 51
     pf2(2) shouldEqual 52
   }
-  /*it should "have an applyOrElse method (inherited from PartialFunction)" in {
+  it should "have an applyOrElse method (inherited from PartialFunction)" in {
     NonEmptyString("123").applyOrElse(0, (_: Int) => 'a') shouldEqual '1'
     NonEmptyString("123").applyOrElse(1, (_: Int) => 'b') shouldEqual '2'
     NonEmptyString("123").applyOrElse(2, (_: Int) => 'c') shouldEqual '3'
     NonEmptyString("123").applyOrElse(3, (_: Int) => 'd') shouldEqual 'd'
     NonEmptyString("123").applyOrElse(4, (_: Int) => 'e') shouldEqual 'e'
   }
-  it should "have an canEqual method" is pending
+  /*it should "have an canEqual method" is pending
   it should "have an charAt method" in {
     val s = NonEmptyString("123")
     s.charAt(0) shouldBe '1'
