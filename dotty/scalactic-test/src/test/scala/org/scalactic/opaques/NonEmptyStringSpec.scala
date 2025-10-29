@@ -127,11 +127,11 @@ class NonEmptyStringSpec extends UnitSpec {
     pf1.isDefinedAt(0) shouldBe true
     pf1.isDefinedAt(1) shouldBe false
   }
-  /*it should "have a :+ method" in {
+  it should "have a :+ method" in {
     NonEmptyString("1") :+ '2' shouldBe NonEmptyString("12")
     NonEmptyString("12") :+ '3' shouldBe NonEmptyString("123")
   }
-  it should "have 3 addString methods" in {
+  /*it should "have 3 addString methods" in {
     NonEmptyString("hi").addString(new StringBuilder) shouldBe new StringBuilder("hi")
     NonEmptyString("123").addString(new StringBuilder) shouldBe new StringBuilder("123")
 

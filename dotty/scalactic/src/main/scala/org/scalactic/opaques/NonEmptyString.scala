@@ -245,6 +245,18 @@ object NonEmptyStrings {
         if (other.isEmpty) theString else NonEmptyString(new StringOps(theString) ++ other.mkString)
 
       /**
+        * Returns a new <code>NonEmptyString</code> with the given character appended.
+        *
+        * <p>
+        * Note a mnemonic for <code>+:</code> <em>vs.</em> <code>:+</code> is: the COLon goes on the COLlection side.
+        * </p>
+        *
+        * @param c the character to append to this <code>NonEmptyString</code>
+        * @return a new <code>NonEmptyString</code> consisting of all characters of this <code>NonEmptyString</code> followed by the given <code>c</code>.
+        */
+      def :+(c: Char): NonEmptyString = new NonEmptyString(new StringOps(theString) :+ c)  
+
+      /**
         * Tests whether this <code>NonEmptyString</code> contains given index.
         *
         * @param idx the index to test
