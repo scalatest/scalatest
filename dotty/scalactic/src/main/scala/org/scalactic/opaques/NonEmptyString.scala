@@ -329,6 +329,16 @@ object NonEmptyStrings {
       def charAt(idx: Int): Char = theString.charAt(idx)
 
       /**
+        * Finds the first character of this <code>NonEmptyString</code> for which the given partial function is defined, if any, and applies the partial function to it.
+        *
+        * @param pf the partial function
+        * @return an <code>Option</code> containing <code>pf</code> applied to the first character for which it is defined, or <code>None</code> if
+        *    the partial function was not defined for any character.
+        */
+      def collectFirst[U](pf: PartialFunction[Char, U]): Option[U] = 
+        theString.find(c => pf.isDefinedAt(c)).map(c => pf(c))
+      
+      /**
         * Tests whether this <code>NonEmptyString</code> contains given index.
         *
         * @param idx the index to test

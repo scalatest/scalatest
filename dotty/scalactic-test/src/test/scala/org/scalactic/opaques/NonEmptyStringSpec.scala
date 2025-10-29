@@ -178,7 +178,7 @@ class NonEmptyStringSpec extends UnitSpec {
   scala> Vector(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i / 2 }
   res1: scala.collection.immutable.Vector[Int] = Vector()
   */
-  /*it should "have an collectFirst method" in {
+  it should "have an collectFirst method" in {
     NonEmptyString("12345678910") collectFirst { case i if i.toString.toInt > 10 => i / 2 } shouldBe None
     NonEmptyString("123456789101112") collectFirst { case i if i.toString.toInt > 6 => i.toString.toInt / 2 } shouldBe Some(3)
   }
@@ -190,7 +190,7 @@ class NonEmptyStringSpec extends UnitSpec {
    companion method not relevant. Has an empty and other GenTraverable stuff.
   */
   // SKIP-DOTTY-START
-  it should "have an compose method, inherited from PartialFunction" in {
+  /*it should "have an compose method, inherited from PartialFunction" in {
     val fn: Int => Char = NonEmptyString("123").compose((idx: Int) => (idx + 1).toChar)
     fn(-1) shouldBe '1'
     fn(0) shouldBe '2'
