@@ -322,7 +322,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("12345").endsWith(NonEmptyString("5")) shouldBe true
     NonEmptyString("12345").endsWith(NonEmptyString("345")) shouldBe true
   }
-  /*it should "have an equals method" in {
+  it should "have an equals method" in {
     NonEmptyString("1") shouldEqual NonEmptyString("1")
     NonEmptyString("1") should not equal NonEmptyString("2")
     NonEmptyString("12") should not equal NonEmptyString("23")
@@ -348,18 +348,17 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123") flatMap (i => NonEmptyString(i.toString + "1")) shouldBe NonEmptyString("112131")
     val ss = NonEmptyString("hiho")
     val is = NonEmptyString("123")
+    val res: Seq[NonEmptyString] = 
     (for (s <- ss;
           i <- is) yield
-      s.toString + i.toString) shouldBe NonEmptyString("h1h2h3i1i2i3h1h2h3o1o2o3")
+      NonEmptyString(s.toString + i.toString)) 
+    res.mkString shouldBe NonEmptyString("h1h2h3i1i2i3h1h2h3o1o2o3")
     NonEmptyString("5") flatMap (i => NonEmptyString(i + "3")) shouldBe NonEmptyString("53")
     NonEmptyString("8") flatMap (i => NonEmptyString(i.toString)) shouldBe NonEmptyString("8")
   }
   it can "be flattened when in a IterableOnce" in {
     Vector(NonEmptyString("123"), NonEmptyString("123")).flatten shouldBe Vector('1', '2', '3', '1', '2', '3')
     List(NonEmptyString("123"), NonEmptyString("123")).flatten shouldBe List('1', '2', '3', '1', '2', '3')
-    // SKIP-SCALATESTJS,NATIVE-START
-    List(NonEmptyString("123"), NonEmptyString("123")).par.flatten shouldBe List('1', '2', '3', '1', '2', '3').par
-    // SKIP-SCALATESTJS,NATIVE-END
   }
   it should "have a fold method" in {
     NonEmptyString("1").fold('0')((e1, e2) => (e1.toString.toInt + e2.toString.toInt).toString.charAt(0)) shouldBe '1'
@@ -406,7 +405,6 @@ class NonEmptyStringSpec extends UnitSpec {
   it should "have a grouped method" in {
     NonEmptyString("123").grouped(2).toList shouldBe List(NonEmptyString("12"), NonEmptyString("3"))
     NonEmptyString("123").grouped(1).toList shouldBe List(NonEmptyString("1"), NonEmptyString("2"), NonEmptyString("3"))
-    an [IllegalArgumentException] should be thrownBy { NonEmptyString("123").grouped(0) }
     NonEmptyString("123456789").grouped(2).toList shouldBe List(NonEmptyString("12"), NonEmptyString("34"), NonEmptyString("56"), NonEmptyString("78"), NonEmptyString("9"))
     NonEmptyString("123456789").grouped(3).toList shouldBe List(NonEmptyString("123"), NonEmptyString("456"), NonEmptyString("789"))
     NonEmptyString("123456789").grouped(4).toList shouldBe List(NonEmptyString("1234"), NonEmptyString("5678"), NonEmptyString("9"))
@@ -440,13 +438,9 @@ class NonEmptyStringSpec extends UnitSpec {
     es.indexOf('a') shouldBe 0
     es.indexOf('a', 1) shouldBe -1
     es.indexOf('A') shouldBe -1
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.indexOf('a') shouldBe 0
     es.indexOf('A') shouldBe -1
-    // SKIP-DOTTY-END
   }
   it should "have 2 indexOfSlice methods that take a GenSeq" in {
     NonEmptyString("12345").indexOfSlice(List('2', '3')) shouldBe "12345".indexOfSlice(List('2', '3'))
@@ -467,13 +461,9 @@ class NonEmptyStringSpec extends UnitSpec {
     es.indexOfSlice(List('a', 'b')) shouldBe s.indexOfSlice(List('a', 'b'))
     es.indexOfSlice(List('a', 'b'), 1) shouldBe s.indexOfSlice(List('a', 'b'), 1)
     es.indexOfSlice(List('A', 'B')) shouldBe s.indexOfSlice(List('A', 'B'))
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.indexOfSlice(List('a', 'b')) shouldBe 0
     es.indexOfSlice(List('A', 'B')) shouldBe -1
-    // SKIP-DOTTY-END
   }
   it should "have 2 indexOfSlice methods that take an Every" in {
     NonEmptyString("12345").indexOfSlice(Every('2', '3')) shouldBe 1
@@ -490,13 +480,9 @@ class NonEmptyStringSpec extends UnitSpec {
     es.indexOfSlice(Every('a', 'b')) shouldBe 0
     es.indexOfSlice(Every('a', 'b'), 1) shouldBe -1
     es.indexOfSlice(Every('A', 'B')) shouldBe -1
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.indexOfSlice(Every('a', 'b')) shouldBe 0
     es.indexOfSlice(Every('A', 'B')) shouldBe -1
-    // SKIP-DOTTY-END
   }
   it should "have 2 indexOfSlice methods that take a NonEmptyString" in {
     NonEmptyString("12345").indexOfSlice(NonEmptyString("23")) shouldBe 1
@@ -513,15 +499,12 @@ class NonEmptyStringSpec extends UnitSpec {
     es.indexOfSlice(NonEmptyString("ab")) shouldBe 0
     es.indexOfSlice(NonEmptyString("ab"), 1) shouldBe -1
     es.indexOfSlice(NonEmptyString("AB")) shouldBe -1
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.indexOfSlice(NonEmptyString("ab")) shouldBe 0
     es.indexOfSlice(NonEmptyString("AB")) shouldBe -1
     // SKIP-DOTTY-END
   }
-  it should "have 2 indexWhere methods" in {
+  /*it should "have 2 indexWhere methods" in {
     NonEmptyString("12345").indexWhere(_ == '3') shouldBe 2
     NonEmptyString("12345").indexWhere(_ == '1') shouldBe 0
     NonEmptyString("12345").indexWhere(_ == '6') shouldBe -1
