@@ -184,5 +184,15 @@ object NonEmptyStrings {
         case None => None
         case Some(first) => Some(NonEmptyString(seq.mkString))
       }
+
+    extension (nonEmptyString: NonEmptyString) {
+      /**
+        * Indicates whether this <code>NonEmptyString</code> ends with the given <code>Every</code>.
+        *
+        * @param that the <code>Every</code> to test
+        * @return <code>true</code> if this <code>NonEmptyString</code> has <code>that</code> as a suffix, <code>false</code> otherwise. 
+        */
+      def endsWith(that: Every[Char]): Boolean = nonEmptyString.endsWith(that.mkString)
+    }  
   }
 }
