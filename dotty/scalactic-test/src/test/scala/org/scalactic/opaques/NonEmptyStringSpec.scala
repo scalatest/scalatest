@@ -881,7 +881,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").scan('z')((e1, e2) => (e2 + 1).toChar) shouldBe IndexedSeq('z', '2', '3', '4')
     NonEmptyString("0").scan('a')((e1, e2) => (e2 + 2).toChar) shouldBe IndexedSeq('a', '2')
   }
-  /*it should "have a scanLeft method" in {
+  it should "have a scanLeft method" in {
     NonEmptyString("1").scanLeft("0")(_ + _) shouldBe Vector("0", "01")
     NonEmptyString("123").scanLeft("0")(_ + _) shouldBe Vector("0", "01", "012", "0123")
     NonEmptyString("123").scanLeft(0)(_ + _.toString.toInt) shouldBe Vector(0, 1, 3, 6)
@@ -971,49 +971,27 @@ class NonEmptyStringSpec extends UnitSpec {
     scala> Vector(1, 2, 3, 4, 5).splitAt(0)
     res106: (scala.collection.immutable.Vector[Int], scala.collection.immutable.Vector[Int]) = (Vector(),Vector(1, 2, 3, 4, 5))
   */
-  it should "have 2 startsWith methods that take a GenSeq" in {
-    NonEmptyString("123").startsWith(List('1')) shouldBe true
-    NonEmptyString("123").startsWith(List('1', '2')) shouldBe true
-    NonEmptyString("123").startsWith(List('1', '2', '3')) shouldBe true
-    NonEmptyString("123").startsWith(List('1', '2', '3', '4')) shouldBe false
-    NonEmptyString("1").startsWith(List('1', '2', '3', '4')) shouldBe false
-    NonEmptyString("1").startsWith(List('1')) shouldBe true
-    NonEmptyString("1").startsWith(List('2')) shouldBe false
+  it should "have 2 startsWith methods that take a String" in {
+    NonEmptyString("123").startsWith("1") shouldBe true
+    NonEmptyString("123").startsWith("12") shouldBe true
+    NonEmptyString("123").startsWith("123") shouldBe true
+    NonEmptyString("123").startsWith("1234") shouldBe false
+    NonEmptyString("1").startsWith("1234") shouldBe false
+    NonEmptyString("1").startsWith("1") shouldBe true
+    NonEmptyString("1").startsWith("2") shouldBe false
 
-    NonEmptyString("1").startsWith(List('1'), 0) shouldBe true
-    NonEmptyString("1").startsWith(List('1'), 1) shouldBe false
-    NonEmptyString("123").startsWith(List('1'), 1) shouldBe false
-    NonEmptyString("123").startsWith(List('1'), 2) shouldBe false
-    NonEmptyString("123").startsWith(List('2'), 2) shouldBe false
-    NonEmptyString("123").startsWith(List('2'), 1) shouldBe true
-    NonEmptyString("123").startsWith(List('2', '3'), 1) shouldBe true
-    NonEmptyString("123").startsWith(List('1', '2', '3'), 1) shouldBe false
-    NonEmptyString("123").startsWith(List('1', '2', '3'), 0) shouldBe true
-    NonEmptyString("12345").startsWith(List('3', '4'), 2) shouldBe true
-    NonEmptyString("12345").startsWith(List('3', '4', '5'), 2) shouldBe true
-    NonEmptyString("12345").startsWith(List('3', '4', '5', '6'), 2) shouldBe false
-  }
-  it should "have 2 startsWith methods that take an Every" in {
-    NonEmptyString("123").startsWith(Every('1')) shouldBe true
-    NonEmptyString("123").startsWith(Every('1', '2')) shouldBe true
-    NonEmptyString("123").startsWith(Every('1', '2', '3')) shouldBe true
-    NonEmptyString("123").startsWith(Every('1', '2', '3', '4')) shouldBe false
-    NonEmptyString("1").startsWith(Every('1', '2', '3', '4')) shouldBe false
-    NonEmptyString("1").startsWith(Every('1')) shouldBe true
-    NonEmptyString("1").startsWith(Every('2')) shouldBe false
-
-    NonEmptyString("1").startsWith(Every('1'), 0) shouldBe true
-    NonEmptyString("1").startsWith(Every('1'), 1) shouldBe false
-    NonEmptyString("123").startsWith(Every('1'), 1) shouldBe false
-    NonEmptyString("123").startsWith(Every('1'), 2) shouldBe false
-    NonEmptyString("123").startsWith(Every('2'), 2) shouldBe false
-    NonEmptyString("123").startsWith(Every('2'), 1) shouldBe true
-    NonEmptyString("123").startsWith(Every('2', '3'), 1) shouldBe true
-    NonEmptyString("123").startsWith(Every('1', '2', '3'), 1) shouldBe false
-    NonEmptyString("123").startsWith(Every('1', '2', '3'), 0) shouldBe true
-    NonEmptyString("12345").startsWith(Every('3', '4'), 2) shouldBe true
-    NonEmptyString("12345").startsWith(Every('3', '4', '5'), 2) shouldBe true
-    NonEmptyString("12345").startsWith(Every('3', '4', '5', '6'), 2) shouldBe false
+    NonEmptyString("1").startsWith("1", 0) shouldBe true
+    NonEmptyString("1").startsWith("1", 1) shouldBe false
+    NonEmptyString("123").startsWith("1", 1) shouldBe false
+    NonEmptyString("123").startsWith("1", 2) shouldBe false
+    NonEmptyString("123").startsWith("2", 2) shouldBe false
+    NonEmptyString("123").startsWith("2", 1) shouldBe true
+    NonEmptyString("123").startsWith("23", 1) shouldBe true
+    NonEmptyString("123").startsWith("123", 1) shouldBe false
+    NonEmptyString("123").startsWith("123", 0) shouldBe true
+    NonEmptyString("12345").startsWith("34", 2) shouldBe true
+    NonEmptyString("12345").startsWith("345", 2) shouldBe true
+    NonEmptyString("12345").startsWith("3456", 2) shouldBe false
   }
   it should "have 2 startsWith methods that take a NonEmptyString" in {
     NonEmptyString("123").startsWith(NonEmptyString("1")) shouldBe true
@@ -1037,7 +1015,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("12345").startsWith(NonEmptyString("345"), 2) shouldBe true
     NonEmptyString("12345").startsWith(NonEmptyString("3456"), 2) shouldBe false
   }
-  it should "have a stringPrefix method" in {
+  /*it should "have a stringPrefix method" in {
     NonEmptyString("1").stringPrefix shouldBe "NonEmptyString"
     NonEmptyString("123").stringPrefix shouldBe "NonEmptyString"
   }
