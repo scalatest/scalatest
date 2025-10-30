@@ -504,7 +504,7 @@ class NonEmptyStringSpec extends UnitSpec {
     es.indexOfSlice(NonEmptyString("AB")) shouldBe -1
     // SKIP-DOTTY-END
   }
-  /*it should "have 2 indexWhere methods" in {
+  it should "have 2 indexWhere methods" in {
     NonEmptyString("12345").indexWhere(_ == '3') shouldBe 2
     NonEmptyString("12345").indexWhere(_ == '1') shouldBe 0
     NonEmptyString("12345").indexWhere(_ == '6') shouldBe -1
@@ -570,13 +570,9 @@ class NonEmptyStringSpec extends UnitSpec {
     es.lastIndexOf('c') shouldBe 2
     es.lastIndexOf('c', 1) shouldBe -1
     es.lastIndexOf('A') shouldBe -1
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.lastIndexOf('a') shouldBe 0
     es.lastIndexOf('A') shouldBe -1
-    // SKIP-DOTTY-END
   }
   it should "have 2 lastIndexOfSlice methods that take a GenSeq" in {
     NonEmptyString("12345").lastIndexOfSlice(List('2', '3')) shouldBe 1
@@ -596,13 +592,9 @@ class NonEmptyStringSpec extends UnitSpec {
     es.lastIndexOfSlice(List('a', 'b')) shouldBe 0
     es.lastIndexOfSlice(List('b', 'c'), 0) shouldBe -1
     es.lastIndexOfSlice(List('A', 'B')) shouldBe -1
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.lastIndexOfSlice(List('a', 'b')) shouldBe 0
     es.lastIndexOfSlice(List('A', 'B')) shouldBe -1
-    // SKIP-DOTTY-END
   }
   it should "have 2 lastIndexOfSlice methods that take an Every" in {
     NonEmptyString("12345").lastIndexOfSlice(Every('2', '3')) shouldBe 1
@@ -619,13 +611,9 @@ class NonEmptyStringSpec extends UnitSpec {
     es.lastIndexOfSlice(Every('a', 'b')) shouldBe 0
     es.lastIndexOfSlice(Every('b', 'c'), 0) shouldBe -1
     es.lastIndexOfSlice(Every('A', 'B')) shouldBe -1
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.lastIndexOfSlice(Every('a', 'b')) shouldBe 0
     es.lastIndexOfSlice(Every('A', 'B')) shouldBe -1
-    // SKIP-DOTTY-END
   }
   it should "have 2 lastIndexOfSlice methods that take a NonEmptyString" in {
     NonEmptyString("12345").lastIndexOfSlice(NonEmptyString("23")) shouldBe 1
@@ -642,13 +630,9 @@ class NonEmptyStringSpec extends UnitSpec {
     es.lastIndexOfSlice(NonEmptyString("ab")) shouldBe 0
     es.lastIndexOfSlice(NonEmptyString("bc"), 0) shouldBe -1
     es.lastIndexOfSlice(NonEmptyString("AB")) shouldBe -1
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.lastIndexOfSlice(NonEmptyString("ab")) shouldBe 0
     es.lastIndexOfSlice(NonEmptyString("AB")) shouldBe -1
-    // SKIP-DOTTY-END
   }
   it should "have 2 lastIndexWhere methods" in {
     NonEmptyString("12345").lastIndexWhere(_ == '2') shouldBe 1
@@ -892,12 +876,12 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("3").sameElements("3") shouldBe true
   }
   it should "have a scan method" in {
-    NonEmptyString("1").scan('0')((e1, e2) => (e1 + e2).toChar) shouldBe NonEmptyString("0a")
-    NonEmptyString("123").scan('0')((e1, e2) => e2) shouldBe NonEmptyString("0123")
-    NonEmptyString("123").scan('z')((e1, e2) => (e2 + 1).toChar) shouldBe NonEmptyString("z234")
-    NonEmptyString("0").scan('a')((e1, e2) => (e2 + 2).toChar) shouldBe NonEmptyString("a2")
+    NonEmptyString("1").scan('0')((e1, e2) => (e1 + e2).toChar) shouldBe IndexedSeq('0', 'a')
+    NonEmptyString("123").scan('0')((e1, e2) => e2) shouldBe IndexedSeq('0', '1', '2', '3')
+    NonEmptyString("123").scan('z')((e1, e2) => (e2 + 1).toChar) shouldBe IndexedSeq('z', '2', '3', '4')
+    NonEmptyString("0").scan('a')((e1, e2) => (e2 + 2).toChar) shouldBe IndexedSeq('a', '2')
   }
-  it should "have a scanLeft method" in {
+  /*it should "have a scanLeft method" in {
     NonEmptyString("1").scanLeft("0")(_ + _) shouldBe Vector("0", "01")
     NonEmptyString("123").scanLeft("0")(_ + _) shouldBe Vector("0", "01", "012", "0123")
     NonEmptyString("123").scanLeft(0)(_ + _.toString.toInt) shouldBe Vector(0, 1, 3, 6)
