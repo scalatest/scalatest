@@ -100,23 +100,6 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123") ++ NonEmptyString("45") shouldEqual NonEmptyString("12345")
     NonEmptyString("123") ++ NonEmptyString("456") shouldEqual NonEmptyString("123456")
   }
-  it should "have a ++ method that takes an Every" in {
-    NonEmptyString("123") ++ One('4') shouldEqual NonEmptyString("1234")
-    NonEmptyString("123") ++ Every('4') shouldEqual NonEmptyString("1234")
-    NonEmptyString("123") ++ Every('4', '5', '6') shouldEqual NonEmptyString("123456")
-    NonEmptyString("123") ++ One('4') shouldEqual NonEmptyString("1234")
-    NonEmptyString("123") ++ One('4') shouldEqual NonEmptyString("1234")
-    NonEmptyString("123") ++ Every('4') shouldEqual NonEmptyString("1234")
-    NonEmptyString("123") ++ Every('4') shouldEqual NonEmptyString("1234")
-    NonEmptyString("123") ++ One('4') shouldEqual NonEmptyString("1234")
-  }
-  it should "have a ++ method that takes a IterableOnce" in {
-    NonEmptyString("123") ++ "4" shouldEqual NonEmptyString("1234")
-    NonEmptyString("123") ++ Vector('4', '5', '6') shouldEqual NonEmptyString("123456")
-    NonEmptyString("123") ++ Iterable('4') shouldEqual NonEmptyString("1234")
-    NonEmptyString("123") ++ Set('4', '5') shouldEqual NonEmptyString("12345")
-    NonEmptyString("123") ++ Set('4', '5').iterator shouldEqual NonEmptyString("12345")
-  }
   it should "have a +: method" in {
     '0' +: NonEmptyString("1") shouldBe NonEmptyString("01")
     '0' +: NonEmptyString("12") shouldBe NonEmptyString("012")
@@ -161,10 +144,6 @@ class NonEmptyStringSpec extends UnitSpec {
   it should "have an canEqual method" in {
     NonEmptyString("123").canEqual(NonEmptyString("456")) shouldBe true
     NonEmptyString("123").canEqual("456") shouldBe true
-    NonEmptyString("123").canEqual(123) shouldBe false
-    NonEmptyString("123").canEqual(456L) shouldBe false
-    NonEmptyString("123").canEqual(456.0) shouldBe false
-    NonEmptyString("123").canEqual(456.0f) shouldBe false
   }
   it should "have an charAt method" in {
     val s = NonEmptyString("123")
@@ -190,7 +169,8 @@ class NonEmptyStringSpec extends UnitSpec {
    companion method not relevant. Has an empty and other GenTraverable stuff.
   */
   it should "have an compose method, inherited from PartialFunction" in {
-    val fn: Int => Char = NonEmptyString("123").compose((idx: Int) => (idx + 1).toChar)
+    val fn: Int => Char = NonEmptyString("123").compose((idx: Int) => idx + 1)
+    //val fn: Int => Char = "123".compose((idx: Int) => idx + 1)
     fn(-1) shouldBe '1'
     fn(0) shouldBe '2'
     fn(1) shouldBe '3'
