@@ -1015,10 +1015,6 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("12345").startsWith(NonEmptyString("345"), 2) shouldBe true
     NonEmptyString("12345").startsWith(NonEmptyString("3456"), 2) shouldBe false
   }
-  /*it should "have a stringPrefix method" in {
-    NonEmptyString("1").stringPrefix shouldBe "NonEmptyString"
-    NonEmptyString("123").stringPrefix shouldBe "NonEmptyString"
-  }
   it should "have a sum method" in {
     NonEmptyString("1").sum shouldBe 49
     NonEmptyString("5").sum shouldBe 53
@@ -1091,16 +1087,6 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("ab").toIterator shouldBe an [Iterator[_]]
     NonEmptyString("1").toIterator shouldBe an [Iterator[_]]
   }
-  it should "have a toString method" in {
-    NonEmptyString("123").toString should === ("NonEmptyString(123)")
-    NonEmptyString("ab").toString should === ("NonEmptyString(ab)")
-    NonEmptyString("1").toString should === ("NonEmptyString(1)")
-  }
-  it should "have a toMap method" in {
-    NonEmptyString("123").toMap should === (Map(0 -> '1', 1 -> '2', 2 -> '3'))
-    NonEmptyString("ab").toMap should === (Map(0 -> 'a', 1 -> 'b'))
-    NonEmptyString("1").toMap should === (Map(0 -> '1'))
-  }
   it should "have a toSeq method" in {
     NonEmptyString("123").toSeq should === (Seq('1', '2', '3'))
     NonEmptyString("ab").toSeq should === (Seq('a', 'b'))
@@ -1122,36 +1108,36 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("1").toVector should === (Vector('1'))
   }
   it should "have a union method that takes a GenSeq" in {
-    NonEmptyString("1") union List('1') shouldBe NonEmptyString("11")
-    NonEmptyString("1") union List('1', '2') shouldBe NonEmptyString("112")
-    NonEmptyString("12") union List('1', '2') shouldBe NonEmptyString("1212")
-    NonEmptyString("12") union List('1') shouldBe NonEmptyString("121")
-    NonEmptyString("12") union List('3', '4', '5') shouldBe NonEmptyString("12345")
-    NonEmptyString("123") union List('3', '4', '5') shouldBe NonEmptyString("123345")
+    NonEmptyString("1") union List('1') shouldBe Seq('1', '1')
+    NonEmptyString("1") union List('1', '2') shouldBe Seq('1', '1', '2')
+    NonEmptyString("12") union List('1', '2') shouldBe Seq('1', '2', '1', '2')
+    NonEmptyString("12") union List('1') shouldBe Seq('1', '2', '1')
+    NonEmptyString("12") union List('3', '4', '5') shouldBe Seq('1', '2', '3', '4', '5')
+    NonEmptyString("123") union List('3', '4', '5') shouldBe Seq('1', '2', '3', '3', '4', '5')
   }
   it should "have a union method that takes an Every" in {
-    NonEmptyString("1") union Every('1') shouldBe NonEmptyString("11")
-    NonEmptyString("1") union Every('1', '2') shouldBe NonEmptyString("112")
-    NonEmptyString("12") union Every('1', '2') shouldBe NonEmptyString("1212")
-    NonEmptyString("12") union Every('1') shouldBe NonEmptyString("121")
-    NonEmptyString("12") union Every('3', '4', '5') shouldBe NonEmptyString("12345")
-    NonEmptyString("123") union Every('3', '4', '5') shouldBe NonEmptyString("123345")
+    NonEmptyString("1") union Every('1') shouldBe Seq('1', '1')
+    NonEmptyString("1") union Every('1', '2') shouldBe Seq('1', '1', '2')
+    NonEmptyString("12") union Every('1', '2') shouldBe Seq('1', '2', '1', '2')
+    NonEmptyString("12") union Every('1') shouldBe Seq('1', '2', '1')
+    NonEmptyString("12") union Every('3', '4', '5') shouldBe Seq('1', '2', '3', '4', '5')
+    NonEmptyString("123") union Every('3', '4', '5') shouldBe Seq('1', '2', '3', '3', '4', '5')
   }
   it should "have a union method that takes a NonEmptyString" in {
-    NonEmptyString("1") union NonEmptyString("1") shouldBe NonEmptyString("11")
-    NonEmptyString("1") union NonEmptyString("12") shouldBe NonEmptyString("112")
-    NonEmptyString("12") union NonEmptyString("12") shouldBe NonEmptyString("1212")
-    NonEmptyString("12") union NonEmptyString("1") shouldBe NonEmptyString("121")
-    NonEmptyString("12") union NonEmptyString("345") shouldBe NonEmptyString("12345")
-    NonEmptyString("123") union NonEmptyString("345") shouldBe NonEmptyString("123345")
+    NonEmptyString("1") union NonEmptyString("1") shouldBe Seq('1', '1')
+    NonEmptyString("1") union NonEmptyString("12") shouldBe Seq('1', '1', '2')
+    NonEmptyString("12") union NonEmptyString("12") shouldBe Seq('1', '2', '1', '2')
+    NonEmptyString("12") union NonEmptyString("1") shouldBe Seq('1', '2', '1')
+    NonEmptyString("12") union NonEmptyString("345") shouldBe Seq('1', '2', '3', '4', '5')
+    NonEmptyString("123") union NonEmptyString("345") shouldBe Seq('1', '2', '3', '3', '4', '5')
   }
   it should "have a union method that takes a String" in {
-    NonEmptyString("1") union "1" shouldBe NonEmptyString("11")
-    NonEmptyString("1") union "12" shouldBe NonEmptyString("112")
-    NonEmptyString("12") union "12" shouldBe NonEmptyString("1212")
-    NonEmptyString("12") union "1" shouldBe NonEmptyString("121")
-    NonEmptyString("12") union "345" shouldBe NonEmptyString("12345")
-    NonEmptyString("123") union "345" shouldBe NonEmptyString("123345")
+    NonEmptyString("1") union "1" shouldBe Seq('1', '1')
+    NonEmptyString("1") union "12" shouldBe Seq('1', '1', '2')
+    NonEmptyString("12") union "12" shouldBe Seq('1', '2', '1', '2')
+    NonEmptyString("12") union "1" shouldBe Seq('1', '2', '1')
+    NonEmptyString("12") union "345" shouldBe Seq('1', '2', '3', '4', '5')
+    NonEmptyString("123") union "345" shouldBe Seq('1', '2', '3', '3', '4', '5')
   }
   it should "have an unzip method" in {
     implicit def test(c: Char): (Int, Char) = (c.toInt, c)
@@ -1229,6 +1215,6 @@ class NonEmptyStringSpec extends UnitSpec {
   it should "have a zipWithIndex method" in {
     NonEmptyString("99").zipWithIndex shouldBe Iterable(('9', 0), ('9', 1))
     NonEmptyString("12345").zipWithIndex shouldBe Iterable(('1', 0), ('2', 1), ('3', 2), ('4', 3), ('5', 4))
-  }*/
+  }
 }
 
