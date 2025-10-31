@@ -266,6 +266,14 @@ object NonEmptyStrings {
       def addString(sb: StringBuilder, start: String, sep: String, end: String): StringBuilder = new StringOps(nonEmptyString).addString(sb, start, sep, end)
 
       /**
+        * Tests whether this <code>NonEmptyString</code> can be compared for equality with the given object.
+        *
+        * @param that the object to test
+        * @return true if this <code>NonEmptyString</code> can be compared for equality with <code>that</code>, false otherwise.
+        */
+      def canEqual(that: Any): Boolean = that.isInstanceOf[NonEmptyString] || that.isInstanceOf[String]
+
+      /**
         * Creates and returns a new iterator over all characters contained in this <code>NonEmptyString</code>.
         *
         * @return the new iterator
