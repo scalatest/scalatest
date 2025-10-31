@@ -231,13 +231,12 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("12345").copyToArray(arr3, 1, 2)
     arr3 shouldEqual Array('a', '1', '2', 'a', 'a')
   }
-  /*it should "have a copyToBuffer method" in {
-
+  it should "have a copyToBuffer method" in {
     val buf = ListBuffer.fill(3)('a')
     NonEmptyString("12345").copyToBuffer(buf)
     buf shouldEqual Buffer('a', 'a', 'a', '1', '2', '3', '4', '5')
   }
-  it should "have a corresponds method that takes a GenSeq" in {
+  /*it should "have a corresponds method that takes a GenSeq" in {
     val nonEmptyString = NonEmptyString("12345")
     nonEmptyString.corresponds(List(2, 4, 6, 8, 10))(_.toString.toInt * 2 == _) shouldBe true
     nonEmptyString.corresponds(List(2, 4, 6, 8, 11))(_.toString.toInt * 2 == _) shouldBe false

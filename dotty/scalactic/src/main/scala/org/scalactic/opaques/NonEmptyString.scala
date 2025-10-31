@@ -340,7 +340,7 @@ object NonEmptyStrings {
         *
         * @param buf the buffer to which characters are copied
         */
-      def copyToBuffer(buf: Buffer[Char]): Unit = nonEmptyString.copyToBuffer(buf)
+      def copyToBuffer(buf: Buffer[Char]): Unit = nonEmptyString.toList.copyToBuffer(buf)
 
       /**
         * Indicates whether every character of this <code>NonEmptyString</code> relates to the corresponding element of a given <code>GenSeq</code> by satisfying a given predicate.
@@ -351,7 +351,7 @@ object NonEmptyStrings {
         * @return true if this <code>NonEmptyString</code> and the passed <code>GenSeq</code> have the same length and <code>p(x, y)</code> is <code>true</code>
         *     for all corresponding elements <code>x</code> of this <code>NonEmptyString</code> and <code>y</code> of that, otherwise <code>false</code>.
         */
-      def corresponds[B](that: GenSeq[B])(p: (Char, B) => Boolean): Boolean = nonEmptyString.corresponds(that)(p)
+      //def corresponds[B](that: GenSeq[B])(p: (Char, B) => Boolean): Boolean = nonEmptyString.corresponds(that)(p)
 
       /**
         * Indicates whether every character of this <code>NonEmptyString</code> relates to the corresponding element of a given <code>Every</code> by satisfying a given predicate.
@@ -362,7 +362,7 @@ object NonEmptyStrings {
         * @return true if this <code>NonEmptyString</code> and the passed <code>Every</code> have the same length and <code>p(x, y)</code> is <code>true</code>
         *     for all corresponding elements <code>x</code> of this <code>NonEmptyString</code> and <code>y</code> of that, otherwise <code>false</code>.
         */
-      def corresponds[B](that: Every[B])(p: (Char, B) => Boolean): Boolean = nonEmptyString.corresponds(that.toVector)(p)
+      //def corresponds[B](that: Every[B])(p: (Char, B) => Boolean): Boolean = nonEmptyString.corresponds(that.toVector)(p)
 
       /**
         * Indicates whether every character of this <code>NonEmptyString</code> relates to the corresponding character of a given <code>NonEmptyString</code> by satisfying a given predicate.
@@ -372,7 +372,7 @@ object NonEmptyStrings {
         * @return true if this and the passed <code>NonEmptyString</code> have the same length and <code>p(x, y)</code> is <code>true</code>
         *     for all corresponding characters <code>x</code> of this <code>NonEmptyString</code> and <code>y</code> of that, otherwise <code>false</code>.
         */
-      def corresponds(that: NonEmptyString)(p: (Char, Char) => Boolean): Boolean = nonEmptyString.corresponds(that)(p)
+      //def corresponds(that: NonEmptyString)(p: (Char, Char) => Boolean): Boolean = nonEmptyString.corresponds(that)(p)
 
       /**
         * Creates and returns a new iterator over all characters contained in this <code>NonEmptyString</code>.
