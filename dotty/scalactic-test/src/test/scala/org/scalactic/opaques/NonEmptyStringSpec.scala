@@ -423,7 +423,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("1").grouped(2).toList shouldBe List(NonEmptyString("1"))
     NonEmptyString("1").grouped(1).toList shouldBe List(NonEmptyString("1"))
   }
-  /*it should "have a hasDefiniteSize method" in {
+  it should "have a hasDefiniteSize method" in {
     NonEmptyString("1").hasDefiniteSize shouldBe true
     NonEmptyString("12").hasDefiniteSize shouldBe true
   }
@@ -439,7 +439,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("hi").headOption shouldBe Some('h')
     NonEmptyString("123").headOption shouldBe Some('1')
   }
-  it should "have 2 indexOf methods" in {
+  /*it should "have 2 indexOf methods" in {
     NonEmptyString("12345").indexOf('3') shouldBe 2
     NonEmptyString("12345").indexOf('1') shouldBe 0
     NonEmptyString("12345").indexOf('1', 2) shouldBe -1

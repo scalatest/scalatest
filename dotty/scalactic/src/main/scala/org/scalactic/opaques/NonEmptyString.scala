@@ -541,6 +541,31 @@ object NonEmptyStrings {
         else
           throw new IllegalArgumentException(Resources.invalidSize(size))
       }
+
+      /**
+        * Returns <code>true</code> to indicate this <code>NonEmptyString</code> has a definite size, since all <code>NonEmptyString</code>s are strict collections.
+        */
+      def hasDefiniteSize: Boolean = true
+
+      // override def hashCode: Int = toString.hashCode
+
+      /**
+        * Selects the first character of this <code>NonEmptyString</code>.
+        *
+        * @return the first character of this <code>NonEmptyString</code>.
+        */
+      def head: Char = nonEmptyString.charAt(0) // Can never be empty, so safe
+
+      // Methods like headOption I can't get rid of because of the implicit conversion to Iterable.
+      // Users can call any of the methods I've left out on a NonEmptyString, and get whatever String would return
+      // for that method call. Eventually I'll probably implement them all to save the implicit conversion.
+
+      /**
+        * Selects the first character of this <code>NonEmptyString</code> and returns it wrapped in a <code>Some</code>.
+        *
+        * @return the first character of this <code>NonEmptyString</code>, wrapped in a <code>Some</code>.
+        */
+      def headOption: Option[Char] = Some(head)
     }
   }
 }
