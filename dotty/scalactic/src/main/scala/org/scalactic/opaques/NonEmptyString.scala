@@ -437,6 +437,59 @@ object NonEmptyStrings {
         new StringOps(nonEmptyString).map { c =>
           f(c).toString
         }.mkString
+
+      /**
+        * Folds the characters of this <code>NonEmptyString</code> using the specified associative binary operator.
+        *
+        * <p>
+        * The order in which operations are performed on characters is unspecified and may be nondeterministic.
+        * </p>
+        *
+        * @param z a neutral character for the fold operation; may be added to the result an arbitrary number of
+        *     times, and must not change the result (<em>e.g.</em>, <code>Nil</code> for list concatenation,
+        *     0 for addition, or 1 for multiplication.)
+        * @param op a binary operator that must be associative
+        * @return the result of applying fold operator <code>op</code> between all the elements and <code>z</code>
+        */
+      def fold(z: Char)(op: (Char, Char) => Char): Char = new StringOps(nonEmptyString).fold(z)(op)
+
+      /**
+        * Applies a binary operator to a start value and all characters of this <code>NonEmptyString</code>, going left to right.
+        *
+        * @tparam B the result type of the binary operator.
+        * @param z the start value.
+        * @param op the binary operator.
+        * @return the result of inserting <code>op</code> between consecutive characters of this <code>NonEmptyString</code>, going left to right, with the start value,
+        *     <code>z</code>, on the left:
+        *
+        * <pre>
+        * op(...op(op(z, x_1), x_2), ..., x_n)
+        * </pre>
+        *
+        * <p>
+        * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyString</code>. 
+        * </p>
+        */
+      def foldLeft[B](z: B)(op: (B, Char) => B): B = new StringOps(nonEmptyString).foldLeft(z)(op)
+
+      /**
+        * Applies a binary operator to all characters of this <code>NonEmptyString</code> and a start value, going right to left.
+        *
+        * @tparam B the result of the binary operator
+        * @param z the start value
+        * @param op the binary operator
+        * @return the result of inserting <code>op</code> between consecutive characters of this <code>NonEmptyString</code>, going right to left, with the start value,
+        *     <code>z</code>, on the right:
+        *
+        * <pre>
+        * op(x_1, op(x_2, ... op(x_n, z)...))
+        * </pre>
+        *
+        * <p>
+        * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyString</code>. 
+        * </p>
+        */
+      def foldRight[B](z: B)(op: (Char, B) => B): B = new StringOps(nonEmptyString).foldRight(z)(op)  
     }  
   }
 }
