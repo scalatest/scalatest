@@ -111,7 +111,7 @@ class NonEmptyStringSpec extends UnitSpec {
     '0' +: NonEmptyString("12") shouldBe NonEmptyString("012")
     '0' +: NonEmptyString("onetwo") shouldBe NonEmptyString("0onetwo")
   }
-  /*it should "have a isDefinedAt method" in {
+  it should "have a isDefinedAt method" in {
     val pf1 = NonEmptyString("1")
     pf1.isDefinedAt(0) shouldBe true
     pf1.isDefinedAt(1) shouldBe false
@@ -132,7 +132,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").addString(new StringBuilder, "<", "#", ">") shouldBe new StringBuilder("<1#2#3>")
     NonEmptyString("123").addString(new StringBuilder, " ( ", ", ", " ) ") shouldBe new StringBuilder(" ( 1, 2, 3 ) ")
   }
-  it should "have an andThen method (inherited from PartialFunction)" in {
+  /*it should "have an andThen method (inherited from PartialFunction)" in {
     val pf1 = NonEmptyString("1") andThen (_ + 1)
     pf1(0) shouldEqual 50
     val pf2 = NonEmptyString("123") andThen (_ + 1)

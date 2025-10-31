@@ -188,7 +188,7 @@ object NonEmptyStrings {
     given Conversion[NonEmptyString, PartialFunction[Int, Char]] with {
       def apply(nonEmptyString: NonEmptyString): PartialFunction[Int, Char] =
         new PartialFunction[Int, Char] {
-          def isDefinedAt(idx: Int): Boolean = nonEmptyString.isDefinedAt(idx)
+          def isDefinedAt(idx: Int): Boolean = idx >= 0 && idx < nonEmptyString.length
           def apply(idx: Int): Char = nonEmptyString.charAt(idx)
         }
     }
@@ -219,6 +219,51 @@ object NonEmptyStrings {
         * @return a new <code>NonEmptyString</code> that contains this <code>NonEmptyString</code> followed by <code>other</code>.
         */
       def ++(other: IterableOnce[Char]): NonEmptyString = nonEmptyString + other.mkString
+
+      /**
+        * Returns a new <code>NonEmptyString</code> with the given character appended.
+        *
+        * <p>
+        * Note a mnemonic for <code>+:</code> <em>vs.</em> <code>:+</code> is: the COLon goes on the COLlection side.
+        * </p>
+        *
+        * @param c the character to append to this <code>NonEmptyString</code>
+        * @return a new <code>NonEmptyString</code> consisting of all characters of this <code>NonEmptyString</code> followed by the given <code>c</code>.
+        */
+      def :+(c: Char): NonEmptyString = new NonEmptyString(new StringOps(nonEmptyString) :+ c)
+
+      /**
+        * Appends all characters of this <code>NonEmptyString</code> to a string builder. The written text will consist of a concatenation of the result of invoking <code>toString</code>
+        * on of every element of this <code>NonEmptyString</code>, without any separator string.
+        *
+        * @param sb the string builder to which characters will be appended
+        * @return the string builder, <code>sb</code>, to which elements were appended.
+        */
+      def addString(sb: StringBuilder): StringBuilder = new StringOps(nonEmptyString).addString(sb)
+
+      /**
+        * Appends all characters of this <code>NonEmptyString</code> to a string builder using a separator string. The written text will consist of a concatenation of the
+        * result of invoking <code>toString</code>
+        * on of every character of this <code>NonEmptyString</code>, separated by the string <code>sep</code>.
+        *
+        * @param sb the string builder to which characters will be appended
+        * @param sep the separator string
+        * @return the string builder, <code>sb</code>, to which characters were appended.
+        */
+      def addString(sb: StringBuilder, sep: String): StringBuilder = new StringOps(nonEmptyString).addString(sb, sep)
+
+      /**
+        * Appends all characters of this <code>NonEmptyString</code> to a string builder using start, end, and separator strings. The written text will consist of a concatenation of
+        * the string <code>start</code>; the result of invoking <code>toString</code> on all characters of this <code>NonEmptyString</code>,
+        * separated by the string <code>sep</code>; and the string <code>end</code>
+        *
+        * @param sb the string builder to which characters will be appended
+        * @param start the starting string
+        * @param sep the separator string
+        * @param end the ending string
+        * @return the string builder, <code>sb</code>, to which characters were appended.
+        */
+      def addString(sb: StringBuilder, start: String, sep: String, end: String): StringBuilder = new StringOps(nonEmptyString).addString(sb, start, sep, end)
 
       /**
         * Creates and returns a new iterator over all characters contained in this <code>NonEmptyString</code>.
