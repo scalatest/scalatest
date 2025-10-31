@@ -394,7 +394,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").foldRight("0")(_ + _.toString) shouldBe "1230"
     NonEmptyString("123").foldRight(1)(_.toString.toInt + _) shouldBe 7
   }
-  /*it should "have a forall method" in {
+  it should "have a forall method" in {
     NonEmptyString("12345").forall(_.toString.toInt > 0) shouldBe true
     NonEmptyString("12345").forall(_.toString.toInt < 0) shouldBe false
   }
@@ -408,7 +408,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("5") foreach (num *= _.toString.toInt)
     num shouldBe 60
   }
-  it should "have a groupBy method" in {
+  /*it should "have a groupBy method" in {
     NonEmptyString("12345").groupBy(_.toString.toInt % 2) shouldBe Map(1 -> NonEmptyString("135"), 0 -> NonEmptyString("24"))
     NonEmptyString("12333").groupBy(_.toString.toInt % 2) shouldBe Map(1 -> NonEmptyString("1333"), 0 -> NonEmptyString("2"))
     NonEmptyString("11333").groupBy(_.toString.toInt % 2) shouldBe Map(1 -> NonEmptyString("11333"))

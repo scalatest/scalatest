@@ -490,6 +490,21 @@ object NonEmptyStrings {
         * </p>
         */
       def foldRight[B](z: B)(op: (Char, B) => B): B = new StringOps(nonEmptyString).foldRight(z)(op)  
-    }  
+
+      /**
+        * Indicates whether a predicate holds for all characters of this <code>NonEmptyString</code>.
+        *
+        * @param p the predicate used to test characters.
+        * @return <code>true</code> if the given predicate <code>p</code> holds for all characters of this <code>NonEmptyString</code>, otherwise <code>false</code>.
+        */
+      def forall(p: Char => Boolean): Boolean = new StringOps(nonEmptyString).forall(p)
+
+      /**
+        * Applies a function <code>f</code> to all characters of this <code>NonEmptyString</code>.
+        *
+        * @param f the function that is applied for its side-effect to every character. The result of function <code>f</code> is discarded.
+        */
+      def foreach(f: Char => Unit): Unit = new StringOps(nonEmptyString).foreach(f)
+    }
   }
 }
