@@ -184,7 +184,7 @@ class NonEmptyStringSpec extends UnitSpec {
   */
   // SKIP-DOTTY-START
   it should "have an compose method, inherited from PartialFunction" in {
-    val fn: Int => Char = NonEmptyString("123").compose((idx: Int) => (idx + 1).toChar)
+    val fn: Int => Char = NonEmptyString("123").compose((idx: Int) => idx + 1)
     fn(-1) shouldBe '1'
     fn(0) shouldBe '2'
     fn(1) shouldBe '3'
