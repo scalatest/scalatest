@@ -274,6 +274,23 @@ object NonEmptyStrings {
       def canEqual(that: Any): Boolean = that.isInstanceOf[NonEmptyString] || that.isInstanceOf[String]
 
       /**
+        * Gets a character by its index in the <code>NonEmptyString</code>.
+        *
+        * @return the character of this <code>NonEmptyString</code> at index <code>idx</code>, where 0 indicates the first element.
+        */
+      def charAt(idx: Int): Char = nonEmptyString.charAt(idx)
+
+      /**
+        * Finds the first character of this <code>NonEmptyString</code> for which the given partial function is defined, if any, and applies the partial function to it.
+        *
+        * @param pf the partial function
+        * @return an <code>Option</code> containing <code>pf</code> applied to the first character for which it is defined, or <code>None</code> if
+        *    the partial function was not defined for any character.
+        */
+      def collectFirst[U](pf: PartialFunction[Char, U]): Option[U] = 
+        nonEmptyString.find(c => pf.isDefinedAt(c)).map(c => pf(c))
+
+      /**
         * Creates and returns a new iterator over all characters contained in this <code>NonEmptyString</code>.
         *
         * @return the new iterator

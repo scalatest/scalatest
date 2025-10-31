@@ -151,7 +151,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").canEqual(NonEmptyString("456")) shouldBe true
     NonEmptyString("123").canEqual("456") shouldBe true
   }
-  /*it should "have an charAt method" in {
+  it should "have an charAt method" in {
     val s = NonEmptyString("123")
     s.charAt(0) shouldBe '1'
     s.charAt(1) shouldBe '2'
@@ -182,7 +182,7 @@ class NonEmptyStringSpec extends UnitSpec {
     fn(1) shouldBe '3'
     //fn(2) shouldBe '4'
   }
-  it should "have a contains method" in {
+  /*it should "have a contains method" in {
     val e = NonEmptyString("123")
     e.contains('5') shouldBe false
     e.contains('0') shouldBe false
