@@ -408,7 +408,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("5") foreach (num *= _.toString.toInt)
     num shouldBe 60
   }
-  /*it should "have a groupBy method" in {
+  it should "have a groupBy method" in {
     NonEmptyString("12345").groupBy(_.toString.toInt % 2) shouldBe Map(1 -> NonEmptyString("135"), 0 -> NonEmptyString("24"))
     NonEmptyString("12333").groupBy(_.toString.toInt % 2) shouldBe Map(1 -> NonEmptyString("1333"), 0 -> NonEmptyString("2"))
     NonEmptyString("11333").groupBy(_.toString.toInt % 2) shouldBe Map(1 -> NonEmptyString("11333"))
@@ -423,7 +423,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("1").grouped(2).toList shouldBe List(NonEmptyString("1"))
     NonEmptyString("1").grouped(1).toList shouldBe List(NonEmptyString("1"))
   }
-  it should "have a hasDefiniteSize method" in {
+  /*it should "have a hasDefiniteSize method" in {
     NonEmptyString("1").hasDefiniteSize shouldBe true
     NonEmptyString("12").hasDefiniteSize shouldBe true
   }

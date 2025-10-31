@@ -19,6 +19,7 @@ import scala.collection.{GenSeq, StringOps}
 import scala.collection.mutable.Buffer
 import org.scalactic.Every
 import scala.annotation.targetName
+import org.scalactic.Resources
 
 object NonEmptyStrings {
   /**
@@ -505,6 +506,41 @@ object NonEmptyStrings {
         * @param f the function that is applied for its side-effect to every character. The result of function <code>f</code> is discarded.
         */
       def foreach(f: Char => Unit): Unit = new StringOps(nonEmptyString).foreach(f)
+
+      /**
+        * Partitions this <code>NonEmptyString</code> into a map of <code>NonEmptyString</code>s according to some discriminator function.
+        *
+        * @tparam K the type of keys returned by the discriminator function.
+        * @param f the discriminator function.
+        * @return A map from keys to <code>NonEmptyString</code>s such that the following invariant holds:
+        *
+        * <pre>
+        * (nonEmptyString.toString partition f)(k) = xs filter (x =&gt; f(x) == k)
+        * </pre>
+        *
+        * <p>
+        * That is, every key <code>k</code> is bound to a <code>NonEmptyString</code> of those elements <code>x</code> for which <code>f(x)</code> equals <code>k</code>.
+        * </p>
+        */
+      def groupBy[K](f: Char => K): Map[K, NonEmptyString] = {
+        val mapKToString = new StringOps(nonEmptyString).groupBy(f)
+        mapKToString.mapValues { list => new NonEmptyString(list) }.toMap
+      }
+
+      /**
+        * Partitions characters into fixed size <code>NonEmptyString</code>s.
+        *
+        * @param size the number of characters per group
+        * @return An iterator producing <code>NonEmptyString</code>s of size <code>size</code>, except the last will be truncated if the characters don't divide evenly.
+        */
+      def grouped(size: Int): Iterator[NonEmptyString] = {
+        if (size > 0) {
+          val itOfString = new StringOps(nonEmptyString).grouped(size)
+          itOfString.map { list => new NonEmptyString(list) }
+        }
+        else
+          throw new IllegalArgumentException(Resources.invalidSize(size))
+      }
     }
   }
 }
