@@ -291,6 +291,22 @@ object NonEmptyStrings {
         nonEmptyString.find(c => pf.isDefinedAt(c)).map(c => pf(c))
 
       /**
+        * Indicates whether this <code>NonEmptyString</code> contains a given value as an character.
+        *
+        * @param c the element to look for
+        * @return true if this <code>NonEmptyString</code> has an character that is equal (as determined by <code>==)</code> to <code>c</code>, false otherwise.
+        */
+      def contains(c: Char): Boolean = nonEmptyString.indexOf(c) >= 0  
+
+      /**
+        * Indicates whether this <code>NonEmptyString</code> contains a given <code>IterableOnce</code> of characters as a slice.
+        *
+        * @param that the <code>IterableOnce</code> character slice to look for
+        * @return true if this <code>NonEmptyString</code> contains a slice with the same characters as <code>that</code>, otherwise <code>false</code>.
+        */
+      def containsSlice(that: IterableOnce[Char]): Boolean = nonEmptyString.indexOf(that.mkString) >= 0
+
+      /**
         * Creates and returns a new iterator over all characters contained in this <code>NonEmptyString</code>.
         *
         * @return the new iterator

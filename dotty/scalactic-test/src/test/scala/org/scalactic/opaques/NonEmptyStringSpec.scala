@@ -182,7 +182,7 @@ class NonEmptyStringSpec extends UnitSpec {
     fn(1) shouldBe '3'
     //fn(2) shouldBe '4'
   }
-  /*it should "have a contains method" in {
+  it should "have a contains method" in {
     val e = NonEmptyString("123")
     e.contains('5') shouldBe false
     e.contains('0') shouldBe false
@@ -217,7 +217,7 @@ class NonEmptyStringSpec extends UnitSpec {
     nonEmptyString.containsSlice(NonEmptyString("235")) shouldBe false
     nonEmptyString.containsSlice(NonEmptyString("3")) shouldBe true
   }
-  it should "have 3 copyToArray methods" in {
+  /*it should "have 3 copyToArray methods" in {
 
     val arr1 = Array.fill(5)('a')
     NonEmptyString("12345").copyToArray(arr1)
