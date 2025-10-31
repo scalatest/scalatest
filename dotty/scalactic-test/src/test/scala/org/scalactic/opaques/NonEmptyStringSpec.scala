@@ -96,11 +96,16 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("12").length shouldBe 2
     NonEmptyString("12345").length shouldBe 5
   }
-  /*it should "have a ++ method that takes another NonEmptyString" in {
+  it should "have a ++ method that takes String" in {
+    NonEmptyString("123") ++ "4" shouldEqual NonEmptyString("1234")
+    NonEmptyString("123") ++ "45" shouldEqual NonEmptyString("12345")
+    NonEmptyString("123") ++ "456" shouldEqual NonEmptyString("123456")
+  }
+  it should "have a ++ method that takes another NonEmptyString" in {
     NonEmptyString("123") ++ NonEmptyString("4") shouldEqual NonEmptyString("1234")
     NonEmptyString("123") ++ NonEmptyString("45") shouldEqual NonEmptyString("12345")
     NonEmptyString("123") ++ NonEmptyString("456") shouldEqual NonEmptyString("123456")
-  }
+  }/*
   it should "have a +: method" in {
     '0' +: NonEmptyString("1") shouldBe NonEmptyString("01")
     '0' +: NonEmptyString("12") shouldBe NonEmptyString("012")

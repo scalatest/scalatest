@@ -183,7 +183,7 @@ object NonEmptyStrings {
       seq.headOption match {
         case None => None
         case Some(first) => Some(NonEmptyString(seq.mkString))
-      }
+      }  
 
     given Conversion[NonEmptyString, PartialFunction[Int, Char]] with {
       def apply(nonEmptyString: NonEmptyString): PartialFunction[Int, Char] =
@@ -193,7 +193,29 @@ object NonEmptyStrings {
         }
     }
 
+    given Conversion[NonEmptyString, IterableOnce[Char]] with {
+      def apply(nonEmptyString: NonEmptyString): IterableOnce[Char] =
+        new IterableOnce[Char] {
+          def iterator: Iterator[Char] = nonEmptyString.iterator
+        }
+    }
+
     extension (nonEmptyString: NonEmptyString) {
+
+      /**
+        * Returns a new <code>NonEmptyString</code> containing this <code>NonEmptyString</code> followed by the passed <code>NonEmptyString</code>.
+        *
+        * @param other the <code>NonEmptyString</code> to append
+        * @return a new <code>NonEmptyString</code> that contains this <code>NonEmptyString</code> followed by <code>other</code>.
+        */
+      def ++(other: IterableOnce[Char]): NonEmptyString = nonEmptyString + other.mkString
+
+      /**
+        * Creates and returns a new iterator over all characters contained in this <code>NonEmptyString</code>.
+        *
+        * @return the new iterator
+        */
+      def iterator: Iterator[Char] = nonEmptyString.toList.iterator
 
       /**
         * Selects a character by its index in the <code>NonEmptyString</code>.
