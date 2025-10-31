@@ -217,7 +217,7 @@ class NonEmptyStringSpec extends UnitSpec {
     nonEmptyString.containsSlice(NonEmptyString("235")) shouldBe false
     nonEmptyString.containsSlice(NonEmptyString("3")) shouldBe true
   }
-  /*it should "have 3 copyToArray methods" in {
+  it should "have 3 copyToArray methods" in {
 
     val arr1 = Array.fill(5)('a')
     NonEmptyString("12345").copyToArray(arr1)
@@ -231,7 +231,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("12345").copyToArray(arr3, 1, 2)
     arr3 shouldEqual Array('a', '1', '2', 'a', 'a')
   }
-  it should "have a copyToBuffer method" in {
+  /*it should "have a copyToBuffer method" in {
 
     val buf = ListBuffer.fill(3)('a')
     NonEmptyString("12345").copyToBuffer(buf)

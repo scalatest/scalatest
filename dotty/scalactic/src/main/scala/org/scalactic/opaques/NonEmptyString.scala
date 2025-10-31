@@ -16,6 +16,7 @@
 package org.scalactic.opaques
 
 import scala.collection.{GenSeq, StringOps}
+import scala.collection.mutable.Buffer
 import org.scalactic.Every
 import scala.annotation.targetName
 
@@ -305,6 +306,73 @@ object NonEmptyStrings {
         * @return true if this <code>NonEmptyString</code> contains a slice with the same characters as <code>that</code>, otherwise <code>false</code>.
         */
       def containsSlice(that: IterableOnce[Char]): Boolean = nonEmptyString.indexOf(that.mkString) >= 0
+
+      /**
+        * Copies characters of this <code>NonEmptyString</code> to an array. Fills the given array <code>arr</code> with characters of this <code>NonEmptyString</code>. Copying
+        * will stop once either the end of the current <code>NonEmptyString</code> is reached, or the end of the array is reached.
+        *
+        * @param arr the array to fill
+        */
+      def copyToArray(arr: Array[Char]): Unit = new StringOps(nonEmptyString).copyToArray(arr, 0)
+
+      /**
+        * Copies characters of this <code>NonEmptyString</code> to an array. Fills the given array <code>arr</code> with characters of this <code>NonEmptyString</code>, beginning at
+        * index <code>start</code>. Copying will stop once either the end of the current <code>NonEmptyString</code> is reached, or the end of the array is reached.
+        *
+        * @param arr the array to fill
+        * @param start the starting index
+        */
+      def copyToArray(arr: Array[Char], start: Int): Unit = new StringOps(nonEmptyString).copyToArray(arr, start)
+
+      /**
+        * Copies characters of this <code>NonEmptyString</code> to an array. Fills the given array <code>arr</code> with at most <code>len</code> characters of this <code>NonEmptyString</code>, beginning at
+        * index <code>start</code>. Copying will stop once either the end of the current <code>NonEmptyString</code> is reached, the end of the array is reached, or
+        * <code>len</code> elements have been copied.
+        *
+        * @param arr the array to fill
+        * @param start the starting index
+        * @param len the maximum number of elements to copy
+        */
+      def copyToArray(arr: Array[Char], start: Int, len: Int): Unit = new StringOps(nonEmptyString).copyToArray(arr, start, len)
+
+      /**
+        * Copies all characters of this <code>NonEmptyString</code> to a buffer.
+        *
+        * @param buf the buffer to which characters are copied
+        */
+      def copyToBuffer(buf: Buffer[Char]): Unit = nonEmptyString.copyToBuffer(buf)
+
+      /**
+        * Indicates whether every character of this <code>NonEmptyString</code> relates to the corresponding element of a given <code>GenSeq</code> by satisfying a given predicate.
+        *
+        * @tparam B the type of the elements of <code>that</code>
+        * @param that the <code>GenSeq</code> to compare for correspondence
+        * @param p the predicate, which relates elements from this <code>NonEmptyString</code> and the passed <code>GenSeq</code>
+        * @return true if this <code>NonEmptyString</code> and the passed <code>GenSeq</code> have the same length and <code>p(x, y)</code> is <code>true</code>
+        *     for all corresponding elements <code>x</code> of this <code>NonEmptyString</code> and <code>y</code> of that, otherwise <code>false</code>.
+        */
+      def corresponds[B](that: GenSeq[B])(p: (Char, B) => Boolean): Boolean = nonEmptyString.corresponds(that)(p)
+
+      /**
+        * Indicates whether every character of this <code>NonEmptyString</code> relates to the corresponding element of a given <code>Every</code> by satisfying a given predicate.
+        *
+        * @tparam B the type of the elements of <code>that</code>
+        * @param that the <code>Every</code> to compare for correspondence
+        * @param p the predicate, which relates elements from this <code>NonEmptyString</code> and the passed <code>Every</code>
+        * @return true if this <code>NonEmptyString</code> and the passed <code>Every</code> have the same length and <code>p(x, y)</code> is <code>true</code>
+        *     for all corresponding elements <code>x</code> of this <code>NonEmptyString</code> and <code>y</code> of that, otherwise <code>false</code>.
+        */
+      def corresponds[B](that: Every[B])(p: (Char, B) => Boolean): Boolean = nonEmptyString.corresponds(that.toVector)(p)
+
+      /**
+        * Indicates whether every character of this <code>NonEmptyString</code> relates to the corresponding character of a given <code>NonEmptyString</code> by satisfying a given predicate.
+        *
+        * @param that the <code>NonEmptyString</code> to compare for correspondence
+        * @param p the predicate, which relates elements from this and the passed <code>NonEmptyString</code>
+        * @return true if this and the passed <code>NonEmptyString</code> have the same length and <code>p(x, y)</code> is <code>true</code>
+        *     for all corresponding characters <code>x</code> of this <code>NonEmptyString</code> and <code>y</code> of that, otherwise <code>false</code>.
+        */
+      def corresponds(that: NonEmptyString)(p: (Char, Char) => Boolean): Boolean = nonEmptyString.corresponds(that)(p)
 
       /**
         * Creates and returns a new iterator over all characters contained in this <code>NonEmptyString</code>.
