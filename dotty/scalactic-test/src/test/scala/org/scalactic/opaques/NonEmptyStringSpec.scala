@@ -264,7 +264,7 @@ class NonEmptyStringSpec extends UnitSpec {
     nonEmptyString.corresponds("246")(_.toString.toInt * 2 == _.toString.toInt) shouldBe false
     nonEmptyString.corresponds("24689")(_.toString.toInt * 2 == _.toString.toInt) shouldBe false
   }
-  /*it should "have a count method" in {
+  it should "have a count method" in {
     val nonEmptyString = NonEmptyString("12345")
     nonEmptyString.count(_.toString.toInt > 10) shouldBe 0
     nonEmptyString.count(_.toString.toInt % 2 == 0) shouldBe 2
@@ -295,7 +295,7 @@ class NonEmptyStringSpec extends UnitSpec {
     scala> Vector(1, 2, 3).dropWhile(_ < 10)
     res2: scala.collection.immutable.Vector[Int] = Vector()
   */
-  it should "have an endsWith method that takes a String" in {
+  /*it should "have an endsWith method that takes a String" in {
     NonEmptyString("1").endsWith("1") shouldBe true
     NonEmptyString("1").endsWith("12") shouldBe false
     NonEmptyString("12").endsWith("12") shouldBe true

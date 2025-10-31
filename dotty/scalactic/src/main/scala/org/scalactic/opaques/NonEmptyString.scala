@@ -354,6 +354,21 @@ object NonEmptyStrings {
       def corresponds[B](that: IterableOnce[B])(p: (Char, B) => Boolean): Boolean = nonEmptyString.toList.corresponds(that)(p)
 
       /**
+        * Counts the number of characters in this <code>NonEmptyString</code> that satisfy a predicate.
+        *
+        * @param p the predicate used to test characters.
+        * @return the number of characters satisfying the predicate <code>p</code>.
+        */
+      def count(p: Char => Boolean): Int = new StringOps(nonEmptyString).count(p)
+
+      /**
+        * Builds a new <code>NonEmptyString</code> from this <code>NonEmptyString</code> without any duplicate characters.
+        *
+        * @return A new <code>NonEmptyString</code> that contains the first occurrence of every character of this <code>NonEmptyString</code>.
+        */
+      def distinct: NonEmptyString = new StringOps(nonEmptyString).distinct
+
+      /**
         * Creates and returns a new iterator over all characters contained in this <code>NonEmptyString</code>.
         *
         * @return the new iterator
