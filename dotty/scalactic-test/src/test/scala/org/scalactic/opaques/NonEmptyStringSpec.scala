@@ -105,13 +105,13 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123") ++ NonEmptyString("4") shouldEqual NonEmptyString("1234")
     NonEmptyString("123") ++ NonEmptyString("45") shouldEqual NonEmptyString("12345")
     NonEmptyString("123") ++ NonEmptyString("456") shouldEqual NonEmptyString("123456")
-  }/*
+  }
   it should "have a +: method" in {
     '0' +: NonEmptyString("1") shouldBe NonEmptyString("01")
     '0' +: NonEmptyString("12") shouldBe NonEmptyString("012")
     '0' +: NonEmptyString("onetwo") shouldBe NonEmptyString("0onetwo")
   }
-  it should "have a isDefinedAt method" in {
+  /*it should "have a isDefinedAt method" in {
     val pf1 = NonEmptyString("1")
     pf1.isDefinedAt(0) shouldBe true
     pf1.isDefinedAt(1) shouldBe false

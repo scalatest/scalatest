@@ -200,6 +200,16 @@ object NonEmptyStrings {
         }
     }
 
+    extension [T] (other: Char) {
+      /**
+        * Returns a new <code>NonEmptyString</code> containing the passed <code>Char</code> followed by this <code>NonEmptyString</code>.
+        *
+        * @param theString the <code>NonEmptyString</code> to append
+        * @return a new <code>NonEmptyString</code> that contains <code>other</code> followed by this <code>NonEmptyString</code>.
+        */
+      def +:(theString: NonEmptyString): NonEmptyString = NonEmptyString(other.toString ++ theString.toString)
+    }  
+
     extension (nonEmptyString: NonEmptyString) {
 
       /**
