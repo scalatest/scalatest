@@ -407,7 +407,36 @@ object NonEmptyStrings {
         * @param p the predicate used to test characters.
         * @return <code>true</code> if the given predicate <code>p</code> holds for some of the elements of this <code>NonEmptyString</code>, otherwise <code>false</code>. 
         */
-      final def exists(p: Char => Boolean): Boolean = new StringOps(nonEmptyString).exists(p)
+      def exists(p: Char => Boolean): Boolean = new StringOps(nonEmptyString).exists(p)
+
+      /**
+        * Finds the first character of this <code>NonEmptyString</code> that satisfies the given predicate, if any.
+        *
+        * @param p the predicate used to test characters
+        * @return an <code>Some</code> containing the first character in this <code>NonEmptyString</code> that satisfies <code>p</code>, or <code>None</code> if none exists.
+        */
+      def find(p: Char => Boolean): Option[Char] = new StringOps(nonEmptyString).find(p)
+
+      /**
+        * Builds a new <code>NonEmptyString</code> by applying a function to all characters of this <code>NonEmptyString</code> and using the characters of the resulting <code>NonEmptyString</code>s.
+        *
+        * @param f the function to apply to each character.
+        * @return a new <code>NonEmptyString</code> containing characters obtained by applying the given function <code>f</code> to each character of this <code>NonEmptyString</code> and concatenating
+        *    the characters of resulting <code>NonEmptyString</code>s.
+        */
+      def flatMap(f: Char => NonEmptyString): NonEmptyString = new StringOps(nonEmptyString).flatMap(f)
+
+      /**
+        * Builds a new <code>NonEmptyString</code> by applying a function to all characters of this <code>NonEmptyString</code>.
+        *
+        * @tparam U the character type of the returned <code>NonEmptyString</code>.
+        * @param f the function to apply to each character.
+        * @return a new <code>NonEmptyString</code> resulting from applying the given function <code>f</code> to each character of this <code>NonEmptyString</code> and collecting the results.
+        */
+      def map[U](f: Char => U): NonEmptyString =
+        new StringOps(nonEmptyString).map { c =>
+          f(c).toString
+        }.mkString
     }  
   }
 }

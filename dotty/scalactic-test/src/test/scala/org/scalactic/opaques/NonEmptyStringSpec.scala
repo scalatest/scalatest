@@ -352,7 +352,7 @@ class NonEmptyStringSpec extends UnitSpec {
     scala> Vector(1, 2, 3).filterNot(_ < 10)
     res13: scala.collection.immutable.Vector[Int] = Vector()
   */
-  /*it should "have a find method" in {
+  it should "have a find method" in {
     NonEmptyString("123").find(_ == '5') shouldBe None
     NonEmptyString("123").find(_ == '2') shouldBe Some('2')
   }
@@ -360,11 +360,11 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123") flatMap (i => NonEmptyString(i.toString + "1")) shouldBe NonEmptyString("112131")
     val ss = NonEmptyString("hiho")
     val is = NonEmptyString("123")
-    val res: Seq[NonEmptyString] = 
-    (for (s <- ss;
+    val res = //: Seq[NonEmptyString] = 
+      (for (s <- ss;
           i <- is) yield
-      NonEmptyString(s.toString + i.toString)) 
-    res.mkString shouldBe NonEmptyString("h1h2h3i1i2i3h1h2h3o1o2o3")
+        NonEmptyString(s.toString + i.toString)) 
+    res/*.mkString*/ shouldBe NonEmptyString("h1h2h3i1i2i3h1h2h3o1o2o3")
     NonEmptyString("5") flatMap (i => NonEmptyString(i + "3")) shouldBe NonEmptyString("53")
     NonEmptyString("8") flatMap (i => NonEmptyString(i.toString)) shouldBe NonEmptyString("8")
   }
@@ -372,7 +372,7 @@ class NonEmptyStringSpec extends UnitSpec {
     Vector(NonEmptyString("123"), NonEmptyString("123")).flatten shouldBe Vector('1', '2', '3', '1', '2', '3')
     List(NonEmptyString("123"), NonEmptyString("123")).flatten shouldBe List('1', '2', '3', '1', '2', '3')
   }
-  it should "have a fold method" in {
+  /*it should "have a fold method" in {
     NonEmptyString("1").fold('0')((e1, e2) => (e1.toString.toInt + e2.toString.toInt).toString.charAt(0)) shouldBe '1'
     NonEmptyString("1").fold('1')((e1, e2) => (e1.toString.toInt * e2.toString.toInt).toString.charAt(0)) shouldBe '1'
     NonEmptyString("2").fold('0')((e1, e2) => (e1.toString.toInt + e2.toString.toInt).toString.charAt(0)) shouldBe '2'
