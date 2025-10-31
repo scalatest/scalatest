@@ -343,36 +343,15 @@ object NonEmptyStrings {
       def copyToBuffer(buf: Buffer[Char]): Unit = nonEmptyString.toList.copyToBuffer(buf)
 
       /**
-        * Indicates whether every character of this <code>NonEmptyString</code> relates to the corresponding element of a given <code>GenSeq</code> by satisfying a given predicate.
+        * Indicates whether every character of this <code>NonEmptyString</code> relates to the corresponding element of a given <code>IterableOnce</code> by satisfying a given predicate.
         *
         * @tparam B the type of the elements of <code>that</code>
-        * @param that the <code>GenSeq</code> to compare for correspondence
-        * @param p the predicate, which relates elements from this <code>NonEmptyString</code> and the passed <code>GenSeq</code>
-        * @return true if this <code>NonEmptyString</code> and the passed <code>GenSeq</code> have the same length and <code>p(x, y)</code> is <code>true</code>
+        * @param that the <code>IterableOnce</code> to compare for correspondence
+        * @param p the predicate, which relates elements from this <code>NonEmptyString</code> and the passed <code>IterableOnce</code>
+        * @return true if this <code>NonEmptyString</code> and the passed <code>IterableOnce</code> have the same length and <code>p(x, y)</code> is <code>true</code>
         *     for all corresponding elements <code>x</code> of this <code>NonEmptyString</code> and <code>y</code> of that, otherwise <code>false</code>.
         */
-      //def corresponds[B](that: GenSeq[B])(p: (Char, B) => Boolean): Boolean = nonEmptyString.corresponds(that)(p)
-
-      /**
-        * Indicates whether every character of this <code>NonEmptyString</code> relates to the corresponding element of a given <code>Every</code> by satisfying a given predicate.
-        *
-        * @tparam B the type of the elements of <code>that</code>
-        * @param that the <code>Every</code> to compare for correspondence
-        * @param p the predicate, which relates elements from this <code>NonEmptyString</code> and the passed <code>Every</code>
-        * @return true if this <code>NonEmptyString</code> and the passed <code>Every</code> have the same length and <code>p(x, y)</code> is <code>true</code>
-        *     for all corresponding elements <code>x</code> of this <code>NonEmptyString</code> and <code>y</code> of that, otherwise <code>false</code>.
-        */
-      //def corresponds[B](that: Every[B])(p: (Char, B) => Boolean): Boolean = nonEmptyString.corresponds(that.toVector)(p)
-
-      /**
-        * Indicates whether every character of this <code>NonEmptyString</code> relates to the corresponding character of a given <code>NonEmptyString</code> by satisfying a given predicate.
-        *
-        * @param that the <code>NonEmptyString</code> to compare for correspondence
-        * @param p the predicate, which relates elements from this and the passed <code>NonEmptyString</code>
-        * @return true if this and the passed <code>NonEmptyString</code> have the same length and <code>p(x, y)</code> is <code>true</code>
-        *     for all corresponding characters <code>x</code> of this <code>NonEmptyString</code> and <code>y</code> of that, otherwise <code>false</code>.
-        */
-      //def corresponds(that: NonEmptyString)(p: (Char, Char) => Boolean): Boolean = nonEmptyString.corresponds(that)(p)
+      def corresponds[B](that: IterableOnce[B])(p: (Char, B) => Boolean): Boolean = nonEmptyString.toList.corresponds(that)(p)
 
       /**
         * Creates and returns a new iterator over all characters contained in this <code>NonEmptyString</code>.

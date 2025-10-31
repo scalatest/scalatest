@@ -236,7 +236,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("12345").copyToBuffer(buf)
     buf shouldEqual Buffer('a', 'a', 'a', '1', '2', '3', '4', '5')
   }
-  /*it should "have a corresponds method that takes a GenSeq" in {
+  it should "have a corresponds method that takes a GenSeq" in {
     val nonEmptyString = NonEmptyString("12345")
     nonEmptyString.corresponds(List(2, 4, 6, 8, 10))(_.toString.toInt * 2 == _) shouldBe true
     nonEmptyString.corresponds(List(2, 4, 6, 8, 11))(_.toString.toInt * 2 == _) shouldBe false
@@ -257,7 +257,14 @@ class NonEmptyStringSpec extends UnitSpec {
     nonEmptyString.corresponds(NonEmptyString("246"))(_.toString.toInt * 2 == _.toString.toInt) shouldBe false
     nonEmptyString.corresponds(NonEmptyString("24689"))(_.toString.toInt * 2 == _.toString.toInt) shouldBe false
   }
-  it should "have a count method" in {
+  it should "have a corresponds method that takes a String" in {
+    val nonEmptyString = NonEmptyString("1234")
+    nonEmptyString.corresponds("2468")(_.toString.toInt * 2 == _.toString.toInt) shouldBe true
+    nonEmptyString.corresponds("2469")(_.toString.toInt * 2 == _.toString.toInt) shouldBe false
+    nonEmptyString.corresponds("246")(_.toString.toInt * 2 == _.toString.toInt) shouldBe false
+    nonEmptyString.corresponds("24689")(_.toString.toInt * 2 == _.toString.toInt) shouldBe false
+  }
+  /*it should "have a count method" in {
     val nonEmptyString = NonEmptyString("12345")
     nonEmptyString.count(_.toString.toInt > 10) shouldBe 0
     nonEmptyString.count(_.toString.toInt % 2 == 0) shouldBe 2
