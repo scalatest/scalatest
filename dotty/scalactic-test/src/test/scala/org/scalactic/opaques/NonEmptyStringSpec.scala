@@ -295,7 +295,7 @@ class NonEmptyStringSpec extends UnitSpec {
     scala> Vector(1, 2, 3).dropWhile(_ < 10)
     res2: scala.collection.immutable.Vector[Int] = Vector()
   */
-  /*it should "have an endsWith method that takes a String" in {
+  it should "have an endsWith method that takes a String" in {
     NonEmptyString("1").endsWith("1") shouldBe true
     NonEmptyString("1").endsWith("12") shouldBe false
     NonEmptyString("12").endsWith("12") shouldBe true
@@ -334,7 +334,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("12345").endsWith(NonEmptyString("5")) shouldBe true
     NonEmptyString("12345").endsWith(NonEmptyString("345")) shouldBe true
   }
-  it should "have an equals method" in {
+  /*it should "have an equals method" in {
     NonEmptyString("1") shouldEqual NonEmptyString("1")
     NonEmptyString("1") should not equal NonEmptyString("2")
     NonEmptyString("12") should not equal NonEmptyString("23")
