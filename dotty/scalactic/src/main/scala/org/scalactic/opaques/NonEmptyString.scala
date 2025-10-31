@@ -143,7 +143,7 @@ object NonEmptyStrings {
     * </pre>
     *
     */
-  opaque type NonEmptyString <: String = String
+  opaque type NonEmptyString = String
 
   /**
     * Companion object for class <code>NonEmptyString</code>.
@@ -185,7 +185,34 @@ object NonEmptyStrings {
         case Some(first) => Some(NonEmptyString(seq.mkString))
       }
 
+    given Conversion[NonEmptyString, PartialFunction[Int, Char]] with {
+      def apply(nonEmptyString: NonEmptyString): PartialFunction[Int, Char] =
+        new PartialFunction[Int, Char] {
+          def isDefinedAt(idx: Int): Boolean = nonEmptyString.isDefinedAt(idx)
+          def apply(idx: Int): Char = nonEmptyString.charAt(idx)
+        }
+    }
+
     extension (nonEmptyString: NonEmptyString) {
+
+      /**
+        * Selects a character by its index in the <code>NonEmptyString</code>.
+        *
+        * @return the character of this <code>NonEmptyString</code> at index <code>idx</code>, where 0 indicates the first element.
+        */
+      //def apply(idx: Int): Char = nonEmptyString(idx)
+
+      /**
+        * The length of this <code>NonEmptyString</code>.
+        *
+        * <p>
+        * Note: <code>length</code> and <code>size</code> yield the same result, which will be <code>&gt;</code>= 1. 
+        * </p>
+        *
+        * @return the number of characters in this <code>NonEmptyString</code>.
+        */
+      def length: Int = nonEmptyString.toString.length
+
       /**
         * Indicates whether this <code>NonEmptyString</code> ends with the given <code>Every</code>.
         *
