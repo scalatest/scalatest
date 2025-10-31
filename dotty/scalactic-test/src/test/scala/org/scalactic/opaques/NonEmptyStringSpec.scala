@@ -334,10 +334,10 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("12345").endsWith(NonEmptyString("5")) shouldBe true
     NonEmptyString("12345").endsWith(NonEmptyString("345")) shouldBe true
   }
-  /*it should "have an equals method" in {
-    NonEmptyString("1") shouldEqual NonEmptyString("1")
-    NonEmptyString("1") should not equal NonEmptyString("2")
-    NonEmptyString("12") should not equal NonEmptyString("23")
+  it should "have an equals method" in {
+    NonEmptyString("1") equals NonEmptyString("1") shouldBe true
+    NonEmptyString("1") equals NonEmptyString("2") shouldBe false
+    NonEmptyString("12") equals NonEmptyString("23") shouldBe false
   }
   it should "have an exists method" in {
     NonEmptyString("123").exists(_ == '2') shouldBe true
@@ -352,7 +352,7 @@ class NonEmptyStringSpec extends UnitSpec {
     scala> Vector(1, 2, 3).filterNot(_ < 10)
     res13: scala.collection.immutable.Vector[Int] = Vector()
   */
-  it should "have a find method" in {
+  /*it should "have a find method" in {
     NonEmptyString("123").find(_ == '5') shouldBe None
     NonEmptyString("123").find(_ == '2') shouldBe Some('2')
   }

@@ -400,6 +400,14 @@ object NonEmptyStrings {
         * @return <code>true</code> if this <code>NonEmptyString</code> has <code>that</code> as a suffix, <code>false</code> otherwise. 
         */
       def endsWith(that: IterableOnce[Char]): Boolean = nonEmptyString.endsWith(that.mkString)
+
+      /**
+        * Indicates whether a predicate holds for at least one of the characters of this <code>NonEmptyString</code>.
+        *
+        * @param p the predicate used to test characters.
+        * @return <code>true</code> if the given predicate <code>p</code> holds for some of the elements of this <code>NonEmptyString</code>, otherwise <code>false</code>. 
+        */
+      final def exists(p: Char => Boolean): Boolean = new StringOps(nonEmptyString).exists(p)
     }  
   }
 }
