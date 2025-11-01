@@ -566,6 +566,44 @@ object NonEmptyStrings {
         * @return the first character of this <code>NonEmptyString</code>, wrapped in a <code>Some</code>.
         */
       def headOption: Option[Char] = Some(head)
+
+      /**
+        * Finds index of first occurrence of some value in this <code>NonEmptyString</code>.
+        *
+        * @param c the character value to search for.
+        * @return the index of the first character of this <code>NonEmptyString</code> that is equal (as determined by <code>==</code>) to <code>c</code>,
+        *     or <code>-1</code>, if none exists.
+        */
+      def indexOf(c: Char): Int = nonEmptyString.toList.indexOf(c, 0)
+
+      /**
+        * Finds index of first occurrence of some value in this <code>NonEmptyString</code> after or at some start index.
+        *
+        * @param c the character value to search for.
+        * @param from the start index
+        * @return the index <code>&gt;=</code> <code>from</code> of the first element of this <code>NonEmptyString</code> that is equal (as determined by <code>==</code>) to <code>elem</code>,
+        *     or <code>-1</code>, if none exists.
+        */
+      def indexOf(c: Char, from: Int): Int = nonEmptyString.toList.indexOf(c, from)
+
+      /**
+        * Finds first index where this <code>NonEmptyString</code> contains a given <code>IterableOnce[Char]</code> as a slice.
+        *
+        * @param that the <code>IterableOnce[Char]</code> defining the slice to look for
+        * @return the first index at which the elements of this <code>NonEmptyString</code> starting at that index match the characters of
+        *     <code>IterableOnce</code> <code>that</code>, or <code>-1</code> of no such subsequence exists.
+        */
+      def indexOfSlice(that: IterableOnce[Char]): Int = nonEmptyString.toIndexedSeq.indexOfSlice(that.mkString)
+
+      /**
+        * Finds first index after or at a start index where this <code>NonEmptyString</code> contains a given <code>IterableOnce[Char]</code> as a slice.
+        *
+        * @param that the <code>IterableOnce[Char]</code> defining the slice to look for
+        * @param from the start index
+        * @return the first index <code>&gt;=</code> <code>from</code> at which the characters of this <code>NonEmptyString</code> starting at that index match the characters of
+        *     <code>IterableOnce[Char]</code> <code>that</code>, or <code>-1</code> of no such subsequence exists.
+        */
+      def indexOfSlice(that: IterableOnce[Char], from: Int): Int = nonEmptyString.toIndexedSeq.indexOfSlice(that.mkString, from)
     }
   }
 }

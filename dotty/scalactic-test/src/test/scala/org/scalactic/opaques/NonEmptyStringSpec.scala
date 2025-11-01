@@ -439,7 +439,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("hi").headOption shouldBe Some('h')
     NonEmptyString("123").headOption shouldBe Some('1')
   }
-  /*it should "have 2 indexOf methods" in {
+  it should "have 2 indexOf methods" in {
     NonEmptyString("12345").indexOf('3') shouldBe 2
     NonEmptyString("12345").indexOf('1') shouldBe 0
     NonEmptyString("12345").indexOf('1', 2) shouldBe -1
@@ -516,7 +516,7 @@ class NonEmptyStringSpec extends UnitSpec {
     es.indexOfSlice(NonEmptyString("AB")) shouldBe -1
     // SKIP-DOTTY-END
   }
-  it should "have 2 indexWhere methods" in {
+  /*it should "have 2 indexWhere methods" in {
     NonEmptyString("12345").indexWhere(_ == '3') shouldBe 2
     NonEmptyString("12345").indexWhere(_ == '1') shouldBe 0
     NonEmptyString("12345").indexWhere(_ == '6') shouldBe -1
