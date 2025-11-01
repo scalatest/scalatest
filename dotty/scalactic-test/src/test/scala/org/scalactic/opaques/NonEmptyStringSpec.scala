@@ -514,9 +514,8 @@ class NonEmptyStringSpec extends UnitSpec {
     given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.indexOfSlice(NonEmptyString("ab")) shouldBe 0
     es.indexOfSlice(NonEmptyString("AB")) shouldBe -1
-    // SKIP-DOTTY-END
   }
-  /*it should "have 2 indexWhere methods" in {
+  it should "have 2 indexWhere methods" in {
     NonEmptyString("12345").indexWhere(_ == '3') shouldBe 2
     NonEmptyString("12345").indexWhere(_ == '1') shouldBe 0
     NonEmptyString("12345").indexWhere(_ == '6') shouldBe -1
@@ -561,7 +560,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("hi").iterator.toList shouldBe List('h', 'i')
     NonEmptyString("123").iterator.toList shouldBe List('1', '2', '3')
   }
-  it should "have a last method" in {
+  /*it should "have a last method" in {
     NonEmptyString("hi").last shouldBe 'i'
     NonEmptyString("123").last shouldBe '3'
   }

@@ -198,7 +198,7 @@ object NonEmptyStrings {
     given Conversion[NonEmptyString, IterableOnce[Char]] with {
       def apply(nonEmptyString: NonEmptyString): IterableOnce[Char] =
         new IterableOnce[Char] {
-          def iterator: Iterator[Char] = nonEmptyString.iterator
+          def iterator: Iterator[Char] = new StringOps(nonEmptyString).iterator
         }
     }
 
@@ -368,13 +368,6 @@ object NonEmptyStrings {
         * @return A new <code>NonEmptyString</code> that contains the first occurrence of every character of this <code>NonEmptyString</code>.
         */
       def distinct: NonEmptyString = new StringOps(nonEmptyString).distinct
-
-      /**
-        * Creates and returns a new iterator over all characters contained in this <code>NonEmptyString</code>.
-        *
-        * @return the new iterator
-        */
-      def iterator: Iterator[Char] = nonEmptyString.toList.iterator
 
       /**
         * Selects a character by its index in the <code>NonEmptyString</code>.
@@ -604,6 +597,46 @@ object NonEmptyStrings {
         *     <code>IterableOnce[Char]</code> <code>that</code>, or <code>-1</code> of no such subsequence exists.
         */
       def indexOfSlice(that: IterableOnce[Char], from: Int): Int = nonEmptyString.toIndexedSeq.indexOfSlice(that.mkString, from)
+
+      /**
+        * Finds index of the first character satisfying some predicate.
+        *
+        * @param p the predicate used to test characters.
+        * @return the index of the first character of this <code>NonEmptyString</code> that satisfies the predicate <code>p</code>,
+        *     or <code>-1</code>, if none exists.
+        */
+      def indexWhere(p: Char => Boolean): Int = new StringOps(nonEmptyString).indexWhere(p)
+
+      /**
+        * Finds index of the first character satisfying some predicate after or at some start index.
+        *
+        * @param p the predicate used to test characters.
+        * @param from the start index
+        * @return the index <code>&gt;=</code> <code>from</code> of the first character of this <code>NonEmptyString</code> that satisfies the predicate <code>p</code>,
+        *     or <code>-1</code>, if none exists.
+        */
+      def indexWhere(p: Char => Boolean, from: Int): Int = new StringOps(nonEmptyString).indexWhere(p, from)
+
+      /**
+        * Produces the range of all indices of this <code>NonEmptyString</code>. 
+        *
+        * @return a <code>Range</code> value from <code>0</code> to one less than the length of this <code>NonEmptyString</code>. 
+        */
+      def indices: Range = new StringOps(nonEmptyString).indices
+
+      /**
+        * Returns <code>false</code> to indicate this <code>NonEmptyString</code>, like all <code>NonEmptyString</code>s, is non-empty.
+        *
+        * @return false
+        */
+      def isEmpty: Boolean = false
+
+      /**
+        * Returns <code>true</code> to indicate this <code>NonEmptyString</code>, like all <code>NonEmptyString</code>s, can be traversed repeatedly.
+        *
+        * @return true
+        */
+      def isTraversableAgain: Boolean = true
     }
   }
 }
