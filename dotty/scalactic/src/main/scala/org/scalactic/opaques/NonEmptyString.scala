@@ -637,6 +637,13 @@ object NonEmptyStrings {
         * @return true
         */
       def isTraversableAgain: Boolean = true
+
+      /**
+        * Selects the last character of this <code>NonEmptyString</code>.
+        *
+        * @return the last character of this <code>NonEmptyString</code>.
+        */
+      def last: Char = if (length > 1) nonEmptyString.charAt(length - 1) else nonEmptyString.charAt(0) // Can never be empty, so safe
     }
   }
 }

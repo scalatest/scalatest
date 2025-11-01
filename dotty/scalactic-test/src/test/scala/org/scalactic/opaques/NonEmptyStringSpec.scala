@@ -560,11 +560,11 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("hi").iterator.toList shouldBe List('h', 'i')
     NonEmptyString("123").iterator.toList shouldBe List('1', '2', '3')
   }
-  /*it should "have a last method" in {
+  it should "have a last method" in {
     NonEmptyString("hi").last shouldBe 'i'
     NonEmptyString("123").last shouldBe '3'
   }
-  it should "have 2 lastIndexOf methods" in {
+  /*it should "have 2 lastIndexOf methods" in {
     NonEmptyString("12345").lastIndexOf('2') shouldBe 1
     NonEmptyString("123451").lastIndexOf('1') shouldBe 5
     NonEmptyString("12345").lastIndexOf('0') shouldBe -1
