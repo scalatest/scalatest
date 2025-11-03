@@ -596,7 +596,12 @@ object NonEmptyStrings {
         * @return the first index <code>&gt;=</code> <code>from</code> at which the characters of this <code>NonEmptyString</code> starting at that index match the characters of
         *     <code>IterableOnce[Char]</code> <code>that</code>, or <code>-1</code> of no such subsequence exists.
         */
-      def indexOfSlice(that: IterableOnce[Char], from: Int): Int = nonEmptyString.toIndexedSeq.indexOfSlice(that.mkString, from)
+      def indexOfSlice(that: IterableOnce[Char], from: Int): Int = {
+        val normalizedFrom = math.max(0, from)
+        val seq: Seq[Char] = nonEmptyString.toSeq
+        val searchSeq: Seq[Char] = that.iterator.toSeq
+        seq.indexOfSlice(searchSeq, normalizedFrom)
+      }
 
       /**
         * Finds index of the first character satisfying some predicate.

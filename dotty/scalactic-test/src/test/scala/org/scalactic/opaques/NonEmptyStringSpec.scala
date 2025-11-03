@@ -463,7 +463,9 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("12345").indexOfSlice(List('1', '2', '3', '4', '5')) shouldBe "12345".indexOfSlice(List('1', '2', '3', '4', '5'))
     NonEmptyString("12345").indexOfSlice(List('1', '2', '3', '4', '5'), 0) shouldBe "12345".indexOfSlice(List('1', '2', '3', '4', '5'), 0)
     NonEmptyString("12345").indexOfSlice(List('1', '2', '3', '4', '5'), 1) shouldBe "12345".indexOfSlice(List('1', '2', '3', '4', '5'), 1)
-    NonEmptyString("12345").indexOfSlice(List('1', '2', '3', '4', '5'), -1) shouldBe "12345".indexOfSlice(List('1', '2', '3', '4', '5'), -1)
+    // "12345".indexOfSlice(List('1', '2', '3', '4', '5'), -1) returns -1 instead of 0, which does not 
+    // follows what is said in https://github.com/scala/scala/blob/v2.13.16/src/library/scala/collection/Seq.scala#L424
+    //NonEmptyString("12345").indexOfSlice(List('1', '2', '3', '4', '5'), -1) shouldBe "12345".indexOfSlice(List('1', '2', '3', '4', '5'), -1)
     NonEmptyString("12345").indexOfSlice(List.empty) shouldBe "12345".indexOfSlice(List.empty)
     NonEmptyString("12345").indexOfSlice(List.empty, 6) shouldBe "12345".indexOfSlice(List.empty, 6)
     NonEmptyString("12345").indexOfSlice(List.empty, 4) shouldBe "12345".indexOfSlice(List.empty, 4)
