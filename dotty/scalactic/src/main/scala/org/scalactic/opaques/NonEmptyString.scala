@@ -1107,6 +1107,35 @@ object NonEmptyStrings {
         * @return a <code>NonEmptyString</code> consisting of the characters of this <code>NonEmptyString</code> sorted according to the ordering defined by <code>ord</code>.
         */
       def sorted(implicit ord: Ordering[Char]): NonEmptyString = new StringOps(nonEmptyString).sorted(ord)
+
+      /**
+        * Indicates whether this <code>NonEmptyString</code> starts with the given <code>IterableOnce</code>. 
+        *
+        * @param that the <code>IterableOnce</code> slice to look for in this <code>NonEmptyString</code>
+        * @return <code>true</code> if this <code>NonEmptyString</code> has <code>that</code> as a prefix, <code>false</code> otherwise.
+        */
+      def startsWith(that: IterableOnce[Char]): Boolean = nonEmptyString.toList.startsWith(that)
+
+      /**
+        * Indicates whether this <code>NonEmptyString</code> starts with the given <code>IterableOnce</code> at the given index. 
+        *
+        * @param that the <code>IterableOnce</code> slice to look for in this <code>NonEmptyString</code>
+        * @param offset the index at which this <code>NonEmptyString</code> is searched.
+        * @return <code>true</code> if this <code>NonEmptyString</code> has <code>that</code> as a slice at the index <code>offset</code>, <code>false</code> otherwise.
+        */
+      def startsWith(that: IterableOnce[Char], offset: Int): Boolean = nonEmptyString.toList.startsWith(that.toVector, offset)
+
+      /**
+        * The result of summing all the characters of this <code>NonEmptyString</code>.
+        *
+        * <p>
+        * This method can be invoked for any <code>NonEmptyString</code> for which an implicit <code>Numeric[Char]</code> exists.
+        * </p>
+        *
+        * @return the sum of all elements
+        */
+      def sum(using num: Numeric[Char]): Long = nonEmptyString.toList.sum(num)
+
     }
   }
 }

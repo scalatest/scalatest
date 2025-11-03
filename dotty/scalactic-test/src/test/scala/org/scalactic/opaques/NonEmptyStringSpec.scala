@@ -1019,7 +1019,7 @@ class NonEmptyStringSpec extends UnitSpec {
     scala> Vector(1, 2, 3, 4, 5).splitAt(0)
     res106: (scala.collection.immutable.Vector[Int], scala.collection.immutable.Vector[Int]) = (Vector(),Vector(1, 2, 3, 4, 5))
   */
-  /*it should "have 2 startsWith methods that take a String" in {
+  it should "have 2 startsWith methods that take a String" in {
     NonEmptyString("123").startsWith("1") shouldBe true
     NonEmptyString("123").startsWith("12") shouldBe true
     NonEmptyString("123").startsWith("123") shouldBe true
@@ -1100,7 +1100,7 @@ class NonEmptyStringSpec extends UnitSpec {
       scala> Vector(1).takeWhile(_ > 10)
       res18: scala.collection.immutable.Vector[Int] = Vector()
   */
-  it should "have a to method" in {
+  /*it should "have a to method" in {
     import org.scalactic.ColCompatHelper.Factory._
     NonEmptyString("1").to(List) shouldBe List('1')
     NonEmptyString("123").to(List) shouldBe List('1', '2', '3')
