@@ -811,6 +811,44 @@ object NonEmptyStrings {
         */
       def patch(from: Int, that: NonEmptyString, replaced: Int): NonEmptyString =
         new StringOps(nonEmptyString).patch(from, that, replaced)
+
+      /**
+        * Iterates over distinct permutations. 
+        *
+        * <p>
+        * Here's an example:
+        * </p>
+        *
+        * <pre class="stHighlight">
+        * NonEmptyString("abb").permutations.toList == list(NonEmptyString("abb"), NonEmptyString("bab"), NonEmptyString("bba"))
+        * </pre>
+        *
+        * @return an iterator that traverses the distinct permutations of this <code>NonEmptyString</code>.
+        */
+      def permutations: Iterator[NonEmptyString] = {
+        val it = new StringOps(nonEmptyString).permutations
+        it map { list => new NonEmptyString(list) }
+      }
+
+      /**
+        * Returns the length of the longest prefix whose characters all satisfy some predicate.
+        *
+        * @param p the predicate used to test characters.
+        * @return the length of the longest prefix of this <code>NonEmptyString</code> such that every characters
+        *     of the segment satisfies the predicate <code>p</code>. 
+        */
+      def prefixLength(p: Char => Boolean): Int = nonEmptyString.toList.prefixLength(p)
+
+      /**
+        * The result of multiplying all the characters of this <code>NonEmptyString</code>.
+        *
+        * <p>
+        * This method can be invoked for any <code>NonEmptyString</code> for which an implicit <code>Numeric[T]</code> exists.
+        * </p>
+        *
+        * @return the product of all elements
+        */
+      def product(using num: Numeric[Char]): Char = nonEmptyString.toList.product(num)  
     }
   }
 }

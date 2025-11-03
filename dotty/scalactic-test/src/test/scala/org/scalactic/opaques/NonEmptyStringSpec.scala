@@ -794,7 +794,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("12345").patch(0, NonEmptyString("ab"), 2) shouldBe NonEmptyString("ab345")
     NonEmptyString("12345").patch(0, NonEmptyString("ab"), 3) shouldBe NonEmptyString("ab45")
   }
-  /*it should "have a permutations method" in {
+  it should "have a permutations method" in {
     NonEmptyString("123").permutations.toStream shouldBe Stream(NonEmptyString("123"), NonEmptyString("132"), NonEmptyString("213"), NonEmptyString("231"), NonEmptyString("312"), NonEmptyString("321"))
     NonEmptyString("1").permutations.toStream shouldBe Stream(NonEmptyString("1"))
     NonEmptyString("12").permutations.toStream shouldBe Stream(NonEmptyString("12"), NonEmptyString("21"))
@@ -812,7 +812,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("345").product.toInt shouldBe 9484
     NonEmptyString("354").product.toInt shouldBe 9484
   }
-  it should "have a reduce method" in {
+  /*it should "have a reduce method" in {
     NonEmptyString("12345").reduce((c1, c2) => (c1 + c2).toChar).toInt shouldBe 255
     NonEmptyString("12345").reduce((c1, c2) => (c1 * c2).toChar).toInt shouldBe 36056
     NonEmptyString("5").reduce((c1, c2) => (c1 + c2).toChar).toInt shouldBe 53
