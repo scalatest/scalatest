@@ -964,7 +964,71 @@ object NonEmptyStrings {
         * @return <code>true</code>, if both this <code>NonEmptyString</code> and the given <code>IterableOnce</code> contain the same characters
         *     in the same order, <code>false</code> otherwise. 
         */
-      final def sameElements(that: IterableOnce[Char]): Boolean = nonEmptyString.toList.sameElements(that)
+      def sameElements(that: IterableOnce[Char]): Boolean = nonEmptyString.toList.sameElements(that)
+
+      /**
+        * Computes a prefix scan of the characters of this <code>NonEmptyString</code>.
+        *
+        * <p>
+        * Note: The neutral character z may be applied more than once.
+        * </p>
+        *
+        * <p>
+        * Here are some examples:
+        * </p>
+        *
+        * <pre class="stHighlight">
+        * NonEmptyString("123").scan(0)(_ + _) == NonEmptyString(0, 1, 3, 6)
+        * NonEmptyString("123").scan("z")(_ + _.toString) == NonEmptyString("z", "z1", "z12", "z123")
+        * </pre>
+        *
+        * @param z a neutral element for the scan operation; may be added to the result an arbitrary number of
+        *     times, and must not change the result (<em>e.g.</em>, <code>Nil</code> for list concatenation,
+        *     0 for addition, or 1 for multiplication.)
+        * @param op a binary operator that must be associative
+        * @return a new <code>NonEmptyString</code> containing the prefix scan of the elements in this <code>NonEmptyString</code> 
+        */
+      def scan(z: Char)(op: (Char, Char) => Char): NonEmptyString = nonEmptyString.toList.scan(z)(op).mkString
+
+      /**
+        * Produces a <code>NonEmptyString</code> containing cumulative results of applying the operator going left to right.
+        *
+        * <p>
+        * Here are some examples:
+        * </p>
+        *
+        * <pre class="stHighlight">
+        * NonEmptyString("123").scanLeft(0)(_ + _.toString.toInt) == Vector(0, 1, 3, 6)
+        * NonEmptyString("123").scanLeft("z")(_ + _) == Vector("z", "z1", "z12", "z123")
+        * </pre>
+        *
+        * @tparam B the result type of the binary operator and type of the resulting <code>NonEmptyString</code>
+        * @param z the start value.
+        * @param op the binary operator.
+        * @return a new <code>NonEmptyString</code> containing the intermediate results of inserting <code>op</code> between consecutive characters of this <code>NonEmptyString</code>,
+        *     going left to right, with the start value, <code>z</code>, on the left.
+        */
+      def scanLeft[B](z: B)(op: (B, Char) => B): Iterable[B] = nonEmptyString.toList.scanLeft(z)(op)
+
+      /**
+        * Produces a <code>NonEmptyString</code> containing cumulative results of applying the operator going right to left.
+        *
+        * <p>
+        * Here are some examples:
+        * </p>
+        *
+        * <pre class="stHighlight">
+        * NonEmptyString("123").scanRight(0)(_.toString.toInt + _) == NonEmptyString(6, 5, 3, 0)
+        * NonEmptyString("123").scanRight("z")(_ + _) == NonEmptyString("123z", "23z", "3z", "z")
+        * </pre>
+        *
+        * @tparam B the result of the binary operator and type of the resulting <code>NonEmptyString</code>
+        * @param z the start value
+        * @param op the binary operator
+        * @return a new <code>NonEmptyString</code> containing the intermediate results of inserting <code>op</code> between consecutive characters of this <code>NonEmptyString</code>,
+        *     going right to left, with the start value, <code>z</code>, on the right.
+        */
+      def scanRight[B](z: B)(op: (Char, B) => B): Iterable[B] = nonEmptyString.toList.scanRight(z)(op)
     }
   }
 }

@@ -923,11 +923,11 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("3").sameElements("1") shouldBe false
     NonEmptyString("3").sameElements("3") shouldBe true
   }
-  /*it should "have a scan method" in {
-    NonEmptyString("1").scan('0')((e1, e2) => (e1 + e2).toChar) shouldBe IndexedSeq('0', 'a')
-    NonEmptyString("123").scan('0')((e1, e2) => e2) shouldBe IndexedSeq('0', '1', '2', '3')
-    NonEmptyString("123").scan('z')((e1, e2) => (e2 + 1).toChar) shouldBe IndexedSeq('z', '2', '3', '4')
-    NonEmptyString("0").scan('a')((e1, e2) => (e2 + 2).toChar) shouldBe IndexedSeq('a', '2')
+  it should "have a scan method" in {
+    NonEmptyString("1").scan('0')((e1, e2) => (e1 + e2).toChar) shouldBe NonEmptyString("0a")
+    NonEmptyString("123").scan('0')((e1, e2) => e2) shouldBe NonEmptyString("0123")
+    NonEmptyString("123").scan('z')((e1, e2) => (e2 + 1).toChar) shouldBe NonEmptyString("z234")
+    NonEmptyString("0").scan('a')((e1, e2) => (e2 + 2).toChar) shouldBe NonEmptyString("a2")
   }
   it should "have a scanLeft method" in {
     NonEmptyString("1").scanLeft("0")(_ + _) shouldBe Vector("0", "01")
@@ -943,7 +943,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").scanRight("z")(_.toString + _) shouldBe Vector("123z", "23z", "3z", "z")
     NonEmptyString("0").scanRight("z")(_.toString + _) shouldBe Vector("0z", "z")
   }
-  it should "have a segmentLength method" in {
+  /*it should "have a segmentLength method" in {
     NonEmptyString("1234566789").segmentLength(_.toString.toInt > 7, 0) shouldBe 0
     NonEmptyString("1234566789").segmentLength(_.toString.toInt == 7, 0) shouldBe 0
     NonEmptyString("1234566789").segmentLength(_.toString.toInt > 0, 0) shouldBe 10
