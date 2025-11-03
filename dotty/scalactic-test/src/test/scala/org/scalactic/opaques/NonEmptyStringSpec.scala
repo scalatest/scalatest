@@ -710,7 +710,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").lengthCompare(3) shouldEqual 0
     NonEmptyString("123").lengthCompare(4) should be < 0
   }
-  /*it should "have an inherited lift method" in {
+  it should "have an inherited lift method" in {
     val liftedHi = NonEmptyString("hi").lift
     liftedHi(0) shouldBe Some('h')
     liftedHi(1) shouldBe Some('i')
@@ -744,7 +744,7 @@ class NonEmptyStringSpec extends UnitSpec {
   it should "have a minBy method" in {
     NonEmptyString("12345").minBy(e => if (e == '3') 0 else 1) shouldBe '3'
   }
-  it should "have a mkString method" in {
+  /*it should "have a mkString method" in {
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6705
     NonEmptyString("hi").mkString shouldBe "hi"

@@ -726,6 +726,34 @@ object NonEmptyStrings {
         * </pre>
         */
       def lengthCompare(len: Int): Int = new StringOps(nonEmptyString).lengthCompare(len)
+
+      /**
+        * Finds the largest character.
+        *
+        * @return the largest element of this <code>NonEmptyString</code>. 
+        */
+      final def max(using cmp: Ordering[Char]): Char = nonEmptyString.toList.max(cmp)
+
+      /**
+        * Finds the largest result after applying the given function to every character.
+        *
+        * @return the largest result of applying the given function to every character of this <code>NonEmptyString</code>.
+        */
+      final def maxBy[U](f: Char => U)(using cmp: Ordering[U]): Char = nonEmptyString.toList.maxBy(f)(cmp)
+
+      /**
+        * Finds the smallest character.
+        *
+        * @return the smallest character of this <code>NonEmptyString</code>.
+        */
+      final def min(using cmp: Ordering[Char]): Char = nonEmptyString.toList.min(cmp)
+
+      /**
+        * Finds the smallest result after applying the given function to every character.
+        *
+        * @return the smallest result of applying the given function to every character of this <code>NonEmptyString</code>.
+        */
+      final def minBy[U](f: Char => U)(using cmp: Ordering[U]): Char = nonEmptyString.toList.minBy(f)(cmp)
     }
   }
 }
