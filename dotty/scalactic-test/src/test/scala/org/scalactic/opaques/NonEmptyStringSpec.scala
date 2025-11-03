@@ -517,6 +517,25 @@ class NonEmptyStringSpec extends UnitSpec {
     es.indexOfSlice(NonEmptyString("ab")) shouldBe 0
     es.indexOfSlice(NonEmptyString("AB")) shouldBe -1
   }
+  it should "have 2 indexOfSlice methods that take a String" in {
+    NonEmptyString("12345").indexOfSlice("23") shouldBe 1
+    NonEmptyString("12345").indexOfSlice("23", 3) shouldBe -1
+    NonEmptyString("12345").indexOfSlice("235", 3) shouldBe -1
+    NonEmptyString("12345").indexOfSlice("235") shouldBe -1
+    NonEmptyString("12345").indexOfSlice("5") shouldBe 4
+    NonEmptyString("12345").indexOfSlice("12345") shouldBe 0
+    NonEmptyString("12345").indexOfSlice("12345", 0) shouldBe 0
+    NonEmptyString("12345").indexOfSlice("12345", 1) shouldBe -1
+    NonEmptyString("12345").indexOfSlice("12345", -1) shouldBe 0
+
+    val es = NonEmptyString("abcde")
+    es.indexOfSlice("ab") shouldBe 0
+    es.indexOfSlice("ab", 1) shouldBe -1
+    es.indexOfSlice("AB") shouldBe -1
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.indexOfSlice("ab") shouldBe 0
+    es.indexOfSlice("AB") shouldBe -1
+  }
   it should "have 2 indexWhere methods" in {
     NonEmptyString("12345").indexWhere(_ == '3') shouldBe 2
     NonEmptyString("12345").indexWhere(_ == '1') shouldBe 0
@@ -587,7 +606,7 @@ class NonEmptyStringSpec extends UnitSpec {
     es.lastIndexOf('a') shouldBe 0
     es.lastIndexOf('A') shouldBe -1
   }
-  /*it should "have 2 lastIndexOfSlice methods that take a GenSeq" in {
+  it should "have 2 lastIndexOfSlice methods that take a GenSeq" in {
     NonEmptyString("12345").lastIndexOfSlice(List('2', '3')) shouldBe 1
     NonEmptyString("12345").lastIndexOfSlice(List('2', '3'), 3) shouldBe 1
     NonEmptyString("12345").lastIndexOfSlice(List('2', '3', '5'), 3) shouldBe -1
@@ -647,7 +666,26 @@ class NonEmptyStringSpec extends UnitSpec {
     es.lastIndexOfSlice(NonEmptyString("ab")) shouldBe 0
     es.lastIndexOfSlice(NonEmptyString("AB")) shouldBe -1
   }
-  it should "have 2 lastIndexWhere methods" in {
+  it should "have 2 lastIndexOfSlice methods that take a String" in {
+    NonEmptyString("12345").lastIndexOfSlice("23") shouldBe 1
+    NonEmptyString("12345").lastIndexOfSlice("23", 3) shouldBe 1
+    NonEmptyString("12345").lastIndexOfSlice("235", 3) shouldBe -1
+    NonEmptyString("12345").lastIndexOfSlice("235") shouldBe -1
+    NonEmptyString("12345").lastIndexOfSlice("5") shouldBe 4
+    NonEmptyString("12345").lastIndexOfSlice("12345") shouldBe 0
+    NonEmptyString("12345").lastIndexOfSlice("12345", 0) shouldBe 0
+    NonEmptyString("12345").lastIndexOfSlice("12345", 1) shouldBe 0
+    NonEmptyString("12345").lastIndexOfSlice("12345", -1) shouldBe -1
+
+    val es = NonEmptyString("abcde")
+    es.lastIndexOfSlice(NonEmptyString("ab")) shouldBe 0
+    es.lastIndexOfSlice(NonEmptyString("bc"), 0) shouldBe -1
+    es.lastIndexOfSlice(NonEmptyString("AB")) shouldBe -1
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.lastIndexOfSlice(NonEmptyString("ab")) shouldBe 0
+    es.lastIndexOfSlice(NonEmptyString("AB")) shouldBe -1
+  }
+  /*it should "have 2 lastIndexWhere methods" in {
     NonEmptyString("12345").lastIndexWhere(_ == '2') shouldBe 1
     NonEmptyString("12345").lastIndexWhere(_ == '0') shouldBe -1
     NonEmptyString("12345").lastIndexWhere(_ == '5') shouldBe 4

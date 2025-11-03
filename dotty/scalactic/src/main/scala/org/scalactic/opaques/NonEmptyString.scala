@@ -657,7 +657,7 @@ object NonEmptyStrings {
         * @return the index of the last character of this <code>NonEmptyString</code> that is equal (as determined by <code>==</code>) to <code>c</code>,
         *     or <code>-1</code>, if none exists.
         */
-      final def lastIndexOf(c: Char): Int = nonEmptyString.toList.lastIndexOf(c)
+      def lastIndexOf(c: Char): Int = nonEmptyString.toList.lastIndexOf(c)
 
       /**
         * Finds the index of the last occurrence of some value in this <code>NonEmptyString</code> before or at a given <code>end</code> index.
@@ -667,7 +667,26 @@ object NonEmptyStrings {
         * @return the index <code>&gt;=</code> <code>end</code> of the last character of this <code>NonEmptyString</code> that is equal (as determined by <code>==</code>)
         *     to <code>elem</code>, or <code>-1</code>, if none exists.
         */
-      final def lastIndexOf(c: Char, end: Int): Int = nonEmptyString.toList.lastIndexOf(c, end)
+      def lastIndexOf(c: Char, end: Int): Int = nonEmptyString.toList.lastIndexOf(c, end)
+
+      /**
+        * Finds the last index where this <code>NonEmptyString</code> contains a given <code>Every</code> as a slice. 
+        *
+        * @param that the <code>Every</code> defining the slice to look for
+        * @return the last index at which the elements of this <code>NonEmptyString</code> starting at that index match the characters of
+        *    <code>Every</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
+        */
+      def lastIndexOfSlice(that: IterableOnce[Char]): Int = nonEmptyString.toIndexedSeq.lastIndexOfSlice(that.toVector)
+
+      /**
+        * Finds the last index before or at a given end index where this <code>NonEmptyString</code> contains a given <code>Every</code> as a slice. 
+        *
+        * @param that the <code>Every</code> defining the slice to look for
+        * @param end the end index
+        * @return the last index <code>&gt;=</code> <code>end</code> at which the elements of this <code>NonEmptyString</code> starting at that index match the characters of
+        *    <code>Every</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
+        */
+      def lastIndexOfSlice(that: IterableOnce[Char], end: Int): Int = nonEmptyString.toIndexedSeq.lastIndexOfSlice(that.toVector, end)
     }
   }
 }
