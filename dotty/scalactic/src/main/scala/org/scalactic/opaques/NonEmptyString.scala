@@ -1038,7 +1038,7 @@ object NonEmptyStrings {
         * @return the length of the longest segment of this <code>NonEmptyString</code> starting from index <code>from</code> such that every character of the
         *     segment satisfies the predicate <code>p</code>. 
         */
-      final def segmentLength(p: Char => Boolean, from: Int): Int = nonEmptyString.toList.segmentLength(p, from)
+      def segmentLength(p: Char => Boolean, from: Int): Int = nonEmptyString.toList.segmentLength(p, from)
 
       /**
         * Groups characters in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.)
@@ -1047,7 +1047,7 @@ object NonEmptyStrings {
         * @return an iterator producing <code>NonEmptyString</code>s of size <code>size</code>, except the last and the only element will be truncated
         *     if there are fewer characters than <code>size</code>.
         */
-      final def sliding(size: Int): Iterator[NonEmptyString] = new StringOps(nonEmptyString).sliding(size).map(new NonEmptyString(_))
+      def sliding(size: Int): Iterator[NonEmptyString] = new StringOps(nonEmptyString).sliding(size).map(new NonEmptyString(_))
 
       /**
         * Groups characters in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.),
@@ -1058,7 +1058,7 @@ object NonEmptyStrings {
         * @return an iterator producing <code>NonEmptyString</code>s of size <code>size</code>, except the last and the only character will be truncated
         *     if there are fewer characters than <code>size</code>.
         */
-      final def sliding(size: Int, step: Int): Iterator[NonEmptyString] = new StringOps(nonEmptyString).sliding(size, step).map(new NonEmptyString(_))
+      def sliding(size: Int, step: Int): Iterator[NonEmptyString] = new StringOps(nonEmptyString).sliding(size, step).map(new NonEmptyString(_))
 
       /**
         * The size of this <code>NonEmptyString</code>.
@@ -1069,7 +1069,44 @@ object NonEmptyStrings {
         *
         * @return the number of characters in this <code>NonEmptyString</code>.
         */
-      final def size: Int = new StringOps(nonEmptyString).size
+      def size: Int = new StringOps(nonEmptyString).size
+
+      /**
+        * Sorts this <code>NonEmptyString</code> according to the <code>Ordering</code> of the result of applying the given function to every character.
+        *
+        * @tparam U the target type of the transformation <code>f</code>, and the type where the <code>Ordering</code> <code>ord</code> is defined.
+        * @param f the transformation function mapping elements to some other domain <code>U</code>.
+        * @param ord the ordering assumed on domain <code>U</code>.
+        * @return a <code>NonEmptyString</code> consisting of the elements of this <code>NonEmptyString</code> sorted according to the <code>Ordering</code> where
+        *    <code>x &lt; y if ord.lt(f(x), f(y))</code>. 
+        */
+      def sortBy[U](f: Char => U)(implicit ord: Ordering[U]): NonEmptyString = new StringOps(nonEmptyString).sortBy(f)
+
+      /**
+        * Sorts this <code>NonEmptyString</code> according to a comparison function.
+        *
+        * <p>
+        * The sort is stable. That is, characters that are equal (as determined by <code>lt</code>) appear in the same order in the
+        * sorted <code>NonEmptyString</code> as in the original. 
+        * </p>
+        *
+        * @param lt the comparison function that tests whether its first argument precedes its second argument in the desired ordering.
+        * @return a <code>NonEmptyString</code> consisting of the elements of this <code>NonEmptyString</code> sorted according to the comparison function <code>lt</code>.
+        */
+      def sortWith(lt: (Char, Char) => Boolean): NonEmptyString = new StringOps(nonEmptyString).sortWith(lt)
+
+      /**
+        * Sorts this <code>NonEmptyString</code> according to an <code>Ordering</code>.
+        *
+        * <p>
+        * The sort is stable. That is, elements that are equal (as determined by <code>lt</code>) appear in the same order in the
+        * sorted <code>NonEmptyString</code> as in the original. 
+        * </p>
+        *
+        * @param ord the <code>Ordering</code> to be used to compare elements.
+        * @return a <code>NonEmptyString</code> consisting of the characters of this <code>NonEmptyString</code> sorted according to the ordering defined by <code>ord</code>.
+        */
+      def sorted(implicit ord: Ordering[Char]): NonEmptyString = new StringOps(nonEmptyString).sorted(ord)
     }
   }
 }
