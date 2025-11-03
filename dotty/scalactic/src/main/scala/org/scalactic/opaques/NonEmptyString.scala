@@ -649,6 +649,25 @@ object NonEmptyStrings {
         * @return the last character of this <code>NonEmptyString</code>.
         */
       def last: Char = if (length > 1) nonEmptyString.charAt(length - 1) else nonEmptyString.charAt(0) // Can never be empty, so safe
+
+      /**
+        * Finds the index of the last occurrence of some value in this <code>NonEmptyString</code>.
+        *
+        * @param c the character value to search for.
+        * @return the index of the last character of this <code>NonEmptyString</code> that is equal (as determined by <code>==</code>) to <code>c</code>,
+        *     or <code>-1</code>, if none exists.
+        */
+      final def lastIndexOf(c: Char): Int = nonEmptyString.toList.lastIndexOf(c)
+
+      /**
+        * Finds the index of the last occurrence of some value in this <code>NonEmptyString</code> before or at a given <code>end</code> index.
+        *
+        * @param c the character value to search for.
+        * @param end the end index. 
+        * @return the index <code>&gt;=</code> <code>end</code> of the last character of this <code>NonEmptyString</code> that is equal (as determined by <code>==</code>)
+        *     to <code>elem</code>, or <code>-1</code>, if none exists.
+        */
+      final def lastIndexOf(c: Char, end: Int): Int = nonEmptyString.toList.lastIndexOf(c, end)
     }
   }
 }

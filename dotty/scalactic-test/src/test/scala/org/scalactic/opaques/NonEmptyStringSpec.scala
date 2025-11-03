@@ -566,7 +566,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("hi").last shouldBe 'i'
     NonEmptyString("123").last shouldBe '3'
   }
-  /*it should "have 2 lastIndexOf methods" in {
+  it should "have 2 lastIndexOf methods" in {
     NonEmptyString("12345").lastIndexOf('2') shouldBe 1
     NonEmptyString("123451").lastIndexOf('1') shouldBe 5
     NonEmptyString("12345").lastIndexOf('0') shouldBe -1
@@ -587,7 +587,7 @@ class NonEmptyStringSpec extends UnitSpec {
     es.lastIndexOf('a') shouldBe 0
     es.lastIndexOf('A') shouldBe -1
   }
-  it should "have 2 lastIndexOfSlice methods that take a GenSeq" in {
+  /*it should "have 2 lastIndexOfSlice methods that take a GenSeq" in {
     NonEmptyString("12345").lastIndexOfSlice(List('2', '3')) shouldBe 1
     NonEmptyString("12345").lastIndexOfSlice(List('2', '3'), 3) shouldBe 1
     NonEmptyString("12345").lastIndexOfSlice(List('2', '3', '5'), 3) shouldBe -1
