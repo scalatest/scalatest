@@ -944,18 +944,27 @@ object NonEmptyStrings {
       def reverseIterator: Iterator[Char] = new StringOps(nonEmptyString).reverseIterator
 
       /**
-        * Builds a new <code>GenIterable</code> by applying a function to all characters of this <code>NonEmptyString</code> and collecting the results in reverse order.
+        * Builds a new <code>Iterable</code> by applying a function to all characters of this <code>NonEmptyString</code> and collecting the results in reverse order.
         *
         * <p>
         * Note: <code>nonEmptyString.reverseMap(f)</code> is the same as <code>nonEmptyString.reverse.map(f)</code>, but might be more efficient. 
         * </p>
         *
-        * @tparam U the element type of the returned <code>GenIterable</code>.
+        * @tparam U the element type of the returned <codeIterable</code>.
         * @param f the function to apply to each character.
-        * @return a new <code>GenIterable</code> resulting from applying the given function <code>f</code> to each character of this <code>NonEmptyString</code>
+        * @return a new <code>Iterable</code> resulting from applying the given function <code>f</code> to each character of this <code>NonEmptyString</code>
         *     and collecting the results in reverse order. 
         */
       def reverseMap[U](f: Char => U): Iterable[U] = nonEmptyString.toList.reverseMap(f)
+
+      /**
+        * Checks if the given <code>IterableOnce</code> contains the same characters in the same order as this <code>NonEmptyString</code>.
+        *
+        * @param that the <code>IterableOnce</code> with which to compare
+        * @return <code>true</code>, if both this <code>NonEmptyString</code> and the given <code>IterableOnce</code> contain the same characters
+        *     in the same order, <code>false</code> otherwise. 
+        */
+      final def sameElements(that: IterableOnce[Char]): Boolean = nonEmptyString.toList.sameElements(that)
     }
   }
 }

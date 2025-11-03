@@ -887,7 +887,7 @@ class NonEmptyStringSpec extends UnitSpec {
     g(0) shouldBe true
     y shouldBe 6
   }*/
-  /*it should "have a sameElements method that takes a GenIterable" in {
+  it should "have a sameElements method that takes a GenIterable" in {
     NonEmptyString("12345").sameElements(List('1', '2', '3', '4', '5')) shouldBe true
     NonEmptyString("12345").sameElements(List('1', '2', '3', '4')) shouldBe false
     NonEmptyString("12345").sameElements(List('1', '2', '3', '4', '5', '6')) shouldBe false
@@ -923,7 +923,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("3").sameElements("1") shouldBe false
     NonEmptyString("3").sameElements("3") shouldBe true
   }
-  it should "have a scan method" in {
+  /*it should "have a scan method" in {
     NonEmptyString("1").scan('0')((e1, e2) => (e1 + e2).toChar) shouldBe IndexedSeq('0', 'a')
     NonEmptyString("123").scan('0')((e1, e2) => e2) shouldBe IndexedSeq('0', '1', '2', '3')
     NonEmptyString("123").scan('z')((e1, e2) => (e2 + 1).toChar) shouldBe IndexedSeq('z', '2', '3', '4')
