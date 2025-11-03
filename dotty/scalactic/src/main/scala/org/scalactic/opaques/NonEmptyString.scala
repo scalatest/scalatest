@@ -848,7 +848,81 @@ object NonEmptyStrings {
         *
         * @return the product of all elements
         */
-      def product(using num: Numeric[Char]): Char = nonEmptyString.toList.product(num)  
+      def product(using num: Numeric[Char]): Char = nonEmptyString.toList.product(num)
+
+      /**
+        * Reduces the elements of this <code>NonEmptyString</code> using the specified associative binary operator.
+        *
+        * <p>
+        * The order in which operations are performed on characters is unspecified and may be nondeterministic.
+        * </p>
+        *
+        * @param op a binary operator that must be associative.
+        * @return the result of applying reduce operator <code>op</code> between all the characters of this <code>NonEmptyString</code>.
+        */
+      def reduce(op: (Char, Char) => Char): Char = nonEmptyString.toList.reduce(op)
+
+      /**
+        * Applies a binary operator to all characters of this <code>NonEmptyString</code>, going left to right.
+        *
+        * @param op the binary operator.
+        * @return the result of inserting <code>op</code> between consecutive characters of this <code>NonEmptyString</code>, going left to right:
+        *
+        * <pre>
+        * op(...op(op(x_1, x_2), x_3), ..., x_n)
+        * </pre>
+        *
+        * <p>
+        * where x<sub>1</sub>, ..., x<sub>n</sub> are the characters of this <code>NonEmptyString</code>.
+        * </p>
+        */
+      def reduceLeft(op: (Char, Char) => Char): Char = nonEmptyString.toList.reduceLeft(op)
+
+      /**
+        * Applies a binary operator to all characters of this <code>NonEmptyString</code>, going left to right, returning the result in a <code>Some</code>.
+        *
+        * @param op the binary operator.
+        * @return a <code>Some</code> containing the result of <code>reduceLeft(op)</code>
+        * </p>
+        */
+      def reduceLeftOption(op: (Char, Char) => Char): Option[Char] = nonEmptyString.toList.reduceLeftOption(op)
+
+      /** 
+        * If this <code>String</code> is nonempty, reduces it with the given binary operator `op`.
+        *
+        *  The behavior is the same as <code>reduce</code> except that the value is `None` if the <code>String</code>
+        *  is empty.
+        *
+        *  @param op      A binary operator; must be associative for the result to always be the
+        *                 same across runs.
+        *  @return        The result of reducing this <code>String</code> with `op` if the <code>String</code> is nonempty,
+        *                 inside a `Some`, and `None` otherwise.
+        */
+      def reduceOption(op: (Char, Char) => Char): Option[Char] = nonEmptyString.toList.reduceOption(op)
+
+      /**
+        * Applies a binary operator to all characters of this <code>NonEmptyString</code>, going right to left.
+        *
+        * @param op the binary operator
+        * @return the result of inserting <code>op</code> between consecutive characters of this <code>NonEmptyString</code>, going right to left:
+        *
+        * <pre>
+        * op(x_1, op(x_2, ... op(x_{n-1}, x_n)...))
+        * </pre>
+        *
+        * <p>
+        * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyString</code>. 
+        * </p>
+        */
+      def reduceRight(op: (Char, Char) => Char): Char = nonEmptyString.toList.reduceRight(op)
+
+      /**
+        * Applies a binary operator to all elements of this <code>NonEmptyString</code>, going right to left, returning the result in a <code>Some</code>.
+        *
+        * @param op the binary operator
+        * @return a <code>Some</code> containing the result of <code>reduceRight(op)</code>
+        */
+      def reduceRightOption(op: (Char, Char) => Char): Option[Char] = nonEmptyString.toList.reduceRightOption(op)
     }
   }
 }

@@ -812,7 +812,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("345").product.toInt shouldBe 9484
     NonEmptyString("354").product.toInt shouldBe 9484
   }
-  /*it should "have a reduce method" in {
+  it should "have a reduce method" in {
     NonEmptyString("12345").reduce((c1, c2) => (c1 + c2).toChar).toInt shouldBe 255
     NonEmptyString("12345").reduce((c1, c2) => (c1 * c2).toChar).toInt shouldBe 36056
     NonEmptyString("5").reduce((c1, c2) => (c1 + c2).toChar).toInt shouldBe 53
@@ -850,7 +850,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").reduceRightOption((c1, c2) => (c1 * c2).toChar) shouldBe Some(59414)
     NonEmptyString("12345").reduceRightOption((c1, c2) => (c1 * c2).toChar) shouldBe Some(36056)
   }
-  it should "have a reverse method" in {
+  /*it should "have a reverse method" in {
     NonEmptyString("33").reverse shouldBe NonEmptyString("33")
     NonEmptyString("333435").reverse shouldBe NonEmptyString("534333")
   }
