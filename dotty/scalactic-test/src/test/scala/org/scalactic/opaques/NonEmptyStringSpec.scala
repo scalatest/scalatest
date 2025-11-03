@@ -756,7 +756,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").mkString("<", "#", ">") shouldBe NonEmptyString("<1#2#3>")
     NonEmptyString("123").mkString(" ( ", ", ", " ) ") shouldBe NonEmptyString(" ( 1, 2, 3 ) ")
   }
-  /*it should "have an nonEmpty method" in {
+  it should "have an nonEmpty method" in {
     NonEmptyString("hi").nonEmpty shouldBe true
   }
   /*it should "have an orElse method, inherited from PartialFunction" in {
@@ -794,7 +794,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("12345").patch(0, NonEmptyString("ab"), 2) shouldBe NonEmptyString("ab345")
     NonEmptyString("12345").patch(0, NonEmptyString("ab"), 3) shouldBe NonEmptyString("ab45")
   }
-  it should "have a permutations method" in {
+  /*it should "have a permutations method" in {
     NonEmptyString("123").permutations.toStream shouldBe Stream(NonEmptyString("123"), NonEmptyString("132"), NonEmptyString("213"), NonEmptyString("231"), NonEmptyString("312"), NonEmptyString("321"))
     NonEmptyString("1").permutations.toStream shouldBe Stream(NonEmptyString("1"))
     NonEmptyString("12").permutations.toStream shouldBe Stream(NonEmptyString("12"), NonEmptyString("21"))

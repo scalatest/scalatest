@@ -783,6 +783,34 @@ object NonEmptyStrings {
         *     separated by the string <code>sep</code>. 
         */
       def mkString(start: String, sep: String, end: String): NonEmptyString = new StringOps(nonEmptyString).mkString(start, sep, end)
+
+      /**
+        * Returns <code>true</code> to indicate this <code>NonEmptyString</code>, like all <code>NonEmptyString</code>s, is non-empty.
+        *
+        * @return true
+        */
+      def nonEmpty: Boolean = true
+
+      /**
+        * A copy of this <code>NonEmptyString</code> with an element value appended until a given target length is reached.
+        *
+        * @param len the target length 
+        * @param c the padding character
+        * @return a new <code>NonEmptyString</code> consisting of all characters of this <code>NonEmptyString</code> followed by the minimal number of occurrences
+        *     of <code>elem</code> so that the resulting <code>NonEmptyString</code> has a length of at least <code>len</code>. 
+        */
+      def padTo(len: Int, c: Char): NonEmptyString =
+        new StringOps(nonEmptyString).padTo(len, c)
+
+      /**
+        * Produces a new <code>NonEmptyString</code> where a slice of characters in this <code>NonEmptyString</code> is replaced by another <code>NonEmptyString</code>
+        *
+        * @param from the index of the first replaced character
+        * @param that the <code>NonEmptyString</code> whose characters should replace a slice in this <code>NonEmptyString</code>
+        * @param replaced the number of characters to drop in the original <code>NonEmptyString</code>
+        */
+      def patch(from: Int, that: NonEmptyString, replaced: Int): NonEmptyString =
+        new StringOps(nonEmptyString).patch(from, that, replaced)
     }
   }
 }
