@@ -1029,6 +1029,47 @@ object NonEmptyStrings {
         *     going right to left, with the start value, <code>z</code>, on the right.
         */
       def scanRight[B](z: B)(op: (Char, B) => B): Iterable[B] = nonEmptyString.toList.scanRight(z)(op)
+
+      /**
+        * Computes length of longest segment whose characters all satisfy some predicate.
+        *
+        * @param p the predicate used to test elements.
+        * @param from the index where the search starts.
+        * @return the length of the longest segment of this <code>NonEmptyString</code> starting from index <code>from</code> such that every character of the
+        *     segment satisfies the predicate <code>p</code>. 
+        */
+      final def segmentLength(p: Char => Boolean, from: Int): Int = nonEmptyString.toList.segmentLength(p, from)
+
+      /**
+        * Groups characters in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.)
+        *
+        * @param size the number of characters per group
+        * @return an iterator producing <code>NonEmptyString</code>s of size <code>size</code>, except the last and the only element will be truncated
+        *     if there are fewer characters than <code>size</code>.
+        */
+      final def sliding(size: Int): Iterator[NonEmptyString] = new StringOps(nonEmptyString).sliding(size).map(new NonEmptyString(_))
+
+      /**
+        * Groups characters in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.),
+        * moving the sliding window by a given <code>step</code> each time.
+        *
+        * @param size the number of characters per group
+        * @param step the distance between the first characters of successive groups
+        * @return an iterator producing <code>NonEmptyString</code>s of size <code>size</code>, except the last and the only character will be truncated
+        *     if there are fewer characters than <code>size</code>.
+        */
+      final def sliding(size: Int, step: Int): Iterator[NonEmptyString] = new StringOps(nonEmptyString).sliding(size, step).map(new NonEmptyString(_))
+
+      /**
+        * The size of this <code>NonEmptyString</code>.
+        *
+        * <p>
+        * Note: <code>length</code> and <code>size</code> yield the same result, which will be <code>&gt;</code>= 1. 
+        * </p>
+        *
+        * @return the number of characters in this <code>NonEmptyString</code>.
+        */
+      final def size: Int = new StringOps(nonEmptyString).size
     }
   }
 }

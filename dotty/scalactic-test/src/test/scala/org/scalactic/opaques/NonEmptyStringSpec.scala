@@ -943,7 +943,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").scanRight("z")(_.toString + _) shouldBe Vector("123z", "23z", "3z", "z")
     NonEmptyString("0").scanRight("z")(_.toString + _) shouldBe Vector("0z", "z")
   }
-  /*it should "have a segmentLength method" in {
+  it should "have a segmentLength method" in {
     NonEmptyString("1234566789").segmentLength(_.toString.toInt > 7, 0) shouldBe 0
     NonEmptyString("1234566789").segmentLength(_.toString.toInt == 7, 0) shouldBe 0
     NonEmptyString("1234566789").segmentLength(_.toString.toInt > 0, 0) shouldBe 10
@@ -998,7 +998,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("12345").sliding(3, 3).toList shouldBe List(NonEmptyString("123"), NonEmptyString("45"))
     NonEmptyString("12345").sliding(3, 4).toList shouldBe List(NonEmptyString("123"), NonEmptyString("5"))
   }
-  it should "have a sortBy method" in {
+  /*it should "have a sortBy method" in {
     NonEmptyString("12345").sortBy(_ % 2) shouldBe NonEmptyString("24135")
     NonEmptyString("12345").sortBy(_ % 3) shouldBe NonEmptyString("31425")
   }
