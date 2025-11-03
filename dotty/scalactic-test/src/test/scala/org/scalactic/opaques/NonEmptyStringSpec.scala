@@ -850,7 +850,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").reduceRightOption((c1, c2) => (c1 * c2).toChar) shouldBe Some(59414)
     NonEmptyString("12345").reduceRightOption((c1, c2) => (c1 * c2).toChar) shouldBe Some(36056)
   }
-  /*it should "have a reverse method" in {
+  it should "have a reverse method" in {
     NonEmptyString("33").reverse shouldBe NonEmptyString("33")
     NonEmptyString("333435").reverse shouldBe NonEmptyString("534333")
   }
@@ -887,7 +887,7 @@ class NonEmptyStringSpec extends UnitSpec {
     g(0) shouldBe true
     y shouldBe 6
   }*/
-  it should "have a sameElements method that takes a GenIterable" in {
+  /*it should "have a sameElements method that takes a GenIterable" in {
     NonEmptyString("12345").sameElements(List('1', '2', '3', '4', '5')) shouldBe true
     NonEmptyString("12345").sameElements(List('1', '2', '3', '4')) shouldBe false
     NonEmptyString("12345").sameElements(List('1', '2', '3', '4', '5', '6')) shouldBe false

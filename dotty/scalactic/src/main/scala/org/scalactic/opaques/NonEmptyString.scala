@@ -923,6 +923,39 @@ object NonEmptyStrings {
         * @return a <code>Some</code> containing the result of <code>reduceRight(op)</code>
         */
       def reduceRightOption(op: (Char, Char) => Char): Option[Char] = nonEmptyString.toList.reduceRightOption(op)
+
+      /**
+        * Returns new <code>NonEmptyString</code> with characters in reverse order.
+        *
+        * @return a new <code>NonEmptyString</code> with all characters of this <code>NonEmptyString</code> in reversed order.
+        */
+      def reverse: NonEmptyString =
+        new StringOps(nonEmptyString).reverse
+
+      /**
+        * An iterator yielding characters in reverse order.
+        *
+        * <p>
+        * Note: <code>nonEmptyString.reverseIterator</code> is the same as <code>nonEmptyString.reverse.iterator</code>, but might be more efficient. 
+        * </p>
+        *
+        * @return an iterator yielding the characters of this <code>NonEmptyString</code> in reversed order
+        */
+      def reverseIterator: Iterator[Char] = new StringOps(nonEmptyString).reverseIterator
+
+      /**
+        * Builds a new <code>GenIterable</code> by applying a function to all characters of this <code>NonEmptyString</code> and collecting the results in reverse order.
+        *
+        * <p>
+        * Note: <code>nonEmptyString.reverseMap(f)</code> is the same as <code>nonEmptyString.reverse.map(f)</code>, but might be more efficient. 
+        * </p>
+        *
+        * @tparam U the element type of the returned <code>GenIterable</code>.
+        * @param f the function to apply to each character.
+        * @return a new <code>GenIterable</code> resulting from applying the given function <code>f</code> to each character of this <code>NonEmptyString</code>
+        *     and collecting the results in reverse order. 
+        */
+      def reverseMap[U](f: Char => U): Iterable[U] = nonEmptyString.toList.reverseMap(f)
     }
   }
 }
