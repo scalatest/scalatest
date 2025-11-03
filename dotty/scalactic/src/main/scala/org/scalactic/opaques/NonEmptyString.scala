@@ -687,6 +687,45 @@ object NonEmptyStrings {
         *    <code>Every</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
         */
       def lastIndexOfSlice(that: IterableOnce[Char], end: Int): Int = nonEmptyString.toIndexedSeq.lastIndexOfSlice(that.toVector, end)
+
+       /**
+        * Finds index of last character satisfying some predicate.
+        *
+        * @param p the predicate used to test characters.
+        * @return the index of the last character of this <code>NonEmptyString</code> that satisfies the predicate <code>p</code>, or <code>-1</code>, if none exists.
+        */
+      def lastIndexWhere(p: Char => Boolean): Int = nonEmptyString.toList.lastIndexWhere(p)
+
+      /**
+        * Finds index of last character satisfying some predicate before or at given end index.
+        *
+        * @param p the predicate used to test characters.
+        * @param end the end index
+        * @return the index <code>&gt;=</code> <code>end</code> of the last character of this <code>NonEmptyString</code> that satisfies the predicate <code>p</code>,
+        *     or <code>-1</code>, if none exists. 
+        */
+      def lastIndexWhere(p: Char => Boolean, end: Int): Int = nonEmptyString.toList.lastIndexWhere(p, end)
+
+      /**
+        * Returns the last element of this <code>NonEmptyString</code>, wrapped in a <code>Some</code>. 
+        *
+        * @return the last element, wrapped in a <code>Some</code>. 
+        */
+      def lastOption: Option[Char] = nonEmptyString.toList.lastOption // Will always return a Some
+
+      /**
+        * Compares the length of this <code>NonEmptyString</code> to a test value. 
+        *
+        * @param len the test value that gets compared with the length.
+        * @return a value <code>x</code> where
+        *
+        * <pre>
+        * x &lt; 0 if this.length &lt; len
+        * x == 0 if this.length == len
+        * x &gt; 0 if this.length &gt; len
+        * </pre>
+        */
+      def lengthCompare(len: Int): Int = new StringOps(nonEmptyString).lengthCompare(len)
     }
   }
 }

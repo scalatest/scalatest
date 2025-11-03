@@ -685,7 +685,7 @@ class NonEmptyStringSpec extends UnitSpec {
     es.lastIndexOfSlice(NonEmptyString("ab")) shouldBe 0
     es.lastIndexOfSlice(NonEmptyString("AB")) shouldBe -1
   }
-  /*it should "have 2 lastIndexWhere methods" in {
+  it should "have 2 lastIndexWhere methods" in {
     NonEmptyString("12345").lastIndexWhere(_ == '2') shouldBe 1
     NonEmptyString("12345").lastIndexWhere(_ == '0') shouldBe -1
     NonEmptyString("12345").lastIndexWhere(_ == '5') shouldBe 4
@@ -710,7 +710,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").lengthCompare(3) shouldEqual 0
     NonEmptyString("123").lengthCompare(4) should be < 0
   }
-  it should "have an inherited lift method" in {
+  /*it should "have an inherited lift method" in {
     val liftedHi = NonEmptyString("hi").lift
     liftedHi(0) shouldBe Some('h')
     liftedHi(1) shouldBe Some('i')
