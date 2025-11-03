@@ -744,22 +744,19 @@ class NonEmptyStringSpec extends UnitSpec {
   it should "have a minBy method" in {
     NonEmptyString("12345").minBy(e => if (e == '3') 0 else 1) shouldBe '3'
   }
-  /*it should "have a mkString method" in {
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6705
-    NonEmptyString("hi").mkString shouldBe "hi"
-    NonEmptyString("123").mkString shouldBe "123"
-    // SKIP-DOTTY-END
+  it should "have a mkString method" in {
+    NonEmptyString("hi").mkString shouldBe NonEmptyString("hi")
+    NonEmptyString("123").mkString shouldBe NonEmptyString("123")
+    
+    NonEmptyString("hi").mkString("#") shouldBe NonEmptyString("h#i")
+    NonEmptyString("123").mkString("#") shouldBe NonEmptyString("1#2#3")
+    NonEmptyString("123").mkString(", ") shouldBe NonEmptyString("1, 2, 3")
 
-    NonEmptyString("hi").mkString("#") shouldBe "h#i"
-    NonEmptyString("123").mkString("#") shouldBe "1#2#3"
-    NonEmptyString("123").mkString(", ") shouldBe "1, 2, 3"
-
-    NonEmptyString("hi").mkString("<", "#", ">") shouldBe "<h#i>"
-    NonEmptyString("123").mkString("<", "#", ">") shouldBe "<1#2#3>"
-    NonEmptyString("123").mkString(" ( ", ", ", " ) ") shouldBe " ( 1, 2, 3 ) "
+    NonEmptyString("hi").mkString("<", "#", ">") shouldBe NonEmptyString("<h#i>")
+    NonEmptyString("123").mkString("<", "#", ">") shouldBe NonEmptyString("<1#2#3>")
+    NonEmptyString("123").mkString(" ( ", ", ", " ) ") shouldBe NonEmptyString(" ( 1, 2, 3 ) ")
   }
-  it should "have an nonEmpty method" in {
+  /*it should "have an nonEmpty method" in {
     NonEmptyString("hi").nonEmpty shouldBe true
   }
   /*it should "have an orElse method, inherited from PartialFunction" in {

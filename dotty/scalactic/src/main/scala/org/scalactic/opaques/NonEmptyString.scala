@@ -732,28 +732,57 @@ object NonEmptyStrings {
         *
         * @return the largest element of this <code>NonEmptyString</code>. 
         */
-      final def max(using cmp: Ordering[Char]): Char = nonEmptyString.toList.max(cmp)
+      def max(using cmp: Ordering[Char]): Char = nonEmptyString.toList.max(cmp)
 
       /**
         * Finds the largest result after applying the given function to every character.
         *
         * @return the largest result of applying the given function to every character of this <code>NonEmptyString</code>.
         */
-      final def maxBy[U](f: Char => U)(using cmp: Ordering[U]): Char = nonEmptyString.toList.maxBy(f)(cmp)
+      def maxBy[U](f: Char => U)(using cmp: Ordering[U]): Char = nonEmptyString.toList.maxBy(f)(cmp)
 
       /**
         * Finds the smallest character.
         *
         * @return the smallest character of this <code>NonEmptyString</code>.
         */
-      final def min(using cmp: Ordering[Char]): Char = nonEmptyString.toList.min(cmp)
+      def min(using cmp: Ordering[Char]): Char = nonEmptyString.toList.min(cmp)
 
       /**
         * Finds the smallest result after applying the given function to every character.
         *
         * @return the smallest result of applying the given function to every character of this <code>NonEmptyString</code>.
         */
-      final def minBy[U](f: Char => U)(using cmp: Ordering[U]): Char = nonEmptyString.toList.minBy(f)(cmp)
+      def minBy[U](f: Char => U)(using cmp: Ordering[U]): Char = nonEmptyString.toList.minBy(f)(cmp)
+
+      /**
+        * Displays all characters of this <code>NonEmptyString</code> in a string.
+        *
+        * @return a string representation of this <code>NonEmptyString</code>. In the resulting string, the result of invoking <code>toString</code> on all characters of this
+        *     <code>NonEmptyString</code> follow each other without any separator string. 
+        */
+      def mkString: NonEmptyString = new StringOps(nonEmptyString).mkString
+
+      /**
+        * Displays all elements of this <code>NonEmptyString</code> in a string using a separator string. 
+        *
+        * @param sep the separator string
+        * @return a string representation of this <code>NonEmptyString</code>. In the resulting string, the result of invoking <code>toString</code> on all elements of this
+        *     <code>NonEmptyString</code> are separated by the string <code>sep</code>. 
+        */
+      def mkString(sep: String): NonEmptyString = new StringOps(nonEmptyString).mkString(sep)
+
+      /**
+        * Displays all characters of this <code>NonEmptyString</code> in a string using start, end, and separator strings.
+        *
+        * @param start the starting string.
+        * @param sep the separator string.
+        * @param end the ending string.
+        * @return a string representation of this <code>NonEmptyString</code>. The resulting string begins with the string <code>start</code> and ends with the string
+        *     <code>end</code>. Inside, In the resulting string, the result of invoking <code>toString</code> on all characters of this <code>NonEmptyString</code> are
+        *     separated by the string <code>sep</code>. 
+        */
+      def mkString(start: String, sep: String, end: String): NonEmptyString = new StringOps(nonEmptyString).mkString(start, sep, end)
     }
   }
 }
