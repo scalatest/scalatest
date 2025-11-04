@@ -1155,39 +1155,39 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("ab").toVector should === (Vector('a', 'b'))
     NonEmptyString("1").toVector should === (Vector('1'))
   }
-  /*it should "have a union method that takes a GenSeq" in {
-    NonEmptyString("1") union List('1') shouldBe Seq('1', '1')
-    NonEmptyString("1") union List('1', '2') shouldBe Seq('1', '1', '2')
-    NonEmptyString("12") union List('1', '2') shouldBe Seq('1', '2', '1', '2')
-    NonEmptyString("12") union List('1') shouldBe Seq('1', '2', '1')
-    NonEmptyString("12") union List('3', '4', '5') shouldBe Seq('1', '2', '3', '4', '5')
-    NonEmptyString("123") union List('3', '4', '5') shouldBe Seq('1', '2', '3', '3', '4', '5')
+  it should "have a union method that takes a GenSeq" in {
+    NonEmptyString("1") union List('1') shouldBe NonEmptyString("11")
+    NonEmptyString("1") union List('1', '2') shouldBe NonEmptyString("112")
+    NonEmptyString("12") union List('1', '2') shouldBe NonEmptyString("1212")
+    NonEmptyString("12") union List('1') shouldBe NonEmptyString("121")
+    NonEmptyString("12") union List('3', '4', '5') shouldBe NonEmptyString("12345")
+    NonEmptyString("123") union List('3', '4', '5') shouldBe NonEmptyString("123345")
   }
   it should "have a union method that takes an Every" in {
-    NonEmptyString("1") union Every('1') shouldBe Seq('1', '1')
-    NonEmptyString("1") union Every('1', '2') shouldBe Seq('1', '1', '2')
-    NonEmptyString("12") union Every('1', '2') shouldBe Seq('1', '2', '1', '2')
-    NonEmptyString("12") union Every('1') shouldBe Seq('1', '2', '1')
-    NonEmptyString("12") union Every('3', '4', '5') shouldBe Seq('1', '2', '3', '4', '5')
-    NonEmptyString("123") union Every('3', '4', '5') shouldBe Seq('1', '2', '3', '3', '4', '5')
+    NonEmptyString("1") union Every('1') shouldBe NonEmptyString("11")
+    NonEmptyString("1") union Every('1', '2') shouldBe NonEmptyString("112")
+    NonEmptyString("12") union Every('1', '2') shouldBe NonEmptyString("1212")
+    NonEmptyString("12") union Every('1') shouldBe NonEmptyString("121")
+    NonEmptyString("12") union Every('3', '4', '5') shouldBe NonEmptyString("12345")
+    NonEmptyString("123") union Every('3', '4', '5') shouldBe NonEmptyString("123345")
   }
   it should "have a union method that takes a NonEmptyString" in {
-    NonEmptyString("1") union NonEmptyString("1") shouldBe Seq('1', '1')
-    NonEmptyString("1") union NonEmptyString("12") shouldBe Seq('1', '1', '2')
-    NonEmptyString("12") union NonEmptyString("12") shouldBe Seq('1', '2', '1', '2')
-    NonEmptyString("12") union NonEmptyString("1") shouldBe Seq('1', '2', '1')
-    NonEmptyString("12") union NonEmptyString("345") shouldBe Seq('1', '2', '3', '4', '5')
-    NonEmptyString("123") union NonEmptyString("345") shouldBe Seq('1', '2', '3', '3', '4', '5')
+    NonEmptyString("1") union NonEmptyString("1") shouldBe NonEmptyString("11")
+    NonEmptyString("1") union NonEmptyString("12") shouldBe NonEmptyString("112")
+    NonEmptyString("12") union NonEmptyString("12") shouldBe NonEmptyString("1212")
+    NonEmptyString("12") union NonEmptyString("1") shouldBe NonEmptyString("121")
+    NonEmptyString("12") union NonEmptyString("345") shouldBe NonEmptyString("12345")
+    NonEmptyString("123") union NonEmptyString("345") shouldBe NonEmptyString("123345")
   }
   it should "have a union method that takes a String" in {
-    NonEmptyString("1") union "1" shouldBe Seq('1', '1')
-    NonEmptyString("1") union "12" shouldBe Seq('1', '1', '2')
-    NonEmptyString("12") union "12" shouldBe Seq('1', '2', '1', '2')
-    NonEmptyString("12") union "1" shouldBe Seq('1', '2', '1')
-    NonEmptyString("12") union "345" shouldBe Seq('1', '2', '3', '4', '5')
-    NonEmptyString("123") union "345" shouldBe Seq('1', '2', '3', '3', '4', '5')
+    NonEmptyString("1") union "1" shouldBe NonEmptyString("11")
+    NonEmptyString("1") union "12" shouldBe NonEmptyString("112")
+    NonEmptyString("12") union "12" shouldBe NonEmptyString("1212")
+    NonEmptyString("12") union "1" shouldBe NonEmptyString("121")
+    NonEmptyString("12") union "345" shouldBe NonEmptyString("12345")
+    NonEmptyString("123") union "345" shouldBe NonEmptyString("123345")
   }
-  it should "have an unzip method" in {
+  /*it should "have an unzip method" in {
     implicit def test(c: Char): (Int, Char) = (c.toInt, c)
     NonEmptyString("12").unzip shouldBe (Vector(49, 50), Vector('1', '2'))
     NonEmptyString("1234").unzip shouldBe (Vector(49, 50, 51, 52), Vector('1', '2', '3', '4'))

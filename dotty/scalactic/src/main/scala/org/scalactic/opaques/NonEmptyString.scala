@@ -1223,6 +1223,24 @@ object NonEmptyStrings {
         */
       def toStream: Stream[Char] = nonEmptyString.toList.toStream
 
+      /**
+        * Produces a new <code>NonEmptyString</code> that contains all characters of this <code>NonEmptyString</code> and also all characters of a given <code>Every</code>.
+        *
+        * <p>
+        * <code>nonEmptyStringX</code> <code>union</code> <code>everyY</code> is equivalent to <code>nonEmptyStringX</code> <code>++</code> <code>everyY</code>.
+        * </p>
+        *
+        * <p>
+        * Another way to express this is that <code>nonEmptyStringX</code> <code>union</code> <code>everyY</code> computes the order-presevring multi-set union
+        * of <code>nonEmptyStringX</code> and <code>everyY</code>. This <code>union</code> method is hence a counter-part of <code>diff</code> and <code>intersect</code> that
+        * also work on multi-sets.
+        * </p>
+        *
+        * @param that the <code>Every</code> to add.
+        * @return a new <code>NonEmptyString</code> that contains all characters of this <code>NonEmptyString</code> followed by all characters of <code>that</code> <code>Every</code>.
+        */
+      def union(that: IterableOnce[Char]): NonEmptyString = nonEmptyString.toList.union(that.toList).mkString
+
     }
   }
 }
