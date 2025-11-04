@@ -20,6 +20,9 @@ import scala.collection.mutable.Buffer
 import org.scalactic.Every
 import scala.annotation.targetName
 import org.scalactic.Resources
+import scala.annotation.unchecked.{ uncheckedVariance => uV }
+import scala.language.higherKinds
+import scala.reflect.ClassTag
 
 object NonEmptyStrings {
   /**
@@ -1135,6 +1138,90 @@ object NonEmptyStrings {
         * @return the sum of all elements
         */
       def sum(using num: Numeric[Char]): Long = nonEmptyString.toList.sum(num)
+
+      /**
+        * Converts this <code>NonEmptyString</code> into a collection of type <code>Col</code> by copying all elements.
+        *
+        * @tparam Col the collection type to build.
+        * @return a new collection containing all elements of this <code>NonEmptyString</code>. 
+        */
+      def to[Col[_]](factory: org.scalactic.ColCompatHelper.Factory[Char, Col[Char @ uV]]): Col[Char @ uV] =
+        nonEmptyString.toList.to(factory)
+
+      /**
+        * Converts this <code>NonEmptyString</code> to an array.
+        *
+        * @return an array containing all characters of this <code>NonEmptyString</code>. A <code>ClassTag</code> must be available for the element type of this <code>NonEmptyString</code>.
+        */
+      def toArray(implicit classTag: ClassTag[Char]): Array[Char] = new StringOps(nonEmptyString).toArray
+
+      /**
+        * Converts this <code>NonEmptyString</code> to a <code>Vector</code>.
+        *
+        * @return a <code>Vector</code> containing all characters of this <code>NonEmptyString</code>.
+        */
+      def toVector: Vector[Char] = nonEmptyString.toList.toVector
+
+      /**
+        * Converts this <code>NonEmptyString</code> to a mutable buffer.
+        *
+        * @return a buffer containing all characters of this <code>NonEmptyString</code>.
+        */
+      def toBuffer: Buffer[Char] = nonEmptyString.toList.toBuffer
+
+      /**
+        * Converts this <code>NonEmptyString</code> to an immutable <code>IndexedSeq</code>.
+        *
+        * @return an immutable <code>IndexedSeq</code> containing all characters of this <code>NonEmptyString</code>.
+        */
+      def toIndexedSeq: collection.immutable.IndexedSeq[Char] = nonEmptyString.toList.toVector
+
+      /**
+        * Converts this <code>NonEmptyString</code> to an iterable collection.
+        *
+        * @return an <code>Iterable</code> containing all characters of this <code>NonEmptyString</code>.
+        */
+      def toIterable: scala.collection.Iterable[Char] = nonEmptyString.toList.toIterable
+
+      /**
+        * Returns an <code>Iterator</code> over the elements in this <code>NonEmptyString</code>.
+        *
+        * @return an <code>Iterator</code> containing all characters of this <code>NonEmptyString</code>.
+        */
+      def toIterator: Iterator[Char] = nonEmptyString.toList.toIterator
+
+      /**
+        * Converts this <code>NonEmptyString</code> to a map.
+        *
+        * <p>
+        * This method is unavailable unless the elements are members of <code>Tuple2</code>, each <code>((K, V))</code> becoming a key-value pair
+        * in the map. Duplicate keys will be overwritten by later keys.
+        * </p>
+        *
+        * @return a map of type <code>immutable.Map[Int, Char]</code> containing all index/character pairs of type <code>(Int, Char)</code> of this <code>NonEmptyString</code>.
+        */
+      def toMap: Map[Int, Char] = Map.empty[Int, Char] ++ nonEmptyString.toList.zipWithIndex.map(e => e._2 -> e._1)
+
+      /**
+        * Converts this <code>NonEmptyString</code> to an immutable <code>IndexedSeq</code>.
+        *
+        * @return an immutable <code>IndexedSeq</code> containing all characters of this <code>NonEmptyString</code>.
+        */
+      def toSeq: collection.immutable.Seq[Char] = nonEmptyString
+
+      /**
+        * Converts this <code>NonEmptyString</code> to a set.
+        *
+        * @return a set containing all characters of this <code>NonEmptyString</code>.
+        */
+      def toSet: Set[Char] = nonEmptyString.toList.toSet
+
+      /**
+        * Converts this <code>NonEmptyString</code> to a stream.
+        *
+        * @return a stream containing all characters of this <code>NonEmptyString</code>.
+        */
+      def toStream: Stream[Char] = nonEmptyString.toList.toStream
 
     }
   }

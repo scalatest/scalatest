@@ -1100,7 +1100,7 @@ class NonEmptyStringSpec extends UnitSpec {
       scala> Vector(1).takeWhile(_ > 10)
       res18: scala.collection.immutable.Vector[Int] = Vector()
   */
-  /*it should "have a to method" in {
+  it should "have a to method" in {
     import org.scalactic.ColCompatHelper.Factory._
     NonEmptyString("1").to(List) shouldBe List('1')
     NonEmptyString("123").to(List) shouldBe List('1', '2', '3')
@@ -1155,7 +1155,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("ab").toVector should === (Vector('a', 'b'))
     NonEmptyString("1").toVector should === (Vector('1'))
   }
-  it should "have a union method that takes a GenSeq" in {
+  /*it should "have a union method that takes a GenSeq" in {
     NonEmptyString("1") union List('1') shouldBe Seq('1', '1')
     NonEmptyString("1") union List('1', '2') shouldBe Seq('1', '1', '2')
     NonEmptyString("12") union List('1', '2') shouldBe Seq('1', '2', '1', '2')
