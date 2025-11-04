@@ -1279,6 +1279,30 @@ object NonEmptyStrings {
       def updated(idx: Int, c: Char): NonEmptyString =
         new StringOps(nonEmptyString).updated(idx, c)
 
+      /**
+        * Returns a <code>NonEmptyString</code> formed from this <code>NonEmptyString</code> and an iterable collection by combining corresponding
+        * elements in pairs. If one of the two collections is shorter than the other, placeholder elements will be used to extend the
+        * shorter collection to the length of the longer.
+        *
+        * @tparam O the element type of the <code>other</code>
+        * @param other the <code>IterableOnce</code> providing the second half of each result pair
+        * @param thisElem the element to be used to fill up the result if this <code>NonEmptyString</code> is shorter than <code>that</code> <code>Iterable</code>.
+        * @param otherElem the element to be used to fill up the result if <code>that</code> <code>IterableOnce</code> is shorter than this <code>NonEmptyString</code>.
+        * @return a new <code>NonEmptyString</code> containing pairs consisting of corresponding characters of this <code>NonEmptyString</code> and <code>that</code>. The
+        *     length of the returned collection is the maximum of the lengths of this <code>NonEmptyString</code> and <code>that</code>. If this <code>NonEmptyString</code>
+        *     is shorter than <code>that</code>, <code>thisElem</code> values are used to pad the result. If <code>that</code> is shorter than this
+        *     <code>NonEmptyString</code>, <code>thatElem</code> values are used to pad the result. 
+        */
+      def zipAll[O](other: collection.IterableOnce[O], thisElem: Char, otherElem: O): Iterable[(Char, O)] =
+        nonEmptyString.toList.zipAll(other.toList, thisElem, otherElem)
+
+      /**
+        * Zips this <code>NonEmptyString</code>  with its indices.
+        *
+        * @return A new <code>NonEmptyString</code> containing pairs consisting of all elements of this <code>NonEmptyString</code> paired with their index. Indices start at 0.
+        */
+      def zipWithIndex: Iterable[(Char, Int)] = nonEmptyString.toList.zipWithIndex
+
     }
   }
 }

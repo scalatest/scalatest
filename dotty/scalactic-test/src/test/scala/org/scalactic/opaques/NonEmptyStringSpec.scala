@@ -1214,7 +1214,7 @@ class NonEmptyStringSpec extends UnitSpec {
       scala> String(1) zip Nil
       res0: String[(Int, Nothing)] = String()
   */
-  /*it should "have a zipAll method that takes an Iterable" in {
+  it should "have a zipAll method that takes an Iterable" in {
 
     // Empty on right
     NonEmptyString("1").zipAll(Nil, 'a', -2) shouldBe Iterable(('1', -2))
@@ -1263,6 +1263,6 @@ class NonEmptyStringSpec extends UnitSpec {
   it should "have a zipWithIndex method" in {
     NonEmptyString("99").zipWithIndex shouldBe Iterable(('9', 0), ('9', 1))
     NonEmptyString("12345").zipWithIndex shouldBe Iterable(('1', 0), ('2', 1), ('3', 2), ('4', 3), ('5', 4))
-  }*/
+  }
 }
 
