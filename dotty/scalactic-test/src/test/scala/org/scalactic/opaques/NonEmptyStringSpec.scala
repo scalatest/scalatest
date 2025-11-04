@@ -1187,7 +1187,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("12") union "345" shouldBe NonEmptyString("12345")
     NonEmptyString("123") union "345" shouldBe NonEmptyString("123345")
   }
-  /*it should "have an unzip method" in {
+  it should "have an unzip method" in {
     implicit def test(c: Char): (Int, Char) = (c.toInt, c)
     NonEmptyString("12").unzip shouldBe (Vector(49, 50), Vector('1', '2'))
     NonEmptyString("1234").unzip shouldBe (Vector(49, 50, 51, 52), Vector('1', '2', '3', '4'))
@@ -1214,7 +1214,7 @@ class NonEmptyStringSpec extends UnitSpec {
       scala> String(1) zip Nil
       res0: String[(Int, Nothing)] = String()
   */
-  it should "have a zipAll method that takes an Iterable" in {
+  /*it should "have a zipAll method that takes an Iterable" in {
 
     // Empty on right
     NonEmptyString("1").zipAll(Nil, 'a', -2) shouldBe Iterable(('1', -2))

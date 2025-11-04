@@ -846,7 +846,7 @@ object NonEmptyStrings {
         * The result of multiplying all the characters of this <code>NonEmptyString</code>.
         *
         * <p>
-        * This method can be invoked for any <code>NonEmptyString</code> for which an implicit <code>Numeric[T]</code> exists.
+        * This method can be invoked for any <code>NonEmptyString</code> for which a given <code>Numeric[T]</code> exists.
         * </p>
         *
         * @return the product of all elements
@@ -1083,7 +1083,7 @@ object NonEmptyStrings {
         * @return a <code>NonEmptyString</code> consisting of the elements of this <code>NonEmptyString</code> sorted according to the <code>Ordering</code> where
         *    <code>x &lt; y if ord.lt(f(x), f(y))</code>. 
         */
-      def sortBy[U](f: Char => U)(implicit ord: Ordering[U]): NonEmptyString = new StringOps(nonEmptyString).sortBy(f)
+      def sortBy[U](f: Char => U)(using ord: Ordering[U]): NonEmptyString = new StringOps(nonEmptyString).sortBy(f)
 
       /**
         * Sorts this <code>NonEmptyString</code> according to a comparison function.
@@ -1109,7 +1109,7 @@ object NonEmptyStrings {
         * @param ord the <code>Ordering</code> to be used to compare elements.
         * @return a <code>NonEmptyString</code> consisting of the characters of this <code>NonEmptyString</code> sorted according to the ordering defined by <code>ord</code>.
         */
-      def sorted(implicit ord: Ordering[Char]): NonEmptyString = new StringOps(nonEmptyString).sorted(ord)
+      def sorted(using ord: Ordering[Char]): NonEmptyString = new StringOps(nonEmptyString).sorted(ord)
 
       /**
         * Indicates whether this <code>NonEmptyString</code> starts with the given <code>IterableOnce</code>. 
@@ -1132,7 +1132,7 @@ object NonEmptyStrings {
         * The result of summing all the characters of this <code>NonEmptyString</code>.
         *
         * <p>
-        * This method can be invoked for any <code>NonEmptyString</code> for which an implicit <code>Numeric[Char]</code> exists.
+        * This method can be invoked for any <code>NonEmptyString</code> for which a given <code>Numeric[Char]</code> exists.
         * </p>
         *
         * @return the sum of all elements
@@ -1153,7 +1153,7 @@ object NonEmptyStrings {
         *
         * @return an array containing all characters of this <code>NonEmptyString</code>. A <code>ClassTag</code> must be available for the element type of this <code>NonEmptyString</code>.
         */
-      def toArray(implicit classTag: ClassTag[Char]): Array[Char] = new StringOps(nonEmptyString).toArray
+      def toArray(using classTag: ClassTag[Char]): Array[Char] = new StringOps(nonEmptyString).toArray
 
       /**
         * Converts this <code>NonEmptyString</code> to a <code>Vector</code>.
@@ -1240,6 +1240,44 @@ object NonEmptyStrings {
         * @return a new <code>NonEmptyString</code> that contains all characters of this <code>NonEmptyString</code> followed by all characters of <code>that</code> <code>Every</code>.
         */
       def union(that: IterableOnce[Char]): NonEmptyString = nonEmptyString.toList.union(that.toList).mkString
+
+      /**
+        * Converts this <code>NonEmptyString</code> of pairs into two <code>NonEmptyString</code>s of the first and second half of each pair. 
+        *
+        * @tparam L the type of the first half of the character pairs
+        * @tparam R the type of the second half of the character pairs
+        * @param asPair an using conversion that asserts that the character type of this <code>NonEmptyString</code> is a pair.
+        * @return a pair of <code>NonEmptyString</code>s, containing the first and second half, respectively, of each character pair of this <code>NonEmptyString</code>.
+        */
+      def unzip[L, R](using asPair: Char => (L, R)): (Iterable[L], Iterable[R]) = {
+        val unzipped = nonEmptyString.toList.unzip
+        (unzipped._1, unzipped._2)
+      }
+
+      /**
+        * Converts this <code>NonEmptyString</code> of triples into three <code>NonEmptyString</code>s of the first, second, and and third character of each triple.
+        *
+        * @tparam L the type of the first member of the character triples
+        * @tparam R the type of the second member of the character triples
+        * @tparam R the type of the third member of the character triples
+        * @param asTriple an using conversion that character that the character type of this <code>NonEmptyString</code> is a triple.
+        * @return a triple of <code>NonEmptyString</code>s, containing the first, second, and third member, respectively, of each character triple of this <code>NonEmptyString</code>.
+        */
+      def unzip3[L, M, R](using asTriple: Char => (L, M, R)): (Iterable[L], Iterable[M], Iterable[R]) = {
+        val unzipped = nonEmptyString.toList.unzip3
+        (unzipped._1, unzipped._2, unzipped._3)
+      }
+
+      /**
+        * A copy of this <code>NonEmptyString</code> with one single replaced character.
+        *
+        * @param idx the position of the replacement
+        * @param c the replacing character
+        * @throws IndexOutOfBoundsException if the passed index is greater than or equal to the length of this <code>NonEmptyString</code>
+        * @return a copy of this <code>NonEmptyString</code> with the character at position <code>idx</code> replaced by <code>c</code>.
+        */
+      def updated(idx: Int, c: Char): NonEmptyString =
+        new StringOps(nonEmptyString).updated(idx, c)
 
     }
   }
