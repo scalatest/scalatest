@@ -343,15 +343,14 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").exists(_ == '2') shouldBe true
     NonEmptyString("123").exists(_ == '5') shouldBe false
   }
-  /*
-  it should not have a filter method
-    scala> Vector(1, 2, 3).filter(_ > 10)
-    res12: scala.collection.immutable.Vector[Int] = Vector()
-
-  it should not have a filterNot method
-    scala> Vector(1, 2, 3).filterNot(_ < 10)
-    res13: scala.collection.immutable.Vector[Int] = Vector()
-  */
+  it should "have filter method" in {
+    NonEmptyString("123").filter(_ == '2') shouldBe "2"
+    NonEmptyString("123").filter(_ == '5') shouldBe ""
+  }
+  it should "have filterNot method" in {
+    NonEmptyString("123").filterNot(_ == '2') shouldBe "13"
+    NonEmptyString("123").filterNot(_ == '5') shouldBe "123"
+  }
   it should "have a find method" in {
     NonEmptyString("123").find(_ == '5') shouldBe None
     NonEmptyString("123").find(_ == '2') shouldBe Some('2')

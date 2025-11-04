@@ -103,20 +103,6 @@ object NonEmptyStrings {
     * </pre>
     *
     * <p>
-    * <code>NonEmptyString</code> does <em>not</em> currently define any methods corresponding to <code>Seq</code> methods that could result in
-    * an empty <code>Seq</code>. However, an implicit converison from <code>NonEmptyString</code> to <code>String</code>
-    * is defined in the <code>NonEmptyString</code> companion object that will be applied if you attempt to call one of the missing methods. As a
-    * result, you can invoke <code>filter</code> on an <code>NonEmptyString</code>, even though <code>filter</code> could result
-    * in an empty sequence&mdash;but the result type will be <code>String</code> instead of <code>NonEmptyString</code>:
-    * </p>
-    *
-    * <pre class="stHighlight">
-    * NonEmptyString(1, 2, 3).filter(_ &lt; 10) // Result: String(1, 2, 3)
-    * NonEmptyString(1, 2, 3).filter(_ &gt; 10) // Result: String()
-    * </pre>
-    *
-    *
-    * <p>
     * You can use <code>NonEmptyString</code>s in <code>for</code> expressions. The result will be an <code>NonEmptyString</code> unless
     * you use a filter (an <code>if</code> clause). Because filters are desugared to invocations of <code>filter</code>, the
     * result type will switch to a <code>String</code> at that point. Here are some examples:
@@ -436,6 +422,22 @@ object NonEmptyStrings {
         }.mkString
 
       /**
+        * Filters the characters of this <code>NonEmptyString</code> that satisfy the given predicate.
+        *
+        * @param p the predicate used to test characters
+        * @return a new <code>String</code> containing the characters in this <code>NonEmptyString</code> that satisfy <code>p</code>.
+        */
+      def filter(p: Char => Boolean): String = new StringOps(nonEmptyString).filter(p)
+
+      /**
+        * Filters the characters of this <code>NonEmptyString</code> that does not satisfy the given predicate.
+        *
+        * @param p the predicate used to test characters
+        * @return a new <code>String</code> does not contain the characters in this <code>NonEmptyString</code> that satisfy <code>p</code>.
+        */
+      def filterNot(p: Char => Boolean): String = new StringOps(nonEmptyString).filterNot(p)
+
+      /**
         * Folds the characters of this <code>NonEmptyString</code> using the specified associative binary operator.
         *
         * <p>
@@ -551,10 +553,6 @@ object NonEmptyStrings {
         * @return the first character of this <code>NonEmptyString</code>.
         */
       def head: Char = nonEmptyString.charAt(0) // Can never be empty, so safe
-
-      // Methods like headOption I can't get rid of because of the implicit conversion to Iterable.
-      // Users can call any of the methods I've left out on a NonEmptyString, and get whatever String would return
-      // for that method call. Eventually I'll probably implement them all to save the implicit conversion.
 
       /**
         * Selects the first character of this <code>NonEmptyString</code> and returns it wrapped in a <code>Some</code>.
