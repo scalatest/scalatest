@@ -15,9 +15,10 @@
  */
 package org.scalactic.opaques
 
+import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.collection.GenSeq
 import scala.reflect.ClassTag
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.{ArrayBuffer, Buffer}
 import scala.collection.ArrayOps
 import org.scalactic.{Every, Resources}
 import scala.language.higherKinds
@@ -71,20 +72,6 @@ import scala.language.higherKinds
   * </pre>
   *
   * <p>
-  * <code>NonEmptyArray</code> does <em>not</em> currently define any methods corresponding to <code>Seq</code> methods that could result in
-  * an empty <code>Seq</code>. However, an implicit converison from <code>NonEmptyArray</code> to <code>Array</code>
-  * is defined in the <code>NonEmptyArray</code> companion object that will be applied if you attempt to call one of the missing methods. As a
-  * result, you can invoke <code>filter</code> on an <code>NonEmptyArray</code>, even though <code>filter</code> could result
-  * in an empty sequence&mdash;but the result type will be <code>Array</code> instead of <code>NonEmptyArray</code>:
-  * </p>
-  *
-  * <pre class="stHighlight">
-  * NonEmptyArray(1, 2, 3).filter(_ &lt; 10) // Result: Array(1, 2, 3)
-  * NonEmptyArray(1, 2, 3).filter(_ &gt; 10) // Result: Array()
-  * </pre>
-  *
-  *
-  * <p>
   * You can use <code>NonEmptyArray</code>s in <code>for</code> expressions. The result will be an <code>NonEmptyArray</code> unless
   * you use a filter (an <code>if</code> clause). Because filters are desugared to invocations of <code>filter</code>, the
   * result type will switch to a <code>Array</code> at that point. Here are some examples:
@@ -118,7 +105,7 @@ import scala.language.higherKinds
   * @tparam T the type of elements contained in this <code>NonEmptyArray</code>
   */
 
-opaque type NonEmptyArray[T] = Array[T] & { def length: Int & (1 | Int) }
+opaque type NonEmptyArray[T] = Array[T]
 
 /**
   * Companion object for class <code>NonEmptyArray</code>.
@@ -132,7 +119,7 @@ object NonEmptyArray {
     * @param firstElement the first element (with index 0) contained in this <code>NonEmptyArray</code>
     * @param otherElements a varargs of zero or more other elements (with index 1, 2, 3, ...) contained in this <code>NonEmptyArray</code>
     */
-  def apply[T](firstElement: T, otherElements: T*)(implicit classTag: ClassTag[T]): NonEmptyArray[T] = (firstElement +: otherElements).toArray
+  def apply[T](firstElement: T, otherElements: T*)(using classTag: ClassTag[T]): NonEmptyArray[T] = (firstElement +: otherElements).toArray
 
   /**
     * Variable argument extractor for <code>NonEmptyArray</code>s.
@@ -156,25 +143,37 @@ object NonEmptyArray {
     * @return a <code>NonEmptyArray</code> containing the elements of the given <code>GenSeq</code>, if non-empty, wrapped in
     *     a <code>Some</code>; else <code>None</code> if the <code>GenSeq</code> is empty
     */
-  def from[T](seq: GenSeq[T])(implicit classTag: ClassTag[T]): Option[NonEmptyArray[T]] =
+  def from[T](seq: GenSeq[T])(using classTag: ClassTag[T]): Option[NonEmptyArray[T]] =
     seq.headOption match {
       case None => None
       case Some(first) => Some((first +: seq.tail).toArray)
-    }
-
-  import scala.language.implicitConversions  
+    } 
 
   /**
-    * Implicit conversion from <code>NonEmptyArray</code> to <code>GenSeq</code>.
+    * Conversion from <code>NonEmptyArray</code> to <code>IterableOnce</code>.
     *
     * @param nonEmptyArray the <code>NonEmptyArray</code> to convert
-    * @return the <code>GenSeq</code>
+    * @return the <code>IterableOnce</code>
     */
-  implicit def nonEmptyArrayToGenSeq[E](nonEmptyArray: NonEmptyArray[E]): scala.collection.GenSeq[E] = // given Conversion just won't work!
-    new scala.collection.IndexedSeq[E] {
-      def apply(i: Int): E = nonEmptyArray(i)
-      def length: Int = nonEmptyArray.length
-    }
+  given [E]: Conversion[NonEmptyArray[E], IterableOnce[E]] with {
+    def apply(nonEmptyArray: NonEmptyArray[E]): IterableOnce[E] = 
+      new IterableOnce[E] {
+        def iterator: Iterator[E] = new ArrayOps(nonEmptyArray).iterator
+      }
+  }
+  /**
+    * Conversion from <code>NonEmptyArray</code> to <code>PartialFunction</code>.
+    *
+    * @param nonEmptyArray the <code>NonEmptyArray</code> to convert
+    * @return the <code>PartialFunction</code>
+    */
+  given [E]: Conversion[NonEmptyArray[E], PartialFunction[Int, E]] with {
+    def apply(nonEmptyArray: NonEmptyArray[E]): PartialFunction[Int, E] =
+      new PartialFunction[Int, E] {
+        def apply(i: Int): E = nonEmptyArray.toArray.apply(i)
+        def isDefinedAt(i: Int): Boolean = i >= 0 && i < nonEmptyArray.length
+      }
+  }
 
   extension [T](element: T) {
     /**
@@ -203,7 +202,7 @@ object NonEmptyArray {
       * @return a new <code>NonEmptyArray</code> that contains all the elements of this <code>NonEmptyArray</code> followed by all elements of <code>other</code>.
       */
     infix def ++[U >: T](other: IterableOnce[U])(using classTag: ClassTag[U]): NonEmptyArray[U] = {
-      ArrayOps(nonEmptyArray).appendedAll(other)
+      ArrayOps(nonEmptyArray) ++ other
     }
 
     /**
@@ -216,9 +215,51 @@ object NonEmptyArray {
       * @param element the element to append to this <code>NonEmptyArray</code>
       * @return a new <code>NonEmptyArray</code> consisting of all elements of this <code>NonEmptyArray</code> followed by <code>element</code>.
       */
-    infix def :+[U >: T](element: U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] = { 
+    infix def :+[U >: T](element: U)(using classTag: ClassTag[U]): NonEmptyArray[U] = { 
       ArrayOps(nonEmptyArray).appended(element)
     }
+
+    /**
+      * Appends all elements of this <code>NonEmptyArray</code> to a string builder. The written text will consist of a concatenation of the result of invoking <code>toString</code>
+      * on of every element of this <code>NonEmptyArray</code>, without any separator string.
+      *
+      * @param sb the string builder to which elements will be appended
+      * @return the string builder, <code>sb</code>, to which elements were appended.
+      */
+    def addString(sb: StringBuilder): StringBuilder = nonEmptyArray.toIndexedSeq.addString(sb)
+
+    /**
+      * Appends all elements of this <code>NonEmptyArray</code> to a string builder using a separator string. The written text will consist of a concatenation of the
+      * result of invoking <code>toString</code>
+      * on of every element of this <code>NonEmptyArray</code>, separated by the string <code>sep</code>.
+      *
+      * @param sb the string builder to which elements will be appended
+      * @param sep the separator string
+      * @return the string builder, <code>sb</code>, to which elements were appended.
+      */
+    def addString(sb: StringBuilder, sep: String): StringBuilder = nonEmptyArray.toIndexedSeq.addString(sb, sep)
+
+    /**
+      * Appends all elements of this <code>NonEmptyArray</code> to a string builder using start, end, and separator strings. The written text will consist of a concatenation of
+      * the string <code>start</code>; the result of invoking <code>toString</code> on all elements of this <code>NonEmptyArray</code>,
+      * separated by the string <code>sep</code>; and the string <code>end</code>
+      *
+      * @param sb the string builder to which elements will be appended
+      * @param start the starting string
+      * @param sep the separator string
+      * @param start the ending string
+      * @return the string builder, <code>sb</code>, to which elements were appended.
+      */
+    def addString(sb: StringBuilder, start: String, sep: String, end: String): StringBuilder = nonEmptyArray.toIndexedSeq.addString(sb, start, sep, end)
+
+    /**
+      * Finds the first element of this <code>NonEmptyArray</code> for which the given partial function is defined, if any, and applies the partial function to it.
+      *
+      * @param pf the partial function
+      * @return an <code>Option</code> containing <code>pf</code> applied to the first element for which it is defined, or <code>None</code> if
+      *    the partial function was not defined for any element.
+      */
+    def collectFirst[U](pf: PartialFunction[T, U])(using classTagOfU: ClassTag[U]): Option[U] = new ArrayOps(nonEmptyArray).collectFirst(pf)
 
     /**
       * Indicates whether this <code>NonEmptyArray</code> contains a given value as an element.
@@ -232,6 +273,14 @@ object NonEmptyArray {
     }
 
     /**
+      * Indicates whether this <code>NonEmptyArray</code> contains a given <code>IterableOnce</code> as a slice.
+      *
+      * @param that the <code>IterableOnce</code> slice to look for
+      * @return true if this <code>NonEmptyArray</code> contains a slice with the same elements as <code>that</code>, otherwise <code>false</code>.
+      */
+    def containsSlice[B](that: IterableOnce[B]): Boolean = nonEmptyArray.toIndexedSeq.containsSlice(that.toList)
+
+    /**
     * Builds a new <code>NonEmptyArray</code> from this <code>NonEmptyArray</code> without any duplicate elements.
     *
     * @return A new <code>NonEmptyArray</code> that contains the first occurrence of every element of this <code>NonEmptyArray</code>. 
@@ -242,6 +291,22 @@ object NonEmptyArray {
     }
 
     /**
+      * Indicates whether this <code>NonEmptyArray</code> ends with the given <code>IterableOnce</code>.
+      *
+      * @param that the sequence to test
+      * @return <code>true</code> if this <code>NonEmptyArray</code> has <code>that</code> as a suffix, <code>false</code> otherwise. 
+      */
+    def endsWith[B](that: IterableOnce[B]): Boolean = new ArrayOps(nonEmptyArray).endsWith(that.toList)
+
+    /**
+      * Indicates whether a predicate holds for at least one of the elements of this <code>NonEmptyArray</code>.
+      *
+      * @param the predicate used to test elements.
+      * @return <code>true</code> if the given predicate <code>p</code> holds for some of the elements of this <code>NonEmptyArray</code>, otherwise <code>false</code>. 
+      */
+    def exists(p: T => Boolean): Boolean = new ArrayOps(nonEmptyArray).exists(p)
+
+    /**
       * Builds a new <code>NonEmptyArray</code> by applying a function to all elements of this <code>NonEmptyArray</code> and using the elements of the resulting <code>NonEmptyArray</code>s.
       *
       * @tparam U the element type of the returned <code>NonEmptyArray</code>
@@ -249,12 +314,20 @@ object NonEmptyArray {
       * @return a new <code>NonEmptyArray</code> containing elements obtained by applying the given function <code>f</code> to each element of this <code>NonEmptyArray</code> and concatenating
       *    the elements of resulting <code>NonEmptyArray</code>s. 
       */
-    def flatMap[U](f: T => NonEmptyArray[U])(implicit classTag: ClassTag[U]): NonEmptyArray[U] = {
+    def flatMap[U](f: T => NonEmptyArray[U])(using classTag: ClassTag[U]): NonEmptyArray[U] = {
       val buf = new ArrayBuffer[U]
       for (ele <- nonEmptyArray)
         buf ++= f(ele).toArray
       buf.toArray
     }
+
+    /**
+      * Finds the first element of this <code>NonEmptyArray</code> that satisfies the given predicate, if any.
+      *
+      * @param p the predicate used to test elements
+      * @return an <code>Some</code> containing the first element in this <code>NonEmptyArray</code> that satisfies <code>p</code>, or <code>None</code> if none exists. 
+      */
+    def find(p: T => Boolean): Option[T] = new ArrayOps(nonEmptyArray).find(p)
 
     /**
       * Converts this <code>NonEmptyArray</code> of <code>NonEmptyArray</code>s into a <code>NonEmptyArray</code>
@@ -268,7 +341,269 @@ object NonEmptyArray {
       * @tparm B the type of the elements of each nested <code>NonEmptyArray</code>
       * @return a new <code>NonEmptyArray</code> resulting from concatenating all nested <code>NonEmptyArray</code>s.
       */
-    def flatten[B](implicit ev: T <:< NonEmptyArray[B], classTag: ClassTag[B]): NonEmptyArray[B] = flatMap(ev)
+    def flatten[B](using ev: T <:< NonEmptyArray[B], classTag: ClassTag[B]): NonEmptyArray[B] = flatMap(ev)
+
+    /**
+      * Folds the elements of this <code>NonEmptyArray</code> using the specified associative binary operator.
+      *
+      * <p>
+      * The order in which operations are performed on elements is unspecified and may be nondeterministic. 
+      * </p>
+      *
+      * @tparam U a type parameter for the binary operator, a supertype of T.
+      * @param z a neutral element for the fold operation; may be added to the result an arbitrary number of
+      *     times, and must not change the result (<em>e.g.</em>, <code>Nil</code> for list concatenation,
+      *     0 for addition, or 1 for multiplication.)
+      * @param op a binary operator that must be associative
+      * @return the result of applying fold operator <code>op</code> between all the elements and <code>z</code>
+      */
+    def fold[U >: T](z: U)(op: (U, U) => U): U = new ArrayOps(nonEmptyArray).fold(z)(op)
+
+    /**
+      * Applies a binary operator to a start value and all elements of this <code>NonEmptyArray</code>, going left to right.
+      *
+      * @tparam B the result type of the binary operator.
+      * @param z the start value.
+      * @param op the binary operator.
+      * @return the result of inserting <code>op</code> between consecutive elements of this <code>NonEmptyArray</code>, going left to right, with the start value,
+      *     <code>z</code>, on the left:
+      *
+      * <pre>
+      * op(...op(op(z, x_1), x_2), ..., x_n)
+      * </pre>
+      *
+      * <p>
+      * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyArray</code>. 
+      * </p>
+      */
+    def foldLeft[B](z: B)(op: (B, T) => B): B = new ArrayOps(nonEmptyArray).foldLeft(z)(op)
+
+    /**
+      * Applies a binary operator to all elements of this <code>NonEmptyArray</code> and a start value, going right to left.
+      *
+      * @tparam B the result of the binary operator
+      * @param z the start value
+      * @param op the binary operator
+      * @return the result of inserting <code>op</code> between consecutive elements of this <code>NonEmptyArray</code>, going right to left, with the start value,
+      *     <code>z</code>, on the right:
+      *
+      * <pre>
+      * op(x_1, op(x_2, ... op(x_n, z)...))
+      * </pre>
+      *
+      * <p>
+      * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyArray</code>. 
+      * </p>
+      */
+    def foldRight[B](z: B)(op: (T, B) => B): B = new ArrayOps(nonEmptyArray).foldRight(z)(op)
+
+    /**
+      * Indicates whether a predicate holds for all elements of this <code>NonEmptyArray</code>.
+      *
+      * @param p the predicate used to test elements.
+      * @return <code>true</code> if the given predicate <code>p</code> holds for all elements of this <code>NonEmptyArray</code>, otherwise <code>false</code>. 
+      */
+    def forall(p: T => Boolean): Boolean = new ArrayOps(nonEmptyArray).forall(p)
+
+    /**
+      * Applies a function <code>f</code> to all elements of this <code>NonEmptyArray</code>.
+      *
+      * @param f the function that is applied for its side-effect to every element. The result of function <code>f</code> is discarded.
+      */
+    def foreach(f: T => Unit): Unit = new ArrayOps(nonEmptyArray).foreach(f)
+
+    /**
+      * Returns <code>true</code> to indicate this <code>NonEmptyArray</code> has a definite size, since all <code>NonEmptyArray</code>s are strict collections.
+      */
+    def hasDefiniteSize: Boolean = true
+
+    /**
+      * Selects the first element of this <code>NonEmptyArray</code>. 
+      *
+      * @return the first element of this <code>NonEmptyArray</code>.
+      */
+    def head: T = new ArrayOps(nonEmptyArray).head
+
+    /**
+      * Selects the first element of this <code>NonEmptyArray</code> and returns it wrapped in a <code>Some</code>. 
+      *
+      * @return the first element of this <code>NonEmptyArray</code>, wrapped in a <code>Some</code>.
+      */
+    def headOption: Option[T] = new ArrayOps(nonEmptyArray).headOption
+
+    /**
+      * Finds index of first occurrence of some value in this <code>NonEmptyArray</code>.
+      *
+      * @param elem the element value to search for. 
+      * @return the index of the first element of this <code>NonEmptyArray</code> that is equal (as determined by <code>==</code>) to <code>elem</code>,
+      *     or <code>-1</code>, if none exists.
+      */
+    def indexOf(elem: T): Int = new ArrayOps(nonEmptyArray).indexOf(elem, 0)
+
+    /**
+      * Finds index of first occurrence of some value in this <code>NonEmptyArray</code> after or at some start index.
+      *
+      * @param elem the element value to search for. 
+      * @param from the start index
+      * @return the index <code>&gt;=</code> <code>from</code> of the first element of this <code>NonEmptyArray</code> that is equal (as determined by <code>==</code>) to <code>elem</code>,
+      *     or <code>-1</code>, if none exists.
+      */
+    def indexOf(elem: T, from: Int): Int = new ArrayOps(nonEmptyArray).indexOf(elem, from)
+
+
+    /**
+      * Finds first index where this <code>NonEmptyArray</code> contains a given <code>IterableOnce</code> as a slice.
+      *
+      * @param that the <code>IterableOnce</code> defining the slice to look for
+      * @return the first index at which the elements of this <code>NonEmptyArray</code> starting at that index match the elements of
+      *     <code>IterableOnce</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
+      */
+    def indexOfSlice[U >: T](that: IterableOnce[U]): Int = nonEmptyArray.toIndexedSeq.indexOfSlice(that.toList)
+
+    /**
+      * Finds first index after or at a start index where this <code>NonEmptyArray</code> contains a given <code>IterableOnce</code> as a slice.
+      *
+      * @param that the <code>IterableOnce</code> defining the slice to look for
+      * @param from the start index
+      * @return the first index <code>&gt;=</code> <code>from</code> at which the elements of this <code>NonEmptyArray</code> starting at that index match the elements of
+      *     <code>IterableOnce</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
+      */
+    def indexOfSlice[U >: T](that: IterableOnce[U], from: Int): Int = nonEmptyArray.toIndexedSeq.indexOfSlice(that.toList, from)
+
+    /**
+      * Finds index of the first element satisfying some predicate.
+      *
+      * @param p the predicate used to test elements.
+      * @return the index of the first element of this <code>NonEmptyArray</code> that satisfies the predicate <code>p</code>,
+      *     or <code>-1</code>, if none exists.
+      */
+    def indexWhere(p: T => Boolean): Int = new ArrayOps(nonEmptyArray).indexWhere(p)
+
+    /**
+      * Finds index of the first element satisfying some predicate after or at some start index.
+      *
+      * @param p the predicate used to test elements.
+      * @param from the start index
+      * @return the index <code>&gt;=</code> <code>from</code> of the first element of this <code>NonEmptyArray</code> that satisfies the predicate <code>p</code>,
+      *     or <code>-1</code>, if none exists.
+      */
+    def indexWhere(p: T => Boolean, from: Int): Int = new ArrayOps(nonEmptyArray).indexWhere(p, from)
+
+    /**
+      * Produces the range of all indices of this <code>NonEmptyArray</code>. 
+      *
+      * @return a <code>Range</code> value from <code>0</code> to one less than the length of this <code>NonEmptyArray</code>. 
+      */
+    def indices: Range = new ArrayOps(nonEmptyArray).indices
+
+    /**
+      * Returns <code>false</code> to indicate this <code>NonEmptyArray</code>, like all <code>NonEmptyArray</code>s, is non-empty.
+      *
+      * @return false
+      */
+    def isEmpty: Boolean = false
+
+    /**
+      * Returns <code>true</code> to indicate this <code>NonEmptyArray</code>, like all <code>NonEmptyArray</code>s, can be traversed repeatedly.
+      *
+      * @return true
+      */
+    def isTraversableAgain: Boolean = true
+
+    /**
+      * Selects the last element of this <code>NonEmptyArray</code>. 
+      *
+      * @return the last element of this <code>NonEmptyArray</code>.
+      */
+    def last: T = new ArrayOps(nonEmptyArray).last
+
+    /**
+      * Finds the index of the last occurrence of some value in this <code>NonEmptyArray</code>.
+      *
+      * @param elem the element value to search for.
+      * @return the index of the last element of this <code>NonEmptyArray</code> that is equal (as determined by <code>==</code>) to <code>elem</code>,
+      *     or <code>-1</code>, if none exists.
+      */
+    def lastIndexOf(elem: T): Int = new ArrayOps(nonEmptyArray).lastIndexOf(elem)
+
+    /**
+      * Finds the index of the last occurrence of some value in this <code>NonEmptyArray</code> before or at a given <code>end</code> index.
+      *
+      * @param elem the element value to search for.
+      * @param end the end index. 
+      * @return the index <code>&gt;=</code> <code>end</code> of the last element of this <code>NonEmptyArray</code> that is equal (as determined by <code>==</code>)
+      *     to <code>elem</code>, or <code>-1</code>, if none exists.
+      */
+    def lastIndexOf(elem: T, end: Int): Int = new ArrayOps(nonEmptyArray).lastIndexOf(elem, end)
+
+    /**
+      * Finds the last index where this <code>NonEmptyArray</code> contains a given <code>IterableOnce</code> as a slice. 
+      *
+      * @param that the <code>IterableOnce</code> defining the slice to look for
+      * @return the last index at which the elements of this <code>NonEmptyArray</code> starting at that index match the elements of
+      *    <code>IterableOnce</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
+      */
+    def lastIndexOfSlice[U >: T](that: IterableOnce[U]): Int = nonEmptyArray.toIndexedSeq.lastIndexOfSlice(that.toList)
+
+    /**
+      * Finds the last index before or at a given end index where this <code>NonEmptyArray</code> contains a given <code>IterableOnce</code> as a slice. 
+      *
+      * @param that the <code>IterableOnce</code> defining the slice to look for
+      * @param end the end index
+      * @return the last index <code>&gt;=</code> <code>end</code> at which the elements of this <code>NonEmptyArray</code> starting at that index match the elements of
+      *    <code>IterableOnce</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
+      */
+    def lastIndexOfSlice[U >: T](that: IterableOnce[U], end: Int): Int = nonEmptyArray.toIndexedSeq.lastIndexOfSlice(that.toList, end)
+
+    /**
+      * Finds index of last element satisfying some predicate.
+      *
+      * @param p the predicate used to test elements.
+      * @return the index of the last element of this <code>NonEmptyArray</code> that satisfies the predicate <code>p</code>, or <code>-1</code>, if none exists. 
+      */
+    def lastIndexWhere(p: T => Boolean): Int = nonEmptyArray.toIndexedSeq.lastIndexWhere(p)
+
+    /**
+      * Finds index of last element satisfying some predicate before or at given end index.
+      *
+      * @param p the predicate used to test elements.
+      * @param end the end index
+      * @return the index <code>&gt;=</code> <code>end</code> of the last element of this <code>NonEmptyArray</code> that satisfies the predicate <code>p</code>,
+      *     or <code>-1</code>, if none exists. 
+      */
+    def lastIndexWhere(p: T => Boolean, end: Int): Int = nonEmptyArray.toIndexedSeq.lastIndexWhere(p, end)
+
+    /**
+      * Returns the last element of this <code>NonEmptyArray</code>, wrapped in a <code>Some</code>. 
+      *
+      * @return the last element, wrapped in a <code>Some</code>. 
+      */
+    def lastOption: Option[T] = new ArrayOps(nonEmptyArray).lastOption // Will always return a Some
+
+    /**
+      * The length of this <code>NonEmptyArray</code>.
+      *
+      * <p>
+      * Note: <code>length</code> and <code>size</code> yield the same result, which will be <code>&gt;</code>= 1. 
+      * </p>
+      *
+      * @return the number of elements in this <code>NonEmptyArray</code>. 
+      */
+    def length: Int = nonEmptyArray.toArray.length
+
+    /**
+      * Compares the length of this <code>NonEmptyArray</code> to a test value. 
+      *
+      * @param len the test value that gets compared with the length.
+      * @return a value <code>x</code> where
+      *
+      * <pre>
+      * x &lt; 0 if this.length &lt; len
+      * x == 0 if this.length == len
+      * x &gt; 0 if this.length &gt; len
+      * </pre>
+      */
+    def lengthCompare(len: Int): Int = new ArrayOps(nonEmptyArray).lengthCompare(len)
 
     /**
       * Builds a new <code>NonEmptyArray</code> by applying a function to all elements of this <code>NonEmptyArray</code>.
@@ -277,12 +612,40 @@ object NonEmptyArray {
       * @param f the function to apply to each element. 
       * @return a new <code>NonEmptyArray</code> resulting from applying the given function <code>f</code> to each element of this <code>NonEmptyArray</code> and collecting the results. 
       */
-    def map[U](f: T => U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] ={
+    def map[U](f: T => U)(using classTag: ClassTag[U]): NonEmptyArray[U] ={
       val buf = new ArrayBuffer[U]
       for (ele <- nonEmptyArray)
         buf += f(ele)
       buf.toArray
     }
+
+    /**
+      * Finds the largest element.
+      *
+      * @return the largest element of this <code>NonEmptyArray</code>. 
+      */
+    def max[U >: T](using cmp: Ordering[U]): T = nonEmptyArray.toIndexedSeq.max(cmp)
+
+    /**
+      * Finds the largest result after applying the given function to every element.
+      *
+      * @return the largest result of applying the given function to every element of this <code>NonEmptyArray</code>. 
+      */
+    def maxBy[U](f: T => U)(using cmp: Ordering[U]): T = nonEmptyArray.toIndexedSeq.maxBy(f)(cmp)
+
+    /**
+      * Finds the smallest element.
+      *
+      * @return the smallest element of this <code>NonEmptyArray</code>. 
+      */
+    def min[U >: T](using cmp: Ordering[U]): T = nonEmptyArray.toIndexedSeq.min(cmp)
+
+    /**
+      * Finds the smallest result after applying the given function to every element.
+      *
+      * @return the smallest result of applying the given function to every element of this <code>NonEmptyArray</code>. 
+      */
+    def minBy[U](f: T => U)(using cmp: Ordering[U]): T = nonEmptyArray.toIndexedSeq.minBy(f)(cmp)
 
     /**
       * Partitions this <code>NonEmptyArray</code> into a map of <code>NonEmptyArray</code>s according to some discriminator function.
@@ -299,7 +662,7 @@ object NonEmptyArray {
       * That is, every key <code>k</code> is bound to a <code>NonEmptyArray</code> of those elements <code>x</code> for which <code>f(x)</code> equals <code>k</code>.
       * </p>
       */
-    def groupBy[K](f: T => K)(implicit classTag: ClassTag[T]): Map[K, NonEmptyArray[T]] = {
+    def groupBy[K](f: T => K)(using classTag: ClassTag[T]): Map[K, NonEmptyArray[T]] = {
       val mapKToArray = (new ArrayOps(nonEmptyArray)).groupBy(f)
       (mapKToArray.mapValues{ list => NonEmptyArray(list.head, list.tail.toList*) }).toMap
     }
@@ -310,12 +673,48 @@ object NonEmptyArray {
       * @param size the number of elements per group
       * @return An iterator producing <code>NonEmptyArray</code>s of size <code>size</code>, except the last will be truncated if the elements don't divide evenly. 
       */
-    def grouped(size: Int)(implicit classTag: ClassTag[T]): Iterator[NonEmptyArray[T]] = {
+    def grouped(size: Int)(using classTag: ClassTag[T]): Iterator[NonEmptyArray[T]] = {
       if (size < 1)
         throw new IllegalArgumentException(Resources.invalidSize(size))
       val itOfArray = (new ArrayOps(nonEmptyArray)).grouped(size)
       itOfArray.map { list => NonEmptyArray(list.head, list.tail.toList*) }
     }
+
+    /**
+      * Displays all elements of this <code>NonEmptyArray</code> in a string. 
+      *
+      * @return a string representation of this <code>NonEmptyArray</code>. In the resulting string, the result of invoking <code>toString</code> on all elements of this
+      *     <code>NonEmptyArray</code> follow each other without any separator string. 
+      */
+    def mkString: String = nonEmptyArray.toIndexedSeq.mkString
+
+    /**
+      * Displays all elements of this <code>NonEmptyArray</code> in a string using a separator string. 
+      *
+      * @param sep the separator string
+      * @return a string representation of this <code>NonEmptyArray</code>. In the resulting string, the result of invoking <code>toString</code> on all elements of this
+      *     <code>NonEmptyArray</code> are separated by the string <code>sep</code>. 
+      */
+    def mkString(sep: String): String = nonEmptyArray.toIndexedSeq.mkString(sep)
+
+    /**
+      * Displays all elements of this <code>NonEmptyArray</code> in a string using start, end, and separator strings. 
+      *
+      * @param start the starting string.
+      * @param sep the separator string.
+      * @param end the ending string.
+      * @return a string representation of this <code>NonEmptyArray</code>. The resulting string begins with the string <code>start</code> and ends with the string
+      *     <code>end</code>. Inside, In the resulting string, the result of invoking <code>toString</code> on all elements of this <code>NonEmptyArray</code> are
+      *     separated by the string <code>sep</code>. 
+      */
+    def mkString(start: String, sep: String, end: String): String = nonEmptyArray.toIndexedSeq.mkString(start, sep, end)
+
+    /**
+      * Returns <code>true</code> to indicate this <code>NonEmptyArray</code>, like all <code>NonEmptyArray</code>s, is non-empty.
+      *
+      * @return true
+      */
+    def nonEmpty: Boolean = true
 
     /**
       * A copy of this <code>NonEmptyArray</code> with an element value appended until a given target length is reached.
@@ -325,7 +724,7 @@ object NonEmptyArray {
       * @return a new <code>NonEmptyArray</code> consisting of all elements of this <code>NonEmptyArray</code> followed by the minimal number of occurrences
       *     of <code>elem</code> so that the resulting <code>NonEmptyArray</code> has a length of at least <code>len</code>. 
       */
-    def padTo[U >: T](len: Int, elem: U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] = {
+    def padTo[U >: T](len: Int, elem: U)(using classTag: ClassTag[U]): NonEmptyArray[U] = {
       (new ArrayOps(nonEmptyArray)).padTo(len, elem)
     }
 
@@ -336,7 +735,7 @@ object NonEmptyArray {
       * @param that the <code>NonEmptyArray</code> whose elements should replace a slice in this <code>NonEmptyArray</code>
       * @param replaced the number of elements to drop in the original <code>NonEmptyArray</code>
       */
-    def patch[U >: T](from: Int, that: NonEmptyArray[U], replaced: Int)(implicit classTag: ClassTag[U]): NonEmptyArray[U] =
+    def patch[U >: T](from: Int, that: NonEmptyArray[U], replaced: Int)(using classTag: ClassTag[U]): NonEmptyArray[U] =
       (new ArrayOps(nonEmptyArray)).patch(from, that.toArray, replaced)
 
     /**
@@ -356,12 +755,165 @@ object NonEmptyArray {
       (new ArrayOps(nonEmptyArray)).permutations
 
     /**
+      * Returns the length of the longest prefix whose elements all satisfy some predicate.
+      *
+      * @param p the predicate used to test elements.
+      * @return the length of the longest prefix of this <code>NonEmptyArray</code> such that every element
+      *     of the segment satisfies the predicate <code>p</code>. 
+      */
+    def prefixLength(p: T => Boolean): Int = nonEmptyArray.toIndexedSeq.prefixLength(p)  
+
+    /**
+      * The result of multiplying all the elements of this <code>NonEmptyArray</code>.
+      *
+      * <p>
+      * This method can be invoked for any <code>NonEmptyArray[T]</code> for which an given <code>Numeric[T]</code> exists.
+      * </p>
+      *
+      * @return the product of all elements
+      */
+    def product[U >: T](using num: Numeric[U]): U = nonEmptyArray.toIndexedSeq.product(num)
+
+    /**
+      * Reduces the elements of this <code>NonEmptyArray</code> using the specified associative binary operator.
+      *
+      * <p>
+      * The order in which operations are performed on elements is unspecified and may be nondeterministic. 
+      * </p>
+      *
+      * @tparam U a type parameter for the binary operator, a supertype of T.
+      * @param op a binary operator that must be associative.
+      * @return the result of applying reduce operator <code>op</code> between all the elements of this <code>NonEmptyArray</code>.
+      */
+    def reduce[U >: T](op: (U, U) => U): U = nonEmptyArray.toIndexedSeq.reduce(op)
+
+    /**
+      * Applies a binary operator to all elements of this <code>NonEmptyArray</code>, going left to right.
+      *
+      * @tparam U the result type of the binary operator.
+      * @param op the binary operator.
+      * @return the result of inserting <code>op</code> between consecutive elements of this <code>NonEmptyArray</code>, going left to right:
+      *
+      * <pre>
+      * op(...op(op(x_1, x_2), x_3), ..., x_n)
+      * </pre>
+      *
+      * <p>
+      * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyArray</code>. 
+      * </p>
+      */
+    def reduceLeft[U >: T](op: (U, T) => U): U = nonEmptyArray.toIndexedSeq.reduceLeft(op)
+
+    /**
+      * Applies a binary operator to all elements of this <code>NonEmptyArray</code>, going left to right, returning the result in a <code>Some</code>.
+      *
+      * @tparam U the result type of the binary operator.
+      * @param op the binary operator.
+      * @return a <code>Some</code> containing the result of <code>reduceLeft(op)</code>
+      * </p>
+      */
+    def reduceLeftOption[U >: T](op: (U, T) => U): Option[U] = nonEmptyArray.toIndexedSeq.reduceLeftOption(op)
+
+    def reduceOption[U >: T](op: (U, U) => U): Option[U] = nonEmptyArray.toIndexedSeq.reduceOption(op)
+
+    /**
+      * Applies a binary operator to all elements of this <code>NonEmptyArray</code>, going right to left.
+      *
+      * @tparam U the result of the binary operator
+      * @param op the binary operator
+      * @return the result of inserting <code>op</code> between consecutive elements of this <code>NonEmptyArray</code>, going right to left:
+      *
+      * <pre>
+      * op(x_1, op(x_2, ... op(x_{n-1}, x_n)...))
+      * </pre>
+      *
+      * <p>
+      * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyArray</code>. 
+      * </p>
+      */
+    def reduceRight[U >: T](op: (T, U) => U): U = nonEmptyArray.toIndexedSeq.reduceRight(op)
+
+    /**
+      * Applies a binary operator to all elements of this <code>NonEmptyArray</code>, going right to left, returning the result in a <code>Some</code>.
+      *
+      * @tparam U the result of the binary operator
+      * @param op the binary operator
+      * @return a <code>Some</code> containing the result of <code>reduceRight(op)</code>
+      */
+    def reduceRightOption[U >: T](op: (T, U) => U): Option[U] = nonEmptyArray.toIndexedSeq.reduceRightOption(op)
+
+    /**
+      * Copies values of this <code>NonEmptyArray</code> to an array. Fills the given array <code>arr</code> with values of this <code>NonEmptyArray</code>. Copying
+      * will stop once either the end of the current <code>NonEmptyArray</code> is reached, or the end of the array is reached.
+      *
+      * @param arr the array to fill
+      */
+    def copyToArray[U >: T](arr: Array[U]): Unit = new ArrayOps(nonEmptyArray).copyToArray(arr, 0)
+
+    /**
+      * Copies values of this <code>NonEmptyArray</code> to an array. Fills the given array <code>arr</code> with values of this <code>NonEmptyArray</code>, beginning at
+      * index <code>start</code>. Copying will stop once either the end of the current <code>NonEmptyArray</code> is reached, or the end of the array is reached.
+      *
+      * @param arr the array to fill
+      * @param start the starting index
+      */
+    def copyToArray[U >: T](arr: Array[U], start: Int): Unit = new ArrayOps(nonEmptyArray).copyToArray(arr, start)
+
+    /**
+      * Copies values of this <code>NonEmptyArray</code> to an array. Fills the given array <code>arr</code> with at most <code>len</code> elements of this <code>NonEmptyArray</code>, beginning at
+      * index <code>start</code>. Copying will stop once either the end of the current <code>NonEmptyArray</code> is reached, the end of the array is reached, or
+      * <code>len</code> elements have been copied.
+      *
+      * @param arr the array to fill
+      * @param start the starting index
+      * @param len the maximum number of elements to copy
+      */
+    def copyToArray[U >: T](arr: Array[U], start: Int, len: Int): Unit = new ArrayOps(nonEmptyArray).copyToArray(arr, start, len)
+
+    /**
+      * Copies all elements of this <code>NonEmptyArray</code> to a buffer. 
+      *
+      * @param buf the buffer to which elements are copied
+      */
+    def copyToBuffer[U >: T](buf: Buffer[U]): Unit = nonEmptyArray.toIndexedSeq.copyToBuffer(buf)
+
+    /**
+      * Indicates whether every element of this <code>NonEmptyArray</code> relates to the corresponding element of a given <code>IterableOnce</code> by satisfying a given predicate. 
+      *
+      * @tparam B the type of the elements of <code>that</code>
+      * @param that the <code>IterableOnce</code> to compare for correspondence
+      * @param p the predicate, which relates elements from this <code>NonEmptyArray</code> and the passed <code>IterableOnce</code>
+      * @return true if this <code>NonEmptyArray</code> and the passed <code>IterableOnce</code> have the same length and <code>p(x, y)</code> is <code>true</code>
+      *     for all corresponding elements <code>x</code> of this <code>NonEmptyArray</code> and <code>y</code> of that, otherwise <code>false</code>.
+      */
+    def corresponds[B](that: IterableOnce[B])(p: (T, B) => Boolean): Boolean = nonEmptyArray.toIndexedSeq.corresponds(that)(p)
+
+    /**
+      * Counts the number of elements in this <code>NonEmptyArray</code> that satisfy a predicate. 
+      *
+      * @param p the predicate used to test elements.
+      * @return the number of elements satisfying the predicate <code>p</code>. 
+      */
+    def count(p: T => Boolean): Int = new ArrayOps(nonEmptyArray).count(p)
+
+    /**
       * Returns new <code>NonEmptyArray</code> with elements in reverse order.
       *
       * @return a new <code>NonEmptyArray</code> with all elements of this <code>NonEmptyArray</code> in reversed order. 
       */
     def reverse: NonEmptyArray[T] =
       (new ArrayOps(nonEmptyArray)).reverse
+
+    /**
+      * An iterator yielding elements in reverse order.
+      *
+      * <p>
+      * Note: <code>nonEmptyArray.reverseIterator</code> is the same as <code>nonEmptyArray.reverse.iterator</code>, but might be more efficient. 
+      * </p>
+      *
+      * @return an iterator yielding the elements of this <code>NonEmptyArray</code> in reversed order 
+      */
+    def reverseIterator: Iterator[T] = new ArrayOps(nonEmptyArray).reverseIterator  
 
     /**
       * Builds a new <code>NonEmptyArray</code> by applying a function to all elements of this <code>NonEmptyArray</code> and collecting the results in reverse order.
@@ -375,8 +927,17 @@ object NonEmptyArray {
       * @return a new <code>NonEmptyArray</code> resulting from applying the given function <code>f</code> to each element of this <code>NonEmptyArray</code>
       *     and collecting the results in reverse order. 
       */
-    def reverseMap[U](f: T => U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] =
-      nonEmptyArrayToGenSeq(nonEmptyArray).reverseMap(f).toArray
+    def reverseMap[U](f: T => U)(using classTag: ClassTag[U]): NonEmptyArray[U] =
+      nonEmptyArray.toIndexedSeq.reverseMap(f).toArray
+
+    /**
+      * Checks if the given <code>IterableOnce</code> contains the same elements in the same order as this <code>NonEmptyArray</code>.
+      *
+      * @param that the <code>IterableOnce</code> with which to compare
+      * @return <code>true</code>, if both this <code>NonEmptyArray</code> and the given <code>IterableOnce</code> contain the same elements
+      *     in the same order, <code>false</code> otherwise. 
+      */
+    def sameElements[U >: T](that: IterableOnce[U]): Boolean = nonEmptyArray.toIndexedSeq.sameElements(that)
 
     /**
       * Computes a prefix scan of the elements of this <code>NonEmptyArray</code>.
@@ -401,7 +962,7 @@ object NonEmptyArray {
       * @param op a binary operator that must be associative
       * @return a new <code>NonEmptyArray</code> containing the prefix scan of the elements in this <code>NonEmptyArray</code> 
       */
-    def scan[U >: T](z: U)(op: (U, U) => U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] = new ArrayOps(nonEmptyArray).scan(z)(op)
+    def scan[U >: T](z: U)(op: (U, U) => U)(using classTag: ClassTag[U]): NonEmptyArray[U] = new ArrayOps(nonEmptyArray).scan(z)(op)
 
     /**
       * Produces a <code>NonEmptyArray</code> containing cumulative results of applying the operator going left to right.
@@ -421,7 +982,7 @@ object NonEmptyArray {
       * @return a new <code>NonEmptyArray</code> containing the intermediate results of inserting <code>op</code> between consecutive elements of this <code>NonEmptyArray</code>,
       *     going left to right, with the start value, <code>z</code>, on the left.
       */
-    def scanLeft[B](z: B)(op: (B, T) => B)(implicit classTag: ClassTag[B]): NonEmptyArray[B] = new ArrayOps(nonEmptyArray).scanLeft(z)(op)
+    def scanLeft[B](z: B)(op: (B, T) => B)(using classTag: ClassTag[B]): NonEmptyArray[B] = new ArrayOps(nonEmptyArray).scanLeft(z)(op)
 
     /**
       * Produces a <code>NonEmptyArray</code> containing cumulative results of applying the operator going right to left.
@@ -441,7 +1002,28 @@ object NonEmptyArray {
       * @return a new <code>NonEmptyArray</code> containing the intermediate results of inserting <code>op</code> between consecutive elements of this <code>NonEmptyArray</code>,
       *     going right to left, with the start value, <code>z</code>, on the right.
       */
-    def scanRight[B](z: B)(op: (T, B) => B)(implicit classTag: ClassTag[B]): NonEmptyArray[B] = new ArrayOps(nonEmptyArray).scanRight(z)(op)
+    def scanRight[B](z: B)(op: (T, B) => B)(using classTag: ClassTag[B]): NonEmptyArray[B] = new ArrayOps(nonEmptyArray).scanRight(z)(op)
+
+    /**
+      * Computes length of longest segment whose elements all satisfy some predicate.
+      *
+      * @param p the predicate used to test elements.
+      * @param from the index where the search starts.
+      * @param the length of the longest segment of this <code>NonEmptyArray</code> starting from index <code>from</code> such that every element of the
+      *     segment satisfies the predicate <code>p</code>. 
+      */
+    def segmentLength(p: T => Boolean, from: Int): Int = nonEmptyArray.toIndexedSeq.segmentLength(p, from)
+
+    /**
+      * The size of this <code>NonEmptyArray</code>.
+      *
+      * <p>
+      * Note: <code>length</code> and <code>size</code> yield the same result, which will be <code>&gt;</code>= 1. 
+      * </p>
+      *
+      * @return the number of elements in this <code>NonEmptyArray</code>. 
+      */
+    def size: Int = new ArrayOps(nonEmptyArray).size
 
     /**
       * Groups elements in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.)
@@ -502,21 +1084,138 @@ object NonEmptyArray {
     def sorted(using ord: Ordering[T]): NonEmptyArray[T] = new ArrayOps(nonEmptyArray).sorted(ord)
 
     /**
+      * The result of summing all the elements of this <code>NonEmptyArray</code>.
+      *
+      * <p>
+      * This method can be invoked for any <code>NonEmptyArray[T]</code> for which a given <code>Numeric[T]</code> exists.
+      * </p>
+      *
+      * @return the sum of all elements
+      */
+    def sum[U >: T](using num: Numeric[U]): U = nonEmptyArray.toIndexedSeq.sum(num)
+
+    /**
+      * Indicates whether this <code>NonEmptyArray</code> starts with the given <code>IterableOnce</code>. 
+      *
+      * @param that the <code>IterableOnce</code> slice to look for in this <code>NonEmptyArray</code>
+      * @return <code>true</code> if this <code>NonEmptyArray</code> has <code>that</code> as a prefix, <code>false</code> otherwise.
+      */
+    def startsWith[B](that: IterableOnce[B]): Boolean = new ArrayOps(nonEmptyArray).startsWith(that)
+
+    /**
+      * Indicates whether this <code>NonEmptyArray</code> starts with the given <code>IterableOnce</code> at the given index. 
+      *
+      * @param that the <code>IterableOnce</code> slice to look for in this <code>NonEmptyArray</code>
+      * @param offset the index at which this <code>NonEmptyArray</code> is searched.
+      * @return <code>true</code> if this <code>NonEmptyArray</code> has <code>that</code> as a slice at the index <code>offset</code>, <code>false</code> otherwise.
+      */
+    def startsWith[B](that: IterableOnce[B], offset: Int): Boolean = new ArrayOps(nonEmptyArray).startsWith(that, offset)
+
+    /**
       * Returns <code>"NonEmptyArray"</code>, the prefix of this object's <code>toString</code> representation.
       *
       * @return the string <code>"NonEmptyArray"</code>
       */
     def stringPrefix: String = "NonEmptyArray"
 
+    def to[Col[_]](factory: org.scalactic.ColCompatHelper.Factory[T, Col[T @ uV]]): Col[T @ uV] = 
+      nonEmptyArray.toIndexedSeq.to(factory)
+
+    /**
+      * Converts this <code>NonEmptyArray</code> to a list.
+      *
+      * @return a list containing all elements of this <code>NonEmptyArray</code>. 
+      */
+    def toArray: Array[T] = nonEmptyArray
+
+    /**
+      * Converts this <code>NonEmptyArray</code> to a list.
+      *
+      * @return a list containing all elements of this <code>NonEmptyArray</code>. A <code>ClassTag</code> must be available for the element type of this <code>NonEmptyArray</code>.
+      */
+    def toList[U >: T]: List[U] = List(nonEmptyArray*)
+
+    /**
+      * Converts this <code>NonEmptyArray</code> to a <code>Vector</code>.
+      *
+      * @return a <code>Vector</code> containing all elements of this <code>NonEmptyArray</code>. 
+      */
+    def toVector: Vector[T] = nonEmptyArray.toIndexedSeq.toVector
+
+    /**
+      * Converts this <code>NonEmptyArray</code> to a mutable buffer.
+      *
+      * @return a buffer containing all elements of this <code>NonEmptyArray</code>. 
+      */
+    def toBuffer[U >: T]: Buffer[U] = nonEmptyArray.toIndexedSeq.toBuffer
+
+    /**
+      * Converts this <code>NonEmptyArray</code> to an immutable <code>IndexedSeq</code>.
+      *
+      * @return an immutable <code>IndexedSeq</code> containing all elements of this <code>NonEmptyArray</code>. 
+      */
+    def toIndexedSeq: collection.immutable.IndexedSeq[T] = 
+      new collection.immutable.IndexedSeq[T] {
+        def length: Int = nonEmptyArray.length
+        def apply(idx: Int): T = nonEmptyArray(idx)
+      }
+
+    /**
+      * Converts this <code>NonEmptyArray</code> to an iterable collection.
+      *
+      * @return an <code>Iterable</code> containing all elements of this <code>NonEmptyArray</code>. 
+      */
+    def toIterable: scala.collection.Iterable[T] = nonEmptyArray.toIndexedSeq
+
+    /**
+      * Returns an <code>Iterator</code> over the elements in this <code>NonEmptyArray</code>.
+      *
+      * @return an <code>Iterator</code> containing all elements of this <code>NonEmptyArray</code>. 
+      */
+    def toIterator: Iterator[T] = new ArrayOps(nonEmptyArray).iterator
+
+    /**
+      * Converts this <code>NonEmptyArray</code> to a map.
+      *
+      * <p>
+      * This method is unavailable unless the elements are members of <code>Tuple2</code>, each <code>((K, V))</code> becoming a key-value pair
+      * in the map. Duplicate keys will be overwritten by later keys.
+      * </p>
+      *
+      * @return a map of type <code>immutable.Map[K, V]</code> containing all key/value pairs of type <code>(K, V)</code> of this <code>NonEmptyArray</code>. 
+      */
+    def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = nonEmptyArray.toIndexedSeq.toMap
+
+    /**
+      * Converts this <code>NonEmptyArray</code> to an immutable <code>IndexedSeq</code>.
+      *
+      * @return an immutable <code>IndexedSeq</code> containing all elements of this <code>NonEmptyArray</code>.
+      */
+    def toSeq: collection.immutable.Seq[T] = new ArrayOps(nonEmptyArray).toSeq
+
+    /**
+      * Converts this <code>NonEmptyArray</code> to a set.
+      *
+      * @return a set containing all elements of this <code>NonEmptyArray</code>. 
+      */
+    def toSet[U >: T]: Set[U] = nonEmptyArray.toIndexedSeq.toSet
+
+    /**
+      * Converts this <code>NonEmptyArray</code> to a stream.
+      *
+      * @return a stream containing all elements of this <code>NonEmptyArray</code>. 
+      */
+    def toStream: Stream[T] = nonEmptyArray.toIndexedSeq.toStream
+
     /**
       * Converts this <code>NonEmptyArray</code> of pairs into two <code>NonEmptyArray</code>s of the first and second half of each pair. 
       *
       * @tparam L the type of the first half of the element pairs
       * @tparam R the type of the second half of the element pairs
-      * @param asPair an implicit conversion that asserts that the element type of this <code>NonEmptyArray</code> is a pair.
+      * @param asPair an given conversion that asserts that the element type of this <code>NonEmptyArray</code> is a pair.
       * @return a pair of <code>NonEmptyArray</code>s, containing the first and second half, respectively, of each element pair of this <code>NonEmptyArray</code>. 
       */
-    def unzip[L, R](implicit asPair: T => (L, R), classTagL: ClassTag[L], classTagR: ClassTag[R]): (NonEmptyArray[L], NonEmptyArray[R]) = {
+    def unzip[L, R](using asPair: T => (L, R), classTagL: ClassTag[L], classTagR: ClassTag[R]): (NonEmptyArray[L], NonEmptyArray[R]) = {
       val unzipped = new ArrayOps(nonEmptyArray).unzip
       val left: NonEmptyArray[L] = unzipped._1.toArray
       val right: NonEmptyArray[R] = unzipped._2.toArray
@@ -529,10 +1228,10 @@ object NonEmptyArray {
       * @tparam L the type of the first member of the element triples
       * @tparam R the type of the second member of the element triples
       * @tparam R the type of the third member of the element triples
-      * @param asTriple an implicit conversion that asserts that the element type of this <code>NonEmptyArray</code> is a triple.
+      * @param asTriple an given conversion that asserts that the element type of this <code>NonEmptyArray</code> is a triple.
       * @return a triple of <code>NonEmptyArray</code>s, containing the first, second, and third member, respectively, of each element triple of this <code>NonEmptyArray</code>. 
       */
-    def unzip3[L, M, R](implicit asTriple: T => (L, M, R), classTagL: ClassTag[L], classTagM: ClassTag[M], classTagR: ClassTag[R]): (NonEmptyArray[L], NonEmptyArray[M], NonEmptyArray[R]) = {
+    def unzip3[L, M, R](using asTriple: T => (L, M, R), classTagL: ClassTag[L], classTagM: ClassTag[M], classTagR: ClassTag[R]): (NonEmptyArray[L], NonEmptyArray[M], NonEmptyArray[R]) = {
       val unzipped = new ArrayOps(nonEmptyArray).unzip3
       val left: NonEmptyArray[L] = unzipped._1.toArray
       val middle: NonEmptyArray[M] = unzipped._2.toArray
@@ -548,7 +1247,7 @@ object NonEmptyArray {
       * @throws IndexOutOfBoundsException if the passed index is greater than or equal to the length of this <code>NonEmptyArray</code>
       * @return a copy of this <code>NonEmptyArray</code> with the element at position <code>idx</code> replaced by <code>elem</code>. 
       */
-    def updated[U >: T](idx: Int, elem: U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] =
+    def updated[U >: T](idx: Int, elem: U)(using classTag: ClassTag[U]): NonEmptyArray[U] =
       new ArrayOps(nonEmptyArray).updated(idx, elem)
 
     /**
@@ -558,16 +1257,16 @@ object NonEmptyArray {
       *
       * @tparm O the type of the second half of the returned pairs
       * @tparm U the type of the first half of the returned pairs
-      * @param other the <code>Iterable</code> providing the second half of each result pair
+      * @param other the <code>IterableOnce</code> providing the second half of each result pair
       * @param thisElem the element to be used to fill up the result if this <code>NonEmptyArray</code> is shorter than <code>that</code> <code>Iterable</code>.
-      * @param thatElem the element to be used to fill up the result if <code>that</code> <code>Iterable</code> is shorter than this <code>NonEmptyArray</code>.
+      * @param thatElem the element to be used to fill up the result if <code>that</code> <code>IterableOnce</code> is shorter than this <code>NonEmptyArray</code>.
       * @return a new <code>NonEmptyArray</code> containing pairs consisting of corresponding elements of this <code>NonEmptyArray</code> and <code>that</code>. The
       *     length of the returned collection is the maximum of the lengths of this <code>NonEmptyArray</code> and <code>that</code>. If this <code>NonEmptyArray</code>
       *     is shorter than <code>that</code>, <code>thisElem</code> values are used to pad the result. If <code>that</code> is shorter than this
       *     <code>NonEmptyArray</code>, <code>thatElem</code> values are used to pad the result. 
       */
-    def zipAll[O, U >: T](other: collection.Iterable[O], thisElem: U, otherElem: O): NonEmptyArray[(U, O)] =
-      new ArrayOps(nonEmptyArray).zipAll(other, thisElem, otherElem)
+    def zipAll[O, U >: T](other: IterableOnce[O], thisElem: U, otherElem: O): NonEmptyArray[(U, O)] =
+      new ArrayOps(nonEmptyArray).zipAll(other.toIterable, thisElem, otherElem)
 
     /**
       * Zips this <code>NonEmptyArray</code>  with its indices.

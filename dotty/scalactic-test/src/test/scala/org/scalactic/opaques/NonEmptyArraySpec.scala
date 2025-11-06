@@ -144,7 +144,7 @@ class NonEmptyArraySpec extends UnitSpec {
     // SKIP-SCALATESTJS,NATIVE-START
     the [IndexOutOfBoundsException] thrownBy { // In ScalaJs, this throws scala.scalajs.runtime.UndefinedBehaviorError
       val arr5 = NonEmptyArray(1, 2, 3)        // TODO, might be nice to check for that exception on ScalaJS instead of just skipping the check
-      arr5(3)
+      arr5.apply(3)
     } should (have message "3" or have message "Index 3 out of bounds for length 3")  // message 3 is in jdk8 and older, the new message is used by newer version of jdk.
     // SKIP-SCALATESTJS,NATIVE-END
   }
@@ -570,7 +570,7 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(Array(1, 2, 3, 4, 5)) shouldBe 0
     NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(Array(1, 2, 3, 4, 5), 0) shouldBe 0
     NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(Array(1, 2, 3, 4, 5), 1) shouldBe -1
-    NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(Array(1, 2, 3, 4, 5), -1) shouldBe 0
+    NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(Array(1, 2, 3, 4, 5), -1) shouldBe -1
     NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(Array.empty[Int]) shouldBe 0
     NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(Array.empty[Int], 6) shouldBe -1
     NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(Array.empty[Int], 4) shouldBe 4
@@ -592,7 +592,7 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5)) shouldBe 0
     NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 0) shouldBe 0
     NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 1) shouldBe -1
-    NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), -1) shouldBe 0
+    NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), -1) shouldBe -1
 
     val es = NonEmptyArray("one", "two", "three", "four", "five")
     es.indexOfSlice(Every("one", "two")) shouldBe 0
@@ -611,7 +611,7 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(NonEmptyArray(1, 2, 3, 4, 5)) shouldBe 0
     NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(NonEmptyArray(1, 2, 3, 4, 5), 0) shouldBe 0
     NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(NonEmptyArray(1, 2, 3, 4, 5), 1) shouldBe -1
-    NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(NonEmptyArray(1, 2, 3, 4, 5), -1) shouldBe 0
+    NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(NonEmptyArray(1, 2, 3, 4, 5), -1) shouldBe -1
 
     val es = NonEmptyArray("one", "two", "three", "four", "five")
     es.indexOfSlice(NonEmptyArray("one", "two")) shouldBe 0
