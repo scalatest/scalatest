@@ -24,6 +24,7 @@ import org.scalactic.UnitSpec
 import org.scalactic.NormalizingEquality
 
 import org.scalatest.CompatParColls.Converters._
+import org.scalactic.opaques._
 
 class NonEmptyListSpec extends UnitSpec {
   "A NonEmptyList" can "be constructed with one element" in {
@@ -595,21 +596,21 @@ class NonEmptyListSpec extends UnitSpec {
     es.indexOfSlice(Every("ONE", "TWO")) shouldBe -1
   }
   it should "have 2 indexOfSlice methods that take a NonEmptyList" in {
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3))
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3), 3)
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3, 5), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3, 5), 3)
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3, 5))
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(5))
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5))
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5), 0) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5), 0)
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5), 1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5), 1)
-    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5), -1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5), -1)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3))
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3), 3)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3, 5), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5), 3)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(2, 3, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5))
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(5))
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5))
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5), 0) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 0)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5), 1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 1)
+    NonEmptyList(1, 2, 3, 4, 5).indexOfSlice(NonEmptyList(1, 2, 3, 4, 5), -1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), -1)
 
     val es = NonEmptyList("one", "two", "three", "four", "five")
     val el = List("one", "two", "three", "four", "five")
-    es.indexOfSlice(NonEmptyList("one", "two")) shouldBe el.indexOfSlice(NonEmptyList("one", "two"))
-    es.indexOfSlice(NonEmptyList("one", "two"), 1) shouldBe el.indexOfSlice(NonEmptyList("one", "two"), 1)
-    es.indexOfSlice(NonEmptyList("ONE", "TWO")) shouldBe el.indexOfSlice(NonEmptyList("ONE", "TWO"))
+    es.indexOfSlice(NonEmptyList("one", "two")) shouldBe el.indexOfSlice(List("one", "two"))
+    es.indexOfSlice(NonEmptyList("one", "two"), 1) shouldBe el.indexOfSlice(List("one", "two"), 1)
+    es.indexOfSlice(NonEmptyList("ONE", "TWO")) shouldBe el.indexOfSlice(List("ONE", "TWO"))
     given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.indexOfSlice(NonEmptyList("one", "two")) shouldBe 0
     es.indexOfSlice(NonEmptyList("ONE", "TWO")) shouldBe -1
