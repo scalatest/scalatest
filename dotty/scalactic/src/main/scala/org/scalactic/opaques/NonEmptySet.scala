@@ -245,6 +245,13 @@ object NonEmptySet {
     def addString(sb: StringBuilder, start: String, sep: String, end: String): StringBuilder = toSet.addString(sb, start, sep, end)
 
     /**
+      * Check if an element exists at its index in the <code>NonEmptySet</code>.
+      *
+      * @return <code>true</code> if a element exists in <code>NonEmptySet</code> at index <code>idx</code>, where <code>false</code> indicates the element at index <code>idx</code> does not exist.
+      */
+    def apply(elem: T): Boolean = toSet(elem)
+
+    /**
       * Finds the first element of this <code>NonEmptySet</code> for which the given partial function is defined, if any, and applies the partial function to it.
       *
       * @param pf the partial function
@@ -305,11 +312,12 @@ object NonEmptySet {
     def count(p: T => Boolean): Int = toSet.count(p)
 
     /**
-      * Check if an element exists at its index in the <code>NonEmptySet</code>.
+      * Indicates whether a predicate holds for at least one of the elements of this <code>NonEmptySet</code>.
       *
-      * @return <code>true</code> if a element exists in <code>NonEmptySet</code> at index <code>idx</code>, where <code>false</code> indicates the element at index <code>idx</code> does not exist.
+      * @param p the predicate used to test elements.
+      * @return <code>true</code> if the given predicate <code>p</code> holds for some of the elements of this <code>NonEmptySet</code>, otherwise <code>false</code>. 
       */
-    def apply(elem: T): Boolean = toSet(elem)
+    def exists(p: T => Boolean): Boolean = toSet.exists(p)
 
     /**
       * Converts this <code>NonEmptySet</code> to a standard Scala <code>Set</code>.

@@ -252,7 +252,7 @@ class NonEmptySetSpec extends UnitSpec {
     scala> Vector(1, 2, 3).dropWhile(_ < 10)
     res2: scala.collection.immutable.Vector[Int] = Vector()
   */
-  /*it should "have an equals method" in {
+  it should "have an equals method" in {
     NonEmptySet(1) shouldEqual NonEmptySet(1)
     NonEmptySet(1) should not equal NonEmptySet(2)
     NonEmptySet(1, 2) should not equal NonEmptySet(2, 3)
@@ -270,7 +270,7 @@ class NonEmptySetSpec extends UnitSpec {
     scala> Vector(1, 2, 3).filterNot(_ < 10)
     res13: scala.collection.immutable.Vector[Int] = Vector()
   */
-  it should "have a find method" in {
+  /*it should "have a find method" in {
     NonEmptySet(1, 2, 3).find(_ == 5) shouldBe None
     NonEmptySet(1, 2, 3).find(_ == 2) shouldBe Some(2)
   }
