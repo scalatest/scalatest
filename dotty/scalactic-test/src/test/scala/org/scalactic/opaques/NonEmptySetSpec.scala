@@ -133,7 +133,7 @@ class NonEmptySetSpec extends UnitSpec {
       case _ => fail()
     }
   }
-  /*it should "have a ++ method that takes another NonEmptySet" in {
+  it should "have a ++ method that takes another NonEmptySet" in {
     NonEmptySet(1, 2, 3) ++ NonEmptySet(4) shouldEqual NonEmptySet(1, 2, 3, 4)
     NonEmptySet(1, 2, 3) ++ NonEmptySet(4, 5) shouldEqual NonEmptySet(1, 2, 3, 4, 5)
     NonEmptySet(1, 2, 3) ++ NonEmptySet(4, 5, 6) shouldEqual NonEmptySet(1, 2, 3, 4, 5, 6)
@@ -155,7 +155,7 @@ class NonEmptySetSpec extends UnitSpec {
     NonEmptySet(1, 2, 3) ++ Set(4, 5) shouldEqual NonEmptySet(1, 2, 3, 4, 5)
     NonEmptySet(1, 2, 3) ++ Set(4, 5).iterator shouldEqual NonEmptySet(1, 2, 3, 4, 5)
   }
-  it should "have a + method" in {
+  /*it should "have a + method" in {
     NonEmptySet(1) + 0 shouldBe NonEmptySet(0, 1)
     NonEmptySet(1, 2) + 0 shouldBe NonEmptySet(0, 1, 2)
     NonEmptySet("one", "two") + "zero" shouldBe NonEmptySet("zero", "one", "two")

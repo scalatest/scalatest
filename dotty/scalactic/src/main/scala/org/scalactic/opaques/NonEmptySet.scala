@@ -178,7 +178,28 @@ object NonEmptySet {
       case Some(first) => Some(scala.collection.immutable.Set.empty[T] ++ set)
     }
 
+  /**
+    * Conversion from <code>NonEmptySet</code> to <code>IterableOnce</code>.
+    *
+    * @param nonEmptySet the <code>NonEmptySet</code> to convert
+    * @return the <code>IterableOnce</code>
+    */
+  given [E]: Conversion[NonEmptySet[E], IterableOnce[E]] with {
+    def apply(nonEmptySet: NonEmptySet[E]): IterableOnce[E] = nonEmptySet
+  }  
+
   extension [T](nonEmptySet: NonEmptySet[T]) {
+
+    /**
+      * Returns a new <code>NonEmptySet</code> containing the elements of this <code>NonEmptySet</code> followed by the elements of the passed <code>IterableOnce</code>.
+      * The element type of the resulting <code>NonEmptySet</code> is the most specific superclass encompassing the element types of this <code>NonEmptySet</code>
+      * and the passed <code>IterableOnce</code>.
+      *
+      * @param other the <code>IterableOnce</code> to append
+      * @return a new <code>NonEmptySet</code> that contains all the elements of this <code>NonEmptySet</code> followed by all elements of <code>other</code>.
+      */
+    def ++(other: IterableOnce[T]): NonEmptySet[T] =
+      if (other.isEmpty) nonEmptySet else toSet ++ other.toSet
 
     /**
       * Check if an element exists at its index in the <code>NonEmptySet</code>.
