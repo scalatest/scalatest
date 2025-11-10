@@ -16,6 +16,7 @@
 package org.scalactic.opaques
 
 import scala.collection.GenSet
+import scala.collection.mutable.Buffer
 
 /**
   * A non-empty Set: an ordered, immutable, non-empty collection of elements with <code>LinearSeq</code> performance characteristics.
@@ -251,6 +252,57 @@ object NonEmptySet {
       *    the partial function was not defined for any element.
       */
     def collectFirst[U](pf: PartialFunction[T, U]): Option[U] = toSet.collectFirst(pf)
+
+    /**
+      * Indicates whether this <code>NonEmptySet</code> contains a given value as an element.
+      *
+      * @param elem the element to look for
+      * @return true if this <code>NonEmptySet</code> has an element that is equal (as determined by <code>==)</code> to <code>elem</code>, false otherwise. 
+      */
+    def contains(elem: T): Boolean = toSet.contains(elem)
+
+    /**
+      * Copies values of this <code>NonEmptySet</code> to an array. Fills the given array <code>arr</code> with values of this <code>NonEmptySet</code>. Copying
+      * will stop once either the end of the current <code>NonEmptySet</code> is reached, or the end of the array is reached.
+      *
+      * @param arr the array to fill
+      */
+    def copyToArray[U >: T](arr: Array[U]): Unit = toSet.copyToArray(arr)
+
+    /**
+      * Copies values of this <code>NonEmptySet</code> to an array. Fills the given array <code>arr</code> with values of this <code>NonEmptySet</code>, beginning at
+      * index <code>start</code>. Copying will stop once either the end of the current <code>NonEmptySet</code> is reached, or the end of the array is reached.
+      *
+      * @param arr the array to fill
+      * @param start the starting index
+      */
+    def copyToArray[U >: T](arr: Array[U], start: Int): Unit = toSet.copyToArray(arr, start)
+
+    /**
+      * Copies values of this <code>NonEmptySet</code> to an array. Fills the given array <code>arr</code> with at most <code>len</code> elements of this <code>NonEmptySet</code>, beginning at
+      * index <code>start</code>. Copying will stop once either the end of the current <code>NonEmptySet</code> is reached, the end of the array is reached, or
+      * <code>len</code> elements have been copied.
+      *
+      * @param arr the array to fill
+      * @param start the starting index
+      * @param len the maximum number of elements to copy
+      */
+    def copyToArray[U >: T](arr: Array[U], start: Int, len: Int): Unit = toSet.copyToArray(arr, start, len)
+
+    /**
+      * Copies all elements of this <code>NonEmptySet</code> to a buffer. 
+      *
+      * @param buf the buffer to which elements are copied
+      */
+    def copyToBuffer[U >: T](buf: Buffer[U]): Unit = toSet.copyToBuffer(buf)
+
+    /**
+      * Counts the number of elements in this <code>NonEmptySet</code> that satisfy a predicate. 
+      *
+      * @param p the predicate used to test elements.
+      * @return the number of elements satisfying the predicate <code>p</code>. 
+      */
+    def count(p: T => Boolean): Int = toSet.count(p)
 
     /**
       * Check if an element exists at its index in the <code>NonEmptySet</code>.

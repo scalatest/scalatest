@@ -192,7 +192,7 @@ class NonEmptySetSpec extends UnitSpec {
   /*
    companion method not relevant. Has an empty and other GenTraverable stuff.
   */
-  /*it should "have a contains method" in {
+  it should "have a contains method" in {
     val e = NonEmptySet(1, 2, 3)
     e.contains(-1) shouldBe false
     e.contains(0) shouldBe false
@@ -203,13 +203,9 @@ class NonEmptySetSpec extends UnitSpec {
     val es = NonEmptySet("one", "two", "three")
     es.contains("one") shouldBe true
     es.contains("ONE") shouldBe false
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.contains("one") shouldBe true
     es.contains("ONE") shouldBe false
-    // SKIP-DOTTY-END
   }
   it should "have 3 copyToArray methods" in {
 
@@ -256,7 +252,7 @@ class NonEmptySetSpec extends UnitSpec {
     scala> Vector(1, 2, 3).dropWhile(_ < 10)
     res2: scala.collection.immutable.Vector[Int] = Vector()
   */
-  it should "have an equals method" in {
+  /*it should "have an equals method" in {
     NonEmptySet(1) shouldEqual NonEmptySet(1)
     NonEmptySet(1) should not equal NonEmptySet(2)
     NonEmptySet(1, 2) should not equal NonEmptySet(2, 3)
