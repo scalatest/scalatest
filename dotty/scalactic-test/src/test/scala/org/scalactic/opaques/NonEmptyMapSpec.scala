@@ -318,7 +318,7 @@ class NonEmptyMapSpec extends UnitSpec {
     NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three").find(_._1 == 2) shouldBe Some(2 -> "two")
   }
   it should "have a flatMap method" in {
-    NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3") flatMap (i => NonEmptyMap(i._1 + 1 -> (i._1 + 1).toString)) shouldBe NonEmptyMap(2 -> "2", 3 -> "3", 4 -> "4")
+    NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3") flatMap (i => NonEmptyMap((i._1 + 1) -> (i._1 + 1).toString)) shouldBe NonEmptyMap(2 -> "2", 3 -> "3", 4 -> "4")
     val ss = NonEmptyMap("hi" -> "hihi", "ho" -> "hoho")
     val is = NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three")
     (for (s <- ss; i <- is) yield (s._1 + i._1, i._1)) shouldBe
