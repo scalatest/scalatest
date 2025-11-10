@@ -1223,7 +1223,7 @@ object NonEmptyList {
       *
       * @return an array containing all elements of this <code>NonEmptyList</code>. A <code>ClassTag</code> must be available for the element type of this <code>NonEmptyList</code>. 
       */ 
-    def toArray[U >: T](implicit classTag: ClassTag[U]): Array[U] = nonEmptyList.toIndexedSeq.toArray
+    def toArray[U >: T](using classTag: ClassTag[U]): Array[U] = nonEmptyList.toIndexedSeq.toArray
 
     /**
       * Converts this <code>NonEmptyList</code> to a mutable buffer.
