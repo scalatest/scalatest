@@ -202,6 +202,57 @@ object NonEmptySet {
       if (other.isEmpty) nonEmptySet else toSet ++ other.toSet
 
     /**
+      * Returns a new <code>NonEmptySet</code> with the given element added.
+      *
+      *
+      * @param element the element to add to this <code>NonEmptySet</code>
+      * @return a new <code>NonEmptySet</code> consisting of <code>element</code> and all elements of this <code>NonEmptySet</code>.
+      */
+    def +(element: T): NonEmptySet[T] = toSet + element
+
+    /**
+      * Appends all elements of this <code>NonEmptySet</code> to a string builder. The written text will consist of a concatenation of the result of invoking <code>toString</code>
+      * on of every element of this <code>NonEmptySet</code>, without any separator string.
+      *
+      * @param sb the string builder to which elements will be appended
+      * @return the string builder, <code>sb</code>, to which elements were appended.
+      */
+    def addString(sb: StringBuilder): StringBuilder = toSet.addString(sb)
+
+    /**
+      * Appends all elements of this <code>NonEmptySet</code> to a string builder using a separator string. The written text will consist of a concatenation of the
+      * result of invoking <code>toString</code>
+      * on of every element of this <code>NonEmptySet</code>, separated by the string <code>sep</code>.
+      *
+      * @param sb the string builder to which elements will be appended
+      * @param sep the separator string
+      * @return the string builder, <code>sb</code>, to which elements were appended.
+      */
+    def addString(sb: StringBuilder, sep: String): StringBuilder = toSet.addString(sb, sep)
+
+    /**
+      * Appends all elements of this <code>NonEmptySet</code> to a string builder using start, end, and separator strings. The written text will consist of a concatenation of
+      * the string <code>start</code>; the result of invoking <code>toString</code> on all elements of this <code>NonEmptySet</code>,
+      * separated by the string <code>sep</code>; and the string <code>end</code>
+      *
+      * @param sb the string builder to which elements will be appended
+      * @param start the starting string
+      * @param sep the separator string
+      * @param start the ending string
+      * @return the string builder, <code>sb</code>, to which elements were appended.
+      */
+    def addString(sb: StringBuilder, start: String, sep: String, end: String): StringBuilder = toSet.addString(sb, start, sep, end)
+
+    /**
+      * Finds the first element of this <code>NonEmptySet</code> for which the given partial function is defined, if any, and applies the partial function to it.
+      *
+      * @param pf the partial function
+      * @return an <code>Option</code> containing <code>pf</code> applied to the first element for which it is defined, or <code>None</code> if
+      *    the partial function was not defined for any element.
+      */
+    def collectFirst[U](pf: PartialFunction[T, U]): Option[U] = toSet.collectFirst(pf)
+
+    /**
       * Check if an element exists at its index in the <code>NonEmptySet</code>.
       *
       * @return <code>true</code> if a element exists in <code>NonEmptySet</code> at index <code>idx</code>, where <code>false</code> indicates the element at index <code>idx</code> does not exist.

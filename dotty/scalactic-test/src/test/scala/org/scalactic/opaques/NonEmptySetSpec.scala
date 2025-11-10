@@ -155,7 +155,7 @@ class NonEmptySetSpec extends UnitSpec {
     NonEmptySet(1, 2, 3) ++ Set(4, 5) shouldEqual NonEmptySet(1, 2, 3, 4, 5)
     NonEmptySet(1, 2, 3) ++ Set(4, 5).iterator shouldEqual NonEmptySet(1, 2, 3, 4, 5)
   }
-  /*it should "have a + method" in {
+  it should "have a + method" in {
     NonEmptySet(1) + 0 shouldBe NonEmptySet(0, 1)
     NonEmptySet(1, 2) + 0 shouldBe NonEmptySet(0, 1, 2)
     NonEmptySet("one", "two") + "zero" shouldBe NonEmptySet("zero", "one", "two")
@@ -192,7 +192,7 @@ class NonEmptySetSpec extends UnitSpec {
   /*
    companion method not relevant. Has an empty and other GenTraverable stuff.
   */
-  it should "have a contains method" in {
+  /*it should "have a contains method" in {
     val e = NonEmptySet(1, 2, 3)
     e.contains(-1) shouldBe false
     e.contains(0) shouldBe false
