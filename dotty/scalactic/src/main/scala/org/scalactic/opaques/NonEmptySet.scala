@@ -16,7 +16,7 @@
 package org.scalactic.opaques
 
 import scala.collection.GenSet
-import scala.collection.mutable.Buffer
+import scala.collection.mutable.{ArrayBuffer, Buffer}
 
 /**
   * A non-empty Set: an ordered, immutable, non-empty collection of elements with <code>LinearSeq</code> performance characteristics.
@@ -318,6 +318,121 @@ object NonEmptySet {
       * @return <code>true</code> if the given predicate <code>p</code> holds for some of the elements of this <code>NonEmptySet</code>, otherwise <code>false</code>. 
       */
     def exists(p: T => Boolean): Boolean = toSet.exists(p)
+
+    /**
+      * Finds the first element of this <code>NonEmptySet</code> that satisfies the given predicate, if any.
+      *
+      * @param p the predicate used to test elements
+      * @return an <code>Some</code> containing the first element in this <code>NonEmptySet</code> that satisfies <code>p</code>, or <code>None</code> if none exists. 
+      */
+    def find(p: T => Boolean): Option[T] = toSet.find(p)
+
+    /**
+      * Builds a new <code>NonEmptySet</code> by applying a function to all elements of this <code>NonEmptySet</code> and using the elements of the resulting <code>NonEmptySet</code>s.
+      *
+      * @tparam U the element type of the returned <code>NonEmptySet</code>
+      * @param f the function to apply to each element.
+      * @return a new <code>NonEmptySet</code> containing elements obtained by applying the given function <code>f</code> to each element of this <code>NonEmptySet</code> and concatenating
+      *    the elements of resulting <code>NonEmptySet</code>s. 
+      */
+    def flatMap[U](f: T => NonEmptySet[U]): NonEmptySet[U] = {
+      val buf = new ArrayBuffer[U]
+      for (ele <- toSet)
+        buf ++= f(ele).toSet
+      buf.toSet
+    }
+
+    /**
+      * Converts this <code>NonEmptySet</code> of <code>NonEmptySet</code>s into a <code>NonEmptySet</code>
+      * formed by the elements of the nested <code>NonEmptySet</code>s.
+      *
+      * <p>
+      * Note: You cannot use this <code>flatten</code> method on a <code>NonEmptySet</code> that contains a <code>IterableOnce</code>s, because 
+      * if all the nested <code>IterableOnce</code>s were empty, you'd end up with an empty <code>NonEmptySet</code>.
+      * </p>
+      *
+      * @tparm B the type of the elements of each nested <code>NonEmptySet</code>
+      * @return a new <code>NonEmptySet</code> resulting from concatenating all nested <code>NonEmptySet</code>s.
+      */
+    def flatten[B](using ev: T <:< NonEmptySet[B]): NonEmptySet[B] = toSet.flatten(ev)
+
+    /**
+      * Folds the elements of this <code>NonEmptySet</code> using the specified associative binary operator.
+      *
+      * <p>
+      * The order in which operations are performed on elements is unspecified and may be nondeterministic. 
+      * </p>
+      *
+      * @tparam U a type parameter for the binary operator, a supertype of T.
+      * @param z a neutral element for the fold operation; may be added to the result an arbitrary number of
+      *     times, and must not change the result (<em>e.g.</em>, <code>Nil</code> for Set concatenation,
+      *     0 for addition, or 1 for multiplication.)
+      * @param op a binary operator that must be associative
+      * @return the result of applying fold operator <code>op</code> between all the elements and <code>z</code>
+      */
+    def fold[U >: T](z: U)(op: (U, U) => U): U = toSet.fold(z)(op)
+
+    /**
+      * Applies a binary operator to a start value and all elements of this <code>NonEmptySet</code>, going left to right.
+      *
+      * @tparam B the result type of the binary operator.
+      * @param z the start value.
+      * @param op the binary operator.
+      * @return the result of inserting <code>op</code> between consecutive elements of this <code>NonEmptySet</code>, going left to right, with the start value,
+      *     <code>z</code>, on the left:
+      *
+      * <pre>
+      * op(...op(op(z, x_1), x_2), ..., x_n)
+      * </pre>
+      *
+      * <p>
+      * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptySet</code>. 
+      * </p>
+      */
+    def foldLeft[B](z: B)(op: (B, T) => B): B = toSet.foldLeft(z)(op)
+
+    /**
+      * Applies a binary operator to all elements of this <code>NonEmptySet</code> and a start value, going right to left.
+      *
+      * @tparam B the result of the binary operator
+      * @param z the start value
+      * @param op the binary operator
+      * @return the result of inserting <code>op</code> between consecutive elements of this <code>NonEmptySet</code>, going right to left, with the start value,
+      *     <code>z</code>, on the right:
+      *
+      * <pre>
+      * op(x_1, op(x_2, ... op(x_n, z)...))
+      * </pre>
+      *
+      * <p>
+      * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptySet</code>. 
+      * </p>
+      */
+    def foldRight[B](z: B)(op: (T, B) => B): B = toSet.foldRight(z)(op)
+
+    /**
+      * Indicates whether a predicate holds for all elements of this <code>NonEmptySet</code>.
+      *
+      * @param p the predicate used to test elements.
+      * @return <code>true</code> if the given predicate <code>p</code> holds for all elements of this <code>NonEmptySet</code>, otherwise <code>false</code>. 
+      */
+    def forall(p: T => Boolean): Boolean = toSet.forall(p)
+
+    /**
+      * Applies a function <code>f</code> to all elements of this <code>NonEmptySet</code>.
+      *
+      * @param f the function that is applied for its side-effect to every element. The result of function <code>f</code> is discarded.
+      */
+    def foreach(f: T => Unit): Unit = toSet.foreach(f)
+
+    /**
+      * Builds a new <code>NonEmptySet</code> by applying a function to all elements of this <code>NonEmptySet</code>.
+      *
+      * @tparam U the element type of the returned <code>NonEmptySet</code>.
+      * @param f the function to apply to each element. 
+      * @return a new <code>NonEmptySet</code> resulting from applying the given function <code>f</code> to each element of this <code>NonEmptySet</code> and collecting the results. 
+      */
+    def map[U](f: T => U): NonEmptySet[U] = toSet.map(f)
 
     /**
       * Converts this <code>NonEmptySet</code> to a standard Scala <code>Set</code>.
