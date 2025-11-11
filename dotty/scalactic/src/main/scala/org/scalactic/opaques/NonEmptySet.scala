@@ -99,20 +99,6 @@ import scala.reflect.ClassTag
   * </pre>
   *
   * <p>
-  * <code>NonEmptySet</code> does <em>not</em> currently define any methods corresponding to <code>Seq</code> methods that could result in
-  * an empty <code>Seq</code>. However, an implicit converison from <code>NonEmptySet</code> to <code>Set</code>
-  * is defined in the <code>NonEmptySet</code> companion object that will be applied if you attempt to call one of the missing methods. As a
-  * result, you can invoke <code>filter</code> on an <code>NonEmptySet</code>, even though <code>filter</code> could result
-  * in an empty sequence&mdash;but the result type will be <code>Set</code> instead of <code>NonEmptySet</code>:
-  * </p>
-  *
-  * <pre class="stHighlight">
-  * NonEmptySet(1, 2, 3).filter(_ &lt; 10) // Result: Set(1, 2, 3)
-  * NonEmptySet(1, 2, 3).filter(_ &gt; 10) // Result: Set()
-  * </pre>
-  *
-  *
-  * <p>
   * You can use <code>NonEmptySet</code>s in <code>for</code> expressions. The result will be an <code>NonEmptySet</code> unless
   * you use a filter (an <code>if</code> clause). Because filters are desugared to invocations of <code>filter</code>, the
   * result type will switch to a <code>Set</code> at that point. Here are some examples:
@@ -467,10 +453,6 @@ object NonEmptySet {
       */
     def head: T = toSet.head
 
-    // Methods like headOption I can't get rid of because of the implicit conversion to Iterable.
-    // Users can call any of the methods I've left out on a NonEmptySet, and get whatever Set would return
-    // for that method call. Eventually I'll probably implement them all to save the implicit conversion.
-
     /**
       * Selects the first element of this <code>NonEmptySet</code> and returns it wrapped in a <code>Some</code>. 
       *
@@ -511,28 +493,28 @@ object NonEmptySet {
       *
       * @return the largest element of this <code>NonEmptySet</code>. 
       */
-    def max[U >: T](implicit cmp: Ordering[U]): T = toSet.max(cmp)
+    def max[U >: T](using cmp: Ordering[U]): T = toSet.max(cmp)
 
     /**
       * Finds the largest result after applying the given function to every element.
       *
       * @return the largest result of applying the given function to every element of this <code>NonEmptySet</code>. 
       */
-    def maxBy[U](f: T => U)(implicit cmp: Ordering[U]): T = toSet.maxBy(f)(cmp)
+    def maxBy[U](f: T => U)(using cmp: Ordering[U]): T = toSet.maxBy(f)(cmp)
 
     /**
       * Finds the smallest element.
       *
       * @return the smallest element of this <code>NonEmptySet</code>. 
       */
-    def min[U >: T](implicit cmp: Ordering[U]): T = toSet.min(cmp)
+    def min[U >: T](using cmp: Ordering[U]): T = toSet.min(cmp)
 
     /**
       * Finds the smallest result after applying the given function to every element.
       *
       * @return the smallest result of applying the given function to every element of this <code>NonEmptySet</code>. 
       */
-    def minBy[U](f: T => U)(implicit cmp: Ordering[U]): T = toSet.minBy(f)(cmp)
+    def minBy[U](f: T => U)(using cmp: Ordering[U]): T = toSet.minBy(f)(cmp)
 
     /**
       * Displays all elements of this <code>NonEmptySet</code> in a string. 
@@ -583,12 +565,12 @@ object NonEmptySet {
       * The result of multiplying all the elements of this <code>NonEmptySet</code>.
       *
       * <p>
-      * This method can be invoked for any <code>NonEmptySet[T]</code> for which an implicit <code>Numeric[T]</code> exists.
+      * This method can be invoked for any <code>NonEmptySet[T]</code> for which an using <code>Numeric[T]</code> exists.
       * </p>
       *
       * @return the product of all elements
       */
-    def product[U >: T](implicit num: Numeric[U]): U = toSet.product(num)
+    def product[U >: T](using num: Numeric[U]): U = toSet.product(num)
 
     /**
       * Reduces the elements of this <code>NonEmptySet</code> using the specified associative binary operator.
@@ -787,12 +769,12 @@ object NonEmptySet {
       * The result of summing all the elements of this <code>NonEmptySet</code>.
       *
       * <p>
-      * This method can be invoked for any <code>NonEmptySet[T]</code> for which an implicit <code>Numeric[T]</code> exists.
+      * This method can be invoked for any <code>NonEmptySet[T]</code> for which an using <code>Numeric[T]</code> exists.
       * </p>
       *
       * @return the sum of all elements
       */
-    def sum[U >: T](implicit num: Numeric[U]): U = toSet.sum(num)
+    def sum[U >: T](using num: Numeric[U]): U = toSet.sum(num)
 
     /**
       * Converts this <code>NonEmptySet</code> into a collection of type <code>Col</code> by copying all elements.
@@ -808,7 +790,7 @@ object NonEmptySet {
       *
       * @return an array containing all elements of this <code>NonEmptySet</code>. A <code>ClassTag</code> must be available for the element type of this <code>NonEmptySet</code>. 
       */
-    def toArray[U >: T](implicit classTag: ClassTag[U]): Array[U] = toSet.toArray
+    def toArray[U >: T](using classTag: ClassTag[U]): Array[U] = toSet.toArray
 
     /**
       * Converts this <code>NonEmptySet</code> to a mutable buffer.
@@ -862,7 +844,7 @@ object NonEmptySet {
       *
       * @return a map of type <code>immutable.Map[K, V]</code> containing all key/value pairs of type <code>(K, V)</code> of this <code>NonEmptySet</code>. 
       */
-    def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = toSet.toMap
+    def toMap[K, V](using ev: T <:< (K, V)): Map[K, V] = toSet.toMap
 
     /**
       * Converts this <code>NonEmptySet</code> to an immutable <code>IndexedSeq</code>.
@@ -895,6 +877,71 @@ object NonEmptySet {
       * @return the number of elements in this <code>NonEmptySet</code>. 
       */
     def size: Int = toSet.size
+
+    def transpose[U](using ev: T <:< NonEmptySet[U]): NonEmptySet[NonEmptySet[U]] = toSet.transpose(ev)
+
+    /**
+      * Produces a new <code>NonEmptySet</code> that contains all elements of this <code>NonEmptySet</code> and also all elements of a given <code>Every</code>.
+      *
+      * <p>
+      * <code>NonEmptySetX</code> <code>union</code> <code>everyY</code> is equivalent to <code>NonEmptySetX</code> <code>++</code> <code>everyY</code>.
+      * </p>
+      *
+      * <p>
+      * Another way to express this is that <code>NonEmptySetX</code> <code>union</code> <code>everyY</code> computes the order-presevring multi-set union
+      * of <code>NonEmptySetX</code> and <code>everyY</code>. This <code>union</code> method is hence a counter-part of <code>diff</code> and <code>intersect</code> that
+      * also work on multi-sets.
+      * </p>
+      *
+      * @param that the <code>Every</code> to add.
+      * @return a new <code>NonEmptySet</code> that contains all elements of this <code>NonEmptySet</code> followed by all elements of <code>that</code> <code>Every</code>.
+      */
+    def union(that: IterableOnce[T]): NonEmptySet[T] = toSet.union(that.toSet)
+
+    /**
+      * Converts this <code>NonEmptySet</code> of pairs into two <code>NonEmptySet</code>s of the first and second half of each pair. 
+      *
+      * @tparam L the type of the first half of the element pairs
+      * @tparam R the type of the second half of the element pairs
+      * @param asPair a given conversion that asserts that the element type of this <code>NonEmptySet</code> is a pair.
+      * @return a pair of <code>NonEmptySet</code>s, containing the first and second half, respectively, of each element pair of this <code>NonEmptySet</code>. 
+      */
+    def unzip[L, R](using asPair: T => (L, R)): (NonEmptySet[L], NonEmptySet[R]) = toSet.unzip(asPair)
+
+    /**
+      * Converts this <code>NonEmptySet</code> of triples into three <code>NonEmptySet</code>s of the first, second, and and third element of each triple. 
+      *
+      * @tparam L the type of the first member of the element triples
+      * @tparam M the type of the second member of the element triples
+      * @tparam R the type of the third member of the element triples
+      * @param asTriple a given conversion that asserts that the element type of this <code>NonEmptySet</code> is a triple.
+      * @return a triple of <code>NonEmptySet</code>s, containing the first, second, and third member, respectively, of each element triple of this <code>NonEmptySet</code>. 
+      */
+    def unzip3[L, M, R](using asTriple: T => (L, M, R)): (NonEmptySet[L], NonEmptySet[M], NonEmptySet[R]) = toSet.unzip3(asTriple)
+
+    /**
+      * Returns a <code>NonEmptySet</code> formed from this <code>NonEmptySet</code> and an iterable collection by combining corresponding
+      * elements in pairs. If one of the two collections is shorter than the other, placeholder elements will be used to extend the
+      * shorter collection to the length of the longer.
+      *
+      * @tparm O the type of the second half of the returned pairs
+      * @tparm U the type of the first half of the returned pairs
+      * @param other the <code>IterableOnce</code> providing the second half of each result pair
+      * @param thisElem the element to be used to fill up the result if this <code>NonEmptySet</code> is shorter than <code>that</code> <code>IterableOnce</code>.
+      * @param otherElem the element to be used to fill up the result if <code>that</code> <code>IterableOnce</code> is shorter than this <code>NonEmptySet</code>.
+      * @return a new <code>NonEmptySet</code> containing pairs consisting of corresponding elements of this <code>NonEmptySet</code> and <code>that</code>. The
+      *     length of the returned collection is the maximum of the lengths of this <code>NonEmptySet</code> and <code>that</code>. If this <code>NonEmptySet</code>
+      *     is shorter than <code>that</code>, <code>thisElem</code> values are used to pad the result. If <code>that</code> is shorter than this
+      *     <code>NonEmptySet</code>, <code>thatElem</code> values are used to pad the result. 
+      */
+    def zipAll[O, U >: T](other: IterableOnce[O], thisElem: U, otherElem: O): NonEmptySet[(U, O)] = toSet.zipAll(other.toIterable, thisElem, otherElem)
+
+    /**
+      * Zips this <code>NonEmptySet</code>  with its indices.
+      *
+      * @return A new <code>NonEmptySet</code> containing pairs consisting of all elements of this <code>NonEmptySet</code> paired with their index. Indices start at 0.
+      */
+    def zipWithIndex: NonEmptySet[(T, Int)] = toSet.zipWithIndex
 
   }
 

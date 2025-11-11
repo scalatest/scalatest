@@ -710,7 +710,7 @@ class NonEmptySetSpec extends UnitSpec {
     NonEmptySet("a", "b").toVector should === (Vector("b", "a"))
     NonEmptySet(1).toVector should === (Vector(1))
   }
-  /*it should "have a transpose method" in {
+  it should "have a transpose method" in {
     NonEmptySet(NonEmptySet(1, 2, 3), NonEmptySet(4, 5, 6), NonEmptySet(7, 8, 9)).transpose shouldBe NonEmptySet(NonEmptySet(1, 4, 7), NonEmptySet(2, 5, 8), NonEmptySet(3, 6, 9))
     NonEmptySet(NonEmptySet(1, 2), NonEmptySet(3, 4), NonEmptySet(5, 6), NonEmptySet(7, 8)).transpose shouldBe NonEmptySet(NonEmptySet(1, 3, 5, 7), NonEmptySet(2, 4, 6, 8))
     NonEmptySet(NonEmptySet(1, 2), NonEmptySet(3, 4), NonEmptySet(5, 6), NonEmptySet(7, 8)).transpose.transpose shouldBe NonEmptySet(NonEmptySet(1, 2), NonEmptySet(3, 4), NonEmptySet(5, 6), NonEmptySet(7, 8))
@@ -807,6 +807,6 @@ class NonEmptySetSpec extends UnitSpec {
   it should "have a zipWithIndex method" in {
     NonEmptySet(99).zipWithIndex shouldBe NonEmptySet((99,0))
     NonEmptySet(1, 2, 3, 4, 5).zipWithIndex shouldBe NonEmptySet((5,0), (4,4), (1,1), (2,2), (3,3))
-  }*/
+  }
 }
 
