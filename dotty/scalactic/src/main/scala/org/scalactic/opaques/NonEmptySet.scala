@@ -17,6 +17,9 @@ package org.scalactic.opaques
 
 import scala.collection.GenSet
 import scala.collection.mutable.{ArrayBuffer, Buffer}
+import scala.language.higherKinds
+import scala.annotation.unchecked.{ uncheckedVariance => uV }
+import scala.reflect.ClassTag
 
 /**
   * A non-empty Set: an ordered, immutable, non-empty collection of elements with <code>LinearSeq</code> performance characteristics.
@@ -792,11 +795,95 @@ object NonEmptySet {
     def sum[U >: T](implicit num: Numeric[U]): U = toSet.sum(num)
 
     /**
+      * Converts this <code>NonEmptySet</code> into a collection of type <code>Col</code> by copying all elements.
+      *
+      * @tparam Col the collection type to build.
+      * @return a new collection containing all elements of this <code>NonEmptySet</code>. 
+      */
+    def to[Col[_]](factory: org.scalactic.ColCompatHelper.Factory[T, Col[T @ uV]]): Col[T @ uV] =
+      toSet.to(factory)
+
+    /**
+      * Converts this <code>NonEmptySet</code> to an array.
+      *
+      * @return an array containing all elements of this <code>NonEmptySet</code>. A <code>ClassTag</code> must be available for the element type of this <code>NonEmptySet</code>. 
+      */
+    def toArray[U >: T](implicit classTag: ClassTag[U]): Array[U] = toSet.toArray
+
+    /**
+      * Converts this <code>NonEmptySet</code> to a mutable buffer.
+      *
+      * @return a buffer containing all elements of this <code>NonEmptySet</code>. 
+      */
+    def toBuffer[U >: T]: Buffer[U] = toSet.toBuffer
+
+    /**
+      * Converts this <code>NonEmptySet</code> to an immutable <code>IndexedSeq</code>.
+      *
+      * @return an immutable <code>IndexedSeq</code> containing all elements of this <code>NonEmptySet</code>. 
+      */
+    def toIndexedSeq: collection.immutable.IndexedSeq[T] = toSet.toVector
+
+    /**
+      * Converts this <code>NonEmptySet</code> to an iterable collection.
+      *
+      * @return an <code>Iterable</code> containing all elements of this <code>NonEmptySet</code>. 
+      */
+    def toIterable: scala.collection.Iterable[T] = toSet.toIterable
+
+    /**
+      * Returns an <code>Iterator</code> over the elements in this <code>NonEmptySet</code>.
+      *
+      * @return an <code>Iterator</code> containing all elements of this <code>NonEmptySet</code>. 
+      */
+    def toIterator: Iterator[T] = toSet.toIterator
+
+    /**
       * Converts this <code>NonEmptySet</code> to a standard Scala <code>Set</code>.
       *
       * @return a <code>Set</code> containing all elements of this <code>NonEmptySet</code>
       */
     def toSet: Set[T] = nonEmptySet
+
+    /**
+      * Converts this <code>NonEmptySet</code> to a <code>Vector</code>.
+      *
+      * @return a <code>Vector</code> containing all elements of this <code>NonEmptySet</code>. 
+      */
+    def toVector: Vector[T] = toSet.toVector
+
+    /**
+      * Converts this <code>NonEmptySet</code> to a map.
+      *
+      * <p>
+      * This method is unavailable unless the elements are members of <code>Tuple2</code>, each <code>((K, V))</code> becoming a key-value pair
+      * in the map. Duplicate keys will be overwritten by later keys.
+      * </p>
+      *
+      * @return a map of type <code>immutable.Map[K, V]</code> containing all key/value pairs of type <code>(K, V)</code> of this <code>NonEmptySet</code>. 
+      */
+    def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = toSet.toMap
+
+    /**
+      * Converts this <code>NonEmptySet</code> to an immutable <code>IndexedSeq</code>.
+      *
+      * @return an immutable <code>IndexedSeq</code> containing all elements of this <code>NonEmptySet</code>.
+      */
+    def toSeq: Seq[T] = toSet.toSeq
+
+    /**
+      * Converts this <code>NonEmptySet</code> to a set.
+      *
+      * @return a set containing all elements of this <code>NonEmptySet</code>.
+      */
+    def toList: collection.immutable.List[T] = toSet.toList
+
+    /**
+      * Converts this <code>NonEmptySet</code> to a stream.
+      *
+      * @return a stream containing all elements of this <code>NonEmptySet</code>. 
+      */
+    def toStream: Stream[T] = toSet.toStream
 
     /**
       * The size of this <code>NonEmptySet</code>.

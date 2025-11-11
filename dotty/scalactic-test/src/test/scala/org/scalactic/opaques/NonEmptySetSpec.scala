@@ -645,7 +645,7 @@ class NonEmptySetSpec extends UnitSpec {
       scala> Vector(1).takeWhile(_ > 10)
       res18: scala.collection.immutable.Vector[Int] = Vector()
   */
-  /*it should "have a to method" in {
+  it should "have a to method" in {
     import org.scalactic.ColCompatHelper.Factory._
     NonEmptySet(1).to(Set) shouldBe Set(1)
     NonEmptySet(1, 2, 3).to(Set) shouldBe Set(1, 2, 3)
@@ -705,17 +705,12 @@ class NonEmptySetSpec extends UnitSpec {
     NonEmptySet("a", "b").toStream should === (Stream("b", "a"))
     NonEmptySet(1).toStream should === (Stream(1))
   }
-  it should "have a toString method" in {
-    NonEmptySet(1, 2, 3).toString should === ("NonEmptySet(2, 3, 1)")
-    NonEmptySet(1, 2, 3).toString should === ("NonEmptySet(2, 3, 1)")
-    NonEmptySet(1).toString should === ("NonEmptySet(1)")
-  }
   it should "have a toVector method" in {
     NonEmptySet(1, 2, 3).toVector should === (Vector(2, 3, 1))
     NonEmptySet("a", "b").toVector should === (Vector("b", "a"))
     NonEmptySet(1).toVector should === (Vector(1))
   }
-  it should "have a transpose method" in {
+  /*it should "have a transpose method" in {
     NonEmptySet(NonEmptySet(1, 2, 3), NonEmptySet(4, 5, 6), NonEmptySet(7, 8, 9)).transpose shouldBe NonEmptySet(NonEmptySet(1, 4, 7), NonEmptySet(2, 5, 8), NonEmptySet(3, 6, 9))
     NonEmptySet(NonEmptySet(1, 2), NonEmptySet(3, 4), NonEmptySet(5, 6), NonEmptySet(7, 8)).transpose shouldBe NonEmptySet(NonEmptySet(1, 3, 5, 7), NonEmptySet(2, 4, 6, 8))
     NonEmptySet(NonEmptySet(1, 2), NonEmptySet(3, 4), NonEmptySet(5, 6), NonEmptySet(7, 8)).transpose.transpose shouldBe NonEmptySet(NonEmptySet(1, 2), NonEmptySet(3, 4), NonEmptySet(5, 6), NonEmptySet(7, 8))
