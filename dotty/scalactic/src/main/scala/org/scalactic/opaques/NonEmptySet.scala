@@ -680,6 +680,118 @@ object NonEmptySet {
     def reduceRightOption[U >: T](op: (T, U) => U): Option[U] = toSet.reduceRightOption(op)
 
     /**
+      * Checks if the given <code>IterableOnce</code> contains the same elements in the same order as this <code>NonEmptySet</code>.
+      *
+      * @param that the <code>IterableOnce</code> with which to compare
+      * @return <code>true</code>, if both this <code>NonEmptySet</code> and the given <code>IterableOnce</code> contain the same elements
+      *     in the same order, <code>false</code> otherwise. 
+      */
+    def sameElements[U >: T](that: IterableOnce[U]): Boolean = toSet.toIndexedSeq.sameElements(that)
+
+    /**
+      * Computes a prefix scan of the elements of this <code>NonEmptySet</code>.
+      *
+      * <p>
+      * Note: The neutral element z may be applied more than once. 
+      * </p>
+      *
+      * <p>
+      * Here are some examples:
+      * </p>
+      *
+      * <pre class="stHighlight">
+      * NonEmptySet(1, 2, 3).scan(0)(_ + _) == NonEmptySet(0, 1, 3, 6)
+      * NonEmptySet(1, 2, 3).scan("z")(_ + _.toString) == NonEmptySet("z", "z1", "z12", "z123")
+      * </pre>
+      *
+      * @tparam U a type parameter for the binary operator, a supertype of T, and the type of the resulting <code>NonEmptySet</code>.
+      * @param z a neutral element for the scan operation; may be added to the result an arbitrary number of
+      *     times, and must not change the result (<em>e.g.</em>, <code>Nil</code> for Set concatenation,
+      *     0 for addition, or 1 for multiplication.)
+      * @param op a binary operator that must be associative
+      * @return a new <code>NonEmptySet</code> containing the prefix scan of the elements in this <code>NonEmptySet</code> 
+      */
+    def scan[U >: T](z: U)(op: (U, U) => U): NonEmptySet[U] = toSet.scan(z)(op)
+
+    /**
+      * Produces a <code>NonEmptySet</code> containing cumulative results of applying the operator going left to right.
+      *
+      * <p>
+      * Here are some examples:
+      * </p>
+      *
+      * <pre class="stHighlight">
+      * NonEmptySet(1, 2, 3).scanLeft(0)(_ + _) == NonEmptySet(0, 1, 3, 6)
+      * NonEmptySet(1, 2, 3).scanLeft("z")(_ + _) == NonEmptySet("z", "z1", "z12", "z123")
+      * </pre>
+      *
+      * @tparam B the result type of the binary operator and type of the resulting <code>NonEmptySet</code>
+      * @param z the start value.
+      * @param op the binary operator.
+      * @return a new <code>NonEmptySet</code> containing the intermediate results of inserting <code>op</code> between consecutive elements of this <code>NonEmptySet</code>,
+      *     going left to right, with the start value, <code>z</code>, on the left.
+      */
+    def scanLeft[B](z: B)(op: (B, T) => B): NonEmptySet[B] = toSet.scanLeft(z)(op)
+
+    /**
+      * Produces a <code>NonEmptySet</code> containing cumulative results of applying the operator going right to left.
+      *
+      * <p>
+      * Here are some examples:
+      * </p>
+      *
+      * <pre class="stHighlight">
+      * NonEmptySet(1, 2, 3).scanRight(0)(_ + _) == NonEmptySet(6, 5, 3, 0)
+      * NonEmptySet(1, 2, 3).scanRight("z")(_ + _) == NonEmptySet("123z", "23z", "3z", "z")
+      * </pre>
+      *
+      * @tparam B the result of the binary operator and type of the resulting <code>NonEmptySet</code>
+      * @param z the start value
+      * @param op the binary operator
+      * @return a new <code>NonEmptySet</code> containing the intermediate results of inserting <code>op</code> between consecutive elements of this <code>NonEmptySet</code>,
+      *     going right to left, with the start value, <code>z</code>, on the right.
+      */
+    def scanRight[B](z: B)(op: (T, B) => B): NonEmptySet[B] = toSet.scanRight(z)(op)
+
+    /**
+      * Groups elements in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.)
+      *
+      * @param size the number of elements per group
+      * @return an iterator producing <code>NonEmptySet</code>s of size <code>size</code>, except the last and the only element will be truncated
+      *     if there are fewer elements than <code>size</code>.
+      */
+    def sliding(size: Int): Iterator[NonEmptySet[T]] = toSet.sliding(size)
+
+    /**
+      * Groups elements in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.),
+      * moving the sliding window by a given <code>step</code> each time.
+      *
+      * @param size the number of elements per group
+      * @param step the distance between the first elements of successive groups
+      * @return an iterator producing <code>NonEmptySet</code>s of size <code>size</code>, except the last and the only element will be truncated
+      *     if there are fewer elements than <code>size</code>.
+      */
+    def sliding(size: Int, step: Int): Iterator[NonEmptySet[T]] = toSet.sliding(size, step)
+
+    /**
+      * Returns <code>"NonEmptySet"</code>, the prefix of this object's <code>toString</code> representation.
+      *
+      * @return the string <code>"NonEmptySet"</code>
+      */
+    def stringPrefix: String = "NonEmptySet"
+
+    /**
+      * The result of summing all the elements of this <code>NonEmptySet</code>.
+      *
+      * <p>
+      * This method can be invoked for any <code>NonEmptySet[T]</code> for which an implicit <code>Numeric[T]</code> exists.
+      * </p>
+      *
+      * @return the sum of all elements
+      */
+    def sum[U >: T](implicit num: Numeric[U]): U = toSet.sum(num)
+
+    /**
       * Converts this <code>NonEmptySet</code> to a standard Scala <code>Set</code>.
       *
       * @return a <code>Set</code> containing all elements of this <code>NonEmptySet</code>

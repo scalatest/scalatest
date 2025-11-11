@@ -509,7 +509,7 @@ class NonEmptySetSpec extends UnitSpec {
     NonEmptySet(1, 2, 3).reduceRightOption(_ * _) shouldBe Some(6)
     NonEmptySet(1, 2, 3, 4, 5).reduceRightOption(_ * _) shouldBe Some(120)
   }
-  /*it should "have a sameElements method that takes a GenIterable" in {
+  it should "have a sameElements method that takes a GenIterable" in {
     NonEmptySet(1, 2, 3, 4, 5).sameElements(Set(1, 2, 3, 4, 5)) shouldBe true
     NonEmptySet(1, 2, 3, 4, 5).sameElements(Set(1, 2, 3, 4)) shouldBe false
     NonEmptySet(1, 2, 3, 4, 5).sameElements(Set(1, 2, 3, 4, 5, 6)) shouldBe false
@@ -645,7 +645,7 @@ class NonEmptySetSpec extends UnitSpec {
       scala> Vector(1).takeWhile(_ > 10)
       res18: scala.collection.immutable.Vector[Int] = Vector()
   */
-  it should "have a to method" in {
+  /*it should "have a to method" in {
     import org.scalactic.ColCompatHelper.Factory._
     NonEmptySet(1).to(Set) shouldBe Set(1)
     NonEmptySet(1, 2, 3).to(Set) shouldBe Set(1, 2, 3)
