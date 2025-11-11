@@ -476,6 +476,91 @@ object NonEmptySet {
     def headOption: Option[T] = toSet.headOption
 
     /**
+      * Returns <code>false</code> to indicate this <code>NonEmptySet</code>, like all <code>NonEmptySet</code>s, is non-empty.
+      *
+      * @return false
+      */
+    def isEmpty: Boolean = false
+
+    /**
+      * Returns <code>true</code> to indicate this <code>NonEmptySet</code>, like all <code>NonEmptySet</code>s, can be traversed repeatedly.
+      *
+      * @return true
+      */
+    def isTraversableAgain: Boolean = true
+
+    /**
+      * Selects the last element of this <code>NonEmptySet</code>. 
+      *
+      * @return the last element of this <code>NonEmptySet</code>.
+      */
+    def last: T = toSet.last
+
+    /**
+      * Returns the last element of this <code>NonEmptySet</code>, wrapped in a <code>Some</code>. 
+      *
+      * @return the last element, wrapped in a <code>Some</code>. 
+      */
+    def lastOption: Option[T] = toSet.lastOption // Will always return a Some
+
+    /**
+      * Finds the largest element.
+      *
+      * @return the largest element of this <code>NonEmptySet</code>. 
+      */
+    def max[U >: T](implicit cmp: Ordering[U]): T = toSet.max(cmp)
+
+    /**
+      * Finds the largest result after applying the given function to every element.
+      *
+      * @return the largest result of applying the given function to every element of this <code>NonEmptySet</code>. 
+      */
+    def maxBy[U](f: T => U)(implicit cmp: Ordering[U]): T = toSet.maxBy(f)(cmp)
+
+    /**
+      * Finds the smallest element.
+      *
+      * @return the smallest element of this <code>NonEmptySet</code>. 
+      */
+    def min[U >: T](implicit cmp: Ordering[U]): T = toSet.min(cmp)
+
+    /**
+      * Finds the smallest result after applying the given function to every element.
+      *
+      * @return the smallest result of applying the given function to every element of this <code>NonEmptySet</code>. 
+      */
+    def minBy[U](f: T => U)(implicit cmp: Ordering[U]): T = toSet.minBy(f)(cmp)
+
+    /**
+      * Displays all elements of this <code>NonEmptySet</code> in a string. 
+      *
+      * @return a string representation of this <code>NonEmptySet</code>. In the resulting string, the result of invoking <code>toString</code> on all elements of this
+      *     <code>NonEmptySet</code> follow each other without any separator string. 
+      */
+    def mkString: String = toSet.mkString
+
+    /**
+      * Displays all elements of this <code>NonEmptySet</code> in a string using a separator string. 
+      *
+      * @param sep the separator string
+      * @return a string representation of this <code>NonEmptySet</code>. In the resulting string, the result of invoking <code>toString</code> on all elements of this
+      *     <code>NonEmptySet</code> are separated by the string <code>sep</code>. 
+      */
+    def mkString(sep: String): String = toSet.mkString(sep)
+
+    /**
+      * Displays all elements of this <code>NonEmptySet</code> in a string using start, end, and separator strings. 
+      *
+      * @param start the starting string.
+      * @param sep the separator string.
+      * @param end the ending string.
+      * @return a string representation of this <code>NonEmptySet</code>. The resulting string begins with the string <code>start</code> and ends with the string
+      *     <code>end</code>. Inside, In the resulting string, the result of invoking <code>toString</code> on all elements of this <code>NonEmptySet</code> are
+      *     separated by the string <code>sep</code>. 
+      */
+    def mkString(start: String, sep: String, end: String): String = toSet.mkString(start, sep, end)
+
+    /**
       * Builds a new <code>NonEmptySet</code> by applying a function to all elements of this <code>NonEmptySet</code>.
       *
       * @tparam U the element type of the returned <code>NonEmptySet</code>.

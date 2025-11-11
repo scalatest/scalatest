@@ -391,7 +391,7 @@ class NonEmptySetSpec extends UnitSpec {
     scala> Vector(1, 2, 3) intersect Vector(4, 5)
     res33: scala.collection.immutable.Vector[Int] = Vector()
   */
-  /*it should "have an isEmpty method" in {
+  it should "have an isEmpty method" in {
     NonEmptySet("hi").isEmpty shouldBe false
     NonEmptySet(1, 2, 3).isEmpty shouldBe false
   }
@@ -452,7 +452,7 @@ class NonEmptySetSpec extends UnitSpec {
     NonEmptySet(1, 2, 3).mkString("<", "#", ">") shouldBe "<2#3#1>"
     NonEmptySet(1, 2, 3).mkString(" ( ", ", ", " ) ") shouldBe " ( 2, 3, 1 ) "
   }
-  it should "have an nonEmpty method" in {
+  /*it should "have an nonEmpty method" in {
     NonEmptySet("hi").nonEmpty shouldBe true
     NonEmptySet(1, 2, 3).nonEmpty shouldBe true
   }
