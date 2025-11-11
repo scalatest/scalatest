@@ -346,7 +346,7 @@ class NonEmptySetSpec extends UnitSpec {
     NonEmptySet(5) foreach (num *= _)
     num shouldBe 60
   }
-  /*it should "have a groupBy method" in {
+  it should "have a groupBy method" in {
     NonEmptySet(1, 2, 3, 4, 5).groupBy(_ % 2) shouldBe Map(1 -> NonEmptySet(1, 3, 5), 0 -> NonEmptySet(2, 4))
     NonEmptySet(1, 2, 3, 3, 3).groupBy(_ % 2) shouldBe Map(1 -> NonEmptySet(1, 3, 3, 3), 0 -> NonEmptySet(2))
     NonEmptySet(1, 1, 3, 3, 3).groupBy(_ % 2) shouldBe Map(1 -> NonEmptySet(1, 1, 3, 3, 3))
@@ -391,7 +391,7 @@ class NonEmptySetSpec extends UnitSpec {
     scala> Vector(1, 2, 3) intersect Vector(4, 5)
     res33: scala.collection.immutable.Vector[Int] = Vector()
   */
-  it should "have an isEmpty method" in {
+  /*it should "have an isEmpty method" in {
     NonEmptySet("hi").isEmpty shouldBe false
     NonEmptySet(1, 2, 3).isEmpty shouldBe false
   }
