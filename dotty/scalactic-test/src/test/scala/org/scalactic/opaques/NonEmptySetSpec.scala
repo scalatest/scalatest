@@ -452,7 +452,7 @@ class NonEmptySetSpec extends UnitSpec {
     NonEmptySet(1, 2, 3).mkString("<", "#", ">") shouldBe "<2#3#1>"
     NonEmptySet(1, 2, 3).mkString(" ( ", ", ", " ) ") shouldBe " ( 2, 3, 1 ) "
   }
-  /*it should "have an nonEmpty method" in {
+  it should "have an nonEmpty method" in {
     NonEmptySet("hi").nonEmpty shouldBe true
     NonEmptySet(1, 2, 3).nonEmpty shouldBe true
   }
@@ -509,7 +509,7 @@ class NonEmptySetSpec extends UnitSpec {
     NonEmptySet(1, 2, 3).reduceRightOption(_ * _) shouldBe Some(6)
     NonEmptySet(1, 2, 3, 4, 5).reduceRightOption(_ * _) shouldBe Some(120)
   }
-  it should "have a sameElements method that takes a GenIterable" in {
+  /*it should "have a sameElements method that takes a GenIterable" in {
     NonEmptySet(1, 2, 3, 4, 5).sameElements(Set(1, 2, 3, 4, 5)) shouldBe true
     NonEmptySet(1, 2, 3, 4, 5).sameElements(Set(1, 2, 3, 4)) shouldBe false
     NonEmptySet(1, 2, 3, 4, 5).sameElements(Set(1, 2, 3, 4, 5, 6)) shouldBe false

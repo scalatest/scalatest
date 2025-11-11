@@ -570,6 +570,116 @@ object NonEmptySet {
     def map[U](f: T => U): NonEmptySet[U] = toSet.map(f)
 
     /**
+      * Returns <code>true</code> to indicate this <code>NonEmptySet</code>, like all <code>NonEmptySet</code>s, is non-empty.
+      *
+      * @return true
+      */
+    def nonEmpty: Boolean = true
+
+    /**
+      * The result of multiplying all the elements of this <code>NonEmptySet</code>.
+      *
+      * <p>
+      * This method can be invoked for any <code>NonEmptySet[T]</code> for which an implicit <code>Numeric[T]</code> exists.
+      * </p>
+      *
+      * @return the product of all elements
+      */
+    def product[U >: T](implicit num: Numeric[U]): U = toSet.product(num)
+
+    /**
+      * Reduces the elements of this <code>NonEmptySet</code> using the specified associative binary operator.
+      *
+      * <p>
+      * The order in which operations are performed on elements is unspecified and may be nondeterministic. 
+      * </p>
+      *
+      * @tparam U a type parameter for the binary operator, a supertype of T.
+      * @param op a binary operator that must be associative.
+      * @return the result of applying reduce operator <code>op</code> between all the elements of this <code>NonEmptySet</code>.
+      */
+    def reduce[U >: T](op: (U, U) => U): U = toSet.reduce(op)
+
+    /**
+      * Applies a binary operator to all elements of this <code>NonEmptySet</code>, going left to right.
+      *
+      * @tparam U the result type of the binary operator.
+      * @param op the binary operator.
+      * @return the result of inserting <code>op</code> between consecutive elements of this <code>NonEmptySet</code>, going left to right:
+      *
+      * <pre>
+      * op(...op(op(x_1, x_2), x_3), ..., x_n)
+      * </pre>
+      *
+      * <p>
+      * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptySet</code>. 
+      * </p>
+      */
+    def reduceLeft[U >: T](op: (U, T) => U): U = toSet.reduceLeft(op)
+
+    /**
+      * Applies a binary operator to all elements of this <code>NonEmptySet</code>, going left to right, returning the result in a <code>Some</code>.
+      *
+      * @tparam U the result type of the binary operator.
+      * @param op the binary operator.
+      * @return a <code>Some</code> containing the result of <code>reduceLeft(op)</code>
+      * </p>
+      */
+    def reduceLeftOption[U >: T](op: (U, T) => U): Option[U] = toSet.reduceLeftOption(op)
+
+    /**
+      * Reduces the elements of this `NonEmptySet` using the specified binary operator, 
+      * returning an `Option` containing the result.
+      *
+      * This method applies the binary operator `op` to combine all elements of the set
+      * into a single value. Since a `NonEmptySet` is guaranteed to have at least one element,
+      * the result will always be `Some(result)` if the underlying set is non-empty.
+      * However, because it delegates to `Set#reduceOption`, the return type is `Option[U]`
+      * for consistency with the standard library.
+      *
+      * @param op the associative binary operator used to reduce the elements.
+      * @tparam U the result type of the reduction, which must be a supertype of `T`.
+      * @return an `Option` containing the result of reducing this `NonEmptySet` with `op`.
+      *         It will never be `None` since this set cannot be empty.
+      *
+      * @example
+      * {{{
+      * val s = NonEmptySet(1, 2, 3)
+      * val sum = s.reduceOption(_ + _)   // Some(6)
+      * val max = s.reduceOption(_ max _) // Some(3)
+      * }}}
+      *
+      * @see [[scala.collection.SetOps.reduceOption]] for the underlying operation.
+      */
+    def reduceOption[U >: T](op: (U, U) => U): Option[U] = toSet.reduceOption(op)
+
+    /**
+      * Applies a binary operator to all elements of this <code>NonEmptySet</code>, going right to left.
+      *
+      * @tparam U the result of the binary operator
+      * @param op the binary operator
+      * @return the result of inserting <code>op</code> between consecutive elements of this <code>NonEmptySet</code>, going right to left:
+      *
+      * <pre>
+      * op(x_1, op(x_2, ... op(x_{n-1}, x_n)...))
+      * </pre>
+      *
+      * <p>
+      * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptySet</code>. 
+      * </p>
+      */
+    def reduceRight[U >: T](op: (T, U) => U): U = toSet.reduceRight(op)
+
+    /**
+      * Applies a binary operator to all elements of this <code>NonEmptySet</code>, going right to left, returning the result in a <code>Some</code>.
+      *
+      * @tparam U the result of the binary operator
+      * @param op the binary operator
+      * @return a <code>Some</code> containing the result of <code>reduceRight(op)</code>
+      */
+    def reduceRightOption[U >: T](op: (T, U) => U): Option[U] = toSet.reduceRightOption(op)
+
+    /**
       * Converts this <code>NonEmptySet</code> to a standard Scala <code>Set</code>.
       *
       * @return a <code>Set</code> containing all elements of this <code>NonEmptySet</code>
