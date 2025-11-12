@@ -57,7 +57,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     noException should be thrownBy NonEmptyVector(null)
     noException should be thrownBy NonEmptyVector("ho", null)
   }
-  /*it can "be deconstructed with NonEmptyVector" in {
+  it can "be deconstructed with NonEmptyVector" in {
     NonEmptyVector(1) match {
       case NonEmptyVector(x) => x shouldEqual 1
       case _ => fail()
@@ -131,7 +131,7 @@ class NonEmptyVectorSpec extends UnitSpec {
       case _ => fail()
     }
   }
-  it should "have an apply method" in {
+  /*it should "have an apply method" in {
     NonEmptyVector(1, 2, 3)(0) shouldEqual 1
     NonEmptyVector(1, 2, 3)(1) shouldEqual 2
     NonEmptyVector("hi")(0) shouldEqual "hi"

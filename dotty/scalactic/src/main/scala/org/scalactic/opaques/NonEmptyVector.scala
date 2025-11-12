@@ -158,6 +158,14 @@ object NonEmptyVector {
   def apply[T](firstElement: T, otherElements: T*): NonEmptyVector[T] = Vector(firstElement) ++ otherElements
 
   /**
+    * Variable argument extractor for <code>NonEmptyVector</code>s.
+    *
+    * @param nonEmptyVector: the <code>NonEmptyVector</code> containing the elements to extract
+    * @return an <code>Seq</code> containing this <code>NonEmptyVector</code>s elements, wrapped in a <code>Some</code> 
+    */
+  def unapplySeq[T](nonEmptyVector: NonEmptyVector[T]): Option[Seq[T]] = Some(nonEmptyVector)
+
+  /**
     * Optionally construct a <code>NonEmptyVector</code> containing the elements, if any, of a given <code>GenSeq</code>.
     *
     * @param seq the <code>GenSeq</code> with which to construct a <code>NonEmptyVector</code>
