@@ -170,7 +170,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     NonEmptyVector(1, 2, 3) ++ Set(4, 5) shouldEqual NonEmptyVector(1, 2, 3, 4, 5)
     NonEmptyVector(1, 2, 3) ++ Set(4, 5).iterator shouldEqual NonEmptyVector(1, 2, 3, 4, 5)
   }
-  /*it should "have a +: method" in {
+  it should "have a +: method" in {
     0 +: NonEmptyVector(1) shouldBe NonEmptyVector(0, 1)
     0 +: NonEmptyVector(1, 2) shouldBe NonEmptyVector(0, 1, 2)
     "zero" +: NonEmptyVector("one", "two") shouldBe NonEmptyVector("zero", "one", "two")
@@ -182,7 +182,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     "zero" :: NonEmptyVector("one", "two") shouldBe NonEmptyVector("zero", "one", "two")
   }
 
-  it should "implement PartialFunction[Int, T]" in {
+  /*it should "implement PartialFunction[Int, T]" in {
     val pf1: PartialFunction[Int, Int] = NonEmptyVector(1)
     pf1.isDefinedAt(0) shouldBe true
     pf1.isDefinedAt(1) shouldBe false

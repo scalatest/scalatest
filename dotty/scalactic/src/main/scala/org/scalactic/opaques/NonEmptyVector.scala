@@ -186,7 +186,34 @@ object NonEmptyVector {
     */
   given [E]: Conversion[NonEmptyVector[E], IterableOnce[E]] with {
     def apply(nonEmptyVector: NonEmptyVector[E]): IterableOnce[E] = nonEmptyVector
-  }  
+  }
+
+  extension [T](element: T) {
+    /**
+      * Returns a new <code>NonEmptyVector</code> with the given element prepended.
+      *
+      * <p>
+      * Note that :-ending operators are right associative. A mnemonic for <code>+:</code> <em>vs.</em> <code>:+</code> is: the COLon goes on the COLlection side.
+      * </p>
+      *
+      * @param element the element to prepend to this <code>NonEmptyVector</code>
+      * @return a new <code>NonEmptyVector</code> consisting of <code>element</code> followed by all elements of this <code>NonEmptyVector</code>.
+      */
+    infix def ::[U >: T](nonEmptyVector: NonEmptyVector[U]): NonEmptyVector[U] = 
+      NonEmptyVector(element, nonEmptyVector*)
+
+    /**
+      * Returns a new <code>NonEmptyVector</code> with the given element prepended.
+      *
+      * <p>
+      * Note that :-ending operators are right associative. A mnemonic for <code>+:</code> <em>vs.</em> <code>:+</code> is: the COLon goes on the COLlection side.
+      * </p>
+      *
+      * @param element the element to prepend to this <code>NonEmptyVector</code>
+      * @return a new <code>NonEmptyVector</code> consisting of <code>element</code> followed by all elements of this <code>NonEmptyVector</code>.
+      */
+    infix def +:[U >: T](nonEmptyVector: NonEmptyVector[U]): NonEmptyVector[U] = NonEmptyVector(element, nonEmptyVector*)
+  }
 
   extension [T] (nonEmptyVector: NonEmptyVector[T]) {
 
