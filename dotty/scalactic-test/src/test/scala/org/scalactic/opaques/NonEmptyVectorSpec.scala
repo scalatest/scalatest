@@ -784,7 +784,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     NonEmptyVector(1, 2, 3).mkString("<", "#", ">") shouldBe "<1#2#3>"
     NonEmptyVector(1, 2, 3).mkString(" ( ", ", ", " ) ") shouldBe " ( 1, 2, 3 ) "
   }
-  /*it should "have an nonEmpty method" in {
+  it should "have an nonEmpty method" in {
     NonEmptyVector("hi").nonEmpty shouldBe true
     NonEmptyVector(1, 2, 3).nonEmpty shouldBe true
   }
@@ -918,7 +918,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     g(0) shouldBe true
     y shouldBe 6
   }
-  it should "have a sameElements method that takes a GenIterable" in {
+  /*it should "have a sameElements method that takes a GenIterable" in {
     NonEmptyVector(1, 2, 3, 4, 5).sameElements(Vector(1, 2, 3, 4, 5)) shouldBe true
     NonEmptyVector(1, 2, 3, 4, 5).sameElements(Vector(1, 2, 3, 4)) shouldBe false
     NonEmptyVector(1, 2, 3, 4, 5).sameElements(Vector(1, 2, 3, 4, 5, 6)) shouldBe false

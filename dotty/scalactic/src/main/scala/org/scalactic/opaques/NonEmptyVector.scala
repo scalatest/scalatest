@@ -783,11 +783,172 @@ object NonEmptyVector {
     def mkString(start: String, sep: String, end: String): String = toVector.mkString(start, sep, end)
 
     /**
+      * Returns <code>true</code> to indicate this <code>NonEmptyVector</code>, like all <code>NonEmptyVector</code>s, is non-empty.
+      *
+      * @return true
+      */
+    def nonEmpty: Boolean = true
+
+    /**
+      * A copy of this <code>NonEmptyVector</code> with an element value appended until a given target length is reached.
+      *
+      * @param len the target length 
+      * @param elem he padding value
+      * @return a new <code>NonEmptyVector</code> consisting of all elements of this <code>NonEmptyVector</code> followed by the minimal number of occurrences
+      *     of <code>elem</code> so that the resulting <code>NonEmptyVector</code> has a length of at least <code>len</code>. 
+      */
+    def padTo[U >: T](len: Int, elem: U): NonEmptyVector[U] = toVector.padTo(len, elem)
+
+    /**
+      * Produces a new <code>NonEmptyVector</code> where a slice of elements in this <code>NonEmptyVector</code> is replaced by another <code>NonEmptyVector</code>
+      *
+      * @param from the index of the first replaced element 
+      * @param that the <code>NonEmptyVector</code> whose elements should replace a slice in this <code>NonEmptyVector</code>
+      * @param replaced the number of elements to drop in the original <code>NonEmptyVector</code>
+      */
+    def patch[U >: T](from: Int, that: NonEmptyVector[U], replaced: Int): NonEmptyVector[U] = toVector.patch(from, that.toVector, replaced)
+
+    /**
       * Converts this <code>NonEmptyVector</code> to a list.
       *
       * @return a list containing all elements of this <code>NonEmptyVector</code>. 
       */
     def toVector: Vector[T] = nonEmptyVector
+
+    /**
+      * Iterates over distinct permutations. 
+      *
+      * <p>
+      * Here's an example:
+      * </p>
+      *
+      * <pre class="stHighlight">
+      * NonEmptyVector('a', 'b', 'b').permutations.toVector = Vector(NonEmptyVector(a, b, b), NonEmptyVector(b, a, b), NonEmptyVector(b, b, a))
+      * </pre>
+      *
+      * @return an iterator that traverses the distinct permutations of this <code>NonEmptyVector</code>.
+      */
+    def permutations: Iterator[NonEmptyVector[T]] = toVector.permutations
+
+    /**
+      * Returns the length of the longest prefix whose elements all satisfy some predicate.
+      *
+      * @param p the predicate used to test elements.
+      * @return the length of the longest prefix of this <code>NonEmptyVector</code> such that every element
+      *     of the segment satisfies the predicate <code>p</code>. 
+      */
+    def prefixLength(p: T => Boolean): Int = toVector.prefixLength(p)
+
+    /**
+      * The result of multiplying all the elements of this <code>NonEmptyVector</code>.
+      *
+      * <p>
+      * This method can be invoked for any <code>NonEmptyVector[T]</code> for which an implicit <code>Numeric[T]</code> exists.
+      * </p>
+      *
+      * @return the product of all elements
+      */
+    def product[U >: T](implicit num: Numeric[U]): U = toVector.product(num)
+
+    /**
+      * Reduces the elements of this <code>NonEmptyVector</code> using the specified associative binary operator.
+      *
+      * <p>
+      * The order in which operations are performed on elements is unspecified and may be nondeterministic. 
+      * </p>
+      *
+      * @tparam U a type parameter for the binary operator, a supertype of T.
+      * @param op a binary operator that must be associative.
+      * @return the result of applying reduce operator <code>op</code> between all the elements of this <code>NonEmptyVector</code>.
+      */
+    def reduce[U >: T](op: (U, U) => U): U = toVector.reduce(op)
+
+    /**
+      * Applies a binary operator to all elements of this <code>NonEmptyVector</code>, going left to right.
+      *
+      * @tparam U the result type of the binary operator.
+      * @param op the binary operator.
+      * @return the result of inserting <code>op</code> between consecutive elements of this <code>NonEmptyVector</code>, going left to right:
+      *
+      * <pre>
+      * op(...op(op(x_1, x_2), x_3), ..., x_n)
+      * </pre>
+      *
+      * <p>
+      * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyVector</code>. 
+      * </p>
+      */
+    def reduceLeft[U >: T](op: (U, T) => U): U = toVector.reduceLeft(op)
+
+    /**
+      * Applies a binary operator to all elements of this <code>NonEmptyVector</code>, going left to right, returning the result in a <code>Some</code>.
+      *
+      * @tparam U the result type of the binary operator.
+      * @param op the binary operator.
+      * @return a <code>Some</code> containing the result of <code>reduceLeft(op)</code>
+      * </p>
+      */
+    def reduceLeftOption[U >: T](op: (U, T) => U): Option[U] = toVector.reduceLeftOption(op)
+
+    def reduceOption[U >: T](op: (U, U) => U): Option[U] = toVector.reduceOption(op)
+
+    /**
+      * Applies a binary operator to all elements of this <code>NonEmptyVector</code>, going right to left.
+      *
+      * @tparam U the result of the binary operator
+      * @param op the binary operator
+      * @return the result of inserting <code>op</code> between consecutive elements of this <code>NonEmptyVector</code>, going right to left:
+      *
+      * <pre>
+      * op(x_1, op(x_2, ... op(x_{n-1}, x_n)...))
+      * </pre>
+      *
+      * <p>
+      * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyVector</code>. 
+      * </p>
+      */
+    def reduceRight[U >: T](op: (T, U) => U): U = toVector.reduceRight(op)
+
+    /**
+      * Applies a binary operator to all elements of this <code>NonEmptyVector</code>, going right to left, returning the result in a <code>Some</code>.
+      *
+      * @tparam U the result of the binary operator
+      * @param op the binary operator
+      * @return a <code>Some</code> containing the result of <code>reduceRight(op)</code>
+      */
+    def reduceRightOption[U >: T](op: (T, U) => U): Option[U] = toVector.reduceRightOption(op)
+
+    /**
+      * Returns new <code>NonEmptyVector</code> with elements in reverse order.
+      *
+      * @return a new <code>NonEmptyVector</code> with all elements of this <code>NonEmptyVector</code> in reversed order. 
+      */
+    def reverse: NonEmptyVector[T] = toVector.reverse
+
+    /**
+      * An iterator yielding elements in reverse order.
+      *
+      * <p>
+      * Note: <code>nonEmptyVector.reverseIterator</code> is the same as <code>nonEmptyVector.reverse.iterator</code>, but might be more efficient. 
+      * </p>
+      *
+      * @return an iterator yielding the elements of this <code>NonEmptyVector</code> in reversed order 
+      */
+    def reverseIterator: Iterator[T] = toVector.reverseIterator
+
+    /**
+      * Builds a new <code>NonEmptyVector</code> by applying a function to all elements of this <code>NonEmptyVector</code> and collecting the results in reverse order.
+      *
+      * <p>
+      * Note: <code>nonEmptyVector.reverseMap(f)</code> is the same as <code>nonEmptyVector.reverse.map(f)</code>, but might be more efficient. 
+      * </p>
+      *
+      * @tparam U the element type of the returned <code>NonEmptyVector</code>.
+      * @param f the function to apply to each element. 
+      * @return a new <code>NonEmptyVector</code> resulting from applying the given function <code>f</code> to each element of this <code>NonEmptyVector</code>
+      *     and collecting the results in reverse order. 
+      */
+    def reverseMap[U](f: T => U): NonEmptyVector[U] = toVector.reverseMap(f)
 
   }
 
