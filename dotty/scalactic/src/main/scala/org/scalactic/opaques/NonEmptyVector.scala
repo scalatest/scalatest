@@ -17,6 +17,9 @@ package org.scalactic.opaques
 
 import scala.collection.GenSeq
 import scala.collection.mutable.{ArrayBuffer, Buffer}
+import scala.language.higherKinds
+import scala.annotation.unchecked.{ uncheckedVariance => uV }
+import scala.reflect.ClassTag
 
 /**
   * A non-empty list: an ordered, immutable, non-empty collection of elements with <code>LinearSeq</code> performance characteristics.
@@ -94,20 +97,6 @@ import scala.collection.mutable.{ArrayBuffer, Buffer}
   * NonEmptyVector(1, 2, 3).containsSlice(NonEmptyVector(3, 4)) // Result: false
   * NonEmptyVector(-1, -2, 3, 4, 5).minBy(_.abs)              // Result: -1
   * </pre>
-  *
-  * <p>
-  * <code>NonEmptyVector</code> does <em>not</em> currently define any methods corresponding to <code>Seq</code> methods that could result in
-  * an empty <code>Seq</code>. However, an implicit converison from <code>NonEmptyVector</code> to <code>Vector</code>
-  * is defined in the <code>NonEmptyVector</code> companion object that will be applied if you attempt to call one of the missing methods. As a
-  * result, you can invoke <code>filter</code> on an <code>NonEmptyVector</code>, even though <code>filter</code> could result
-  * in an empty sequence&mdash;but the result type will be <code>Vector</code> instead of <code>NonEmptyVector</code>:
-  * </p>
-  *
-  * <pre class="stHighlight">
-  * NonEmptyVector(1, 2, 3).filter(_ &lt; 10) // Result: Vector(1, 2, 3)
-  * NonEmptyVector(1, 2, 3).filter(_ &gt; 10) // Result: Vector()
-  * </pre>
-  *
   *
   * <p>
   * You can use <code>NonEmptyVector</code>s in <code>for</code> expressions. The result will be an <code>NonEmptyVector</code> unless
@@ -421,7 +410,7 @@ object NonEmptyVector {
       * @tparm B the type of the elements of each nested <code>NonEmptyVector</code>
       * @return a new <code>NonEmptyVector</code> resulting from concatenating all nested <code>NonEmptyVector</code>s.
       */
-    def flatten[B](implicit ev: T <:< NonEmptyVector[B]): NonEmptyVector[B] = flatMap(ev)
+    def flatten[B](using ev: T <:< NonEmptyVector[B]): NonEmptyVector[B] = flatMap(ev)
 
     /**
       * Folds the elements of this <code>NonEmptyVector</code> using the specified associative binary operator.
@@ -530,10 +519,6 @@ object NonEmptyVector {
       * @return the first element of this <code>NonEmptyVector</code>.
       */
     def head: T = toVector.head
-
-    // Methods like headOption I can't get rid of because of the implicit conversion to Iterable.
-    // Users can call any of the methods I've left out on a NonEmptyVector, and get whatever Vector would return
-    // for that method call. Eventually I'll probably implement them all to save the implicit conversion.
 
     /**
       * Selects the first element of this <code>NonEmptyVector</code> and returns it wrapped in a <code>Some</code>. 
@@ -730,28 +715,28 @@ object NonEmptyVector {
       *
       * @return the largest element of this <code>NonEmptyVector</code>. 
       */
-    def max[U >: T](implicit cmp: Ordering[U]): T = toVector.max(cmp)
+    def max[U >: T](using cmp: Ordering[U]): T = toVector.max(cmp)
 
     /**
       * Finds the largest result after applying the given function to every element.
       *
       * @return the largest result of applying the given function to every element of this <code>NonEmptyVector</code>. 
       */
-    def maxBy[U](f: T => U)(implicit cmp: Ordering[U]): T = toVector.maxBy(f)(cmp)
+    def maxBy[U](f: T => U)(using cmp: Ordering[U]): T = toVector.maxBy(f)(cmp)
 
     /**
       * Finds the smallest element.
       *
       * @return the smallest element of this <code>NonEmptyVector</code>. 
       */
-    def min[U >: T](implicit cmp: Ordering[U]): T = toVector.min(cmp)
+    def min[U >: T](using cmp: Ordering[U]): T = toVector.min(cmp)
 
     /**
       * Finds the smallest result after applying the given function to every element.
       *
       * @return the smallest result of applying the given function to every element of this <code>NonEmptyVector</code>. 
       */
-    def minBy[U](f: T => U)(implicit cmp: Ordering[U]): T = toVector.minBy(f)(cmp)
+    def minBy[U](f: T => U)(using cmp: Ordering[U]): T = toVector.minBy(f)(cmp)
 
     /**
       * Displays all elements of this <code>NonEmptyVector</code> in a string. 
@@ -809,13 +794,6 @@ object NonEmptyVector {
     def patch[U >: T](from: Int, that: NonEmptyVector[U], replaced: Int): NonEmptyVector[U] = toVector.patch(from, that.toVector, replaced)
 
     /**
-      * Converts this <code>NonEmptyVector</code> to a list.
-      *
-      * @return a list containing all elements of this <code>NonEmptyVector</code>. 
-      */
-    def toVector: Vector[T] = nonEmptyVector
-
-    /**
       * Iterates over distinct permutations. 
       *
       * <p>
@@ -843,12 +821,12 @@ object NonEmptyVector {
       * The result of multiplying all the elements of this <code>NonEmptyVector</code>.
       *
       * <p>
-      * This method can be invoked for any <code>NonEmptyVector[T]</code> for which an implicit <code>Numeric[T]</code> exists.
+      * This method can be invoked for any <code>NonEmptyVector[T]</code> for which a given <code>Numeric[T]</code> exists.
       * </p>
       *
       * @return the product of all elements
       */
-    def product[U >: T](implicit num: Numeric[U]): U = toVector.product(num)
+    def product[U >: T](using num: Numeric[U]): U = toVector.product(num)
 
     /**
       * Reduces the elements of this <code>NonEmptyVector</code> using the specified associative binary operator.
@@ -1074,7 +1052,7 @@ object NonEmptyVector {
       * @return a <code>NonEmptyVector</code> consisting of the elements of this <code>NonEmptyVector</code> sorted according to the <code>Ordering</code> where
       *    <code>x &lt; y if ord.lt(f(x), f(y))</code>. 
       */
-    def sortBy[U](f: T => U)(implicit ord: Ordering[U]): NonEmptyVector[T] = toVector.sortBy(f)
+    def sortBy[U](f: T => U)(using ord: Ordering[U]): NonEmptyVector[T] = toVector.sortBy(f)
 
     /**
       * Sorts this <code>NonEmptyVector</code> according to a comparison function.
@@ -1101,7 +1079,7 @@ object NonEmptyVector {
       * @param the comparison function that tests whether its first argument precedes its second argument in the desired ordering.
       * @return a <code>NonEmptyVector</code> consisting of the elements of this <code>NonEmptyVector</code> sorted according to the comparison function <code>lt</code>.
       */
-    def sorted[U >: T](implicit ord: Ordering[U]): NonEmptyVector[U] = toVector.sorted(ord)
+    def sorted[U >: T](using ord: Ordering[U]): NonEmptyVector[U] = toVector.sorted(ord)
 
     /**
       * Indicates whether this <code>NonEmptyVector</code> starts with the given <code>IterableOnce</code>. 
@@ -1131,12 +1109,105 @@ object NonEmptyVector {
       * The result of summing all the elements of this <code>NonEmptyVector</code>.
       *
       * <p>
-      * This method can be invoked for any <code>NonEmptyVector[T]</code> for which an implicit <code>Numeric[T]</code> exists.
+      * This method can be invoked for any <code>NonEmptyVector[T]</code> for which a given <code>Numeric[T]</code> exists.
       * </p>
       *
       * @return the sum of all elements
       */
-    def sum[U >: T](implicit num: Numeric[U]): U = toVector.sum(num)
+    def sum[U >: T](using num: Numeric[U]): U = toVector.sum(num)
+
+    /**
+      * Converts this <code>NonEmptyVector</code> into a collection of type <code>Col</code> by copying all elements.
+      *
+      * @tparam Col the collection type to build.
+      * @return a new collection containing all elements of this <code>NonEmptyVector</code>. 
+      */
+    def to[Col[_]](factory: org.scalactic.ColCompatHelper.Factory[T, Col[T @ uV]]): Col[T @ uV] =
+      toVector.to(factory)
+
+    /**
+      * Converts this <code>NonEmptyVector</code> to an array.
+      *
+      * @return an array containing all elements of this <code>NonEmptyVector</code>. A <code>ClassTag</code> must be available for the element type of this <code>NonEmptyVector</code>. 
+      */
+    def toArray[U >: T](using classTag: ClassTag[U]): Array[U] = toVector.toArray
+
+    /**
+      * Converts this <code>NonEmptyVector</code> to a <code>Vector</code>.
+      *
+      * @return a <code>Vector</code> containing all elements of this <code>NonEmptyVector</code>. 
+      */
+    def toList: List[T] = toVector.toList
+
+    /**
+      * Converts this <code>NonEmptyVector</code> to a mutable buffer.
+      *
+      * @return a buffer containing all elements of this <code>NonEmptyVector</code>. 
+      */
+    def toBuffer[U >: T]: Buffer[U] = toVector.toBuffer
+
+    /**
+      * Converts this <code>NonEmptyVector</code> to a list.
+      *
+      * @return a list containing all elements of this <code>NonEmptyVector</code>. 
+      */
+    def toVector: Vector[T] = nonEmptyVector
+
+    /**
+      * Converts this <code>NonEmptyVector</code> to an immutable <code>IndexedSeq</code>.
+      *
+      * @return an immutable <code>IndexedSeq</code> containing all elements of this <code>NonEmptyVector</code>. 
+      */
+    def toIndexedSeq: collection.immutable.IndexedSeq[T] = toVector.toVector
+
+    /**
+      * Converts this <code>NonEmptyVector</code> to an iterable collection.
+      *
+      * @return an <code>Iterable</code> containing all elements of this <code>NonEmptyVector</code>. 
+      */
+    def toIterable: scala.collection.Iterable[T] = toVector.toIterable
+
+    /**
+      * Returns an <code>Iterator</code> over the elements in this <code>NonEmptyVector</code>.
+      *
+      * @return an <code>Iterator</code> containing all elements of this <code>NonEmptyVector</code>. 
+      */
+    def toIterator: Iterator[T] = toVector.toIterator
+
+    /**
+      * Converts this <code>NonEmptyVector</code> to a map.
+      *
+      * <p>
+      * This method is unavailable unless the elements are members of <code>Tuple2</code>, each <code>((K, V))</code> becoming a key-value pair
+      * in the map. Duplicate keys will be overwritten by later keys.
+      * </p>
+      *
+      * @return a map of type <code>immutable.Map[K, V]</code> containing all key/value pairs of type <code>(K, V)</code> of this <code>NonEmptyVector</code>. 
+      */
+    def toMap[K, V](using ev: T <:< (K, V)): Map[K, V] = toVector.toMap
+
+    /**
+      * Converts this <code>NonEmptyVector</code> to an immutable <code>IndexedSeq</code>.
+      *
+      * @return an immutable <code>IndexedSeq</code> containing all elements of this <code>NonEmptyVector</code>.
+      */
+    def toSeq: collection.immutable.Seq[T] = toVector
+
+    /**
+      * Converts this <code>NonEmptyVector</code> to a set.
+      *
+      * @return a set containing all elements of this <code>NonEmptyVector</code>. 
+      */
+    def toSet[U >: T]: Set[U] = toVector.toSet
+
+    /**
+      * Converts this <code>NonEmptyVector</code> to a stream.
+      *
+      * @return a stream containing all elements of this <code>NonEmptyVector</code>. 
+      */
+    def toStream: Stream[T] = toVector.toStream
+
+    def transpose[U](using ev: T <:< NonEmptyVector[U]): NonEmptyVector[NonEmptyVector[U]] = toVector.transpose(ev)
 
   }
 

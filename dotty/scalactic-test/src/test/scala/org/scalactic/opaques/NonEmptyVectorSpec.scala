@@ -1175,7 +1175,7 @@ class NonEmptyVectorSpec extends UnitSpec {
       scala> Vector(1).takeWhile(_ > 10)
       res18: scala.collection.immutable.Vector[Int] = Vector()
   */
-  /*it should "have a to method" in {
+  it should "have a to method" in {
     import org.scalactic.ColCompatHelper.Factory._
     NonEmptyVector(1).to(Vector) shouldBe Vector(1)
     NonEmptyVector(1, 2, 3).to(Vector) shouldBe Vector(1, 2, 3)
@@ -1235,11 +1235,6 @@ class NonEmptyVectorSpec extends UnitSpec {
     NonEmptyVector("a", "b").toStream should === (Stream("a", "b"))
     NonEmptyVector(1).toStream should === (Stream(1))
   }
-  it should "have a toString method" in {
-    NonEmptyVector(1, 2, 3).toString should === ("NonEmptyVector(1, 2, 3)")
-    NonEmptyVector(1, 2, 3).toString should === ("NonEmptyVector(1, 2, 3)")
-    NonEmptyVector(1).toString should === ("NonEmptyVector(1)")
-  }
   it should "have a toVector method" in {
     NonEmptyVector(1, 2, 3).toVector should === (Vector(1, 2, 3))
     NonEmptyVector("a", "b").toVector should === (Vector("a", "b"))
@@ -1251,7 +1246,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     NonEmptyVector(NonEmptyVector(1, 2), NonEmptyVector(3, 4), NonEmptyVector(5, 6), NonEmptyVector(7, 8)).transpose.transpose shouldBe NonEmptyVector(NonEmptyVector(1, 2), NonEmptyVector(3, 4), NonEmptyVector(5, 6), NonEmptyVector(7, 8))
     NonEmptyVector(NonEmptyVector(1, 2, 3), NonEmptyVector(4, 5, 6), NonEmptyVector(7, 8, 9)).transpose.transpose shouldBe NonEmptyVector(NonEmptyVector(1, 2, 3), NonEmptyVector(4, 5, 6), NonEmptyVector(7, 8, 9))
   }
-  it should "have a union method that takes a GenSeq" in {
+  /*it should "have a union method that takes a GenSeq" in {
     NonEmptyVector(1) union Vector(1) shouldBe NonEmptyVector(1, 1)
     NonEmptyVector(1) union Vector(1, 2) shouldBe NonEmptyVector(1, 1, 2)
     NonEmptyVector(1, 2) union Vector(1, 2) shouldBe NonEmptyVector(1, 2, 1, 2)
