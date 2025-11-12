@@ -131,7 +131,7 @@ class NonEmptyVectorSpec extends UnitSpec {
       case _ => fail()
     }
   }
-  /*it should "have an apply method" in {
+  it should "have an apply method" in {
     NonEmptyVector(1, 2, 3)(0) shouldEqual 1
     NonEmptyVector(1, 2, 3)(1) shouldEqual 2
     NonEmptyVector("hi")(0) shouldEqual "hi"
@@ -170,7 +170,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     NonEmptyVector(1, 2, 3) ++ Set(4, 5) shouldEqual NonEmptyVector(1, 2, 3, 4, 5)
     NonEmptyVector(1, 2, 3) ++ Set(4, 5).iterator shouldEqual NonEmptyVector(1, 2, 3, 4, 5)
   }
-  it should "have a +: method" in {
+  /*it should "have a +: method" in {
     0 +: NonEmptyVector(1) shouldBe NonEmptyVector(0, 1)
     0 +: NonEmptyVector(1, 2) shouldBe NonEmptyVector(0, 1, 2)
     "zero" +: NonEmptyVector("one", "two") shouldBe NonEmptyVector("zero", "one", "two")

@@ -178,7 +178,29 @@ object NonEmptyVector {
       case Some(first) => Some(Vector(first) ++ seq.tail)
     }
 
+  /**
+    * Conversion from <code>NonEmptyVector</code> to <code>IterableOnce</code>.
+    *
+    * @param nonEmptyVector the <code>NonEmptyVector</code> to convert
+    * @return the <code>IterableOnce</code>
+    */
+  given [E]: Conversion[NonEmptyVector[E], IterableOnce[E]] with {
+    def apply(nonEmptyVector: NonEmptyVector[E]): IterableOnce[E] = nonEmptyVector
+  }  
+
   extension [T] (nonEmptyVector: NonEmptyVector[T]) {
+
+    /**
+      * Returns a new <code>NonEmptyVector</code> containing the elements of this <code>NonEmptyVector</code> followed by the elements of the passed <code>IterableOnce</code>.
+      * The element type of the resulting <code>NonEmptyVector</code> is the most specific superclass encompassing the element types of this <code>NonEmptyVector</code>
+      * and the passed <code>IterableOnce</code>.
+      *
+      * @tparam U the element type of the returned <code>NonEmptyVector</code>
+      * @param other the <code>IterableOnce</code> to append
+      * @return a new <code>NonEmptyVector</code> that contains all the elements of this <code>NonEmptyVector</code> followed by all elements of <code>other</code>.
+      */
+    def ++[U >: T](other: IterableOnce[U]): NonEmptyVector[U] =
+      if (other.isEmpty) nonEmptyVector else toVector ++ other
 
     /**
       * Selects an element by its index in the <code>NonEmptyVector</code>.
