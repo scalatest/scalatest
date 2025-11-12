@@ -493,6 +493,56 @@ object NonEmptyVector {
     def foreach(f: T => Unit): Unit = toVector.foreach(f)
 
     /**
+      * Partitions this <code>NonEmptyVector</code> into a map of <code>NonEmptyVector</code>s according to some discriminator function.
+      *
+      * @tparam K the type of keys returned by the discriminator function.
+      * @param f the discriminator function.
+      * @return A map from keys to <code>NonEmptyVector</code>s such that the following invariant holds:
+      *
+      * <pre>
+      * (nonEmptyVector.toVector partition f)(k) = xs filter (x =&gt; f(x) == k)
+      * </pre>
+      *
+      * <p>
+      * That is, every key <code>k</code> is bound to a <code>NonEmptyVector</code> of those elements <code>x</code> for which <code>f(x)</code> equals <code>k</code>.
+      * </p>
+      */
+    def groupBy[K](f: T => K): Map[K, NonEmptyVector[T]] = toVector.groupBy(f)
+
+    /**
+      * Partitions elements into fixed size <code>NonEmptyVector</code>s.
+      *
+      * @param size the number of elements per group
+      * @return An iterator producing <code>NonEmptyVector</code>s of size <code>size</code>, except the last will be truncated if the elements don't divide evenly. 
+      */
+    def grouped(size: Int): Iterator[NonEmptyVector[T]] = toVector.grouped(size)
+
+    /**
+      * Returns <code>true</code> to indicate this <code>NonEmptyVector</code> has a definite size, since all <code>NonEmptyVector</code>s are strict collections.
+      */
+    def hasDefiniteSize: Boolean = true
+
+    // override def hashCode: Int = toVector.hashCode
+
+    /**
+      * Selects the first element of this <code>NonEmptyVector</code>. 
+      *
+      * @return the first element of this <code>NonEmptyVector</code>.
+      */
+    def head: T = toVector.head
+
+    // Methods like headOption I can't get rid of because of the implicit conversion to Iterable.
+    // Users can call any of the methods I've left out on a NonEmptyVector, and get whatever Vector would return
+    // for that method call. Eventually I'll probably implement them all to save the implicit conversion.
+
+    /**
+      * Selects the first element of this <code>NonEmptyVector</code> and returns it wrapped in a <code>Some</code>. 
+      *
+      * @return the first element of this <code>NonEmptyVector</code>, wrapped in a <code>Some</code>.
+      */
+    def headOption: Option[T] = toVector.headOption
+
+    /**
       * Builds a new <code>NonEmptyVector</code> by applying a function to all elements of this <code>NonEmptyVector</code>.
       *
       * @tparam U the element type of the returned <code>NonEmptyVector</code>.

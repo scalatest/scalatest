@@ -469,7 +469,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     NonEmptyVector(5) foreach (num *= _)
     num shouldBe 60
   }
-  /*it should "have a groupBy method" in {
+  it should "have a groupBy method" in {
     NonEmptyVector(1, 2, 3, 4, 5).groupBy(_ % 2) shouldBe Map(1 -> NonEmptyVector(1, 3, 5), 0 -> NonEmptyVector(2, 4))
     NonEmptyVector(1, 2, 3, 3, 3).groupBy(_ % 2) shouldBe Map(1 -> NonEmptyVector(1, 3, 3, 3), 0 -> NonEmptyVector(2))
     NonEmptyVector(1, 1, 3, 3, 3).groupBy(_ % 2) shouldBe Map(1 -> NonEmptyVector(1, 1, 3, 3, 3))
@@ -501,7 +501,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     NonEmptyVector("hi").headOption shouldBe Some("hi")
     NonEmptyVector(1, 2, 3).headOption shouldBe Some(1)
   }
-  it should "have 2 indexOf methods" in {
+  /*it should "have 2 indexOf methods" in {
     NonEmptyVector(1, 2, 3, 4, 5).indexOf(3) shouldBe 2
     NonEmptyVector(1, 2, 3, 4, 5).indexOf(1) shouldBe 0
     NonEmptyVector(1, 2, 3, 4, 5).indexOf(1, 2) shouldBe -1
