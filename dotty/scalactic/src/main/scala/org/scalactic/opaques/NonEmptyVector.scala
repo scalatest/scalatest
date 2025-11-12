@@ -622,13 +622,74 @@ object NonEmptyVector {
     def indexWhere(p: T => Boolean, from: Int): Int = toVector.indexWhere(p, from)
 
     /**
-      * Builds a new <code>NonEmptyVector</code> by applying a function to all elements of this <code>NonEmptyVector</code>.
+      * Selects the last element of this <code>NonEmptyVector</code>. 
       *
-      * @tparam U the element type of the returned <code>NonEmptyVector</code>.
-      * @param f the function to apply to each element. 
-      * @return a new <code>NonEmptyVector</code> resulting from applying the given function <code>f</code> to each element of this <code>NonEmptyVector</code> and collecting the results. 
+      * @return the last element of this <code>NonEmptyVector</code>.
       */
-    def map[U](f: T => U): NonEmptyVector[U] = toVector.map(f)
+    def last: T = toVector.last
+
+    /**
+      * Finds the index of the last occurrence of some value in this <code>NonEmptyVector</code>.
+      *
+      * @param elem the element value to search for.
+      * @return the index of the last element of this <code>NonEmptyVector</code> that is equal (as determined by <code>==</code>) to <code>elem</code>,
+      *     or <code>-1</code>, if none exists.
+      */
+    def lastIndexOf[U >: T](elem: U): Int = toVector.lastIndexOf(elem)
+
+    /**
+      * Finds the index of the last occurrence of some value in this <code>NonEmptyVector</code> before or at a given <code>end</code> index.
+      *
+      * @param elem the element value to search for.
+      * @param end the end index. 
+      * @return the index <code>&gt;=</code> <code>end</code> of the last element of this <code>NonEmptyVector</code> that is equal (as determined by <code>==</code>)
+      *     to <code>elem</code>, or <code>-1</code>, if none exists.
+      */
+    def lastIndexOf[U >: T](elem: U, end: Int): Int = toVector.lastIndexOf(elem, end)
+
+    /**
+      * Finds the last index where this <code>NonEmptyVector</code> contains a given <code>IterableOnce</code> as a slice. 
+      *
+      * @param that the <code>IterableOnce</code> defining the slice to look for
+      * @return the last index at which the elements of this <code>NonEmptyVector</code> starting at that index match the elements of
+      *    <code>IterableOnce</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
+      */
+    def lastIndexOfSlice[U >: T](that: IterableOnce[U]): Int = toVector.toIndexedSeq.lastIndexOfSlice(that.toSeq)
+
+    /**
+      * Finds the last index before or at a given end index where this <code>NonEmptyVector</code> contains a given <code>IterableOnce</code> as a slice. 
+      *
+      * @param that the <code>IterableOnce</code> defining the slice to look for
+      * @param end the end index
+      * @return the last index <code>&gt;=</code> <code>end</code> at which the elements of this <code>NonEmptyVector</code> starting at that index match the elements of
+      *    <code>IterableOnce</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
+      */
+    def lastIndexOfSlice[U >: T](that: IterableOnce[U], end: Int): Int = toVector.toIndexedSeq.lastIndexOfSlice(that.toSeq, end)
+
+    /**
+      * Finds index of last element satisfying some predicate.
+      *
+      * @param p the predicate used to test elements.
+      * @return the index of the last element of this <code>NonEmptyVector</code> that satisfies the predicate <code>p</code>, or <code>-1</code>, if none exists. 
+      */
+    def lastIndexWhere(p: T => Boolean): Int = toVector.lastIndexWhere(p)
+
+    /**
+      * Finds index of last element satisfying some predicate before or at given end index.
+      *
+      * @param p the predicate used to test elements.
+      * @param end the end index
+      * @return the index <code>&gt;=</code> <code>end</code> of the last element of this <code>NonEmptyVector</code> that satisfies the predicate <code>p</code>,
+      *     or <code>-1</code>, if none exists. 
+      */
+    def lastIndexWhere(p: T => Boolean, end: Int): Int = toVector.lastIndexWhere(p, end)
+
+    /**
+      * Returns the last element of this <code>NonEmptyVector</code>, wrapped in a <code>Some</code>. 
+      *
+      * @return the last element, wrapped in a <code>Some</code>. 
+      */
+    def lastOption: Option[T] = toVector.lastOption // Will always return a Some
 
     /**
       * The length of this <code>NonEmptyVector</code>.
@@ -640,6 +701,86 @@ object NonEmptyVector {
       * @return the number of elements in this <code>NonEmptyVector</code>. 
       */
     def length: Int = toVector.length
+
+    /**
+      * Compares the length of this <code>NonEmptyVector</code> to a test value. 
+      *
+      * @param len the test value that gets compared with the length.
+      * @return a value <code>x</code> where
+      *
+      * <pre>
+      * x &lt; 0 if this.length &lt; len
+      * x == 0 if this.length == len
+      * x &gt; 0 if this.length &gt; len
+      * </pre>
+      */
+    def lengthCompare(len: Int): Int = toVector.lengthCompare(len)
+
+    /**
+      * Builds a new <code>NonEmptyVector</code> by applying a function to all elements of this <code>NonEmptyVector</code>.
+      *
+      * @tparam U the element type of the returned <code>NonEmptyVector</code>.
+      * @param f the function to apply to each element. 
+      * @return a new <code>NonEmptyVector</code> resulting from applying the given function <code>f</code> to each element of this <code>NonEmptyVector</code> and collecting the results. 
+      */
+    def map[U](f: T => U): NonEmptyVector[U] = toVector.map(f)
+
+    /**
+      * Finds the largest element.
+      *
+      * @return the largest element of this <code>NonEmptyVector</code>. 
+      */
+    def max[U >: T](implicit cmp: Ordering[U]): T = toVector.max(cmp)
+
+    /**
+      * Finds the largest result after applying the given function to every element.
+      *
+      * @return the largest result of applying the given function to every element of this <code>NonEmptyVector</code>. 
+      */
+    def maxBy[U](f: T => U)(implicit cmp: Ordering[U]): T = toVector.maxBy(f)(cmp)
+
+    /**
+      * Finds the smallest element.
+      *
+      * @return the smallest element of this <code>NonEmptyVector</code>. 
+      */
+    def min[U >: T](implicit cmp: Ordering[U]): T = toVector.min(cmp)
+
+    /**
+      * Finds the smallest result after applying the given function to every element.
+      *
+      * @return the smallest result of applying the given function to every element of this <code>NonEmptyVector</code>. 
+      */
+    def minBy[U](f: T => U)(implicit cmp: Ordering[U]): T = toVector.minBy(f)(cmp)
+
+    /**
+      * Displays all elements of this <code>NonEmptyVector</code> in a string. 
+      *
+      * @return a string representation of this <code>NonEmptyVector</code>. In the resulting string, the result of invoking <code>toString</code> on all elements of this
+      *     <code>NonEmptyVector</code> follow each other without any separator string. 
+      */
+    def mkString: String = toVector.mkString
+
+    /**
+      * Displays all elements of this <code>NonEmptyVector</code> in a string using a separator string. 
+      *
+      * @param sep the separator string
+      * @return a string representation of this <code>NonEmptyVector</code>. In the resulting string, the result of invoking <code>toString</code> on all elements of this
+      *     <code>NonEmptyVector</code> are separated by the string <code>sep</code>. 
+      */
+    def mkString(sep: String): String = toVector.mkString(sep)
+
+    /**
+      * Displays all elements of this <code>NonEmptyVector</code> in a string using start, end, and separator strings. 
+      *
+      * @param start the starting string.
+      * @param sep the separator string.
+      * @param end the ending string.
+      * @return a string representation of this <code>NonEmptyVector</code>. The resulting string begins with the string <code>start</code> and ends with the string
+      *     <code>end</code>. Inside, In the resulting string, the result of invoking <code>toString</code> on all elements of this <code>NonEmptyVector</code> are
+      *     separated by the string <code>sep</code>. 
+      */
+    def mkString(start: String, sep: String, end: String): String = toVector.mkString(start, sep, end)
 
     /**
       * Converts this <code>NonEmptyVector</code> to a list.
