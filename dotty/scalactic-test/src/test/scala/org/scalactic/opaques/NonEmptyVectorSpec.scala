@@ -398,7 +398,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     scala> Vector(1, 2, 3).filterNot(_ < 10)
     res13: scala.collection.immutable.Vector[Int] = Vector()
   */
-  /*it should "have a find method" in {
+  it should "have a find method" in {
     NonEmptyVector(1, 2, 3).find(_ == 5) shouldBe None
     NonEmptyVector(1, 2, 3).find(_ == 2) shouldBe Some(2)
   }
@@ -469,7 +469,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     NonEmptyVector(5) foreach (num *= _)
     num shouldBe 60
   }
-  it should "have a groupBy method" in {
+  /*it should "have a groupBy method" in {
     NonEmptyVector(1, 2, 3, 4, 5).groupBy(_ % 2) shouldBe Map(1 -> NonEmptyVector(1, 3, 5), 0 -> NonEmptyVector(2, 4))
     NonEmptyVector(1, 2, 3, 3, 3).groupBy(_ % 2) shouldBe Map(1 -> NonEmptyVector(1, 3, 3, 3), 0 -> NonEmptyVector(2))
     NonEmptyVector(1, 1, 3, 3, 3).groupBy(_ % 2) shouldBe Map(1 -> NonEmptyVector(1, 1, 3, 3, 3))
