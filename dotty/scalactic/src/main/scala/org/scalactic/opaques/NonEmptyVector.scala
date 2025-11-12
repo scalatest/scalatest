@@ -950,6 +950,194 @@ object NonEmptyVector {
       */
     def reverseMap[U](f: T => U): NonEmptyVector[U] = toVector.reverseMap(f)
 
+    /**
+      * Checks if the given <code>IterableOnce</code> contains the same elements in the same order as this <code>NonEmptyVector</code>.
+      *
+      * @param that the <code>IterableOnce</code> with which to compare
+      * @return <code>true</code>, if both this <code>NonEmptyVector</code> and the given <code>IterableOnce</code> contain the same elements
+      *     in the same order, <code>false</code> otherwise. 
+      */
+    def sameElements[U >: T](that: IterableOnce[U]): Boolean = toVector.sameElements(that)
+
+    /**
+      * Computes a prefix scan of the elements of this <code>NonEmptyVector</code>.
+      *
+      * <p>
+      * Note: The neutral element z may be applied more than once. 
+      * </p>
+      *
+      * <p>
+      * Here are some examples:
+      * </p>
+      *
+      * <pre class="stHighlight">
+      * NonEmptyVector(1, 2, 3).scan(0)(_ + _) == NonEmptyVector(0, 1, 3, 6)
+      * NonEmptyVector(1, 2, 3).scan("z")(_ + _.toString) == NonEmptyVector("z", "z1", "z12", "z123")
+      * </pre>
+      *
+      * @tparam U a type parameter for the binary operator, a supertype of T, and the type of the resulting <code>NonEmptyVector</code>.
+      * @param z a neutral element for the scan operation; may be added to the result an arbitrary number of
+      *     times, and must not change the result (<em>e.g.</em>, <code>Nil</code> for list concatenation,
+      *     0 for addition, or 1 for multiplication.)
+      * @param op a binary operator that must be associative
+      * @return a new <code>NonEmptyVector</code> containing the prefix scan of the elements in this <code>NonEmptyVector</code> 
+      */
+    def scan[U >: T](z: U)(op: (U, U) => U): NonEmptyVector[U] = toVector.scan(z)(op)
+
+    /**
+      * Produces a <code>NonEmptyVector</code> containing cumulative results of applying the operator going left to right.
+      *
+      * <p>
+      * Here are some examples:
+      * </p>
+      *
+      * <pre class="stHighlight">
+      * NonEmptyVector(1, 2, 3).scanLeft(0)(_ + _) == NonEmptyVector(0, 1, 3, 6)
+      * NonEmptyVector(1, 2, 3).scanLeft("z")(_ + _) == NonEmptyVector("z", "z1", "z12", "z123")
+      * </pre>
+      *
+      * @tparam B the result type of the binary operator and type of the resulting <code>NonEmptyVector</code>
+      * @param z the start value.
+      * @param op the binary operator.
+      * @return a new <code>NonEmptyVector</code> containing the intermediate results of inserting <code>op</code> between consecutive elements of this <code>NonEmptyVector</code>,
+      *     going left to right, with the start value, <code>z</code>, on the left.
+      */
+    def scanLeft[B](z: B)(op: (B, T) => B): NonEmptyVector[B] = toVector.scanLeft(z)(op)
+
+    /**
+      * Produces a <code>NonEmptyVector</code> containing cumulative results of applying the operator going right to left.
+      *
+      * <p>
+      * Here are some examples:
+      * </p>
+      *
+      * <pre class="stHighlight">
+      * NonEmptyVector(1, 2, 3).scanRight(0)(_ + _) == NonEmptyVector(6, 5, 3, 0)
+      * NonEmptyVector(1, 2, 3).scanRight("z")(_ + _) == NonEmptyVector("123z", "23z", "3z", "z")
+      * </pre>
+      *
+      * @tparam B the result of the binary operator and type of the resulting <code>NonEmptyVector</code>
+      * @param z the start value
+      * @param op the binary operator
+      * @return a new <code>NonEmptyVector</code> containing the intermediate results of inserting <code>op</code> between consecutive elements of this <code>NonEmptyVector</code>,
+      *     going right to left, with the start value, <code>z</code>, on the right.
+      */
+    def scanRight[B](z: B)(op: (T, B) => B): NonEmptyVector[B] = toVector.scanRight(z)(op)
+
+    /**
+      * Computes length of longest segment whose elements all satisfy some predicate.
+      *
+      * @param p the predicate used to test elements.
+      * @param from the index where the search starts.
+      * @param the length of the longest segment of this <code>NonEmptyVector</code> starting from index <code>from</code> such that every element of the
+      *     segment satisfies the predicate <code>p</code>. 
+      */
+    def segmentLength(p: T => Boolean, from: Int): Int = toVector.segmentLength(p, from)
+
+    /**
+      * Groups elements in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.)
+      *
+      * @param size the number of elements per group
+      * @return an iterator producing <code>NonEmptyVector</code>s of size <code>size</code>, except the last and the only element will be truncated
+      *     if there are fewer elements than <code>size</code>.
+      */
+    def sliding(size: Int): Iterator[NonEmptyVector[T]] = toVector.sliding(size)
+
+    /**
+      * Groups elements in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.),
+      * moving the sliding window by a given <code>step</code> each time.
+      *
+      * @param size the number of elements per group
+      * @param step the distance between the first elements of successive groups
+      * @return an iterator producing <code>NonEmptyVector</code>s of size <code>size</code>, except the last and the only element will be truncated
+      *     if there are fewer elements than <code>size</code>.
+      */
+    def sliding(size: Int, step: Int): Iterator[NonEmptyVector[T]] = toVector.sliding(size, step)
+
+    /**
+      * The size of this <code>NonEmptyVector</code>.
+      *
+      * <p>
+      * Note: <code>length</code> and <code>size</code> yield the same result, which will be <code>&gt;</code>= 1. 
+      * </p>
+      *
+      * @return the number of elements in this <code>NonEmptyVector</code>. 
+      */
+    def size: Int = toVector.size
+
+    /**
+      * Sorts this <code>NonEmptyVector</code> according to the <code>Ordering</code> of the result of applying the given function to every element.
+      *
+      * @tparam U the target type of the transformation <code>f</code>, and the type where the <code>Ordering</code> <code>ord</code> is defined.
+      * @param f the transformation function mapping elements to some other domain <code>U</code>.
+      * @param ord the ordering assumed on domain <code>U</code>.
+      * @return a <code>NonEmptyVector</code> consisting of the elements of this <code>NonEmptyVector</code> sorted according to the <code>Ordering</code> where
+      *    <code>x &lt; y if ord.lt(f(x), f(y))</code>. 
+      */
+    def sortBy[U](f: T => U)(implicit ord: Ordering[U]): NonEmptyVector[T] = toVector.sortBy(f)
+
+    /**
+      * Sorts this <code>NonEmptyVector</code> according to a comparison function.
+      *
+      * <p>
+      * The sort is stable. That is, elements that are equal (as determined by <code>lt</code>) appear in the same order in the
+      * sorted <code>NonEmptyVector</code> as in the original. 
+      * </p>
+      *
+      * @param the comparison function that tests whether its first argument precedes its second argument in the desired ordering.
+      * @return a <code>NonEmptyVector</code> consisting of the elements of this <code>NonEmptyVector</code> sorted according to the comparison function <code>lt</code>.
+      */
+    def sortWith(lt: (T, T) => Boolean): NonEmptyVector[T] = toVector.sortWith(lt)
+
+    /**
+      * Sorts this <code>NonEmptyVector</code> according to an <code>Ordering</code>.
+      *
+      * <p>
+      * The sort is stable. That is, elements that are equal (as determined by <code>lt</code>) appear in the same order in the
+      * sorted <code>NonEmptyVector</code> as in the original. 
+      * </p>
+      *
+      * @param ord the <code>Ordering</code> to be used to compare elements.
+      * @param the comparison function that tests whether its first argument precedes its second argument in the desired ordering.
+      * @return a <code>NonEmptyVector</code> consisting of the elements of this <code>NonEmptyVector</code> sorted according to the comparison function <code>lt</code>.
+      */
+    def sorted[U >: T](implicit ord: Ordering[U]): NonEmptyVector[U] = toVector.sorted(ord)
+
+    /**
+      * Indicates whether this <code>NonEmptyVector</code> starts with the given <code>IterableOnce</code>. 
+      *
+      * @param that the <code>IterableOnce</code> slice to look for in this <code>NonEmptyVector</code>
+      * @return <code>true</code> if this <code>NonEmptyVector</code> has <code>that</code> as a prefix, <code>false</code> otherwise.
+      */
+    def startsWith[B](that: IterableOnce[B]): Boolean = toVector.startsWith(that)
+
+    /**
+      * Indicates whether this <code>NonEmptyVector</code> starts with the given <code>IterableOnce</code> at the given index. 
+      *
+      * @param that the <code>IterableOnce</code> slice to look for in this <code>NonEmptyVector</code>
+      * @param offset the index at which this <code>NonEmptyVector</code> is searched.
+      * @return <code>true</code> if this <code>NonEmptyVector</code> has <code>that</code> as a slice at the index <code>offset</code>, <code>false</code> otherwise.
+      */
+    def startsWith[B](that: IterableOnce[B], offset: Int): Boolean = toVector.startsWith(that, offset)
+
+    /**
+      * Returns <code>"NonEmptyVector"</code>, the prefix of this object's <code>toString</code> representation.
+      *
+      * @return the string <code>"NonEmptyVector"</code>
+      */
+    def stringPrefix: String = "NonEmptyVector"
+
+    /**
+      * The result of summing all the elements of this <code>NonEmptyVector</code>.
+      *
+      * <p>
+      * This method can be invoked for any <code>NonEmptyVector[T]</code> for which an implicit <code>Numeric[T]</code> exists.
+      * </p>
+      *
+      * @return the sum of all elements
+      */
+    def sum[U >: T](implicit num: Numeric[U]): U = toVector.sum(num)
+
   }
 
 }

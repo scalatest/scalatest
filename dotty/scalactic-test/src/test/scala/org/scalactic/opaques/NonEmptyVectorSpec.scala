@@ -918,7 +918,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     g(0) shouldBe true
     y shouldBe 6
   }
-  /*it should "have a sameElements method that takes a GenIterable" in {
+  it should "have a sameElements method that takes a GenIterable" in {
     NonEmptyVector(1, 2, 3, 4, 5).sameElements(Vector(1, 2, 3, 4, 5)) shouldBe true
     NonEmptyVector(1, 2, 3, 4, 5).sameElements(Vector(1, 2, 3, 4)) shouldBe false
     NonEmptyVector(1, 2, 3, 4, 5).sameElements(Vector(1, 2, 3, 4, 5, 6)) shouldBe false
@@ -1175,7 +1175,7 @@ class NonEmptyVectorSpec extends UnitSpec {
       scala> Vector(1).takeWhile(_ > 10)
       res18: scala.collection.immutable.Vector[Int] = Vector()
   */
-  it should "have a to method" in {
+  /*it should "have a to method" in {
     import org.scalactic.ColCompatHelper.Factory._
     NonEmptyVector(1).to(Vector) shouldBe Vector(1)
     NonEmptyVector(1, 2, 3).to(Vector) shouldBe Vector(1, 2, 3)
