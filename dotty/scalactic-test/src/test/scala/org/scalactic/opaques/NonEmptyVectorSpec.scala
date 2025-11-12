@@ -187,7 +187,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     pf1.isDefinedAt(0) shouldBe true
     pf1.isDefinedAt(1) shouldBe false
   }
-  /*it should "have a :+ method" in {
+  it should "have a :+ method" in {
     NonEmptyVector(1) :+ 2 shouldBe NonEmptyVector(1, 2)
     NonEmptyVector(1, 2) :+ 3 shouldBe NonEmptyVector(1, 2, 3)
   }
@@ -218,7 +218,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     NonEmptyVector(1, 2, 3).applyOrElse(3, (_: Int) * -1) shouldEqual -3
     NonEmptyVector(1, 2, 3).applyOrElse(4, (_: Int) * -1) shouldEqual -4
   }
-  it should "have an canEqual method" is pending
+  /*it should "have an canEqual method" is pending
   // it should "have an charAt method" is pending
   // Could have an implicit conversion from Every[Char] to CharSequence like
   // there is for Seq in Predef.

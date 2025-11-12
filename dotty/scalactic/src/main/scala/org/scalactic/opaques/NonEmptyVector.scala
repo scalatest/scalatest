@@ -244,6 +244,51 @@ object NonEmptyVector {
       if (other.isEmpty) nonEmptyVector else toVector ++ other
 
     /**
+      * Returns a new <code>NonEmptyVector</code> with the given element appended.
+      *
+      * <p>
+      * Note a mnemonic for <code>+:</code> <em>vs.</em> <code>:+</code> is: the COLon goes on the COLlection side.
+      * </p>
+      *
+      * @param element the element to append to this <code>NonEmptyVector</code>
+      * @return a new <code>NonEmptyVector</code> consisting of all elements of this <code>NonEmptyVector</code> followed by <code>element</code>.
+      */
+    def :+[U >: T](element: U): NonEmptyVector[U] = toVector :+ element
+
+    /**
+      * Appends all elements of this <code>NonEmptyVector</code> to a string builder. The written text will consist of a concatenation of the result of invoking <code>toString</code>
+      * on of every element of this <code>NonEmptyVector</code>, without any separator string.
+      *
+      * @param sb the string builder to which elements will be appended
+      * @return the string builder, <code>sb</code>, to which elements were appended.
+      */
+    def addString(sb: StringBuilder): StringBuilder = toVector.addString(sb)
+
+    /**
+      * Appends all elements of this <code>NonEmptyVector</code> to a string builder using a separator string. The written text will consist of a concatenation of the
+      * result of invoking <code>toString</code>
+      * on of every element of this <code>NonEmptyVector</code>, separated by the string <code>sep</code>.
+      *
+      * @param sb the string builder to which elements will be appended
+      * @param sep the separator string
+      * @return the string builder, <code>sb</code>, to which elements were appended.
+      */
+    def addString(sb: StringBuilder, sep: String): StringBuilder = toVector.addString(sb, sep)
+
+    /**
+      * Appends all elements of this <code>NonEmptyVector</code> to a string builder using start, end, and separator strings. The written text will consist of a concatenation of
+      * the string <code>start</code>; the result of invoking <code>toString</code> on all elements of this <code>NonEmptyVector</code>,
+      * separated by the string <code>sep</code>; and the string <code>end</code>
+      *
+      * @param sb the string builder to which elements will be appended
+      * @param start the starting string
+      * @param sep the separator string
+      * @param start the ending string
+      * @return the string builder, <code>sb</code>, to which elements were appended.
+      */
+    def addString(sb: StringBuilder, start: String, sep: String, end: String): StringBuilder = toVector.addString(sb, start, sep, end)  
+
+    /**
       * The length of this <code>NonEmptyVector</code>.
       *
       * <p>
