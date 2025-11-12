@@ -336,7 +336,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     scala> Vector(1, 2, 3).diff(Vector(1, 2, 3))
     res0: scala.collection.immutable.Vector[Int] = Vector()
   */
-  /*it should "have a distinct method" in {
+  it should "have a distinct method" in {
     NonEmptyVector(1, 2, 3).distinct shouldBe NonEmptyVector(1, 2, 3)
     NonEmptyVector(1).distinct shouldBe NonEmptyVector(1)
     NonEmptyVector(1, 2, 1, 1).distinct shouldBe NonEmptyVector(1, 2)
@@ -398,7 +398,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     scala> Vector(1, 2, 3).filterNot(_ < 10)
     res13: scala.collection.immutable.Vector[Int] = Vector()
   */
-  it should "have a find method" in {
+  /*it should "have a find method" in {
     NonEmptyVector(1, 2, 3).find(_ == 5) shouldBe None
     NonEmptyVector(1, 2, 3).find(_ == 2) shouldBe Some(2)
   }

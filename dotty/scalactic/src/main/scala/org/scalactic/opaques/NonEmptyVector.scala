@@ -369,6 +369,29 @@ object NonEmptyVector {
     def count(p: T => Boolean): Int = toVector.count(p)
 
     /**
+      * Builds a new <code>NonEmptyVector</code> from this <code>NonEmptyVector</code> without any duplicate elements.
+      *
+      * @return A new <code>NonEmptyVector</code> that contains the first occurrence of every element of this <code>NonEmptyVector</code>. 
+      */
+    def distinct: NonEmptyVector[T] = toVector.distinct
+
+    /**
+      * Indicates whether this <code>NonEmptyVector</code> ends with the given <code>GenSeq</code>.
+      *
+      * @param that the sequence to test
+      * @return <code>true</code> if this <code>NonEmptyVector</code> has <code>that</code> as a suffix, <code>false</code> otherwise. 
+      */
+    def endsWith[B](that: IterableOnce[B]): Boolean = toVector.toIndexedSeq.endsWith(that.toIterable)
+
+    /**
+      * Indicates whether a predicate holds for at least one of the elements of this <code>NonEmptyVector</code>.
+      *
+      * @param the predicate used to test elements.
+      * @return <code>true</code> if the given predicate <code>p</code> holds for some of the elements of this <code>NonEmptyVector</code>, otherwise <code>false</code>. 
+      */
+    def exists(p: T => Boolean): Boolean = toVector.exists(p)
+
+    /**
       * The length of this <code>NonEmptyVector</code>.
       *
       * <p>
