@@ -20,6 +20,7 @@ import scala.collection.mutable.{ArrayBuffer, Buffer}
 import scala.language.higherKinds
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.reflect.ClassTag
+import scala.collection.generic.CanBuildFrom
 
 /**
   * A non-empty list: an ordered, immutable, non-empty collection of elements with <code>LinearSeq</code> performance characteristics.
@@ -1209,6 +1210,78 @@ object NonEmptyVector {
 
     def transpose[U](using ev: T <:< NonEmptyVector[U]): NonEmptyVector[NonEmptyVector[U]] = toVector.transpose(ev)
 
+    /**
+      * Produces a new <code>NonEmptyVector</code> that contains all elements of this <code>NonEmptyVector</code> and also all elements of a given <code>IterableOnce</code>.
+      *
+      * <p>
+      * <code>nonEmptyVectorX</code> <code>union</code> <code>ys</code> is equivalent to <code>nonEmptyVectorX</code> <code>++</code> <code>ys</code>.
+      * </p>
+      *
+      * <p>
+      * Another way to express this is that <code>nonEmptyVectorX</code> <code>union</code> <code>ys</code> computes the order-presevring multi-set union
+      * of <code>nonEmptyVectorX</code> and <code>ys</code>. This <code>union</code> method is hence a counter-part of <code>diff</code> and <code>intersect</code> that
+      * also work on multi-sets.
+      * </p>
+      *
+      * @param that the <code>IterableOnce</code> to add.
+      * @return a new <code>NonEmptyVector</code> that contains all elements of this <code>NonEmptyVector</code> followed by all elements of <code>that</code> <code>IterableOnce</code>.
+      */
+    def union[U >: T](that: IterableOnce[U])(using cbf: CanBuildFrom[Vector[T], U, Vector[U]]): NonEmptyVector[U] = toVector.toIndexedSeq.union(that.toSeq).toVector
+
+    /**
+      * Converts this <code>NonEmptyVector</code> of pairs into two <code>NonEmptyVector</code>s of the first and second half of each pair. 
+      *
+      * @tparam L the type of the first half of the element pairs
+      * @tparam R the type of the second half of the element pairs
+      * @param asPair a given conversion that asserts that the element type of this <code>NonEmptyVector</code> is a pair.
+      * @return a pair of <code>NonEmptyVector</code>s, containing the first and second half, respectively, of each element pair of this <code>NonEmptyVector</code>. 
+      */
+    def unzip[L, R](using asPair: T => (L, R)): (NonEmptyVector[L], NonEmptyVector[R]) = toVector.unzip(asPair)
+
+    /**
+      * Converts this <code>NonEmptyVector</code> of triples into three <code>NonEmptyVector</code>s of the first, second, and and third element of each triple. 
+      *
+      * @tparam L the type of the first member of the element triples
+      * @tparam R the type of the second member of the element triples
+      * @tparam R the type of the third member of the element triples
+      * @param asTriple a given conversion that asserts that the element type of this <code>NonEmptyVector</code> is a triple.
+      * @return a triple of <code>NonEmptyVector</code>s, containing the first, second, and third member, respectively, of each element triple of this <code>NonEmptyVector</code>. 
+      */
+    def unzip3[L, M, R](using asTriple: T => (L, M, R)): (NonEmptyVector[L], NonEmptyVector[M], NonEmptyVector[R]) = toVector.unzip3(asTriple)
+
+    /**
+      * A copy of this <code>NonEmptyVector</code> with one single replaced element.
+      *
+      * @param idx the position of the replacement
+      * @param elem the replacing element
+      * @throws IndexOutOfBoundsException if the passed index is greater than or equal to the length of this <code>NonEmptyVector</code>
+      * @return a copy of this <code>NonEmptyVector</code> with the element at position <code>idx</code> replaced by <code>elem</code>. 
+      */
+    def updated[U >: T](idx: Int, elem: U): NonEmptyVector[U] = toVector.updated(idx, elem)
+
+    /**
+      * Returns a <code>NonEmptyVector</code> formed from this <code>NonEmptyVector</code> and an iterable collection by combining corresponding
+      * elements in pairs. If one of the two collections is shorter than the other, placeholder elements will be used to extend the
+      * shorter collection to the length of the longer.
+      *
+      * @tparm O the type of the second half of the returned pairs
+      * @tparm U the type of the first half of the returned pairs
+      * @param other the <code>Iterable</code> providing the second half of each result pair
+      * @param thisElem the element to be used to fill up the result if this <code>NonEmptyVector</code> is shorter than <code>that</code> <code>Iterable</code>.
+      * @param thatElem the element to be used to fill up the result if <code>that</code> <code>Iterable</code> is shorter than this <code>NonEmptyVector</code>.
+      * @return a new <code>NonEmptyVector</code> containing pairs consisting of corresponding elements of this <code>NonEmptyVector</code> and <code>that</code>. The
+      *     length of the returned collection is the maximum of the lengths of this <code>NonEmptyVector</code> and <code>that</code>. If this <code>NonEmptyVector</code>
+      *     is shorter than <code>that</code>, <code>thisElem</code> values are used to pad the result. If <code>that</code> is shorter than this
+      *     <code>NonEmptyVector</code>, <code>thatElem</code> values are used to pad the result. 
+      */
+    def zipAll[O, U >: T](other: IterableOnce[O], thisElem: U, otherElem: O): NonEmptyVector[(U, O)] = toVector.toIndexedSeq.zipAll(other.toIterable, thisElem, otherElem).toVector
+
+    /**
+      * Zips this <code>NonEmptyVector</code>  with its indices.
+      *
+      * @return A new <code>NonEmptyVector</code> containing pairs consisting of all elements of this <code>NonEmptyVector</code> paired with their index. Indices start at 0.
+      */
+    def zipWithIndex: NonEmptyVector[(T, Int)] = toVector.zipWithIndex
   }
 
 }

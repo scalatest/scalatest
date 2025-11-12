@@ -1246,7 +1246,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     NonEmptyVector(NonEmptyVector(1, 2), NonEmptyVector(3, 4), NonEmptyVector(5, 6), NonEmptyVector(7, 8)).transpose.transpose shouldBe NonEmptyVector(NonEmptyVector(1, 2), NonEmptyVector(3, 4), NonEmptyVector(5, 6), NonEmptyVector(7, 8))
     NonEmptyVector(NonEmptyVector(1, 2, 3), NonEmptyVector(4, 5, 6), NonEmptyVector(7, 8, 9)).transpose.transpose shouldBe NonEmptyVector(NonEmptyVector(1, 2, 3), NonEmptyVector(4, 5, 6), NonEmptyVector(7, 8, 9))
   }
-  /*it should "have a union method that takes a GenSeq" in {
+  it should "have a union method that takes a GenSeq" in {
     NonEmptyVector(1) union Vector(1) shouldBe NonEmptyVector(1, 1)
     NonEmptyVector(1) union Vector(1, 2) shouldBe NonEmptyVector(1, 1, 2)
     NonEmptyVector(1, 2) union Vector(1, 2) shouldBe NonEmptyVector(1, 2, 1, 2)
@@ -1344,6 +1344,6 @@ class NonEmptyVectorSpec extends UnitSpec {
   it should "have a zipWithIndex method" in {
     NonEmptyVector(99).zipWithIndex shouldBe NonEmptyVector((99,0))
     NonEmptyVector(1, 2, 3, 4, 5).zipWithIndex shouldBe NonEmptyVector((1,0), (2,1), (3,2), (4,3), (5,4))
-  }*/
+  }
 }
 
