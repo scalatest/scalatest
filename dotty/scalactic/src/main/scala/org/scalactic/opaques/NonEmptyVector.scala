@@ -188,6 +188,20 @@ object NonEmptyVector {
     def apply(nonEmptyVector: NonEmptyVector[E]): IterableOnce[E] = nonEmptyVector
   }
 
+  /**
+    * Conversion from <code>NonEmptyVector</code> to <code>PartialFunction</code>.
+    *
+    * @param nonEmptyVector the <code>NonEmptyVector</code> to convert
+    * @return the <code>PartialFunction</code>
+    */
+  given [E]: Conversion[NonEmptyVector[E], PartialFunction[Int, E]] with {
+    def apply(nonEmptyVector: NonEmptyVector[E]): PartialFunction[Int, E] =
+      new PartialFunction[Int, E] {
+        def apply(i: Int): E = (nonEmptyVector: Vector[E]).apply(i)
+        def isDefinedAt(i: Int): Boolean = i >= 0 && i < nonEmptyVector.length
+      }
+  }
+
   extension [T](element: T) {
     /**
       * Returns a new <code>NonEmptyVector</code> with the given element prepended.
@@ -228,13 +242,6 @@ object NonEmptyVector {
       */
     def ++[U >: T](other: IterableOnce[U]): NonEmptyVector[U] =
       if (other.isEmpty) nonEmptyVector else toVector ++ other
-
-    /**
-      * Selects an element by its index in the <code>NonEmptyVector</code>.
-      *
-      * @return the element of this <code>NonEmptyVector</code> at index <code>idx</code>, where 0 indicates the first element.
-      */
-    def apply(idx: Int): T = toVector(idx)
 
     /**
       * The length of this <code>NonEmptyVector</code>.
