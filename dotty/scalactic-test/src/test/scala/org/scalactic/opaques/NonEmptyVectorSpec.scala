@@ -501,7 +501,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     NonEmptyVector("hi").headOption shouldBe Some("hi")
     NonEmptyVector(1, 2, 3).headOption shouldBe Some(1)
   }
-  /*it should "have 2 indexOf methods" in {
+  it should "have 2 indexOf methods" in {
     NonEmptyVector(1, 2, 3, 4, 5).indexOf(3) shouldBe 2
     NonEmptyVector(1, 2, 3, 4, 5).indexOf(1) shouldBe 0
     NonEmptyVector(1, 2, 3, 4, 5).indexOf(1, 2) shouldBe -1
@@ -512,13 +512,9 @@ class NonEmptyVectorSpec extends UnitSpec {
     es.indexOf("one") shouldBe 0
     es.indexOf("one", 1) shouldBe -1
     es.indexOf("ONE") shouldBe -1
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.indexOf("one") shouldBe 0
     es.indexOf("ONE") shouldBe -1
-    // SKIP-DOTTY-END
   }
   it should "have 2 indexOfSlice methods that take a GenSeq" in {
     NonEmptyVector(1, 2, 3, 4, 5).indexOfSlice(Vector(2, 3)) shouldBe 1
@@ -538,13 +534,9 @@ class NonEmptyVectorSpec extends UnitSpec {
     es.indexOfSlice(Vector("one", "two")) shouldBe 0
     es.indexOfSlice(Vector("one", "two"), 1) shouldBe -1
     es.indexOfSlice(Vector("ONE", "TWO")) shouldBe -1
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.indexOfSlice(Vector("one", "two")) shouldBe 0
     es.indexOfSlice(Vector("ONE", "TWO")) shouldBe -1
-    // SKIP-DOTTY-END
   }
   it should "have 2 indexOfSlice methods that take an Every" in {
     NonEmptyVector(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3)) shouldBe 1
@@ -561,13 +553,9 @@ class NonEmptyVectorSpec extends UnitSpec {
     es.indexOfSlice(Every("one", "two")) shouldBe 0
     es.indexOfSlice(Every("one", "two"), 1) shouldBe -1
     es.indexOfSlice(Every("ONE", "TWO")) shouldBe -1
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.indexOfSlice(Every("one", "two")) shouldBe 0
     es.indexOfSlice(Every("ONE", "TWO")) shouldBe -1
-    // SKIP-DOTTY-END
   }
   it should "have 2 indexOfSlice methods that take a NonEmptyVector" in {
     NonEmptyVector(1, 2, 3, 4, 5).indexOfSlice(NonEmptyVector(2, 3)) shouldBe 1
@@ -584,13 +572,9 @@ class NonEmptyVectorSpec extends UnitSpec {
     es.indexOfSlice(NonEmptyVector("one", "two")) shouldBe 0
     es.indexOfSlice(NonEmptyVector("one", "two"), 1) shouldBe -1
     es.indexOfSlice(NonEmptyVector("ONE", "TWO")) shouldBe -1
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.indexOfSlice(NonEmptyVector("one", "two")) shouldBe 0
     es.indexOfSlice(NonEmptyVector("ONE", "TWO")) shouldBe -1
-    // SKIP-DOTTY-END
   }
   it should "have 2 indexWhere methods" in {
     NonEmptyVector(1, 2, 3, 4, 5).indexWhere(_ == 3) shouldBe 2
@@ -638,7 +622,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     NonEmptyVector("hi").iterator.toVector shouldBe Vector("hi")
     NonEmptyVector(1, 2, 3).iterator.toVector shouldBe Vector(1, 2, 3)
   }
-  it should "have a last method" in {
+  /*it should "have a last method" in {
     NonEmptyVector("hi").last shouldBe "hi"
     NonEmptyVector(1, 2, 3).last shouldBe 3
   }

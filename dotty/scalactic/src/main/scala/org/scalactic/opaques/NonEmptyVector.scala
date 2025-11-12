@@ -543,6 +543,85 @@ object NonEmptyVector {
     def headOption: Option[T] = toVector.headOption
 
     /**
+      * Finds index of first occurrence of some value in this <code>NonEmptyVector</code>.
+      *
+      * @param elem the element value to search for. 
+      * @return the index of the first element of this <code>NonEmptyVector</code> that is equal (as determined by <code>==</code>) to <code>elem</code>,
+      *     or <code>-1</code>, if none exists.
+      */
+    def indexOf[U >: T](elem: U): Int = toVector.indexOf(elem, 0)
+
+    /**
+      * Finds index of first occurrence of some value in this <code>NonEmptyVector</code> after or at some start index.
+      *
+      * @param elem the element value to search for. 
+      * @param from the start index
+      * @return the index <code>&gt;=</code> <code>from</code> of the first element of this <code>NonEmptyVector</code> that is equal (as determined by <code>==</code>) to <code>elem</code>,
+      *     or <code>-1</code>, if none exists.
+      */
+    def indexOf[U >: T](elem: U, from: Int): Int = toVector.indexOf(elem, from)
+
+
+    /**
+      * Finds first index where this <code>NonEmptyVector</code> contains a given <code>IterableOnce</code> as a slice.
+      *
+      * @param that the <code>IterableOnce</code> defining the slice to look for
+      * @return the first index at which the elements of this <code>NonEmptyVector</code> starting at that index match the elements of
+      *     <code>IterableOnce</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
+      */
+    def indexOfSlice[U >: T](that: IterableOnce[U]): Int = toVector.toIndexedSeq.indexOfSlice(that.toSeq)
+
+    /**
+      * Finds first index after or at a start index where this <code>NonEmptyVector</code> contains a given <code>IterableOnce</code> as a slice.
+      *
+      * @param that the <code>IterableOnce</code> defining the slice to look for
+      * @param from the start index
+      * @return the first index <code>&gt;=</code> <code>from</code> at which the elements of this <code>NonEmptyVector</code> starting at that index match the elements of
+      *     <code>IterableOnce</code> <code>that</code>, or <code>-1</code> of no such subsequence exists. 
+      */
+    def indexOfSlice[U >: T](that: IterableOnce[U], from: Int): Int = toVector.toIndexedSeq.indexOfSlice(that.toSeq, from)
+
+    /**
+      * Finds index of the first element satisfying some predicate.
+      *
+      * @param p the predicate used to test elements.
+      * @return the index of the first element of this <code>NonEmptyVector</code> that satisfies the predicate <code>p</code>,
+      *     or <code>-1</code>, if none exists.
+      */
+    def indexWhere(p: T => Boolean): Int = toVector.indexWhere(p)
+
+    /**
+      * Produces the range of all indices of this <code>NonEmptyVector</code>. 
+      *
+      * @return a <code>Range</code> value from <code>0</code> to one less than the length of this <code>NonEmptyVector</code>. 
+      */
+    def indices: Range = toVector.indices
+
+    /**
+      * Returns <code>false</code> to indicate this <code>NonEmptyVector</code>, like all <code>NonEmptyVector</code>s, is non-empty.
+      *
+      * @return false
+      */
+    def isEmpty: Boolean = false
+
+    /**
+      * Returns <code>true</code> to indicate this <code>NonEmptyVector</code>, like all <code>NonEmptyVector</code>s, can be traversed repeatedly.
+      *
+      * @return true
+      */
+    def isTraversableAgain: Boolean = true
+
+    /**
+      * Finds index of the first element satisfying some predicate after or at some start index.
+      *
+      * @param p the predicate used to test elements.
+      * @param from the start index
+      * @return the index <code>&gt;=</code> <code>from</code> of the first element of this <code>NonEmptyVector</code> that satisfies the predicate <code>p</code>,
+      *     or <code>-1</code>, if none exists.
+      */
+    def indexWhere(p: T => Boolean, from: Int): Int = toVector.indexWhere(p, from)
+
+    /**
       * Builds a new <code>NonEmptyVector</code> by applying a function to all elements of this <code>NonEmptyVector</code>.
       *
       * @tparam U the element type of the returned <code>NonEmptyVector</code>.
