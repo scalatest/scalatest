@@ -218,7 +218,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     NonEmptyVector(1, 2, 3).applyOrElse(3, (_: Int) * -1) shouldEqual -3
     NonEmptyVector(1, 2, 3).applyOrElse(4, (_: Int) * -1) shouldEqual -4
   }
-  /*it should "have an canEqual method" is pending
+  it should "have an canEqual method" is pending
   // it should "have an charAt method" is pending
   // Could have an implicit conversion from Every[Char] to CharSequence like
   // there is for Seq in Predef.
@@ -254,13 +254,9 @@ class NonEmptyVectorSpec extends UnitSpec {
     val es = NonEmptyVector("one", "two", "three")
     es.contains("one") shouldBe true
     es.contains("ONE") shouldBe false
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
-    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    given strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.contains("one") shouldBe true
     es.contains("ONE") shouldBe false
-    // SKIP-DOTTY-END
   }
   // Decided to just overload one for GenSeq and one for Every. Could have done
   // what that has a Slicing nature, but that's a bit too fancy pants.
@@ -340,7 +336,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     scala> Vector(1, 2, 3).diff(Vector(1, 2, 3))
     res0: scala.collection.immutable.Vector[Int] = Vector()
   */
-  it should "have a distinct method" in {
+  /*it should "have a distinct method" in {
     NonEmptyVector(1, 2, 3).distinct shouldBe NonEmptyVector(1, 2, 3)
     NonEmptyVector(1).distinct shouldBe NonEmptyVector(1)
     NonEmptyVector(1, 2, 1, 1).distinct shouldBe NonEmptyVector(1, 2)

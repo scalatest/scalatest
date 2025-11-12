@@ -16,6 +16,7 @@
 package org.scalactic.opaques
 
 import scala.collection.GenSeq
+import scala.collection.mutable.Buffer
 
 /**
   * A non-empty list: an ordered, immutable, non-empty collection of elements with <code>LinearSeq</code> performance characteristics.
@@ -287,6 +288,85 @@ object NonEmptyVector {
       * @return the string builder, <code>sb</code>, to which elements were appended.
       */
     def addString(sb: StringBuilder, start: String, sep: String, end: String): StringBuilder = toVector.addString(sb, start, sep, end)  
+
+    /**
+      * Finds the first element of this <code>NonEmptyVector</code> for which the given partial function is defined, if any, and applies the partial function to it.
+      *
+      * @param pf the partial function
+      * @return an <code>Option</code> containing <code>pf</code> applied to the first element for which it is defined, or <code>None</code> if
+      *    the partial function was not defined for any element.
+      */
+    def collectFirst[U](pf: PartialFunction[T, U]): Option[U] = toVector.collectFirst(pf)
+
+    /**
+      * Indicates whether this <code>NonEmptyVector</code> contains a given value as an element.
+      *
+      * @param elem the element to look for
+      * @return true if this <code>NonEmptyVector</code> has an element that is equal (as determined by <code>==)</code> to <code>elem</code>, false otherwise. 
+      */
+    def contains(elem: Any): Boolean = toVector.contains(elem)
+
+    /**
+      * Indicates whether this <code>NonEmptyVector</code> contains a given <code>IterableOnce</code> as a slice.
+      *
+      * @param that the <code>IterableOnce</code> slice to look for
+      * @return true if this <code>NonEmptyVector</code> contains a slice with the same elements as <code>that</code>, otherwise <code>false</code>.
+      */
+    def containsSlice[B](that: IterableOnce[B]): Boolean = toVector.toIndexedSeq.containsSlice(that.toSeq)
+
+    /**
+      * Copies values of this <code>NonEmptyVector</code> to an array. Fills the given array <code>arr</code> with values of this <code>NonEmptyVector</code>. Copying
+      * will stop once either the end of the current <code>NonEmptyVector</code> is reached, or the end of the array is reached.
+      *
+      * @param arr the array to fill
+      */
+    def copyToArray[U >: T](arr: Array[U]): Unit = toVector.copyToArray(arr)
+
+    /**
+      * Copies values of this <code>NonEmptyVector</code> to an array. Fills the given array <code>arr</code> with values of this <code>NonEmptyVector</code>, beginning at
+      * index <code>start</code>. Copying will stop once either the end of the current <code>NonEmptyVector</code> is reached, or the end of the array is reached.
+      *
+      * @param arr the array to fill
+      * @param start the starting index
+      */
+    def copyToArray[U >: T](arr: Array[U], start: Int): Unit = toVector.copyToArray(arr, start)
+
+    /**
+      * Copies values of this <code>NonEmptyVector</code> to an array. Fills the given array <code>arr</code> with at most <code>len</code> elements of this <code>NonEmptyVector</code>, beginning at
+      * index <code>start</code>. Copying will stop once either the end of the current <code>NonEmptyVector</code> is reached, the end of the array is reached, or
+      * <code>len</code> elements have been copied.
+      *
+      * @param arr the array to fill
+      * @param start the starting index
+      * @param len the maximum number of elements to copy
+      */
+    def copyToArray[U >: T](arr: Array[U], start: Int, len: Int): Unit = toVector.copyToArray(arr, start, len)
+
+    /**
+      * Copies all elements of this <code>NonEmptyVector</code> to a buffer. 
+      *
+      * @param buf the buffer to which elements are copied
+      */
+    def copyToBuffer[U >: T](buf: Buffer[U]): Unit = toVector.copyToBuffer(buf)
+
+    /**
+      * Indicates whether every element of this <code>NonEmptyVector</code> relates to the corresponding element of a given <code>IterableOnce</code> by satisfying a given predicate. 
+      *
+      * @tparam B the type of the elements of <code>that</code>
+      * @param that the <code>IterableOnce</code> to compare for correspondence
+      * @param p the predicate, which relates elements from this <code>NonEmptyVector</code> and the passed <code>IterableOnce</code>
+      * @return true if this <code>NonEmptyVector</code> and the passed <code>IterableOnce</code> have the same length and <code>p(x, y)</code> is <code>true</code>
+      *     for all corresponding elements <code>x</code> of this <code>NonEmptyVector</code> and <code>y</code> of that, otherwise <code>false</code>.
+      */
+    def corresponds[B](that: IterableOnce[B])(p: (T, B) => Boolean): Boolean = toVector.corresponds(that)(p)
+
+    /**
+      * Counts the number of elements in this <code>NonEmptyVector</code> that satisfy a predicate. 
+      *
+      * @param p the predicate used to test elements.
+      * @return the number of elements satisfying the predicate <code>p</code>. 
+      */
+    def count(p: T => Boolean): Int = toVector.count(p)
 
     /**
       * The length of this <code>NonEmptyVector</code>.
