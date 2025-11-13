@@ -151,6 +151,7 @@ import org.scalactic.Resources
   * </pre>
   *
   */
+//DOTTY-ONLY @deprecated("Please use org.scalactic.opaques.NonEmptyString.", "3.3.0")  
 final class NonEmptyString private (val theString: String) extends AnyVal {
 
   /**
@@ -1532,6 +1533,7 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
 /**
   * Companion object for class <code>NonEmptyString</code>.
   */
+//DOTTY-ONLY @deprecated("Please use org.scalactic.opaques.NonEmptyString.", "3.3.0")  
 object NonEmptyString {
 
   /**

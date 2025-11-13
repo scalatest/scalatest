@@ -151,6 +151,7 @@ import org.scalactic.Every
  *
  * @tparam T the type of elements contained in this <code>NonEmptyList</code>
  */
+//DOTTY-ONLY @deprecated("Please use org.scalactic.opaques.NonEmptyList.", "3.3.0")
 final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
 
   /**
@@ -1665,6 +1666,7 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
 /**
  * Companion object for class <code>NonEmptyList</code>.
  */
+//DOTTY-ONLY @deprecated("Please use org.scalactic.opaques.NonEmptyList.", "3.3.0") 
 object NonEmptyList {
 
   /**
