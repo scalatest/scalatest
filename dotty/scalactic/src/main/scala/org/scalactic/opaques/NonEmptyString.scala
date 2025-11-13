@@ -23,6 +23,7 @@ import org.scalactic.Resources
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.language.higherKinds
 import scala.reflect.ClassTag
+import scala.compiletime.{ constValueOpt, error }
 
 object NonEmptyStrings {
   /**
@@ -143,9 +144,21 @@ object NonEmptyStrings {
     /**
       * Constructs a new <code>NonEmptyString</code> given at least one element.
       *
+      * This overload requires a string literal at compile time and rejects empty
+      * string literals or non-literals with a compile-time error.
+      *
       * @param s the <code>String</code> represented by this <code>NonEmptyString</code>
       */
-    def apply(s: String): NonEmptyString = s
+    inline def apply[S <: String & Singleton](inline s: S): NonEmptyString =
+      inline constValueOpt[S] match {
+        case Some(v: String) =>
+          inline if v == "" then
+            error("NonEmptyString cannot be instantiated with an empty string literal")
+          else
+            v.asInstanceOf[NonEmptyString]
+        case None =>
+          error("NonEmptyString.apply requires a string literal")
+      }
 
     /**
       * Constructs a new <code>NonEmptyString</code> given at least one character.
@@ -173,7 +186,7 @@ object NonEmptyStrings {
     def from[T](seq: GenSeq[Char]): Option[NonEmptyString] =
       seq.headOption match {
         case None => None
-        case Some(first) => Some(NonEmptyString(seq.mkString))
+        case Some(first) => Some(seq.mkString)
       }  
 
     given Conversion[NonEmptyString, PartialFunction[Int, Char]] with {
@@ -198,7 +211,7 @@ object NonEmptyStrings {
         * @param theString the <code>NonEmptyString</code> to append
         * @return a new <code>NonEmptyString</code> that contains <code>other</code> followed by this <code>NonEmptyString</code>.
         */
-      def +:(theString: NonEmptyString): NonEmptyString = NonEmptyString(other.toString ++ theString.toString)
+      def +:(theString: NonEmptyString): NonEmptyString = other.toString ++ theString.toString
     }  
 
     extension (nonEmptyString: NonEmptyString) {

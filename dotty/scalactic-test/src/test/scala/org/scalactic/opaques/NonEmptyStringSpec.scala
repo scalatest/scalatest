@@ -63,6 +63,9 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString.from("1") shouldBe Some(NonEmptyString("1"))
     NonEmptyString.from("123") shouldBe Some(NonEmptyString("123"))
   }
+  it should "not compile when constructed with an empty string literal" in {
+    """val nes = NonEmptyString("")""" shouldNot compile
+  }
   it can "be deconstructed with NonEmptyString" in {
     NonEmptyString("1") match {
       case NonEmptyString(x) => x shouldEqual "1"
@@ -356,16 +359,16 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").find(_ == '2') shouldBe Some('2')
   }
   it should "have a flatMap method" in {
-    NonEmptyString("123") flatMap (i => NonEmptyString(i.toString + "1")) shouldBe NonEmptyString("112131")
+    NonEmptyString("123") flatMap (i => i +: NonEmptyString("1")) shouldBe NonEmptyString("112131")
     val ss = NonEmptyString("hiho")
     val is = NonEmptyString("123")
     val res = 
       (for (s <- ss;
           i <- is) yield
-        NonEmptyString(s.toString + i.toString)) 
+        NonEmptyString(s) :+ i) 
     res shouldBe NonEmptyString("h1h2h3i1i2i3h1h2h3o1o2o3")
-    NonEmptyString("5") flatMap (i => NonEmptyString(i + "3")) shouldBe NonEmptyString("53")
-    NonEmptyString("8") flatMap (i => NonEmptyString(i.toString)) shouldBe NonEmptyString("8")
+    NonEmptyString("5") flatMap (i => i +: NonEmptyString("3")) shouldBe NonEmptyString("53")
+    NonEmptyString("8") flatMap (i => NonEmptyString(i)) shouldBe NonEmptyString("8")
   }
   it can "be flattened when in a IterableOnce" in {
     Vector(NonEmptyString("123"), NonEmptyString("123")).flatten shouldBe Vector('1', '2', '3', '1', '2', '3')
