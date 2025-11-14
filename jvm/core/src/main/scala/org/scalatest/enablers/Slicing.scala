@@ -105,16 +105,23 @@ private[scalatest] trait Slicing[-A] {
 private[scalatest] object Slicing {
 
   /**
+   // SKIP-DOTTY-START
    * Implicit to support <code>Aggregating</code> nature of <code>String</code>.
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * To support <code>Aggregating</code> nature of <code>String</code>.
    *
    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of <code>Char</code> in the <code>String</code>
    * @return <code>Aggregating[String]</code> that supports <code>String</code> in relevant <code>contain</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def slicingNatureOfString: Slicing[String] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def slicingNatureOfString: Slicing[String] = 
     new Slicing[String] {
       def includes(string: String, subString: String): Boolean = string.indexOf(subString) >= 0
       def startsWith(string: String, prefix: String): Boolean = string.startsWith(prefix)
       def endsWith(string: String, suffix: String): Boolean = string.endsWith(suffix)
     }
+  //DOTTY-ONLY given Slicing[String] = slicingNatureOfString
 }
 

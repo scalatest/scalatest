@@ -252,6 +252,9 @@ object Equality {
    *
    * @return a default <code>Equivalence[A]</code>
    */
+  // SKIP-DOTTY-START 
   implicit def default[A]: Equality[A] = new DefaultEquality[A]
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given default[A]: Equality[A] = new DefaultEquality[A]
 }
 

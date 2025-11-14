@@ -716,12 +716,28 @@ object Span {
       case _ => Span.Max // Duration.Inf and Undefined
     }
   }
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Given conversion that converts a <code>scala.concurrent.duration.FiniteDuration</code> to a <code>Span</code>,
+  //DOTTY-ONLY  * so that a <code>FiniteDuration</code> can be used where a <code>Span</code> is needed.
+  //DOTTY-ONLY  */
   //DOTTY-ONLY given Conversion[Duration, Span] = convertDurationToSpan
 
   /**
+   // SKIP-DOTTY-START
    * Implicitly converts a <code>Span</code> to a <code>scala.concurrent.duration.FiniteDuration</code>,
+   // SKIP-DOTTY-END
+    //DOTTY-ONLY  * Converts a <code>Span</code> to a <code>scala.concurrent.duration.FiniteDuration</code>,
    * so that a <code>Span</code> can be used where a <code>FiniteDuration</code> is needed.
    */
-  implicit def convertSpanToDuration(span: Span): FiniteDuration = Duration.fromNanos(span.totalNanos)
+  // SKIP-DOTTY-START
+  implicit def convertSpanToDuration(span: Span): FiniteDuration = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertSpanToDuration(span: Span): FiniteDuration = 
+    Duration.fromNanos(span.totalNanos)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Given conversion that converts a <code>Span</code> to a <code>scala.concurrent.duration.FiniteDuration</code>,
+  //DOTTY-ONLY  * so that a <code>Span</code> can be used where a <code>FiniteDuration</code> is needed.
+  //DOTTY-ONLY  */  
+  //DOTTY-ONLY given Conversion[Span, FiniteDuration] = convertSpanToDuration
 }
 

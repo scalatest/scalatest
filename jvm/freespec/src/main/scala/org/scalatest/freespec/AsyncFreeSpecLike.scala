@@ -383,7 +383,9 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with Informing with Notifying wit
     }
   }
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   /**
    * Implicitly converts <code>String</code>s to <code>FreeSpecStringWrapper</code>, which enables
@@ -393,8 +395,88 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with Informing with Notifying wit
   // SKIP-DOTTY-START
   protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit pos: source.Position): FreeSpecStringWrapper = new FreeSpecStringWrapper(s, pos)
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline implicit def convertToFreeSpecStringWrapper(s: String): FreeSpecStringWrapper = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[FreeSpecStringWrapper]('{(pos: source.Position) => new FreeSpecStringWrapper(s, pos) }) } 
+  //DOTTY-ONLY protected def convertToFreeSpecStringWrapper(s: String)(using pos: source.Position): FreeSpecStringWrapper = new FreeSpecStringWrapper(s, pos)
+
+  /**
+  //DOTTY-ONLY  * Extension methods to enable methods <code>in</code>, <code>is</code>, <code>taggedAs</code> and <code>ignore</code>,
+  //DOTTY-ONLY  * as well as the dash operator (<code>-</code>), to be invoked on <code>String</code>s.
+  //DOTTY-ONLY  */
+  //DOTTY-ONLY extension (s: String)(using pos: source.Position) {
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Register some text that may surround one or more tests. Thepassed function value may contain surrounding text
+  //DOTTY-ONLY    * registrations (defined with dash (<code>-</code>)) and/or tests (defined with <code>in</code>). This trait's
+  //DOTTY-ONLY    * implementation of this method will register the text (passed to the contructor of <code>FreeSpecStringWrapper</code>
+  //DOTTY-ONLY    * and immediately invoke the passed function.
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def -(fun: => Unit): Unit = new FreeSpecStringWrapper(s, pos).- (fun)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports test registration.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "complain on peek" in { ... }
+  //DOTTY-ONLY    *                    ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="AsyncFreeSpec.html">main documentation</a> for trait <code>AsyncFreeSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def in(f: => Future[compatible.Assertion]): Unit = new FreeSpecStringWrapper(s, pos).in(f)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports ignored test registration.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "complain on peek" ignore { ... }
+  //DOTTY-ONLY    *                    ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="AsyncFreeSpec.html">main documentation</a> for trait <code>AsyncFreeSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def ignore(f: => Future[compatible.Assertion]): Unit = new FreeSpecStringWrapper(s, pos).ignore(f)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports pending test registration.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "complain on peek" is (pending)
+  //DOTTY-ONLY    *                    ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="AsyncFreeSpec.html">main documentation</a> for trait <code>AsyncFreeSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def is(f: => PendingStatement): Unit = new FreeSpecStringWrapper(s, pos).is(f)
+  //DOTTY-ONLY   /**
+  //DOTTY-ONLY    * Supports tagged test registration.
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For example, this method supports syntax such as the following:
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <pre class="stHighlight">
+  //DOTTY-ONLY    * "complain on peek" taggedAs(SlowTest) in { ... }
+  //DOTTY-ONLY    *                    ^
+  //DOTTY-ONLY    * </pre>
+  //DOTTY-ONLY    *
+  //DOTTY-ONLY    * <p>
+  //DOTTY-ONLY    * For more information and examples of this method's use, see the <a href="AsyncFreeSpec.html">main documentation</a> for trait <code>AsyncFreeSpec</code>.
+  //DOTTY-ONLY    * </p>
+  //DOTTY-ONLY    */
+  //DOTTY-ONLY   def taggedAs(firstTestTag: Tag, otherTestTags: Tag*): ResultOfTaggedAsInvocationOnString = new FreeSpecStringWrapper(s, pos).taggedAs(firstTestTag, otherTestTags*)
   //DOTTY-ONLY }
 
   /**

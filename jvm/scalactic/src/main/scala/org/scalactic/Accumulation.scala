@@ -39,7 +39,10 @@ trait AccumulationLowPriorityImplicits {
     * For more information and examples, see the <a href="Or.html#usingCombined">Using <code>combined</code></a> section of the main documentation for class <code>Or</code>.
     * </p>
     */
+  // SKIP-DOTTY-START  
   implicit def convertIterableOnceToCombinable[G, ERR, EVERY[b] <: Every[b], ITRONCE[+e] <: IterableOnce[e]](xs: ITRONCE[G Or EVERY[ERR]])(implicit cbf: CanBuildFrom[ITRONCE[G Or EVERY[ERR]], G, ITRONCE[G]]): Combinable[G, ERR, ITRONCE] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertIterableOnceToCombinable[G, ERR, EVERY[b] <: Every[b], ITRONCE[+e] <: IterableOnce[e]](xs: ITRONCE[G Or EVERY[ERR]])(using cbf: CanBuildFrom[ITRONCE[G Or EVERY[ERR]], G, ITRONCE[G]]): Combinable[G, ERR, ITRONCE] =
     new Combinable[G, ERR, ITRONCE] {
 
       def combined: ITRONCE[G] Or Every[ERR] = {
@@ -59,8 +62,14 @@ trait AccumulationLowPriorityImplicits {
         tempOr map (_.result())
       }
     }
+  //DOTTY-ONLY extension [G, ERR, EVERY[b] <: Every[b], ITRONCE[+e] <: IterableOnce[e]](xs: ITRONCE[G Or EVERY[ERR]])(using cbf: CanBuildFrom[ITRONCE[G Or EVERY[ERR]], G, ITRONCE[G]]) {
+  //DOTTY-ONLY   def combined: ITRONCE[G] Or Every[ERR] = convertIterableOnceToCombinable(xs)(using cbf).combined
+  //DOTTY-ONLY }
 
+  // SKIP-DOTTY-START
   implicit def convertIterableOnceToCombinable3[E, ITRONCE[+e] <: IterableOnce[e]](xs: ITRONCE[Bad[Every[E]]]): Combinable[Nothing, E, ITRONCE] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertIterableOnceToCombinable3[E, ITRONCE[+e] <: IterableOnce[e]](xs: ITRONCE[Bad[Every[E]]]): Combinable[Nothing, E, ITRONCE] =
     new Combinable[Nothing, E, ITRONCE] {
       override def combined: Or[ITRONCE[Nothing], Every[E]] = {
         val either: Either[Every[E], ITRONCE[Nothing]] =
@@ -104,8 +113,10 @@ trait AccumulationLowPriorityImplicits {
  */
 trait Accumulation extends AccumulationLowPriorityImplicits {
 
-  import scala.language.{higherKinds, implicitConversions}
-
+  import scala.language.higherKinds
+  // SKIP-DOTTY-START
+  import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   /**
    * Implicitly converts an accumulating <code>Or</code> to an instance of <a href="Accumulation$$Acumulatable.html"><code>Accumulatable</code></a>, which
@@ -116,7 +127,10 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
    * sections of the main documentation for class <code>Or</code>.
    * </p>
    */
+  // SKIP-DOTTY-START
   implicit def convertOrToAccumulatable[G, ERR, EVERY[b] <: Every[b]](accumulatable: G Or EVERY[ERR]): Accumulatable[G, ERR, EVERY] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertOrToAccumulatable[G, ERR, EVERY[b] <: Every[b]](accumulatable: G Or EVERY[ERR]): Accumulatable[G, ERR, EVERY] =
     new Accumulatable[G, ERR, EVERY] {
       def zip[H, OTHERERR >: ERR, OTHEREVERY[c] <: Every[c]](other: H Or OTHEREVERY[OTHERERR]): (G, H) Or Every[OTHERERR] = {
         accumulatable match {
@@ -150,8 +164,15 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
         }
       }
     }
+  //DOTTY-ONLY extension [G, ERR, EVERY[b] <: Every[b]](accumulatable: G Or EVERY[ERR]) {
+  //DOTTY-ONLY   def zip[H, OTHERERR >: ERR, OTHEREVERY[c] <: Every[c]](other: H Or OTHEREVERY[OTHERERR]): (G, H) Or Every[OTHERERR] = convertOrToAccumulatable(accumulatable).zip(other)
+  //DOTTY-ONLY   def when[OTHERERR >: ERR](validations: (G => Validation[OTHERERR])*): G Or Every[OTHERERR] = convertOrToAccumulatable(accumulatable).when(validations*)
+  //DOTTY-ONLY }  
 
+  // SKIP-DOTTY-START
   implicit def convertIterableOnceToCombinable2[E, ITRONCE[+e] <: Iterable[e]](xs: ITRONCE[Good[E]])(implicit cbf: CanBuildFrom[ITRONCE[Good[E]], Good[E], ITRONCE[Good[E]]]): Combinable[E, Nothing, ITRONCE] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertIterableOnceToCombinable2[E, ITRONCE[+e] <: Iterable[e]](xs: ITRONCE[Good[E]])(using cbf: CanBuildFrom[ITRONCE[Good[E]], Good[E], ITRONCE[Good[E]]]): Combinable[E, Nothing, ITRONCE] =
     new Combinable[E, Nothing, ITRONCE] {
       override def combined: Or[ITRONCE[E], Every[Nothing]] = {
         // So now I have an empty builder
@@ -184,8 +205,10 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
    * <code>IterableOnce</code>s.
    * </p>
    */
+  // SKIP-DOTTY-START
   implicit def convertGenSetToCombinable[G, ERR, X, EVERY[b] <: Every[b], SET[e] <: GenSet[e]](xs: SET[X with (G Or EVERY[ERR])])(implicit cbf: CanBuildFrom[SET[X with (G Or EVERY[ERR])], G, SET[G]]): Combinable[G, ERR, SET] = 
-
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertGenSetToCombinable[G, ERR, X, EVERY[b] <: Every[b], SET[e] <: GenSet[e]](xs: SET[X with (G Or EVERY[ERR])])(using cbf: CanBuildFrom[SET[X with (G Or EVERY[ERR])], G, SET[G]]): Combinable[G, ERR, SET] = 
     new Combinable[G, ERR, SET] {
 
       def combined: SET[G] Or Every[ERR] = {
@@ -205,6 +228,9 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
         tempOr map (_.result())
       }
     }
+  //DOTTY-ONLY extension [G, ERR, X, EVERY[b] <: Every[b], SET[e] <: GenSet[e]](xs: SET[X with (G Or EVERY[ERR])])(using cbf: CanBuildFrom[SET[X with (G Or EVERY[ERR])], G, SET[G]]) {
+  //DOTTY-ONLY   def combined: SET[G] Or Every[ERR] = convertGenSetToCombinable(xs)(using cbf).combined
+  //DOTTY-ONLY }  
 
   /**
    * Implicitly converts a <code>Set</code> containing accumulating <code>Or</code>s whose <code>Good</code> type is inferred as <code>Nothing</code> to an
@@ -217,7 +243,10 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
    * <code>IterableOnce</code>s.
    * </p>
    */
+  // SKIP-DOTTY-START
   implicit def convertGenSetOnceToCombinable2[E, SET[e] <: GenSet[e]](xs: SET[Good[E]])(implicit cbf: CanBuildFrom[SET[Good[E]], Good[E], SET[Good[E]]]): Combinable[E, Nothing, SET] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertGenSetOnceToCombinable2[E, SET[e] <: GenSet[e]](xs: SET[Good[E]])(using cbf: CanBuildFrom[SET[Good[E]], Good[E], SET[Good[E]]]): Combinable[E, Nothing, SET] =
     new Combinable[E, Nothing, SET] {
       override def combined: Or[SET[E], Every[Nothing]] = {
         // So now I have an empty builder
@@ -244,7 +273,10 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
     * <code>IterableOnce</code>s.
     * </p>
     */
+  // SKIP-DOTTY-START
   implicit def convertGenSetOnceToCombinable3[E, SET[e] <: GenSet[e], EVERY[f] <: Every[f]](xs: SET[Bad[EVERY[E]]]): Combinable[Nothing, E, SET] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertGenSetOnceToCombinable3[E, SET[e] <: GenSet[e], EVERY[f] <: Every[f]](xs: SET[Bad[EVERY[E]]]): Combinable[Nothing, E, SET] =
     new Combinable[Nothing, E, SET] {
       override def combined: Or[SET[Nothing], EVERY[E]] = {
         val either: Either[EVERY[E], SET[Nothing]] =
@@ -271,8 +303,10 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
    * For more information and examples, see the <a href="Or.html#usingCombined">Using <code>combined</code></a> section of the main documentation for class <code>Or</code>.
    * </p>
    */
+  // SKIP-DOTTY-START
   implicit def convertEveryToCombinable[G, ERR](oneToMany: Every[G Or Every[ERR]]): Combinable[G, ERR, Every] = 
-
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertEveryToCombinable[G, ERR](oneToMany: Every[G Or Every[ERR]]): Combinable[G, ERR, Every] = 
     new Combinable[G, ERR, Every] {
 
       def combined: Every[G] Or Every[ERR] = {
@@ -292,6 +326,9 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
         }
       }
     }
+  //DOTTY-ONLY extension [G, ERR](oneToMany: Every[G Or Every[ERR]]) {
+  //DOTTY-ONLY   def combined: Every[G] Or Every[ERR] = convertEveryToCombinable(oneToMany).combined
+  //DOTTY-ONLY }  
 
   /**
    * Implicitly converts an <code>Option</code> containing accumulating <code>Or</code>s to an instance of
@@ -301,7 +338,10 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
    * For more information and examples, see the <a href="Or.html#usingCombined">Using <code>combined</code></a> section of the main documentation for class <code>Or</code>.
    * </p>
    */
+  // SKIP-DOTTY-START
   implicit def convertOptionToCombinable[G, ERR](option: Option[G Or Every[ERR]]): Combinable[G, ERR, Option] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertOptionToCombinable[G, ERR](option: Option[G Or Every[ERR]]): Combinable[G, ERR, Option] = 
     new Combinable[G, ERR, Option] {
       def combined: Option[G] Or Every[ERR] =
         option match {
@@ -310,6 +350,9 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
           case None => Good(None)
         }
     }
+  //DOTTY-ONLY extension [G, ERR](option: Option[G Or Every[ERR]]) {
+  //DOTTY-ONLY   def combined: Option[G] Or Every[ERR] = convertOptionToCombinable(option).combined
+  //DOTTY-ONLY }  
 
   /**
    * Implicitly converts a <code>IterableOnce</code> to an instance of <code>Validatable</code>, which
@@ -320,7 +363,10 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
    * the main documentation for class <code>Or</code>.
    * </p>
    */
+  // SKIP-DOTTY-START
   implicit def convertIterableOnceToValidatable[G, ITRONCE[e] <: IterableOnce[e]](xs: ITRONCE[G]): TravValidatable[G, ITRONCE] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertIterableOnceToValidatable[G, ITRONCE[e] <: IterableOnce[e]](xs: ITRONCE[G]): TravValidatable[G, ITRONCE] = 
 
     new TravValidatable[G, ITRONCE] {
 
@@ -342,6 +388,10 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
         tempOr map (_.result())
       }
     }
+  //DOTTY-ONLY extension [G, ITRONCE[e] <: IterableOnce[e]](xs: ITRONCE[G]) {
+  //DOTTY-ONLY   def validatedBy[H, ERR, EVERY[e] <: Every[e]](fn: G => H Or EVERY[ERR])(using cbf: CanBuildFrom[ITRONCE[G], H, ITRONCE[H]]): ITRONCE[H] Or Every[ERR] = 
+  //DOTTY-ONLY     convertIterableOnceToValidatable(xs).validatedBy(fn)(using cbf)
+  //DOTTY-ONLY }  
 
   /**
    * Implicitly converts an <code>Every</code> to an instance of <code>Validatable</code>, which
@@ -352,7 +402,10 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
    * the main documentation for class <code>Or</code>.
    * </p>
    */
+  // SKIP-DOTTY-START
   implicit def convertEveryToValidatable[G](oneToMany: Every[G]): Validatable[G, Every] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertEveryToValidatable[G](oneToMany: Every[G]): Validatable[G, Every] = 
     new Validatable[G, Every] {
       def validatedBy[H, ERR, EVERY[e] <: Every[e]](fn: G => H Or EVERY[ERR]): Every[H] Or Every[ERR] = {
         val vec = oneToMany.toVector
@@ -371,6 +424,10 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
         }
       }
     }
+  //DOTTY-ONLY extension [G](oneToMany: Every[G]) {
+  //DOTTY-ONLY   def validatedBy[H, ERR, EVERY[e] <: Every[e]](fn: G => H Or EVERY[ERR]): Every[H] Or Every[ERR] =
+  //DOTTY-ONLY     convertEveryToValidatable(oneToMany).validatedBy(fn)
+  //DOTTY-ONLY }  
 
   /**
    * Implicitly converts an <code>Option</code> to an instance of <code>Validatable</code>, which
@@ -381,7 +438,10 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
    * the main documentation for class <code>Or</code>.
    * </p>
    */
+  // SKIP-DOTTY-START
   implicit def convertOptionToValidatable[G](option: Option[G]): Validatable[G, Option] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertOptionToValidatable[G](option: Option[G]): Validatable[G, Option] = 
     new Validatable[G, Option] {
       def validatedBy[H, ERR, EVERY[e] <: Every[e]](fn: G => H Or EVERY[ERR]): Option[H] Or Every[ERR] = {
         option.map(fn) match {
@@ -391,6 +451,10 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
         }
       }
     }
+  //DOTTY-ONLY extension [G](option: Option[G]) {
+  //DOTTY-ONLY   def validatedBy[H, ERR, EVERY[e] <: Every[e]](fn: G => H Or EVERY[ERR]): Option[H] Or Every[ERR] =
+  //DOTTY-ONLY     convertOptionToValidatable(option).validatedBy(fn)
+  //DOTTY-ONLY }  
 
   /**
    * Given 2 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;

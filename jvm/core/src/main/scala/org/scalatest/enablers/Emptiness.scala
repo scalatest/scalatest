@@ -74,10 +74,22 @@ object Emptiness {
    * @tparam ITR any subtype of <code>org.scalactic.ColCompatHelper.Iterable</code>
    * @return <code>Emptiness[ITR[E]]</code> that supports <code>org.scalactic.ColCompatHelper.Iterable</code> in <code>be empty</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def emptinessOfIterable[E, ITR[e] <: Iterable[e]]: Emptiness[ITR[E]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def emptinessOfIterable[E, ITR[e] <: Iterable[e]]: Emptiness[ITR[E]] =
     new Emptiness[ITR[E]] {
       def isEmpty(itr: ITR[E]): Boolean = itr.isEmpty
     }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Emptiness</code> implementation for <code>org.scalactic.ColCompatHelper.Iterable</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>org.scalactic.ColCompatHelper.Iterable</code>
+  //DOTTY-ONLY   * @tparam ITR any subtype of <code>org.scalactic.ColCompatHelper.Iterable</code>
+  //DOTTY-ONLY   * @return <code>Emptiness[ITR[E]]</code> that supports <code>org.scalactic.ColCompatHelper.Iterable</code> in <code>be empty</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [E, ITR[e] <: Iterable[e]]: Emptiness[ITR[E]] = emptinessOfIterable
   
   /**
    * Enable <code>Emptiness</code> implementation for <code>Array</code>
@@ -85,20 +97,41 @@ object Emptiness {
    * @tparam E the type of the element in the <code>Array</code>
    * @return <code>Emptiness[Array[E]]</code> that supports <code>Array</code> in <code>be empty</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def emptinessOfArray[E]: Emptiness[Array[E]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def emptinessOfArray[E]: Emptiness[Array[E]] =
     new Emptiness[Array[E]] {
       def isEmpty(arr: Array[E]): Boolean = arr.length == 0
     }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Emptiness</code> implementation for <code>Array</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>Array</code>
+  //DOTTY-ONLY   * @return <code>Emptiness[Array[E]]</code> that supports <code>Array</code> in <code>be empty</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [E]: Emptiness[Array[E]] = emptinessOfArray
   
   /**
    * Enable <code>Emptiness</code> implementation for <code>String</code>
    *
    * @return <code>Emptiness[String]</code> that supports <code>String</code> in <code>be empty</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def emptinessOfString: Emptiness[String] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def emptinessOfString: Emptiness[String] = 
     new Emptiness[String] {
       def isEmpty(str: String): Boolean = str.isEmpty
     }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Emptiness</code> implementation for <code>String</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @return <code>Emptiness[String]</code> that supports <code>String</code> in <code>be empty</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Emptiness[String] = emptinessOfString
   
   /**
    * Enable <code>Emptiness</code> implementation for <code>scala.Option</code>
@@ -107,10 +140,22 @@ object Emptiness {
    * @tparam OPT any subtype of <code>scala.Option</code>
    * @return <code>Emptiness[OPT[E]]</code> that supports <code>scala.Option</code> in <code>be empty</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def emptinessOfOption[E, OPT[e] <: Option[e]]: Emptiness[OPT[E]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def emptinessOfOption[E, OPT[e] <: Option[e]]: Emptiness[OPT[E]] =
     new Emptiness[OPT[E]] {
       def isEmpty(opt: OPT[E]): Boolean = opt.isEmpty
     }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Emptiness</code> implementation for <code>scala.Option</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>scala.Option</code>
+  //DOTTY-ONLY   * @tparam OPT any subtype of <code>scala.Option</code>
+  //DOTTY-ONLY   * @return <code>Emptiness[OPT[E]]</code> that supports <code>scala.Option</code> in <code>be empty</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [E, OPT[e] <: Option[e]]: Emptiness[OPT[E]] = emptinessOfOption
   
   /**
    * Enable <code>Emptiness</code> implementation for <code>java.util.Collection</code>
@@ -119,10 +164,22 @@ object Emptiness {
    * @tparam JCOL any subtype of <code>java.util.Collection</code>
    * @return <code>Emptiness[JCOL[E]]</code> that supports <code>java.util.Collection</code> in <code>be empty</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def emptinessOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]]: Emptiness[JCOL[E]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def emptinessOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]]: Emptiness[JCOL[E]] =
     new Emptiness[JCOL[E]] {
       def isEmpty(jcol: JCOL[E]): Boolean = jcol.isEmpty
     }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Emptiness</code> implementation for <code>java.util.Collection</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>java.util.Collection</code>
+  //DOTTY-ONLY   * @tparam JCOL any subtype of <code>java.util.Collection</code>
+  //DOTTY-ONLY   * @return <code>Emptiness[JCOL[E]]</code> that supports <code>java.util.Collection</code> in <code>be empty</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [E, JCOL[e] <: java.util.Collection[e]]: Emptiness[JCOL[E]] = emptinessOfJavaCollection
 
   /**
    * Enable <code>Emptiness</code> implementation for <code>java.util.Map</code>
@@ -132,10 +189,23 @@ object Emptiness {
    * @tparam JMAP any subtype of <code>java.util.Map</code>
    * @return <code>Emptiness[JMAP[K, V]]</code> that supports <code>java.util.Map</code> in <code>be empty</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def emptinessOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]]: Emptiness[JMAP[K, V]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def emptinessOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]]: Emptiness[JMAP[K, V]] =
     new Emptiness[JMAP[K, V]] {
       def isEmpty(jmap: JMAP[K, V]): Boolean = jmap.isEmpty
     }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Emptiness</code> implementation for <code>java.util.Map</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @tparam K the type of the key in the <code>java.util.Map</code>
+  //DOTTY-ONLY   * @tparam V the type of the value in the <code>java.util.Map</code>
+  //DOTTY-ONLY   * @tparam JMAP any subtype of <code>java.util.Map</code>
+  //DOTTY-ONLY   * @return <code>Emptiness[JMAP[K, V]]</code> that supports <code>java.util.Map</code> in <code>be empty</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [K, V, JMAP[k, v] <: java.util.Map[k, v]]: Emptiness[JMAP[K, V]] = emptinessOfJavaMap
 
   import scala.language.reflectiveCalls
   
@@ -145,10 +215,21 @@ object Emptiness {
    * @tparam T any type that has a <code>isEmpty()</code> method that returns <code>Boolean</code>
    * @return <code>Emptiness[T]</code> that supports <code>T</code> in <code>be empty</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def emptinessOfAnyRefWithIsEmptyMethod[T <: AnyRef { def isEmpty(): Boolean}]: Emptiness[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def emptinessOfAnyRefWithIsEmptyMethod[T <: AnyRef { def isEmpty(): Boolean}]: Emptiness[T] = 
     new Emptiness[T] {
       def isEmpty(obj: T): Boolean = obj.isEmpty()
     }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Emptiness</code> implementation for any arbitrary object with a <code>isEmpty()</code> method that returns <code>Boolean</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @tparam T any type that has a <code>isEmpty()</code> method that returns <code>Boolean</code>
+  //DOTTY-ONLY   * @return <code>Emptiness[T]</code> that supports <code>T</code> in <code>be empty</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Emptiness[AnyRef { def isEmpty(): Boolean}] = emptinessOfAnyRefWithIsEmptyMethod  
   
   /**
    * Enable <code>Emptiness</code> implementation for any arbitrary object with a <code>isEmpty</code> method that returns <code>Boolean</code>
@@ -156,9 +237,20 @@ object Emptiness {
    * @tparam T any type that has a parameterless <code>isEmpty</code> method that returns <code>Boolean</code>
    * @return <code>Emptiness[T]</code> that supports <code>T</code> in <code>be empty</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def emptinessOfAnyRefWithParameterlessIsEmptyMethod[T <: AnyRef { def isEmpty: Boolean}]: Emptiness[T] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def emptinessOfAnyRefWithParameterlessIsEmptyMethod[T <: AnyRef { def isEmpty: Boolean}]: Emptiness[T] = 
     new Emptiness[T] {
       def isEmpty(obj: T): Boolean = obj.isEmpty
     }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Emptiness</code> implementation for any arbitrary object with a <code>isEmpty</code> method that returns <code>Boolean</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @tparam T any type that has a <code>isEmpty()</code> method that returns <code>Boolean</code>
+  //DOTTY-ONLY   * @return <code>Emptiness[T]</code> that supports <code>T</code> in <code>be empty</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [T <: AnyRef { def isEmpty: Boolean}]: Emptiness[T] = emptinessOfAnyRefWithParameterlessIsEmptyMethod
 }
 

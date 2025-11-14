@@ -214,14 +214,50 @@ object Sequencing {
   import scala.language.higherKinds
 
   /**
+   // SKIP-DOTTY-START
    * Implicit to support <code>Sequencing</code> nature of <code>scala.collection.GenSeq</code>.
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY  * To support <code>Sequencing</code> nature of <code>scala.collection.GenSeq</code>.
    *
    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>scala.collection.GenSeq</code>
    * @tparam E the type of the element in the <code>scala.collection.GenSeq</code>
    * @tparam SEQ any subtype of <code>scala.collection.GenSeq</code>
    * @return <code>Sequencing[SEQ[E]]</code> that supports <code>scala.collection.GenSeq</code> in relevant <code>contain</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def sequencingNatureOfGenSeq[E, SEQ[e] <: scala.collection.GenSeq[e]](implicit equality: Equality[E]): Sequencing[SEQ[E]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def sequencingNatureOfGenSeq[E, SEQ[e] <: scala.collection.GenSeq[e]](using equality: Equality[E]): Sequencing[SEQ[E]] =
+    convertEqualityToGenSeqSequencing(equality)
+
+  // SKIP-DOTTY-START
+  import scala.language.implicitConversions
+  // SKIP-DOTTY-END
+
+  /**
+   // SKIP-DOTTY-START
+   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY  * Converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * into <code>Sequencing</code> of type <code>SEQ[E]</code>, where <code>SEQ</code> is a subtype of <code>scala.collection.GenSeq</code>.
+   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+   *
+   * <pre class="stHighlight">
+   * (List("hi", "he") should contain inOrderOnly ("HI", "HE")) (after being lowerCased)
+   * </pre>
+   *
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
+   * and this implicit conversion will convert it into <code>Sequencing[List[String]]</code>.
+   *
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @tparam E type of elements in the <code>scala.collection.GenSeq</code>
+   * @tparam SEQ subtype of <code>scala.collection.GenSeq</code>
+   * @return <code>Sequencing</code> of type <code>SEQ[E]</code>
+   */
+  // SKIP-DOTTY-START
+  implicit def convertEqualityToGenSeqSequencing[E, SEQ[e] <: scala.collection.GenSeq[e]](equality: Equality[E]): Sequencing[SEQ[E]] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertEqualityToGenSeqSequencing[E, SEQ[e] <: scala.collection.GenSeq[e]](equality: Equality[E]): Sequencing[SEQ[E]] = 
     new Sequencing[SEQ[E]] {
 
       def containsInOrder(seq: SEQ[E], elements: scala.collection.Seq[Any]): Boolean = {
@@ -238,54 +274,59 @@ object Sequencing {
       }
     }
 
-  import scala.language.implicitConversions
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Sequencing</code> nature of <code>scala.collection.GenSeq</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>scala.collection.GenSeq</code>
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>scala.collection.GenSeq</code>
+  //DOTTY-ONLY   * @tparam SEQ any subtype of <code>scala.collection.GenSeq</code>
+  //DOTTY-ONLY   * @return <code>Sequencing[SEQ[E]]</code> that supports <code>scala.collection.GenSeq</code> in relevant <code>contain</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [E, SEQ[e] <: scala.collection.GenSeq[e]] (using equality: Equality[E]): Sequencing[SEQ[E]] = convertEqualityToGenSeqSequencing(equality)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+  //DOTTY-ONLY   * into <code>Sequencing</code> of type <code>SEQ[E]</code>, where <code>SEQ</code> is a subtype of <code>scala.collection.GenSeq</code>.
+  //DOTTY-ONLY   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <pre class="stHighlight">
+  //DOTTY-ONLY   * (List("hi", "he") should contain inOrderOnly ("HI", "HE")) (after being lowerCased)
+  //DOTTY-ONLY   * </pre>
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
+  //DOTTY-ONLY   * and this implicit conversion will convert it into <code>Sequencing[List[String]]</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+  //DOTTY-ONLY   * @tparam E type of elements in the <code>scala.collection.GenSeq</code>
+  //DOTTY-ONLY   * @tparam SEQ subtype of <code>scala.collection.GenSeq</code>
+  //DOTTY-ONLY   * @return <code>Sequencing</code> of type <code>SEQ[E]</code>
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given equalityGenSeqSequencing[E, SEQ[e] <: scala.collection.GenSeq[e]]: Conversion[Equality[E], Sequencing[SEQ[E]]] with {
+  //DOTTY-ONLY   def apply(equality: Equality[E]): Sequencing[SEQ[E]] = convertEqualityToGenSeqSequencing(equality)
+  //DOTTY-ONLY }
 
   /**
-   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
-   * into <code>Sequencing</code> of type <code>SEQ[E]</code>, where <code>SEQ</code> is a subtype of <code>scala.collection.GenSeq</code>.
-   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
-   *
-   * <pre class="stHighlight">
-   * (List("hi", "he") should contain inOrderOnly ("HI", "HE")) (after being lowerCased)
-   * </pre>
-   *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
-   * and this implicit conversion will convert it into <code>Sequencing[List[String]]</code>.
-   *
-   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
-   * @tparam E type of elements in the <code>scala.collection.GenSeq</code>
-   * @tparam SEQ subtype of <code>scala.collection.GenSeq</code>
-   * @return <code>Sequencing</code> of type <code>SEQ[E]</code>
-   */
-  implicit def convertEqualityToGenSeqSequencing[E, SEQ[e] <: scala.collection.GenSeq[e]](equality: Equality[E]): Sequencing[SEQ[E]] = 
-    sequencingNatureOfGenSeq(equality)
-
-  /**
+   // SKIP-DOTTY-START
    * Implicit to support <code>Sequencing</code> nature of <code>scala.collection.SortedSet</code>.
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY  * To support <code>Sequencing</code> nature of <code>scala.collection.SortedSet</code>.
    *
    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>scala.collection.SortedSet</code>
    * @tparam E the type of the element in the <code>scala.collection.SortedSet</code>
    * @tparam SET any subtype of <code>scala.collection.SortedSet</code>
    * @return <code>Sequencing[SET[E]]</code> that supports <code>scala.collection.SortedSet</code> in relevant <code>contain</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def sequencingNatureOfSortedSet[E, SET[e] <: scala.collection.SortedSet[e]](implicit equality: Equality[E]): Sequencing[SET[E]] =
-    new Sequencing[SET[E]] {
-
-      def containsInOrder(set: SET[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrder(set, elements, equality)
-      }
-
-      def containsInOrderOnly(set: SET[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrderOnly[E](set, elements, equality)
-      }
-
-      def containsTheSameElementsInOrderAs(set: SET[E], elements: Iterable[Any]): Boolean = {
-        checkTheSameElementsInOrderAs[E](set, elements, equality)
-      }
-    }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def sequencingNatureOfSortedSet[E, SET[e] <: scala.collection.SortedSet[e]](implicit equality: Equality[E]): Sequencing[SET[E]] =
+    convertEqualityToSortedSetSequencing(equality)
 
   /**
+   // SKIP-DOTTY-START
    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * Converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * into <code>Sequencing</code> of type <code>SET[E]</code>, where <code>SET</code> is a subtype of <code>scala.collection.SortedSet</code>.
    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
@@ -301,8 +342,55 @@ object Sequencing {
    * @tparam SET subtype of <code>scala.collection.SortedSet</code>
    * @return <code>Sequencing</code> of type <code>SET[E]</code>
    */
+  // SKIP-DOTTY-START
   implicit def convertEqualityToSortedSetSequencing[E, SET[e] <: scala.collection.SortedSet[e]](equality: Equality[E]): Sequencing[SET[E]] = 
-    sequencingNatureOfSortedSet(equality)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertEqualityToSortedSetSequencing[E, SET[e] <: scala.collection.SortedSet[e]](equality: Equality[E]): Sequencing[SET[E]] = 
+    new Sequencing[SET[E]] {
+
+      def containsInOrder(set: SET[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrder(set, elements, equality)
+      }
+
+      def containsInOrderOnly(set: SET[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrderOnly[E](set, elements, equality)
+      }
+
+      def containsTheSameElementsInOrderAs(set: SET[E], elements: Iterable[Any]): Boolean = {
+        checkTheSameElementsInOrderAs[E](set, elements, equality)
+      }
+    }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given support <code>Sequencing</code> nature of <code>scala.collection.SortedSet</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>scala.collection.SortedSet</code>
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>scala.collection.SortedSet</code>
+  //DOTTY-ONLY   * @tparam SET any subtype of <code>scala.collection.SortedSet</code>
+  //DOTTY-ONLY   * @return <code>Sequencing[SET[E]]</code> that supports <code>scala.collection.SortedSet</code> in relevant <code>contain</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [E, SET[e] <: scala.collection.SortedSet[e]] (using equality: Equality[E]): Sequencing[SET[E]] = convertEqualityToSortedSetSequencing(equality)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+  //DOTTY-ONLY   * into <code>Sequencing</code> of type <code>SET[E]</code>, where <code>SET</code> is a subtype of <code>scala.collection.SortedSet</code>.
+  //DOTTY-ONLY   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <pre class="stHighlight">
+  //DOTTY-ONLY   * (SortedSet("hi", "he") should contain inOrderOnly ("HI", "HE")) (after being lowerCased)
+  //DOTTY-ONLY   * </pre>
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
+  //DOTTY-ONLY   * and this implicit conversion will convert it into <code>Sequencing[SortedSet[String]]</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+  //DOTTY-ONLY   * @tparam E type of elements in the <code>scala.collection.SortedSet</code>
+  //DOTTY-ONLY   * @tparam SET subtype of <code>scala.collection.SortedSet</code>
+  //DOTTY-ONLY   * @return <code>Sequencing</code> of type <code>SET[E]</code>
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given equalitySortedSetSequencing[E, SET[e] <: scala.collection.SortedSet[e]]: Conversion[Equality[E], Sequencing[SET[E]]] with {
+  //DOTTY-ONLY   def apply(equality: Equality[E]): Sequencing[SET[E]] = convertEqualityToSortedSetSequencing(equality)
+  //DOTTY-ONLY }
 
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>scala.collection.SortedMap</code>.
@@ -313,24 +401,17 @@ object Sequencing {
    * @tparam MAP any subtype of <code>scala.collection.SortedMap</code>
    * @return <code>Sequencing[MAP[K, V]]</code> that supports <code>scala.collection.SortedMap</code> in relevant <code>contain</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def sequencingNatureOfSortedMap[K, V, MAP[k, v] <: scala.collection.SortedMap[k, v]](implicit equality: Equality[(K, V)]): Sequencing[MAP[K, V]] =
-    new Sequencing[MAP[K, V]] {
-
-      def containsInOrder(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrder(map, elements, equality)
-      }
-
-      def containsInOrderOnly(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrderOnly(map, elements, equality)
-      }
-
-      def containsTheSameElementsInOrderAs(map: MAP[K, V], elements: Iterable[Any]): Boolean = {
-        checkTheSameElementsInOrderAs(map, elements, equality)
-      }
-    }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def sequencingNatureOfSortedMap[K, V, MAP[k, v] <: scala.collection.SortedMap[k, v]](using equality: Equality[(K, V)]): Sequencing[MAP[K, V]] =
+    convertEqualityToSortedMapSequencing(equality)
 
   /**
+   // SKIP-DOTTY-START 
    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>(K, V)</code>
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * Converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>(K, V)</code>
    * into <code>Sequencing</code> of type <code>MAP[K, V]</code>, where <code>MAP</code> is a subtype of <code>scala.collection.SortedMap</code>.
    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
@@ -348,8 +429,58 @@ object Sequencing {
    * @tparam MAP subtype of <code>scala.collection.SortedMap</code>
    * @return <code>Sequencing</code> of type <code>MAP[K, V]</code>
    */
+  // SKIP-DOTTY-START
   implicit def convertEqualityToSortedMapSequencing[K, V, MAP[k, v] <: scala.collection.SortedMap[k, v]](equality: Equality[(K, V)]): Sequencing[MAP[K, V]] = 
-    sequencingNatureOfSortedMap(equality)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertEqualityToSortedMapSequencing[K, V, MAP[k, v] <: scala.collection.SortedMap[k, v]](equality: Equality[(K, V)]): Sequencing[MAP[K, V]] = 
+    new Sequencing[MAP[K, V]] {
+
+      def containsInOrder(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrder(map, elements, equality)
+      }
+
+      def containsInOrderOnly(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrderOnly(map, elements, equality)
+      }
+
+      def containsTheSameElementsInOrderAs(map: MAP[K, V], elements: Iterable[Any]): Boolean = {
+        checkTheSameElementsInOrderAs(map, elements, equality)
+      }
+    }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given <code>Sequencing</code> nature of <code>scala.collection.SortedMap</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>scala.collection.SortedMap</code>
+  //DOTTY-ONLY   * @tparam K the type of the key in the <code>scala.collection.SortedMap</code>
+  //DOTTY-ONLY   * @tparam V the type of the value in the <code>scala.collection.SortedMap</code>
+  //DOTTY-ONLY   * @tparam MAP any subtype of <code>scala.collection.SortedMap</code>
+  //DOTTY-ONLY   * @return <code>Sequencing[MAP[K, V]]</code> that supports <code>scala.collection.SortedMap</code> in relevant <code>contain</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [K, V, MAP[k, v] <: scala.collection.SortedMap[k, v]] (using equality: Equality[(K, V)]): Sequencing[MAP[K, V]] = convertEqualityToSortedMapSequencing(equality)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>(K, V)</code>
+  //DOTTY-ONLY   * into <code>Sequencing</code> of type <code>MAP[K, V]</code>, where <code>MAP</code> is a subtype of <code>scala.collection.SortedMap</code>.
+  //DOTTY-ONLY   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <pre class="stHighlight">
+  //DOTTY-ONLY   * // lowerCased needs to be implemented as Normalization[(K, V)]
+  //DOTTY-ONLY   * (SortedMap("hi" -> "hi", "he" -> "he") should contain inOrderOnly ("HI" -> "HI", "HE" -> "HE")) (after being lowerCased)
+  //DOTTY-ONLY   * </pre>
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
+  //DOTTY-ONLY   * and this implicit conversion will convert it into <code>Sequencing[SortedMap[String, String]]</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>(K, V)</code>
+  //DOTTY-ONLY   * @tparam K the type of the key in the <code>scala.collection.SortedMap</code>
+  //DOTTY-ONLY   * @tparam V the type of the value in the <code>scala.collection.SortedMap</code>
+  //DOTTY-ONLY   * @tparam MAP subtype of <code>scala.collection.SortedMap</code>
+  //DOTTY-ONLY   * @return <code>Sequencing</code> of type <code>MAP[K, V]</code>
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given equalitySortedMapSequencing[K, V, MAP[k, v] <: scala.collection.SortedMap[k, v]]: Conversion[Equality[(K, V)], Sequencing[MAP[K, V]]] with {
+  //DOTTY-ONLY   def apply(equality: Equality[(K, V)]): Sequencing[MAP[K, V]] = convertEqualityToSortedMapSequencing(equality)
+  //DOTTY-ONLY }
 
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>Array</code>.
@@ -358,7 +489,35 @@ object Sequencing {
    * @tparam E the type of the element in the <code>Array</code>
    * @return <code>Sequencing[Array[E]]</code> that supports <code>Array</code> in relevant <code>contain</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def sequencingNatureOfArray[E](implicit equality: Equality[E]): Sequencing[Array[E]] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def sequencingNatureOfArray[E](implicit equality: Equality[E]): Sequencing[Array[E]] = 
+    convertEqualityToArraySequencing(equality)
+
+  /**
+   // SKIP-DOTTY-START
+   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * Converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * into <code>Sequencing</code> of type <code>Array[E]</code>.
+   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+   *
+   * <pre class="stHighlight">
+   * (Array("hi", "he") should contain inOrderOnly ("HI", "HE")) (after being lowerCased)
+   * </pre>
+   *
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
+   * and this implicit conversion will convert it into <code>Sequencing[Array[String]]</code>.
+   *
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @tparam E type of elements in the <code>Array</code>
+   * @return <code>Sequencing</code> of type <code>Array[E]</code>
+   */
+  // SKIP-DOTTY-START
+  implicit def convertEqualityToArraySequencing[E](equality: Equality[E]): Sequencing[Array[E]] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertEqualityToArraySequencing[E](equality: Equality[E]): Sequencing[Array[E]] = 
     new Sequencing[Array[E]] {
 
       def containsInOrder(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
@@ -374,51 +533,57 @@ object Sequencing {
       }
     }
 
-  /**
-   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
-   * into <code>Sequencing</code> of type <code>Array[E]</code>.
-   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
-   *
-   * <pre class="stHighlight">
-   * (Array("hi", "he") should contain inOrderOnly ("HI", "HE")) (after being lowerCased)
-   * </pre>
-   *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
-   * and this implicit conversion will convert it into <code>Sequencing[Array[String]]</code>.
-   *
-   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
-   * @tparam E type of elements in the <code>Array</code>
-   * @return <code>Sequencing</code> of type <code>Array[E]</code>
-   */
-  implicit def convertEqualityToArraySequencing[E](equality: Equality[E]): Sequencing[Array[E]] = 
-    sequencingNatureOfArray(equality)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given <code>Sequencing</code> nature of <code>Array</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Array</code>
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>Array</code>
+  //DOTTY-ONLY   * @return <code>Sequencing[Array[E]]</code> that supports <code>Array</code> in relevant <code>contain</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [E] (using equality: Equality[E]): Sequencing[Array[E]] = convertEqualityToArraySequencing(equality)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+  //DOTTY-ONLY   * into <code>Sequencing</code> of type <code>Array[E]</code>.
+  //DOTTY-ONLY   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <pre class="stHighlight">
+  //DOTTY-ONLY   * (Array("hi", "he") should contain inOrderOnly ("HI", "HE")) (after being lowerCased)
+  //DOTTY-ONLY   * </pre>
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
+  //DOTTY-ONLY   * and this implicit conversion will convert it into <code>Sequencing[Array[String]]</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+  //DOTTY-ONLY   * @tparam E type of elements in the <code>Array</code>
+  //DOTTY-ONLY   * @return <code>Sequencing</code> of type <code>Array[E]</code>
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given equalityArraySequencing[E]: Conversion[Equality[E], Sequencing[Array[E]]] with {
+  //DOTTY-ONLY   def apply(equality: Equality[E]): Sequencing[Array[E]] = convertEqualityToArraySequencing(equality)
+  //DOTTY-ONLY }  
 
   /**
+   // SKIP-DOTTY-START
    * Implicit to support <code>Sequencing</code> nature of <code>java.util.List</code>.
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * To support <code>Sequencing</code> nature of <code>java.util.List</code>.
    *
    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>java.util.List</code>
    * @tparam E the type of the element in the <code>java.util.List</code>
    * @tparam JLIST any subtype of <code>java.util.List</code>
    * @return <code>Sequencing[JLIST[E]]</code> that supports <code>java.util.List</code> in relevant <code>contain</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def sequencingNatureOfJavaList[E, JLIST[e] <: java.util.List[e]](implicit equality: Equality[E]): Sequencing[JLIST[E]] = 
-    new Sequencing[JLIST[E]] {
-
-      def containsInOrder(col: JLIST[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrder(col.asScala, elements, equality)
-      }
-
-      def containsInOrderOnly(col: JLIST[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrderOnly(col.asScala, elements, equality)
-      }
-
-      def containsTheSameElementsInOrderAs(col: JLIST[E], elements: Iterable[Any]): Boolean = {
-        checkTheSameElementsInOrderAs(col.asScala, elements, equality)
-      }
-    }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def sequencingNatureOfJavaList[E, JLIST[e] <: java.util.List[e]](implicit equality: Equality[E]): Sequencing[JLIST[E]] = 
+    convertEqualityToJavaListSequencing(equality)
 
   /**
+   // SKIP-DOTTY-START
    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * Converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * into <code>Sequencing</code> of type <code>JLIST[E]</code>, where <code>JLIST</code> is a subtype of <code>java.util.List</code>.
    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
@@ -436,35 +601,80 @@ object Sequencing {
    * @tparam JLIST subtype of <code>java.util.List</code>
    * @return <code>Sequencing</code> of type <code>JLIST[E]</code>
    */
+  // SKIP-DOTTY-START
   implicit def convertEqualityToJavaListSequencing[E, JLIST[e] <: java.util.List[e]](equality: Equality[E]): Sequencing[JLIST[E]] = 
-    sequencingNatureOfJavaList(equality)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertEqualityToJavaListSequencing[E, JLIST[e] <: java.util.List[e]](equality: Equality[E]): Sequencing[JLIST[E]] = 
+    new Sequencing[JLIST[E]] {
+
+      def containsInOrder(col: JLIST[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrder(col.asScala, elements, equality)
+      }
+
+      def containsInOrderOnly(col: JLIST[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrderOnly(col.asScala, elements, equality)
+      }
+
+      def containsTheSameElementsInOrderAs(col: JLIST[E], elements: Iterable[Any]): Boolean = {
+        checkTheSameElementsInOrderAs(col.asScala, elements, equality)
+      }
+    }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given <code>Sequencing</code> nature of <code>java.util.List</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>java.util.List</code>
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>java.util.List</code>
+  //DOTTY-ONLY   * @tparam JLIST any subtype of <code>java.util.List</code>
+  //DOTTY-ONLY   * @return <code>Sequencing[JLIST[E]]</code> that supports <code>java.util.List</code> in relevant <code>contain</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [E, JLIST[e] <: java.util.List[e]] (using equality: Equality[E]): Sequencing[JLIST[E]] = convertEqualityToJavaListSequencing(equality)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+  //DOTTY-ONLY   * into <code>Sequencing</code> of type <code>JLIST[E]</code>, where <code>JLIST</code> is a subtype of <code>java.util.List</code>.
+  //DOTTY-ONLY   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <pre class="stHighlight">
+  //DOTTY-ONLY   * val javaList = new java.util.ArrayList[String]()
+  //DOTTY-ONLY   * javaList.add("hi", "he")
+  //DOTTY-ONLY   * (javaList should contain ("HI", "HE")) (after being lowerCased)
+  //DOTTY-ONLY   * </pre>
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
+  //DOTTY-ONLY   * and this implicit conversion will convert it into <code>Sequencing[java.util.ArrayList[String]]</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+  //DOTTY-ONLY   * @tparam E type of elements in the <code>java.util.List</code>
+  //DOTTY-ONLY   * @tparam JLIST subtype of <code>java.util.List</code>
+  //DOTTY-ONLY   * @return <code>Sequencing</code> of type <code>JLIST[E]</code>
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given equalityJavaListSequencing[E, JLIST[e] <: java.util.List[e]]: Conversion[Equality[E], Sequencing[JLIST[E]]] with {
+  //DOTTY-ONLY   def apply(equality: Equality[E]): Sequencing[JLIST[E]] = convertEqualityToJavaListSequencing(equality)
+  //DOTTY-ONLY }  
 
   /**
+   // SKIP-DOTTY-START
    * Implicit to support <code>Sequencing</code> nature of <code>java.util.SortedSet</code>.
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * To support <code>Sequencing</code> nature of <code>java.util.SortedSet</code>.
    *
    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>java.util.SortedSet</code>
    * @tparam E the type of the element in the <code>java.util.SortedSet</code>
    * @tparam JSET any subtype of <code>java.util.SortedSet</code>
    * @return <code>Sequencing[JSET[E]]</code> that supports <code>java.util.SortedSet</code> in relevant <code>contain</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def sequencingNatureOfJavaSortedSet[E, JSET[e] <: java.util.SortedSet[e]](implicit equality: Equality[E]): Sequencing[JSET[E]] =
-    new Sequencing[JSET[E]] {
-
-      def containsInOrder(set: JSET[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrder(set.iterator.asScala.toVector, elements, equality)
-      }
-
-      def containsInOrderOnly(set: JSET[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrderOnly[E](set.iterator.asScala.toVector, elements, equality)
-      }
-
-      def containsTheSameElementsInOrderAs(set: JSET[E], elements: Iterable[Any]): Boolean = {
-        checkTheSameElementsInOrderAs[E](set.iterator.asScala.toVector, elements, equality)
-      }
-    }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def sequencingNatureOfJavaSortedSet[E, JSET[e] <: java.util.SortedSet[e]](using equality: Equality[E]): Sequencing[JSET[E]] =
+    convertEqualityToJavaSortedSetSequencing(equality)
 
   /**
+   // SKIP-DOTTY-START
    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * Converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * into <code>Sequencing</code> of type <code>JSET[E]</code>, where <code>JSET</code> is a subtype of <code>java.util.SortedSet</code>.
    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
@@ -482,11 +692,63 @@ object Sequencing {
    * @tparam JSET subtype of <code>java.util.List</code>
    * @return <code>Sequencing</code> of type <code>JLIST[E]</code>
    */
+  // SKIP-DOTTY-START
   implicit def convertEqualityToJavaSortedSetSequencing[E, JSET[e] <: java.util.SortedSet[e]](equality: Equality[E]): Sequencing[JSET[E]] = 
-    sequencingNatureOfJavaSortedSet(equality)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertEqualityToJavaSortedSetSequencing[E, JSET[e] <: java.util.SortedSet[e]](equality: Equality[E]): Sequencing[JSET[E]] = 
+    new Sequencing[JSET[E]] {
+
+      def containsInOrder(set: JSET[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrder(set.iterator.asScala.toVector, elements, equality)
+      }
+
+      def containsInOrderOnly(set: JSET[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrderOnly[E](set.iterator.asScala.toVector, elements, equality)
+      }
+
+      def containsTheSameElementsInOrderAs(set: JSET[E], elements: Iterable[Any]): Boolean = {
+        checkTheSameElementsInOrderAs[E](set.iterator.asScala.toVector, elements, equality)
+      }
+    }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given <code>Sequencing</code> nature of <code>java.util.SortedSet</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>java.util.SortedSet</code>
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>java.util.SortedSet</code>
+  //DOTTY-ONLY   * @tparam JSET any subtype of <code>java.util.SortedSet</code>
+  //DOTTY-ONLY   * @return <code>Sequencing[JSET[E]]</code> that supports <code>java.util.SortedSet</code> in relevant <code>contain</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [E, JSET[e] <: java.util.SortedSet[e]] (using equality: Equality[E]): Sequencing[JSET[E]] = convertEqualityToJavaSortedSetSequencing(equality)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+  //DOTTY-ONLY   * into <code>Sequencing</code> of type <code>JSET[E]</code>, where <code>JSET</code> is a subtype of <code>java.util.SortedSet</code>.
+  //DOTTY-ONLY   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <pre class="stHighlight">
+  //DOTTY-ONLY   * val javaSet = new java.util.TreeSet[String]()
+  //DOTTY-ONLY   * javaSet.add("hi", "he")
+  //DOTTY-ONLY   * (javaSet should contain inOrderOnly ("HI", "HE")) (after being lowerCased)
+  //DOTTY-ONLY   * </pre>
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
+  //DOTTY-ONLY   * and this implicit conversion will convert it into <code>Sequencing[java.util.TreeSet[String]]</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+  //DOTTY-ONLY   * @tparam E type of elements in the <code>java.util.List</code>
+  //DOTTY-ONLY   * @tparam JSET subtype of <code>java.util.List</code>
+  //DOTTY-ONLY   * @return <code>Sequencing</code> of type <code>JLIST[E]</code>
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given equalityJavaSortedSetSequencing[E, JSET[e] <: java.util.SortedSet[e]]: Conversion[Equality[E], Sequencing[JSET[E]]] with {
+  //DOTTY-ONLY   def apply(equality: Equality[E]): Sequencing[JSET[E]] = convertEqualityToJavaSortedSetSequencing(equality)
+  //DOTTY-ONLY }  
 
   /**
+   // SKIP-DOTTY-START
    * Implicit to support <code>Sequencing</code> nature of <code>java.util.SortedMap</code>.
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * To support <code>Sequencing</code> nature of <code>java.util.SortedMap</code>.
    *
    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of entry in the <code>java.util.SortedMap</code>
    * @tparam K the type of the key in the <code>java.util.SortedMap</code>
@@ -494,24 +756,17 @@ object Sequencing {
    * @tparam JMAP any subtype of <code>java.util.SortedMap</code>
    * @return <code>Sequencing[JMAP[K, V]]</code> that supports <code>java.util.SortedMap</code> in relevant <code>contain</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def sequencingNatureOfJavaSortedMap[K, V, JMAP[k, v] <: java.util.SortedMap[k, v]](implicit equality: Equality[java.util.Map.Entry[K, V]]): Sequencing[JMAP[K, V]] =
-    new Sequencing[JMAP[K, V]] {
-
-      def containsInOrder(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrder(map.entrySet.iterator.asScala.toVector, elements, equality)
-      }
-
-      def containsInOrderOnly(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrderOnly(map.entrySet.iterator.asScala.toVector, elements, equality)
-      }
-
-      def containsTheSameElementsInOrderAs(map: JMAP[K, V], elements: Iterable[Any]): Boolean = {
-        checkTheSameElementsInOrderAs(map.entrySet.iterator.asScala.toVector, elements, equality)
-      }
-    }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def sequencingNatureOfJavaSortedMap[K, V, JMAP[k, v] <: java.util.SortedMap[k, v]](using equality: Equality[java.util.Map.Entry[K, V]]): Sequencing[JMAP[K, V]] =
+    convertEqualityToJavaSortedMapSequencing(equality)
 
   /**
+   // SKIP-DOTTY-START
    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * Converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
    * into <code>Sequencing</code> of type <code>JMAP[K, V]</code>, where <code>JMAP</code> is a subtype of <code>java.util.SortedMap</code>.
    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
@@ -531,16 +786,99 @@ object Sequencing {
    * @tparam JMAP subtype of <code>java.util.SortedMap</code>
    * @return <code>Sequencing</code> of type <code>JMAP[K, V]</code>
    */
+  // SKIP-DOTTY-START
   implicit def convertEqualityToJavaSortedMapSequencing[K, V, JMAP[k, v] <: java.util.SortedMap[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): Sequencing[JMAP[K, V]] = 
-    sequencingNatureOfJavaSortedMap(equality)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertEqualityToJavaSortedMapSequencing[K, V, JMAP[k, v] <: java.util.SortedMap[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): Sequencing[JMAP[K, V]] = 
+    new Sequencing[JMAP[K, V]] {
+
+      def containsInOrder(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrder(map.entrySet.iterator.asScala.toVector, elements, equality)
+      }
+
+      def containsInOrderOnly(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrderOnly(map.entrySet.iterator.asScala.toVector, elements, equality)
+      }
+
+      def containsTheSameElementsInOrderAs(map: JMAP[K, V], elements: Iterable[Any]): Boolean = {
+        checkTheSameElementsInOrderAs(map.entrySet.iterator.asScala.toVector, elements, equality)
+      }
+    }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given to support <code>Sequencing</code> nature of <code>java.util.SortedMap</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of entry in the <code>java.util.SortedMap</code>
+  //DOTTY-ONLY   * @tparam K the type of the key in the <code>java.util.SortedMap</code>
+  //DOTTY-ONLY   * @tparam V the type of the value in the <code>java.util.SortedMap</code>
+  //DOTTY-ONLY   * @tparam JMAP any subtype of <code>java.util.SortedMap</code>
+  //DOTTY-ONLY   * @return <code>Sequencing[JMAP[K, V]]</code> that supports <code>java.util.SortedMap</code> in relevant <code>contain</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [K, V, JMAP[k, v] <: java.util.SortedMap[k, v]] (using equality: Equality[java.util.Map.Entry[K, V]]): Sequencing[JMAP[K, V]] = convertEqualityToJavaSortedMapSequencing(equality)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
+  //DOTTY-ONLY   * into <code>Sequencing</code> of type <code>JMAP[K, V]</code>, where <code>JMAP</code> is a subtype of <code>java.util.SortedMap</code>.
+  //DOTTY-ONLY   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <pre class="stHighlight">
+  //DOTTY-ONLY   * val javaMap = new java.util.TreeMap[Int, String]()
+  //DOTTY-ONLY   * javaMap.put(1, "one")
+  //DOTTY-ONLY   * // lowerCased needs to be implemented as Normalization[java.util.Map.Entry[K, V]]
+  //DOTTY-ONLY   * (javaMap should contain inOrderOnly (Entry(1, "ONE"))) (after being lowerCased)
+  //DOTTY-ONLY   * </pre>
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>java.util.Map.Entry[Int, String]</code></a>
+  //DOTTY-ONLY   * and this implicit conversion will convert it into <code>Aggregating[java.util.TreeMap[Int, String]]</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
+  //DOTTY-ONLY   * @tparam K the type of the key in the <code>java.util.SortedMap</code>
+  //DOTTY-ONLY   * @tparam V the type of the value in the <code>java.util.SortedMap</code>
+  //DOTTY-ONLY   * @tparam JMAP subtype of <code>java.util.SortedMap</code>
+  //DOTTY-ONLY   * @return <code>Sequencing</code> of type <code>JMAP[K, V]</code>
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given equalityJavaSortedMapSequencing[K, V, JMAP[k, v] <: java.util.SortedMap[k, v]]: Conversion[Equality[java.util.Map.Entry[K, V]], Sequencing[JMAP[K, V]]] with {
+  //DOTTY-ONLY   def apply(equality: Equality[java.util.Map.Entry[K, V]]): Sequencing[JMAP[K, V]] = convertEqualityToJavaSortedMapSequencing(equality)
+  //DOTTY-ONLY }  
 
   /**
+   // SKIP-DOTTY-START
    * Implicit to support <code>Sequencing</code> nature of <code>String</code>.
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * To support <code>Sequencing</code> nature of <code>String</code>.
    *
    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of <code>Char</code> in the <code>String</code>
    * @return <code>Sequencing[String]</code> that supports <code>String</code> in relevant <code>contain</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def sequencingNatureOfString(implicit equality: Equality[Char]): Sequencing[String] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def sequencingNatureOfString(implicit equality: Equality[Char]): Sequencing[String] = 
+    convertEqualityToStringSequencing(equality)
+
+  /**
+   // SKIP-DOTTY-START
+   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Char</code>
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * Converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Char</code>
+   * into <code>Sequencing</code> of type <code>String</code>.
+   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+   *
+   * <pre class="stHighlight">
+   * // lowerCased needs to be implemented as Normalization[Char]
+   * ("hi hello" should contain inOrderOnly ('E')) (after being lowerCased)
+   * </pre>
+   *
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[Char]</code></a>
+   * and this implicit conversion will convert it into <code>Sequencing[String]</code>.
+   *
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Char</code>
+   * @return <code>Sequencing</code> of type <code>String</code>
+   */
+  // SKIP-DOTTY-START
+  implicit def convertEqualityToStringSequencing(equality: Equality[Char]): Sequencing[String] = 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertEqualityToStringSequencing(equality: Equality[Char]): Sequencing[String] = 
     new Sequencing[String] {
 
       def containsInOrder(s: String, elements: scala.collection.Seq[Any]): Boolean = {
@@ -556,47 +894,55 @@ object Sequencing {
       }
     }
 
-  /**
-   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Char</code>
-   * into <code>Sequencing</code> of type <code>String</code>.
-   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
-   *
-   * <pre class="stHighlight">
-   * // lowerCased needs to be implemented as Normalization[Char]
-   * ("hi hello" should contain inOrderOnly ('E')) (after being lowerCased)
-   * </pre>
-   *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[Char]</code></a>
-   * and this implicit conversion will convert it into <code>Sequencing[String]</code>.
-   *
-   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Char</code>
-   * @return <code>Sequencing</code> of type <code>String</code>
-   */
-  implicit def convertEqualityToStringSequencing(equality: Equality[Char]): Sequencing[String] = 
-    sequencingNatureOfString(equality)
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given to support <code>Sequencing</code> nature of <code>String</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of <code>Char</code> in the <code>String</code>
+  //DOTTY-ONLY   * @return <code>Sequencing[String]</code> that supports <code>String</code> in relevant <code>contain</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given (using equality: Equality[Char]): Sequencing[String] = convertEqualityToStringSequencing(equality)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Char</code>
+  //DOTTY-ONLY   * into <code>Sequencing</code> of type <code>String</code>.
+  //DOTTY-ONLY   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <pre class="stHighlight">
+  //DOTTY-ONLY   * // lowerCased needs to be implemented as Normalization[Char]
+  //DOTTY-ONLY   * ("hi hello" should contain inOrderOnly ('E')) (after being lowerCased)
+  //DOTTY-ONLY   * </pre>
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[Char]</code></a>
+  //DOTTY-ONLY   * and this implicit conversion will convert it into <code>Sequencing[String]</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Char</code>
+  //DOTTY-ONLY   * @return <code>Sequencing</code> of type <code>String</code>
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given equalityStringSequencing: Conversion[Equality[Char], Sequencing[String]] with {
+  //DOTTY-ONLY   def apply(equality: Equality[Char]): Sequencing[String] = convertEqualityToStringSequencing(equality)
+  //DOTTY-ONLY }
 
   /**
+   // SKIP-DOTTY-START
    * Implicit to support <code>Sequencing</code> nature of <code>Every</code>.
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * To support <code>Sequencing</code> nature of <code>Every</code>.
    *
    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Every</code>
    * @tparam E the type of the element in the <code>Every</code>
    * @return <code>Sequencing[Every[E]]</code> that supports <code>Every</code> in relevant <code>contain</code> syntax
    */
+  // SKIP-DOTTY-START
   implicit def sequencingNatureOfEvery[E](implicit equality: Equality[E]): Sequencing[Every[E]] =
-    new Sequencing[Every[E]] {
-
-      def containsInOrder(every: Every[E], elements: scala.collection.Seq[Any]): Boolean =
-        checkInOrder(every, elements, equality)
-
-      def containsInOrderOnly(every: Every[E], elements: scala.collection.Seq[Any]): Boolean =
-        checkInOrderOnly(every, elements, equality)
-
-      def containsTheSameElementsInOrderAs(every: Every[E], elements: Iterable[Any]): Boolean =
-        checkTheSameElementsInOrderAs[E](every, elements, equality)
-    }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def sequencingNatureOfEvery[E](using equality: Equality[E]): Sequencing[Every[E]] =
+    convertEqualityToEverySequencing(equality)
 
   /**
+   // SKIP-DOTTY-START
    * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY * Converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * into <code>Sequencing</code> of type <code>Every[E]</code>.
    * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
@@ -611,7 +957,49 @@ object Sequencing {
    * @tparam E type of elements in the <code>Every</code>
    * @return <code>Sequencing</code> of type <code>Every[E]</code>
    */
+  // SKIP-DOTTY-START
   implicit def convertEqualityToEverySequencing[E](equality: Equality[E]): Sequencing[Every[E]] =
-    sequencingNatureOfEvery(equality)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def convertEqualityToEverySequencing[E](equality: Equality[E]): Sequencing[Every[E]] =
+    new Sequencing[Every[E]] {
+
+      def containsInOrder(every: Every[E], elements: scala.collection.Seq[Any]): Boolean =
+        checkInOrder(every, elements, equality)
+
+      def containsInOrderOnly(every: Every[E], elements: scala.collection.Seq[Any]): Boolean =
+        checkInOrderOnly(every, elements, equality)
+
+      def containsTheSameElementsInOrderAs(every: Every[E], elements: Iterable[Any]): Boolean =
+        checkTheSameElementsInOrderAs[E](every, elements, equality)
+    }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given <code>Sequencing</code> nature of <code>Every</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Every</code>
+  //DOTTY-ONLY   * @tparam E the type of the element in the <code>Every</code>
+  //DOTTY-ONLY   * @return <code>Sequencing[Every[E]]</code> that supports <code>Every</code> in relevant <code>contain</code> syntax
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [E] (using equality: Equality[E]): Sequencing[Every[E]] = convertEqualityToEverySequencing(equality)
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+  //DOTTY-ONLY   * into <code>Sequencing</code> of type <code>Every[E]</code>.
+  //DOTTY-ONLY   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <pre class="stHighlight">
+  //DOTTY-ONLY   * (Every("hi", "he") should contain inOrderOnly ("HI", "HE")) (after being lowerCased)
+  //DOTTY-ONLY   * </pre>
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
+  //DOTTY-ONLY   * and this implicit conversion will convert it into <code>Sequencing[Every[String]]</code>.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
+  //DOTTY-ONLY   * @tparam E type of elements in the <code>Every</code>
+  //DOTTY-ONLY   * @return <code>Sequencing</code> of type <code>Every[E]</code>
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given equalityEverySequencing[E]: Conversion[Equality[E], Sequencing[Every[E]]] with {
+  //DOTTY-ONLY   def apply(equality: Equality[E]): Sequencing[Every[E]] = convertEqualityToEverySequencing(equality)
+  //DOTTY-ONLY }  
     
 }

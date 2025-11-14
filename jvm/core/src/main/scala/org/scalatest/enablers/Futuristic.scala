@@ -57,26 +57,46 @@ object Futuristic {
 
   /**
    * Provides a <code>Futuristic</code> value for <code>FutureOutcome</code> that performs cleanup using the
+   // SKIP-DOTTY-START
    * implicitly provided execution context.
+   // SKIP-DOTTY-END
+   //DOTTY-ONLY provided execution context.
    *
    * @param executionContext an execution context that provides a strategy for executing the cleanup function
    * @return a <code>Futuristic</code> instance for <code>FutureOutcome</code>
    */
+  // SKIP-DOTTY-START
   implicit def futuristicNatureOfFutureOutcome(implicit executionContext: ExecutionContext): Futuristic[FutureOutcome] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def futuristicNatureOfFutureOutcome(using executionContext: ExecutionContext): Futuristic[FutureOutcome] =
     new Futuristic[FutureOutcome] {
       def withCleanup(futuristic: FutureOutcome)(cleanup: => Unit): FutureOutcome = {
         futuristic onCompletedThen { _ => cleanup }
       }
     }
 
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given <code>Futuristic</code> value for <code>FutureOutcome</code> that performs cleanup using the
+  //DOTTY-ONLY   * provided execution context.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param executionContext an execution context that provides a strategy for executing the cleanup function
+  //DOTTY-ONLY   * @return a <code>Futuristic</code> instance for <code>FutureOutcome</code>
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given (using executionContext: ExecutionContext): Futuristic[FutureOutcome] = futuristicNatureOfFutureOutcome(using executionContext)
+
   /**
    * Provides a <code>Futuristic</code> value for <code>Future[V]</code> for any type <code>V</code> that performs cleanup using the
-   * implicitly provided execution context.
+   // SKIP-DOTTY-START
+   * provided execution context.
+   // SKIP-DOTTY-END
    *
    * @param executionContext an execution context that provides a strategy for executing the cleanup function
    * @return a <code>Futuristic</code> instance for <code>Future[V]</code>
    */
+  // SKIP-DOTTY-START
   implicit def futuristicNatureOfFutureOf[V](implicit executionContext: ExecutionContext): Futuristic[Future[V]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def futuristicNatureOfFutureOf[V](using executionContext: ExecutionContext): Futuristic[Future[V]] =
     new Futuristic[Future[V]] {
       def withCleanup(futuristic: Future[V])(cleanup: => Unit): Future[V] = {
         // First deal with Failure, and mimic finally semantics
@@ -100,5 +120,14 @@ object Futuristic {
         }
       }
     }
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * Given <code>Futuristic</code> value for <code>Future[V]</code> for any type <code>V</code> that performs cleanup using the
+  //DOTTY-ONLY   * provided execution context.
+  //DOTTY-ONLY   *
+  //DOTTY-ONLY   * @param executionContext an execution context that provides a strategy for executing the cleanup function
+  //DOTTY-ONLY   * @return a <code>Futuristic</code> instance for <code>Future[V]</code>
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given [V] (using executionContext: ExecutionContext): Futuristic[Future[V]] = futuristicNatureOfFutureOf(using executionContext)  
 }
 

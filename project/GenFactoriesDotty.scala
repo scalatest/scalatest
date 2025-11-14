@@ -2817,7 +2817,6 @@ $endif$
  */
 object MatcherFactory$arity$ {
 
-  import scala.language.implicitConversions
   import scala.quoted.*
 
   /**
@@ -2826,8 +2825,10 @@ object MatcherFactory$arity$ {
    * @param matcherFactory a MatcherFactory$arity$ to convert
    * @return a Matcher produced by the passed MatcherFactory$arity$
    */
-  implicit def produceMatcher[SC, $typeConstructors$, T <: SC : $colonSeparatedTCNs$](matcherFactory: MatcherFactory$arity$[SC, $commaSeparatedTCNs$]): Matcher[T] =
+  def produceMatcher[SC, $typeConstructors$, T <: SC : $colonSeparatedTCNs$](matcherFactory: MatcherFactory$arity$[SC, $commaSeparatedTCNs$]): Matcher[T] =
     matcherFactory.matcher
+  given [SC, $typeConstructors$, T <: SC : $colonSeparatedTCNs$]: Conversion[MatcherFactory$arity$[SC, $commaSeparatedTCNs$], Matcher[T]] =
+    produceMatcher[SC, $commaSeparatedTCNs$, T]
 
   /**
    * This method is called by macro that supports 'and not a [Type]' syntax.

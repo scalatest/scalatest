@@ -646,10 +646,15 @@ trait FixtureAsyncFunSpecLike extends org.scalatest.FixtureAsyncTestSuite with I
    */
   protected val behave = new BehaveWord
 
+  // SKIP-DOTTY-START
   import scala.language.implicitConversions
+  // SKIP-DOTTY-END
 
   /**
+  // SKIP-DOTTY-START
    * Implicitly converts a function that takes no parameters and results in <code>PendingStatement</code> to
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY   * Converts a function that takes no parameters and results in <code>PendingStatement</code> to
    * a function from <code>FixtureParam</code> to <code>Any</code>, to enable pending tests to registered as by-name parameters
    * by methods that require a test function that takes a <code>FixtureParam</code>.
    *
@@ -661,9 +666,13 @@ trait FixtureAsyncFunSpecLike extends org.scalatest.FixtureAsyncTestSuite with I
    * @param f a function
    * @return a function of <code>FixtureParam => Any</code>
    */
+  // SKIP-DOTTY-START 
   protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): FixtureParam => compatible.Assertion = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY protected def convertPendingToFixtureFunction(f: => PendingStatement): FixtureParam => compatible.Assertion = {
     fixture => { f; Succeeded }
   }
+  //DOTTY-ONLY given Conversion[PendingStatement, FixtureParam => compatible.Assertion] = convertPendingToFixtureFunction
 
   /**
    * Implicitly converts a function that takes no parameters and results in <code>Any</code> to

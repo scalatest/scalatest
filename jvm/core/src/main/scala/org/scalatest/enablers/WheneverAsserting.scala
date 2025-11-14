@@ -54,7 +54,10 @@ abstract class UnitWheneverAsserting {
     * but throw [[org.scalatest.exceptions.DiscardedEvaluationException DiscardedEvaluationException]]
     * when check fails.
     */
+  // SKIP-DOTTY-START
   implicit def assertingNatureOfT[T]: WheneverAsserting[T] { type Result = Unit } = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def assertingNatureOfT[T]: WheneverAsserting[T] { type Result = Unit } = {
     new WheneverAsserting[T] {
       type Result = Unit
       def whenever(condition: Boolean)(fun: => T): Unit =
@@ -64,6 +67,7 @@ abstract class UnitWheneverAsserting {
           fun
     }
   }
+  //DOTTY-ONLY given [T]: WheneverAsserting[T] { type Result = Unit } = assertingNatureOfT
 }
 
 /**
@@ -71,7 +75,10 @@ abstract class UnitWheneverAsserting {
   * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
   */
 abstract class ExpectationWheneverAsserting extends UnitWheneverAsserting {
+  // SKIP-DOTTY-START
   implicit def assertingNatureOfExpectation: WheneverAsserting[Expectation] { type Result = Expectation } = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def assertingNatureOfExpectation: WheneverAsserting[Expectation] { type Result = Expectation } = {
     new WheneverAsserting[Expectation] {
       type Result = Expectation
       def whenever(condition: Boolean)(fun: => Expectation): Expectation =
@@ -81,7 +88,11 @@ abstract class ExpectationWheneverAsserting extends UnitWheneverAsserting {
          fun
     }
   }
+  //DOTTY-ONLY given WheneverAsserting[Expectation] { type Result = Expectation } = assertingNatureOfExpectation
+  // SKIP-DOTTY-START
   implicit def assertingNatureOfFutureAssertion: WheneverAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def assertingNatureOfFutureAssertion: WheneverAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
     new WheneverAsserting[Future[Assertion]] {
       type Result = Future[Assertion]
       def whenever(condition: Boolean)(fun: => Future[Assertion]): Future[Assertion] =
@@ -91,6 +102,7 @@ abstract class ExpectationWheneverAsserting extends UnitWheneverAsserting {
           fun
     }
   }
+  //DOTTY-ONLY given WheneverAsserting[Future[Assertion]] { type Result = Future[Assertion] } = assertingNatureOfFutureAssertion
 }
 
 /**
@@ -98,8 +110,10 @@ abstract class ExpectationWheneverAsserting extends UnitWheneverAsserting {
   * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
   */
 object WheneverAsserting extends ExpectationWheneverAsserting {
-
+  // SKIP-DOTTY-START
   implicit def assertingNatureOfAssertion: WheneverAsserting[Assertion] { type Result = Assertion } = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def assertingNatureOfAssertion: WheneverAsserting[Assertion] { type Result = Assertion } = {
     new WheneverAsserting[Assertion] {
       type Result = Assertion
       def whenever(condition: Boolean)(fun: => Assertion): Assertion =
@@ -109,4 +123,5 @@ object WheneverAsserting extends ExpectationWheneverAsserting {
           fun
     }
   }
+  //DOTTY-ONLY given WheneverAsserting[Assertion] { type Result = Assertion } = assertingNatureOfAssertion
 }
