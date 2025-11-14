@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic.opaques
+package org.scalactic.opaquetypes
 
 import scala.collection.GenSeq
 import scala.collection.mutable.{ArrayBuffer, Buffer}

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic.opaques
+package org.scalactic.opaquetypes
 
 import org.scalactic.ColCompatHelper.Iterable
 import scala.collection.mutable.Buffer
@@ -24,7 +24,6 @@ import org.scalactic.UnitSpec
 import org.scalactic.NormalizingEquality
 
 import org.scalatest.CompatParColls.Converters._
-import org.scalactic.opaques._
 
 class NonEmptyListSpec extends UnitSpec {
   "A NonEmptyList" can "be constructed with one element" in {

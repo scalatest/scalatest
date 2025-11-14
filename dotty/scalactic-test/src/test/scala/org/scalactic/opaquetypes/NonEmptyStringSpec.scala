@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic.opaques
+package org.scalactic.opaquetypes
 
 import org.scalactic.ColCompatHelper.Iterable
 import scala.collection.mutable.Buffer
@@ -23,7 +23,7 @@ import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
 import org.scalactic.NormalizingEquality
 
-import org.scalactic.opaques.NonEmptyStrings.NonEmptyString
+import org.scalactic.opaquetypes.NonEmptyStrings.NonEmptyString
 
 class NonEmptyStringSpec extends UnitSpec {
   "A NonEmptyString" can "be constructed with one character" in {

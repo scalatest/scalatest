@@ -104,7 +104,7 @@ import org.scalactic.Every
   * @tparam K the type of key contained in this <code>NonEmptyMap</code>
   * @tparam V the type of value contained in this <code>NonEmptyMap</code>
   */
-//DOTTY-ONLY @deprecated("Please use org.scalactic.opaques.NonEmptyMap.", "3.3.0")  
+//DOTTY-ONLY @deprecated("Please use org.scalactic.opaquetypes.NonEmptyMap.", "3.3.0")  
 final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
 
   /**
@@ -900,7 +900,7 @@ final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
 /**
   * Companion object for class <code>NonEmptyMap</code>.
   */
-//DOTTY-ONLY @deprecated("Please use org.scalactic.opaques.NonEmptyMap.", "3.3.0")  
+//DOTTY-ONLY @deprecated("Please use org.scalactic.opaquetypes.NonEmptyMap.", "3.3.0")  
 object NonEmptyMap {
 
   /**

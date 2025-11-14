@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic.opaques
+package org.scalactic.opaquetypes
 
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.collection.GenSeq
@@ -41,7 +41,7 @@ import scala.language.higherKinds
   *
   * <pre class="stHighlight">
   * scala&gt; NonEmptyArray(1, 2, 3)
-  * res0: org.scalactic.opaques.NonEmptyArray[Int] = NonEmptyArray(1, 2, 3)
+  * res0: org.scalactic.opaquetypes.NonEmptyArray[Int] = NonEmptyArray(1, 2, 3)
   * </pre>
   *
   * <h2>Working with <code>NonEmptyArray</code>s</h2>
@@ -78,11 +78,11 @@ import scala.language.higherKinds
   * </p>
   *
   * <pre class="stREPL">
-  * scala&gt; import org.scalactic.opaques._
-  * import org.scalactic.opaques._
+  * scala&gt; import org.scalactic.opaquetypes._
+  * import org.scalactic.opaquetypes._
   *
   * scala&gt; for (i &lt;- NonEmptyArray(1, 2, 3)) yield i + 1
-  * res0: org.scalactic.opaques.NonEmptyArray[Int] = NonEmptyArray(2, 3, 4)
+  * res0: org.scalactic.opaquetypes.NonEmptyArray[Int] = NonEmptyArray(2, 3, 4)
   *
   * scala&gt; for (i &lt;- NonEmptyArray(1, 2, 3) if i &lt; 10) yield i + 1
   * res1: Array[Int] = Array(2, 3, 4)
@@ -91,7 +91,7 @@ import scala.language.higherKinds
   *      |   i &lt;- NonEmptyArray(1, 2, 3)
   *      |   j &lt;- NonEmptyArray('a', 'b', 'c')
   *      | } yield (i, j)
-  * res3: org.scalactic.opaques.NonEmptyArray[(Int, Char)] =
+  * res3: org.scalactic.opaquetypes.NonEmptyArray[(Int, Char)] =
   *         NonEmptyArray((1,a), (1,b), (1,c), (2,a), (2,b), (2,c), (3,a), (3,b), (3,c))
   *
   * scala&gt; for {
