@@ -19,6 +19,7 @@ import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.collection.GenSeq
 import scala.reflect.ClassTag
 import org.scalactic.Every
+import org.scalactic.Resources
 import scala.collection.mutable.{ArrayBuffer, Buffer}
 
 /**
@@ -154,6 +155,30 @@ object NonEmptyList {
    * @return an <code>Seq</code> containing this <code>NonEmptyList</code>s elements, wrapped in a <code>Some</code> 
    */
   def unapplySeq[T](nonEmptyList: NonEmptyList[T]): Option[Seq[T]] = Some(nonEmptyList.toList)
+
+  /**
+   *
+   * A factory/assertion method that produces a <code>NonEmptyList</code>
+   * given a valid <code>List</code> value, or throws
+   * <code>AssertionError</code>, if given an invalid <code>List</code> value.
+   *
+   * Note: you should use this method only when you are convinced that it will
+   * always succeed, i.e., never throw an exception. It is good practice to
+   * add a comment near the invocation of this method indicating ''why'' you
+   * think it will always succeed to document your reasoning. If you are not
+   * sure an `ensuringValid` call will always succeed, you should use one of
+   * the other factory or validation methods provided on this object instead:
+   * `from'.
+   *
+   * @param list the <code>List</code> to check to see if it is a valid.
+   * @return the <code>NonEmptyList</code> if the passed list is valid..
+   * @throws AssertionError if the passed array is not valid.
+   */
+  def ensuringValid[T](list: List[T]): NonEmptyList[T] =
+    if (list.length == 0)
+      throw new AssertionError(Resources.nonEmptyListEmpty)
+    else
+      list
 
   /**
    * Optionally construct a <code>NonEmptyList</code> containing the elements, if any, of a given <code>GenSeq</code>.
