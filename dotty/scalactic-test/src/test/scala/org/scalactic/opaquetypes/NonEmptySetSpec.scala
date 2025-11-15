@@ -22,6 +22,7 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
 import org.scalactic.NormalizingEquality
+import org.scalactic.Resources
 
 import org.scalatest.CompatParColls.Converters._
 
@@ -43,6 +44,13 @@ class NonEmptySetSpec extends UnitSpec {
     threesie(2) shouldBe true
     threesie(3) shouldBe true
     threesie(4) shouldBe false
+  }
+  it can "be constructed with ensuringValid method" in {
+    NonEmptySet.ensuringValid(Set(1, 2, 3)) shouldBe NonEmptySet(1, 2, 3)
+    NonEmptySet.ensuringValid(Set("hi")) shouldBe NonEmptySet("hi")
+    the [AssertionError] thrownBy {
+      NonEmptySet.ensuringValid(Set.empty[Int])
+    } should have message Resources.nonEmptySetEmpty
   }
   it can "be constructed from a Iterable via the from method on NonEmptySet singleton" in {
     NonEmptySet.from(Set.empty[String]) shouldBe None
