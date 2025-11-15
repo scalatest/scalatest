@@ -1540,8 +1540,12 @@ object NonEmptyString {
     * Constructs a new <code>NonEmptyString</code> given at least one element.
     *
     * @param s the <code>String</code> represented by this <code>NonEmptyString</code>
+    * @throws AssertionError if the passed <code>String</code> is empty
     */
-  def apply(s: String): NonEmptyString = new NonEmptyString(s)
+  def apply(s: String): NonEmptyString = {
+    if (s.isEmpty) throw new AssertionError(Resources.nonEmptyStringEmpty)
+    new NonEmptyString(s)
+  }
 
   /**
     * Constructs a new <code>NonEmptyString</code> given at least one character.
