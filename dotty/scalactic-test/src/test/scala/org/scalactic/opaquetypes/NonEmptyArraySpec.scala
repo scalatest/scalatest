@@ -22,6 +22,7 @@ import scala.collection.mutable.ArrayBuffer
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
 import org.scalactic.NormalizingEquality
+import org.scalactic.Resources
 
 import org.scalatest.CompatParColls.Converters._
 
@@ -52,7 +53,13 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray.from(Array(1, 2, 3).par).get shouldBe NonEmptyArray(1, 2, 3)
     // SKIP-SCALATESTJS,NATIVE-END
   }
-  // This does not compile with scala 2.10
+  it can "be constructed with ensuringValid method" in {
+    //NonEmptyArray.ensuringValid(Array(1, 2, 3)) shouldBe NonEmptyArray(1, 2, 3)
+    //NonEmptyArray.ensuringValid(Array("hi")) shouldBe NonEmptyArray("hi")
+    the [IllegalArgumentException] thrownBy {
+      NonEmptyArray.ensuringValid(Array.empty[Int])
+    } should have message Resources.nonEmptyArrayEmpty
+  }
   it can "be constructed with null elements" in {
     noException should be thrownBy NonEmptyArray[String]("hi", null, "ho")
     noException should be thrownBy NonEmptyArray[String](null)

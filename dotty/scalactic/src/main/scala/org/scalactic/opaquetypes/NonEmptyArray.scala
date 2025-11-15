@@ -136,6 +136,12 @@ object NonEmptyArray {
     def unapplySeq[T](nonEmptyArray: NonEmptyArray[T]): Option[(T, Seq[T])] = Some(nonEmptyArray.head, nonEmptyArray.tail)
   */
 
+  def ensuringValid[T](array: Array[T]): NonEmptyArray[T] =
+    if (array.length == 0)
+      throw new IllegalArgumentException(Resources.nonEmptyArrayEmpty)
+    else
+      array
+
   /**
     * Optionally construct a <code>NonEmptyArray</code> containing the elements, if any, of a given <code>GenSeq</code>.
     *
