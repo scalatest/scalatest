@@ -172,7 +172,7 @@ object NonEmptySet {
    *
    * @param set the <code>Set</code> to check to see if it is a valid.
    * @return the <code>NonEmptySet</code> if the passed set is valid..
-   * @throws AssertionError if the passed array is not valid.
+   * @throws AssertionError if the passed set is not valid.
    */
   def ensuringValid[T](set: Set[T]): NonEmptySet[T] =
     if (set.size == 0)

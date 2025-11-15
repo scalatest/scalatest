@@ -22,6 +22,7 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
 import org.scalactic.NormalizingEquality
+import org.scalactic.Resources
 
 import org.scalactic.opaquetypes.NonEmptyStrings.NonEmptyString
 
@@ -57,6 +58,12 @@ class NonEmptyStringSpec extends UnitSpec {
     threesie2(0) shouldBe '1'
     threesie2(1) shouldBe '2'
     threesie2(2) shouldBe '3'
+  }
+  it can "be constructed with ensuringValid method" in {
+    NonEmptyString.ensuringValid("hi") shouldBe NonEmptyString("hi")
+    the [AssertionError] thrownBy {
+      NonEmptyString.ensuringValid("")
+    } should have message Resources.nonEmptyStringEmpty
   }
   it can "be constructed from a Iterable via the from method on NonEmptyString singleton" in {
     NonEmptyString.from("") shouldBe None

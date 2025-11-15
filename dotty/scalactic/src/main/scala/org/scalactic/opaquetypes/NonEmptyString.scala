@@ -18,6 +18,7 @@ package org.scalactic.opaquetypes
 import scala.collection.{GenSeq, StringOps}
 import scala.collection.mutable.Buffer
 import org.scalactic.Every
+import org.scalactic.Resources
 import scala.annotation.targetName
 import org.scalactic.Resources
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
@@ -175,6 +176,30 @@ object NonEmptyStrings {
       * @return an <code>Seq</code> containing this <code>NonEmptyString</code>s elements, wrapped in a <code>Some</code> 
       */
     def unapplySeq(nonEmptyString: NonEmptyString): Option[Seq[String]] = Some(Seq(nonEmptyString))
+
+    /**
+      *
+      * A factory/assertion method that produces a <code>NonEmptyString</code>
+      * given a valid <code>String</code> value, or throws
+      * <code>AssertionError</code>, if given an invalid <code>String</code> value.
+      *
+      * Note: you should use this method only when you are convinced that it will
+      * always succeed, i.e., never throw an exception. It is good practice to
+      * add a comment near the invocation of this method indicating ''why'' you
+      * think it will always succeed to document your reasoning. If you are not
+      * sure an `ensuringValid` call will always succeed, you should use one of
+      * the other factory or validation methods provided on this object instead:
+      * `from'.
+      *
+      * @param string the <code>String</code> to check to see if it is a valid.
+      * @return the <code>NonEmptyString</code> if the passed string is valid..
+      * @throws AssertionError if the passed string is not valid.
+      */
+    def ensuringValid(string: String): NonEmptyString =
+      if (string.length == 0)
+        throw new AssertionError(Resources.nonEmptyStringEmpty)
+      else
+        string
 
     /**
       * Optionally construct a <code>NonEmptyString</code> containing the characters, if any, of a given <code>GenSeq</code>.

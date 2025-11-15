@@ -172,7 +172,7 @@ object NonEmptyList {
    *
    * @param list the <code>List</code> to check to see if it is a valid.
    * @return the <code>NonEmptyList</code> if the passed list is valid..
-   * @throws AssertionError if the passed array is not valid.
+   * @throws AssertionError if the passed list is not valid.
    */
   def ensuringValid[T](list: List[T]): NonEmptyList[T] =
     if (list.length == 0)
