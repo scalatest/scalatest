@@ -20,6 +20,7 @@ import scala.collection.mutable.{ArrayBuffer, Buffer}
 import scala.language.higherKinds
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.reflect.ClassTag
+import org.scalactic.Resources
 
 /**
   * A non-empty map: an ordered, immutable, non-empty collection of key-value tuples with <code>LinearSeq</code> performance characteristics.
@@ -125,6 +126,30 @@ object NonEmptyMap {
     * @return an <code>Seq</code> containing this <code>NonEmptyMap</code>s elements, wrapped in a <code>Some</code> 
     */
   def unapplySeq[K, V](nonEmptyMap: NonEmptyMap[K, V]): Option[Seq[(K, V)]] = Some(nonEmptyMap.toSeq)
+
+  /**
+   *
+   * A factory/assertion method that produces a <code>NonEmptyMap</code>
+   * given a valid <code>Map</code> value, or throws
+   * <code>AssertionError</code>, if given an invalid <code>Map</code> value.
+   *
+   * Note: you should use this method only when you are convinced that it will
+   * always succeed, i.e., never throw an exception. It is good practice to
+   * add a comment near the invocation of this method indicating ''why'' you
+   * think it will always succeed to document your reasoning. If you are not
+   * sure an `ensuringValid` call will always succeed, you should use one of
+   * the other factory or validation methods provided on this object instead:
+   * `from'.
+   *
+   * @param map the <code>Map</code> to check to see if it is a valid.
+   * @return the <code>NonEmptyMap</code> if the passed map is valid..
+   * @throws AssertionError if the passed map is not valid.
+   */
+  def ensuringValid[K, V](map: Map[K, V]): NonEmptyMap[K, V] =
+    if (map.size == 0)
+      throw new AssertionError(Resources.nonEmptyMapEmpty)
+    else
+      map
 
   /**
     * Optionally construct a <code>NonEmptyMap</code> containing the elements, if any, of a given <code>GenSeq</code>.
