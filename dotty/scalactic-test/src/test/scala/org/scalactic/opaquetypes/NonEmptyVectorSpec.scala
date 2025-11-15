@@ -22,6 +22,7 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
 import org.scalactic.NormalizingEquality
+import org.scalactic.Resources
 
 import org.scalatest.CompatParColls.Converters._
 
@@ -41,6 +42,13 @@ class NonEmptyVectorSpec extends UnitSpec {
     threesie(0) shouldBe 1
     threesie(1) shouldBe 2
     threesie(2) shouldBe 3
+  }
+  it can "be constructed with ensuringValid method" in {
+    NonEmptyVector.ensuringValid(Vector(1, 2, 3)) shouldBe NonEmptyVector(1, 2, 3)
+    NonEmptyVector.ensuringValid(Vector("hi")) shouldBe NonEmptyVector("hi")
+    the [AssertionError] thrownBy {
+      NonEmptyVector.ensuringValid(Vector.empty[Int])
+    } should have message Resources.nonEmptyVectorEmpty
   }
   it can "be constructed from a Iterable via the from method on NonEmptyVector singleton" in {
     NonEmptyVector.from(Vector.empty[String]) shouldBe None
