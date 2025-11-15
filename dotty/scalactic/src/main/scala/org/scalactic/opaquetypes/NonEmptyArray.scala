@@ -136,9 +136,27 @@ object NonEmptyArray {
     def unapplySeq[T](nonEmptyArray: NonEmptyArray[T]): Option[(T, Seq[T])] = Some(nonEmptyArray.head, nonEmptyArray.tail)
   */
 
+  /**
+   *
+   * A factory/assertion method that produces a <code>NonEmptyArray</code>
+   * given a valid <code>Array</code> value, or throws
+   * <code>AssertionError</code>, if given an invalid <code>Array</code> value.
+   *
+   * Note: you should use this method only when you are convinced that it will
+   * always succeed, i.e., never throw an exception. It is good practice to
+   * add a comment near the invocation of this method indicating ''why'' you
+   * think it will always succeed to document your reasoning. If you are not
+   * sure an `ensuringValid` call will always succeed, you should use one of
+   * the other factory or validation methods provided on this object instead:
+   * `from'.
+   *
+   * @param array the <code>Array</code> to check to see if it is a valid.
+   * @return the <code>NonEmptyArray</code> if the passed array is valid..
+   * @throws AssertionError if the passed array is not valid.
+   */
   def ensuringValid[T](array: Array[T]): NonEmptyArray[T] =
     if (array.length == 0)
-      throw new IllegalArgumentException(Resources.nonEmptyArrayEmpty)
+      throw new AssertionError(Resources.nonEmptyArrayEmpty)
     else
       array
 

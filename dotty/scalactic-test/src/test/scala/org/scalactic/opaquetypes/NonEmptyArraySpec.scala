@@ -54,9 +54,9 @@ class NonEmptyArraySpec extends UnitSpec {
     // SKIP-SCALATESTJS,NATIVE-END
   }
   it can "be constructed with ensuringValid method" in {
-    //NonEmptyArray.ensuringValid(Array(1, 2, 3)) shouldBe NonEmptyArray(1, 2, 3)
-    //NonEmptyArray.ensuringValid(Array("hi")) shouldBe NonEmptyArray("hi")
-    the [IllegalArgumentException] thrownBy {
+    NonEmptyArray.ensuringValid(Array(1, 2, 3)) shouldBe NonEmptyArray(1, 2, 3)
+    NonEmptyArray.ensuringValid(Array("hi")) shouldBe NonEmptyArray("hi")
+    the [AssertionError] thrownBy {
       NonEmptyArray.ensuringValid(Array.empty[Int])
     } should have message Resources.nonEmptyArrayEmpty
   }
