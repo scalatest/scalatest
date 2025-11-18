@@ -200,6 +200,7 @@ object PosZInt {
   val MinValue: PosZInt = 0   
   
   extension (x: PosZInt) {
+    def value: Int = x
     def abs: PosZInt = x
   }
   
