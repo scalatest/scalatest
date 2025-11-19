@@ -348,6 +348,13 @@ object PosZInt extends PosZIntConversionsLowPriority {
       * not including `end`.
       */
     def until(end: Int, step: Int): Range = Range(value, end, step)
+
+    def ensuringValid(f: Int => Int): PosZInt = {
+      val res = f(x)
+      if (res < 0) 
+        throw new AssertionError(Resources.invalidPosZInt)
+      else res
+    }
   }
   
   given Conversion[PosZInt, Int] with {
@@ -357,50 +364,4 @@ object PosZInt extends PosZIntConversionsLowPriority {
   given Ordering[PosZInt] with {
     def compare(x: PosZInt, y: PosZInt): Int = x.compareTo(y)
   }
-
-  /**
-    * Implicit widening conversion from <code>PosZInt</code> to <code>Long</code>.
-    *
-    * @param pos the <code>PosZInt</code> to widen
-    * @return the <code>Int</code> value underlying the specified <code>PosZInt</code>,
-    *     widened to <code>Long</code>.
-    */
-  /*given widenToLong: Conversion[PosZInt, Long] with {
-    def apply(pos: PosZInt): Long = pos.value
-  }*/
-  //implicit def widenToLong(pos: PosZInt): Long = pos.value
-
-  /**
-    * Implicit widening conversion from <code>PosZInt</code> to <code>Int</code>.
-    *
-    * @param pos the <code>PosZInt</code> to widen
-    * @return the <code>Int</code> value underlying the specified <code>PosZInt</code>.
-    */
-  /*given widenToInt: Conversion[PosZInt, Int] with {
-    def apply(pos: PosZInt): Int = pos.value
-  }
-
-  
-
-  /**
-    * Implicit widening conversion from <code>PosZInt</code> to <code>Float</code>.
-    *
-    * @param pos the <code>PosZInt</code> to widen
-    * @return the <code>Int</code> value underlying the specified <code>PosZInt</code>,
-    *     widened to <code>Float</code>.
-    */
-  given widenToFloat: Conversion[PosZInt, Float] with {
-    def apply(pos: PosZInt): Float = pos.value
-  }
-
-  /**
-    * Implicit widening conversion from <code>PosZInt</code> to <code>Double</code>.
-    *
-    * @param pos the <code>PosZInt</code> to widen
-    * @return the <code>Int</code> value underlying the specified <code>PosZInt</code>,
-    *     widened to <code>Double</code>.
-    */
-  given widenToDouble: Conversion[PosZInt, Double] with {
-    def apply(pos: PosZInt): Double = pos.value
-  }*/
 }
