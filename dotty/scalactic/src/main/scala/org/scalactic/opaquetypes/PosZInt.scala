@@ -361,6 +361,20 @@ object PosZInt extends PosZIntConversionsLowPriority {
     def apply(x: PosZInt): Int = x
   }
 
+  given Conversion[Int, PosZInt] with {
+    inline def apply[I <: Int & Singleton](inline x: I): PosZInt =
+      inline constValueOpt[I] match {
+        case Some(v: Int) =>
+          inline if v < 0 then
+            error("PosZInt cannot be instantiated with a negative integer literal")
+          else
+            v.asInstanceOf[PosZInt]
+        case None =>
+          PosZInt.ensuringValid(x)
+      }
+    def apply(x: Int): PosZInt = PosZInt.ensuringValid(x)
+  }
+
   given Ordering[PosZInt] with {
     def compare(x: PosZInt, y: PosZInt): Int = x.compareTo(y)
   }
