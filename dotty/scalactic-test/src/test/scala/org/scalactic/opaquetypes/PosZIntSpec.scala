@@ -195,10 +195,10 @@ class PosZIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
         "takesPosZInt(-8)" shouldNot compile
       }
 
-      /*it("should not compile when x is passed in") {
+      it("should not compile when x is passed in") {
         val x: Int = -8
         "takesPosZInt(x)" shouldNot compile
-      }*/
+      }
     }
 
     it("should offer a unary ~ method that is consistent with Int") {

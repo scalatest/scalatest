@@ -360,7 +360,7 @@ object PosZInt extends PosZIntConversionsLowPriority {
   given Conversion[PosZInt, Int] with {
     def apply(x: PosZInt): Int = x
   }
-
+ 
   given Conversion[Int, PosZInt] with {
     inline def apply[I <: Int & Singleton](inline x: I): PosZInt =
       inline constValueOpt[I] match {
@@ -370,11 +370,11 @@ object PosZInt extends PosZIntConversionsLowPriority {
           else
             v.asInstanceOf[PosZInt]
         case None =>
-          PosZInt.ensuringValid(x)
+          error("PosZInt conversion requires an integer literal")
       }
-    def apply(x: Int): PosZInt = PosZInt.ensuringValid(x)
+    def apply(x: Int): PosZInt = PosZInt.ensuringValid(x)  
   }
-
+ 
   given Ordering[PosZInt] with {
     def compare(x: PosZInt, y: PosZInt): Int = x.compareTo(y)
   }
