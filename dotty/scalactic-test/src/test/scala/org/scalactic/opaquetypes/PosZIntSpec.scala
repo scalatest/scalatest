@@ -213,11 +213,11 @@ class PosZIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
       }
     }
 
-    /*it("should offer a unary - method that returns NegZInt") {
+    it("should offer a unary - method that returns NegZInt") {
       forAll { (p: PosZInt) =>
         (-p) shouldEqual (NegZInt.ensuringValid(-(p.toInt)))
       }
-    }*/
+    }
 
     it("should offer << methods that are consistent with Int") {
       forAll { (pzint: PosZInt, shift: Int) =>
