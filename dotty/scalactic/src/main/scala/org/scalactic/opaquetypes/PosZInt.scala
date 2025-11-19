@@ -33,6 +33,15 @@ trait PosZIntConversionsLowPriority {
   given Conversion[PosZInt, Double] with {
     def apply(pos: PosZInt): Double = pos.value.toDouble
   }
+  given Conversion[PosZInt, PosZLong] with {
+    def apply(pos: PosZInt): PosZLong = PosZLong.ensuringValid(pos.value.toLong)
+  }
+  given Conversion[PosZInt, PosZFloat] with {
+    def apply(pos: PosZInt): PosZFloat = PosZFloat.ensuringValid(pos.value.toFloat)
+  }
+  given Conversion[PosZInt, PosZDouble] with {
+    def apply(pos: PosZInt): PosZDouble = PosZDouble.ensuringValid(pos.value.toDouble)
+  }
 }
 
 object PosZInt extends PosZIntConversionsLowPriority {
