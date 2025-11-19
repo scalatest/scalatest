@@ -8,7 +8,19 @@ import scala.compiletime.{ constValueOpt, error }
 
 opaque type PosZInt = Int
 
-object PosZInt {
+trait PosZIntConversionsLowPriority {
+  given Conversion[PosZInt, Long] with {
+    def apply(pos: PosZInt): Long = pos.value.toLong
+  }
+  given Conversion[PosZInt, Float] with {
+    def apply(pos: PosZInt): Float = pos.value.toFloat
+  }
+  given Conversion[PosZInt, Double] with {
+    def apply(pos: PosZInt): Double = pos.value.toDouble
+  }
+}
+
+object PosZInt extends PosZIntConversionsLowPriority {
   
   inline def apply[I <: Int & Singleton](inline i: I): PosZInt =
     inline constValueOpt[I] match {
@@ -190,18 +202,152 @@ object PosZInt {
     if (isValid(value)) value else default 
 
   /**
-   * The largest value representable as a $typeDesc$ <code>Int</code>, which is <code>$typeName$($typeMaxValueNumber$)</code>.
+   * The largest value representable as a $typeDesc$ <code>Int</code>, which is <code>PosZInt($typeMaxValueNumber$)</code>.
    */
   val MaxValue: PosZInt = Int.MaxValue
 
   /**
-   * The smallest value representable as a $typeDesc$ <code>Int</code>, which is <code>$typeName$($typeMinValueNumber$)</code>.
+   * The smallest value representable as a $typeDesc$ <code>Int</code>, which is <code>PosZInt($typeMinValueNumber$)</code>.
    */
   val MinValue: PosZInt = 0   
   
   extension (x: PosZInt) {
     def value: Int = x
     def abs: PosZInt = x
+    /**
+      * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
+      */
+    def max(that: PosZInt): PosZInt = math.max(x, that)
+
+    /**
+      * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
+      */
+    def min(that: PosZInt): PosZInt = math.min(x, that)
+
+    /**
+      * Returns a string representation of this <code>PosZInt</code>'s underlying <code>Int</code> as an
+      * unsigned integer in base&nbsp;2.
+      *
+      * <p>
+      * The unsigned integer value is the argument plus 2<sup>32</sup>
+      * if this <code>PosZInt</code>'s underlying <code>Int</code> is negative; otherwise it is equal to the
+      * underlying <code>Int</code>.  This value is converted to a string of ASCII digits
+      * in binary (base&nbsp;2) with no extra leading <code>0</code>s.
+      * If the unsigned magnitude is zero, it is represented by a
+      * single zero character <code>'0'</code>
+      * (<code>'&#92;u0030'</code>); otherwise, the first character of
+      * the representation of the unsigned magnitude will not be the
+      * zero character. The characters <code>'0'</code>
+      * (<code>'&#92;u0030'</code>) and <code>'1'</code>
+      * (<code>'&#92;u0031'</code>) are used as binary digits.
+      * </p>
+      *
+      * @return  the string representation of the unsigned integer value
+      *          represented by this <code>PosZInt</code>'s underlying <code>Int</code> in binary (base&nbsp;2).
+      */
+    def toBinaryString: String = java.lang.Integer.toBinaryString(x)
+
+    /**
+      * Returns a string representation of this <code>PosZInt</code>'s underlying <code>Int</code> as an
+      * unsigned integer in base&nbsp;16.
+      *
+      * <p>
+      * The unsigned integer value is the argument plus 2<sup>32</sup>
+      * if this <code>PosZInt</code>'s underlying <code>Int</code> is negative; otherwise, it is equal to the
+      * this <code>PosZInt</code>'s underlying <code>Int</code>  This value is converted to a string of ASCII digits
+      * in hexadecimal (base&nbsp;16) with no extra leading
+      * <code>0</code>s. If the unsigned magnitude is zero, it is
+      * represented by a single zero character <code>'0'</code>
+      * (<code>'&#92;u0030'</code>); otherwise, the first character of
+      * the representation of the unsigned magnitude will not be the
+      * zero character. The following characters are used as
+      * hexadecimal digits:
+      * </p>
+      *
+      * <blockquote>
+      *  <code>0123456789abcdef</code>
+      * </blockquote>
+      *
+      * These are the characters <code>'&#92;u0030'</code> through
+      * <code>'&#92;u0039'</code> and <code>'&#92;u0061'</code> through
+      * <code>'&#92;u0066'</code>. If uppercase letters are
+      * desired, the <code>toUpperCase</code> method may
+      * be called on the result.
+      *
+      * @return  the string representation of the unsigned integer value
+      *          represented by this <code>PosZInt</code>'s underlying <code>Int</code> in hexadecimal (base&nbsp;16).
+      */
+    def toHexString: String = java.lang.Integer.toHexString(x)
+
+    /**
+      * Returns a string representation of this <code>PosZInt</code>'s underlying <code>Int</code> as an
+      * unsigned integer in base&nbsp;8.
+      *
+      * <p>The unsigned integer value is this <code>PosZInt</code>'s underlying <code>Int</code> plus 2<sup>32</sup>
+      * if the underlying <code>Int</code> is negative; otherwise, it is equal to the
+      * underlying <code>Int</code>.  This value is converted to a string of ASCII digits
+      * in octal (base&nbsp;8) with no extra leading <code>0</code>s.
+      *
+      * <p>If the unsigned magnitude is zero, it is represented by a
+      * single zero character <code>'0'</code>
+      * (<code>'&#92;u0030'</code>); otherwise, the first character of
+      * the representation of the unsigned magnitude will not be the
+      * zero character. The following characters are used as octal
+      * digits:
+      *
+      * <blockquote>
+      * <code>01234567</code>
+      * </blockquote>
+      *
+      * These are the characters <code>'&#92;u0030'</code> through
+      * <code>'&#92;u0037'</code>.
+      *
+      * @return  the string representation of the unsigned integer value
+      *          represented by this <code>PosZInt</code>'s underlying <code>Int</code> in octal (base&nbsp;8).
+      */
+    def toOctalString: String = java.lang.Integer.toOctalString(x)
+
+    /**
+      * Create an inclusive <code>Range</code> from this <code>PosZInt</code> value
+      * to the specified <code>end</code> with step value 1.
+      *
+      * @param end The final bound of the range to make.
+      * @return A [[scala.collection.immutable.Range]] from `'''this'''` up to
+      * and including `end`.
+      */
+    def to(end: Int): Range.Inclusive = Range.inclusive(x, end)
+
+    /**
+      * Create an inclusive <code>Range</code> from this <code>PosZInt</code> value
+      * to the specified <code>end</code> with the specified <code>step</code> value.
+      *
+      * @param end The final bound of the range to make.
+      * @param step The number to increase by for each step of the range.
+      * @return A [[scala.collection.immutable.Range]] from `'''this'''` up to
+      * and including `end`.
+      */
+    def to(end: Int, step: Int): Range.Inclusive = Range.inclusive(x, end, step)
+
+    /**
+      * Create a <code>Range</code> from this <code>PosZInt</code> value
+      * until the specified <code>end</code> (exclusive) with step value 1.
+      *
+      * @param end The final bound of the range to make.
+      * @return A [[scala.collection.immutable.Range]] from `this` up to but
+      * not including `end`.
+      */
+    def until(end: Int): Range = Range(value, end)
+
+    /**
+      * Create a <code>Range</code> from this <code>PosZInt</code> value
+      * until the specified <code>end</code> (exclusive) with the specified <code>step</code> value.
+      *
+      * @param end The final bound of the range to make.
+      * @param step The number to increase by for each step of the range.
+      * @return A [[scala.collection.immutable.Range]] from `this` up to but
+      * not including `end`.
+      */
+    def until(end: Int, step: Int): Range = Range(value, end, step)
   }
   
   given Conversion[PosZInt, Int] with {
@@ -211,4 +357,50 @@ object PosZInt {
   given Ordering[PosZInt] with {
     def compare(x: PosZInt, y: PosZInt): Int = x.compareTo(y)
   }
+
+  /**
+    * Implicit widening conversion from <code>PosZInt</code> to <code>Long</code>.
+    *
+    * @param pos the <code>PosZInt</code> to widen
+    * @return the <code>Int</code> value underlying the specified <code>PosZInt</code>,
+    *     widened to <code>Long</code>.
+    */
+  /*given widenToLong: Conversion[PosZInt, Long] with {
+    def apply(pos: PosZInt): Long = pos.value
+  }*/
+  //implicit def widenToLong(pos: PosZInt): Long = pos.value
+
+  /**
+    * Implicit widening conversion from <code>PosZInt</code> to <code>Int</code>.
+    *
+    * @param pos the <code>PosZInt</code> to widen
+    * @return the <code>Int</code> value underlying the specified <code>PosZInt</code>.
+    */
+  /*given widenToInt: Conversion[PosZInt, Int] with {
+    def apply(pos: PosZInt): Int = pos.value
+  }
+
+  
+
+  /**
+    * Implicit widening conversion from <code>PosZInt</code> to <code>Float</code>.
+    *
+    * @param pos the <code>PosZInt</code> to widen
+    * @return the <code>Int</code> value underlying the specified <code>PosZInt</code>,
+    *     widened to <code>Float</code>.
+    */
+  given widenToFloat: Conversion[PosZInt, Float] with {
+    def apply(pos: PosZInt): Float = pos.value
+  }
+
+  /**
+    * Implicit widening conversion from <code>PosZInt</code> to <code>Double</code>.
+    *
+    * @param pos the <code>PosZInt</code> to widen
+    * @return the <code>Int</code> value underlying the specified <code>PosZInt</code>,
+    *     widened to <code>Double</code>.
+    */
+  given widenToDouble: Conversion[PosZInt, Double] with {
+    def apply(pos: PosZInt): Double = pos.value
+  }*/
 }

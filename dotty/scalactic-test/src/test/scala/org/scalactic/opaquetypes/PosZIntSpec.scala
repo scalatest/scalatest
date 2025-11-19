@@ -217,7 +217,7 @@ class PosZIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
       forAll { (p: PosZInt) =>
         (-p) shouldEqual (NegZInt.ensuringValid(-(p.toInt)))
       }
-    }
+    }*/
 
     it("should offer << methods that are consistent with Int") {
       forAll { (pzint: PosZInt, shift: Int) =>
@@ -361,7 +361,7 @@ class PosZIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
         def widen(value: Double): Double = value
         widen(pzint) shouldEqual widen(pzint.toInt)
       }
-      forAll { (pzint: PosZInt) =>
+      /*forAll { (pzint: PosZInt) =>
         def widen(value: PosZLong): PosZLong = value
         widen(pzint) shouldEqual widen(PosZLong.from(pzint.toInt).get)
       }
@@ -372,9 +372,9 @@ class PosZIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
       forAll { (pzint: PosZInt) =>
         def widen(value: PosZDouble): PosZDouble = value
         widen(pzint) shouldEqual widen(PosZDouble.from(pzint.toInt).get)
-      }
+      }*/
     }
-    it("should offer an ensuringValid method that takes an Int => Int, throwing AssertionError if the result is invalid") {
+    /*it("should offer an ensuringValid method that takes an Int => Int, throwing AssertionError if the result is invalid") {
       PosZInt(33).ensuringValid(_ + 1) shouldEqual PosZInt(34)
       an [AssertionError] should be thrownBy { PosZInt.MaxValue.ensuringValid(_ + 1) }
     }*/
