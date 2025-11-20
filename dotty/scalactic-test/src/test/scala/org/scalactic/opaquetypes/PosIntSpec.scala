@@ -80,11 +80,11 @@ class PosIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with G
         an [AssertionError] should be thrownBy PosInt.ensuringValid(-99)
       }
     }
-    /*describe("should offer a tryingValid factory method that") {
+    describe("should offer a tryingValid factory method that") {
       import TryValues.*
       it("returns a PosInt wrapped in a Success if the passed Int is greater than 0") {
-        PosInt.tryingValid(50).success.value.value shouldBe 50
-        PosInt.tryingValid(100).success.value.value shouldBe 100
+        PosInt.tryingValid(50) shouldBe Success(50)
+        PosInt.tryingValid(100) shouldBe Success(100)
       }
 
       it("returns an AssertionError wrapped in a Failure if the passed Int is NOT greater than 0") {
@@ -93,7 +93,7 @@ class PosIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with G
         PosInt.tryingValid(-99).failure.exception shouldBe an [AssertionError]
       }
     }
-    describe("should offer a passOrElse factory method that") {
+    /*describe("should offer a passOrElse factory method that") {
       it("returns a Pass if the given Int is greater than 0") {
         PosInt.passOrElse(50)(i => i) shouldBe Pass
         PosInt.passOrElse(100)(i => i) shouldBe Pass

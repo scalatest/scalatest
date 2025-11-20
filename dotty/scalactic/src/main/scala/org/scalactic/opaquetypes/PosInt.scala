@@ -17,6 +17,7 @@ package org.scalactic.opaquetypes
 
 import org.scalactic.Resources
 import scala.compiletime.{ constValueOpt, error }
+import scala.util.{Try, Success, Failure}
 
 /** Opaque type representing positive (greater than zero) Int values.
   *
@@ -75,5 +76,37 @@ object PosInt {
     if (i <= 0)
       throw new AssertionError(Resources.invalidPosInt)
     else i
+
+  /**
+   * A factory/validation method that produces a <code>PosInt</code>, wrapped
+   * in a <code>Success</code>, given a valid <code>Int</code> value, or if the
+   * given <code>Int</code> is invalid, an <code>AssertionError</code>, wrapped
+   * in a <code>Failure</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Int</code> value and if
+   * it is a PosInt <code>Int</code>, it will return a <code>PosInt</code>
+   * representing that value, wrapped in a <code>Success</code>.
+   * Otherwise, if the passed <code>Int</code> value is not PosInt, this
+   * method will return an <code>AssertionError</code>, wrapped in a <code>Failure</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Int</code> literals at compile time, whereas this method inspects
+   * <code>Int</code> values at run time.
+   * </p>
+   *
+   * @param value the <code>Int</code> to inspect, and if a positive integer, return
+   *     wrapped in a <code>Success(PosInt)</code>.
+   * @return the specified <code>Int</code> value wrapped
+   *     in a <code>Success(PosInt)</code>, if it is a positive integer, else a <code>Failure(AssertionError)</code>.
+   */
+   def tryingValid(value: Int): Try[PosInt] =
+     if (value > 0)
+       Success(value)
+     else
+       Failure(new AssertionError(Resources.invalidPosInt))  
 
 }
