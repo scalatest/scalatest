@@ -21,31 +21,66 @@ import org.scalactic.{Validation, Pass, Fail}
 import org.scalactic.{Or, Good, Bad}
 import scala.compiletime.{ constValueOpt, error }
 
+/** Opaque type representing non-negative (zero or positive) Int values.
+  *
+  * Instances of this type are guaranteed to be >= 0. Use the factory and
+  * validation methods in the companion object to create or validate values.
+  */
 opaque type PosZInt = Int
 
+/** Lower-priority given conversions for PosZInt.
+  *
+  * These conversions are provided at low priority to avoid 
+  * conflict resolution in the presence of other numeric conversions.
+  */
 trait PosZIntConversionsLowPriority {
+  /** Convert a [[PosZInt]] to a plain Long with the same numeric value. */
   given Conversion[PosZInt, Long] with {
     def apply(pos: PosZInt): Long = pos.value.toLong
   }
+  /** Convert a [[PosZInt]] to a Float preserving its numeric value. */
   given Conversion[PosZInt, Float] with {
     def apply(pos: PosZInt): Float = pos.value.toFloat
   }
+  /** Convert a [[PosZInt]] to a Double preserving its numeric value. */
   given Conversion[PosZInt, Double] with {
     def apply(pos: PosZInt): Double = pos.value.toDouble
   }
+  /** Convert a [[PosZInt]] to a [[PosZLong]] with the same numeric value. */
   given Conversion[PosZInt, PosZLong] with {
     def apply(pos: PosZInt): PosZLong = PosZLong.ensuringValid(pos.value.toLong)
   }
+  /** Convert a [[PosZInt]] to a [[PosZFloat]] with the same numeric value. */
   given Conversion[PosZInt, PosZFloat] with {
     def apply(pos: PosZInt): PosZFloat = PosZFloat.ensuringValid(pos.value.toFloat)
   }
+  /** Convert a [[PosZInt]] to a [[PosZDouble]] with the same numeric value. */
   given Conversion[PosZInt, PosZDouble] with {
     def apply(pos: PosZInt): PosZDouble = PosZDouble.ensuringValid(pos.value.toDouble)
   }
 }
 
+/** Companion object for the [[PosZInt]] opaque type.
+  *
+  * Provides factory and validation methods, given conversions, extension
+  * methods, and useful constants (e.g. MaxValue, MinValue). Prefer the
+  * inline [[apply]] overload for compile-time checked construction from
+  * integer literals; use [[ensuringValid]], [[from]], or other helpers for
+  * runtime values.
+  */
 object PosZInt extends PosZIntConversionsLowPriority {
   
+  /** Compile-time factory for creating a [[PosZInt]] from an integer literal.
+    *
+    * This inline method inspects the provided integer literal at compile time
+    * and rejects negative literals. Use it as: `PosZInt(5)`. For non-literal
+    * values, use [[ensuringValid]] or [[from]].
+    *
+    * @tparam I the singleton Int literal type
+    * @param i the Int literal
+    * @return a [[PosZInt]] representing the given non-negative literal
+    * @throws a compile-time error if the literal is negative or not a literal
+    */
   inline def apply[I <: Int & Singleton](inline i: I): PosZInt =
     inline constValueOpt[I] match {
       case Some(v: Int) =>
@@ -57,11 +92,22 @@ object PosZInt extends PosZIntConversionsLowPriority {
         error("PosZInt.apply requires an integer literal")
     }
 
+  /** Construct a [[PosZInt]] from a runtime Int if it is non-negative.
+    *
+    * @param i runtime Int to validate
+    * @return Some(PosZInt) if i >= 0, otherwise None
+    */
   def from(i: Int): Option[PosZInt] =
     if (i >= 0) Some(i) else None
 
-  def ensuringValid(i: Int): PosZInt = 
-    if (i < 0) 
+  /** Ensure the runtime Int is non-negative and return it as a [[PosZInt]].
+    *
+    * @param i runtime Int to check
+    * @return the given integer as a [[PosZInt]] if valid
+    * @throws AssertionError if the given Int is negative
+    */
+  def ensuringValid(i: Int): PosZInt =
+    if (i < 0)
       throw new AssertionError(Resources.invalidPosZInt)
     else i
 
@@ -75,7 +121,7 @@ object PosZInt extends PosZIntConversionsLowPriority {
    * This method will inspect the passed <code>Int</code> value and if
    * it is a PosZInt <code>Int</code>, it will return a <code>PosZInt</code>
    * representing that value, wrapped in a <code>Success</code>.
-   * Otherwise, the passed <code>Int</code> value is not PosZInt, so this
+   * Otherwise, if the passed <code>Int</code> value is not PosZInt, this
    * method will return an <code>AssertionError</code>, wrapped in a <code>Failure</code>.
    * </p>
    *
@@ -86,10 +132,10 @@ object PosZInt extends PosZIntConversionsLowPriority {
    * <code>Int</code> values at run time.
    * </p>
    *
-   * @param value the <code>Int</code> to inspect, and if $typeDesc$, return
+   * @param value the <code>Int</code> to inspect, and if a non-negative integer, return
    *     wrapped in a <code>Success(PosZInt)</code>.
    * @return the specified <code>Int</code> value wrapped
-   *     in a <code>Success(PosZInt)</code>, if it is $typeDesc$, else a <code>Failure(AssertionError)</code>.
+   *     in a <code>Success(PosZInt)</code>, if it is a non-negative integer, else a <code>Failure(AssertionError)</code>.
    */
    def tryingValid(value: Int): Try[PosZInt] =
      if (value >= 0)
@@ -97,6 +143,12 @@ object PosZInt extends PosZIntConversionsLowPriority {
      else
        Failure(new AssertionError(Resources.invalidPosZInt))
 
+  /** 
+  * Return true when the provided Int is a valid [[PosZInt]] value (>= 0). 
+  *
+  * @param value the Int to validate
+  * @return true if the specified Int is a non-negative integer, else false
+  */
   def isValid(value: Int): Boolean = value >= 0
 
   /**
@@ -108,8 +160,8 @@ object PosZInt extends PosZIntConversionsLowPriority {
    *
    * <p>
    * This method will inspect the passed <code>Int</code> value and if
-   * it is a $typeDesc$ <code>Int</code>, it will return a <code>Pass</code>.
-   * Otherwise, the passed <code>Int</code> value is $typeDesc$, so this
+   * it is a non-negative integer <code>Int</code>, it will return a <code>Pass</code>.
+   * Otherwise, the passed <code>Int</code> value is not a non-negative integer, so this
    * method will return a result of type <code>E</code> obtained by passing
    * the invalid <code>Int</code> value to the given function <code>f</code>,
    * wrapped in a `Fail`.
@@ -122,13 +174,15 @@ object PosZInt extends PosZIntConversionsLowPriority {
    * <code>Int</code> values at run time.
    * </p>
    *
-   * @param value the `Int` to validate that it is $typeDesc$.
-   * @return a `Pass` if the specified `Int` value is $typeDesc$,
+   * @tparam E error type produced by f
+   * @param value the `Int` to validate that it is a non-negative integer.
+   * @param f function to produce an error when value is invalid
+   * @return a `Pass` if the specified `Int` value is a non-negative integer,
    *   else a `Fail` containing an error value produced by passing the
    *   specified `Int` to the given function `f`.
    */
   def passOrElse[E](value: Int)(f: Int => E): Validation[E] =
-    if (isValid(value)) Pass else Fail(f(value))     
+    if (isValid(value)) Pass else Fail(f(value))
 
 
   /**
@@ -155,13 +209,15 @@ object PosZInt extends PosZIntConversionsLowPriority {
    * <code>Int</code> values at run time.
    * </p>
    *
+   * @tparam B error type produced by f
    * @param value the <code>Int</code> to inspect, and if PosZInt, return
    *     wrapped in a <code>Good(PosZInt)</code>.
+   * @param f function to produce an error when value is invalid
    * @return the specified <code>Int</code> value wrapped
    *     in a <code>Good(PosZInt)</code>, if it is PosZInt, else a <code>Bad(f(value))</code>.
    */
   def goodOrElse[B](value: Int)(f: Int => B): PosZInt Or B =
-    if (isValid(value)) Good(value) else Bad(f(value))  
+    if (isValid(value)) Good(value) else Bad(f(value))
 
   /**
    * A factory/validation method that produces a <code>PosZInt</code>, wrapped
@@ -187,13 +243,15 @@ object PosZInt extends PosZIntConversionsLowPriority {
    * <code>Int</code> values at run time.
    * </p>
    *
+   * @tparam L error type produced by f
    * @param value the <code>Int</code> to inspect, and if PosZInt, return
    *     wrapped in a <code>Right(PosZInt)</code>.
+   * @param f function to produce an error when value is invalid
    * @return the specified <code>Int</code> value wrapped
    *     in a <code>Right(PosZInt)</code>, if it is PosZInt, else a <code>Left(f(value))</code>.
    */
   def rightOrElse[L](value: Int)(f: Int => L): Either[L, PosZInt] =
-    if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))  
+    if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))
 
   /**
    * A factory method that produces a <code>PosZInt</code> given a
@@ -223,112 +281,42 @@ object PosZInt extends PosZIntConversionsLowPriority {
    *     <code>default</code> <code>PosZInt</code> value.
    */
   def fromOrElse(value: Int, default: => PosZInt): PosZInt =
-    if (isValid(value)) value else default 
+    if (isValid(value)) value else default
 
   /**
-   * The largest value representable as a $typeDesc$ <code>Int</code>, which is <code>PosZInt($typeMaxValueNumber$)</code>.
+   * The largest value representable as a non-negative integer <code>Int</code>, which is <code>PosZInt(2147483647)</code>.
    */
   val MaxValue: PosZInt = Int.MaxValue
 
   /**
-   * The smallest value representable as a $typeDesc$ <code>Int</code>, which is <code>PosZInt($typeMinValueNumber$)</code>.
+   * The smallest value representable as a non-negative integer <code>Int</code>, which is <code>PosZInt(0)</code>.
    */
-  val MinValue: PosZInt = 0   
+  val MinValue: PosZInt = 0
   
   extension (x: PosZInt) {
+    /** Return the underlying Int value. */
     def value: Int = x
+    /** Absolute value (no-op for non-negative integers). */
     def abs: PosZInt = x
     /**
       * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
       */
+    /** Return the greater of this and that. */
     def max(that: PosZInt): PosZInt = math.max(x, that)
 
     /**
       * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
       */
+    /** Return the lesser of this and that. */
     def min(that: PosZInt): PosZInt = math.min(x, that)
 
-    /**
-      * Returns a string representation of this <code>PosZInt</code>'s underlying <code>Int</code> as an
-      * unsigned integer in base&nbsp;2.
-      *
-      * <p>
-      * The unsigned integer value is the argument plus 2<sup>32</sup>
-      * if this <code>PosZInt</code>'s underlying <code>Int</code> is negative; otherwise it is equal to the
-      * underlying <code>Int</code>.  This value is converted to a string of ASCII digits
-      * in binary (base&nbsp;2) with no extra leading <code>0</code>s.
-      * If the unsigned magnitude is zero, it is represented by a
-      * single zero character <code>'0'</code>
-      * (<code>'&#92;u0030'</code>); otherwise, the first character of
-      * the representation of the unsigned magnitude will not be the
-      * zero character. The characters <code>'0'</code>
-      * (<code>'&#92;u0030'</code>) and <code>'1'</code>
-      * (<code>'&#92;u0031'</code>) are used as binary digits.
-      * </p>
-      *
-      * @return  the string representation of the unsigned integer value
-      *          represented by this <code>PosZInt</code>'s underlying <code>Int</code> in binary (base&nbsp;2).
-      */
+    /** Return the unsigned binary string representation of the underlying Int. */
     def toBinaryString: String = java.lang.Integer.toBinaryString(x)
 
-    /**
-      * Returns a string representation of this <code>PosZInt</code>'s underlying <code>Int</code> as an
-      * unsigned integer in base&nbsp;16.
-      *
-      * <p>
-      * The unsigned integer value is the argument plus 2<sup>32</sup>
-      * if this <code>PosZInt</code>'s underlying <code>Int</code> is negative; otherwise, it is equal to the
-      * this <code>PosZInt</code>'s underlying <code>Int</code>  This value is converted to a string of ASCII digits
-      * in hexadecimal (base&nbsp;16) with no extra leading
-      * <code>0</code>s. If the unsigned magnitude is zero, it is
-      * represented by a single zero character <code>'0'</code>
-      * (<code>'&#92;u0030'</code>); otherwise, the first character of
-      * the representation of the unsigned magnitude will not be the
-      * zero character. The following characters are used as
-      * hexadecimal digits:
-      * </p>
-      *
-      * <blockquote>
-      *  <code>0123456789abcdef</code>
-      * </blockquote>
-      *
-      * These are the characters <code>'&#92;u0030'</code> through
-      * <code>'&#92;u0039'</code> and <code>'&#92;u0061'</code> through
-      * <code>'&#92;u0066'</code>. If uppercase letters are
-      * desired, the <code>toUpperCase</code> method may
-      * be called on the result.
-      *
-      * @return  the string representation of the unsigned integer value
-      *          represented by this <code>PosZInt</code>'s underlying <code>Int</code> in hexadecimal (base&nbsp;16).
-      */
+    /** Return the unsigned hexadecimal string representation of the underlying Int. */
     def toHexString: String = java.lang.Integer.toHexString(x)
 
-    /**
-      * Returns a string representation of this <code>PosZInt</code>'s underlying <code>Int</code> as an
-      * unsigned integer in base&nbsp;8.
-      *
-      * <p>The unsigned integer value is this <code>PosZInt</code>'s underlying <code>Int</code> plus 2<sup>32</sup>
-      * if the underlying <code>Int</code> is negative; otherwise, it is equal to the
-      * underlying <code>Int</code>.  This value is converted to a string of ASCII digits
-      * in octal (base&nbsp;8) with no extra leading <code>0</code>s.
-      *
-      * <p>If the unsigned magnitude is zero, it is represented by a
-      * single zero character <code>'0'</code>
-      * (<code>'&#92;u0030'</code>); otherwise, the first character of
-      * the representation of the unsigned magnitude will not be the
-      * zero character. The following characters are used as octal
-      * digits:
-      *
-      * <blockquote>
-      * <code>01234567</code>
-      * </blockquote>
-      *
-      * These are the characters <code>'&#92;u0030'</code> through
-      * <code>'&#92;u0037'</code>.
-      *
-      * @return  the string representation of the unsigned integer value
-      *          represented by this <code>PosZInt</code>'s underlying <code>Int</code> in octal (base&nbsp;8).
-      */
+    /** Return the unsigned octal string representation of the underlying Int. */
     def toOctalString: String = java.lang.Integer.toOctalString(x)
 
     /**
@@ -373,18 +361,30 @@ object PosZInt extends PosZIntConversionsLowPriority {
       */
     def until(end: Int, step: Int): Range = Range(value, end, step)
 
+    /** Apply a transformation and ensure the result is a valid [[PosZInt]].
+      *
+      * @param f function to transform the underlying Int
+      * @return the transformed value as PosZInt if valid
+      * @throws AssertionError if the result of f is negative
+      */
     def ensuringValid(f: Int => Int): PosZInt = {
       val res = f(x)
-      if (res < 0) 
+      if (res < 0)
         throw new AssertionError(Resources.invalidPosZInt)
       else res
     }
   }
   
+  /** Convert a [[PosZInt]] to a plain Int (unwrap). */
   given Conversion[PosZInt, Int] with {
     def apply(x: PosZInt): Int = x
   }
  
+  /** Convert a compile-time Int literal or runtime Int to a [[PosZInt]].
+    *
+    * The inline overload checks integer literals at compile time; the runtime
+    * overload validates and throws for negative values.
+    */
   given Conversion[Int, PosZInt] with {
     inline def apply[I <: Int & Singleton](inline x: I): PosZInt =
       inline constValueOpt[I] match {
@@ -396,9 +396,10 @@ object PosZInt extends PosZIntConversionsLowPriority {
         case None =>
           error("PosZInt conversion requires an integer literal")
       }
-    def apply(x: Int): PosZInt = PosZInt.ensuringValid(x)  
+    def apply(x: Int): PosZInt = PosZInt.ensuringValid(x)
   }
  
+  /** Ordering instance for PosZInt that orders by numeric value. */
   given Ordering[PosZInt] with {
     def compare(x: PosZInt, y: PosZInt): Int = x.compareTo(y)
   }
