@@ -57,6 +57,8 @@ trait PosZIntSpecSupport {
 
 class PosZIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with GeneratorDrivenPropertyChecks with PosZIntSpecSupport {
 
+  import PosInts.PosZInt
+
   describe("A PosZInt") {
     describe("should offer a from factory method that") {
       it("returns Some[PosZInt] if the passed Int is greater than or equal to 0") {
