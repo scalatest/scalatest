@@ -18,6 +18,7 @@ package org.scalactic.opaquetypes
 import org.scalactic.Resources
 import scala.compiletime.{ constValueOpt, error }
 import scala.util.{Try, Success, Failure}
+import org.scalactic.{Validation, Pass, Fail}
 
 /** Opaque type representing positive (greater than zero) Int values.
   *
@@ -57,6 +58,14 @@ object PosInt {
       case None =>
         error("PosInt.apply requires an integer literal")
     }
+
+  /** 
+    * Return true when the provided Int is a valid [[PosInt]] value (> 0). 
+    *
+    * @param value the Int to validate
+    * @return true if the specified Int is a positive integer, else false
+    */
+  def isValid(value: Int): Boolean = value > 0  
 
   /** Create a [[PosInt]] if the given Int is valid.
     *
@@ -103,10 +112,42 @@ object PosInt {
    * @return the specified <code>Int</code> value wrapped
    *     in a <code>Success(PosInt)</code>, if it is a positive integer, else a <code>Failure(AssertionError)</code>.
    */
-   def tryingValid(value: Int): Try[PosInt] =
-     if (value > 0)
-       Success(value)
-     else
-       Failure(new AssertionError(Resources.invalidPosInt))  
+  def tryingValid(value: Int): Try[PosInt] =
+    if (value > 0)
+      Success(value)
+    else
+      Failure(new AssertionError(Resources.invalidPosInt))  
 
+  /**
+   * A validation method that produces a <code>Pass</code>
+   * given a valid <code>Int</code> value, or
+   * an error value of type <code>E</code> produced by passing the
+   * given <em>invalid</em> <code>Int</code> value
+   * to the given function <code>f</code>, wrapped in a <code>Fail</code>.
+   *
+   * <p>
+   * This method will inspect the passed <code>Int</code> value and if
+   * it is a positive integer <code>Int</code>, it will return a <code>Pass</code>.
+   * Otherwise, the passed <code>Int</code> value is not a positive integer, so this
+   * method will return a result of type <code>E</code> obtained by passing
+   * the invalid <code>Int</code> value to the given function <code>f</code>,
+   * wrapped in a `Fail`.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>Int</code> literals at compile time, whereas this method inspects
+   * <code>Int</code> values at run time.
+   * </p>
+   *
+   * @tparam E error type produced by f
+   * @param value the `Int` to validate that it is a positive integer.
+   * @param f function to produce an error when value is invalid
+   * @return a `Pass` if the specified `Int` value is a positive integer,
+   *   else a `Fail` containing an error value produced by passing the
+   *   specified `Int` to the given function `f`.
+   */
+  def passOrElse[E](value: Int)(f: Int => E): Validation[E] =
+    if (isValid(value)) Pass else Fail(f(value))
 }
