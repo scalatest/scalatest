@@ -85,12 +85,12 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
         an [AssertionError] should be thrownBy PosZLong.ensuringValid(-99L)
       }
     }
-    /*describe("should offer a tryingValid factory method that") {
+    describe("should offer a tryingValid factory method that") {
       import TryValues.*
       it("returns a PosZLong wrapped in a Success if the passed Long is greater than or equal 0") {
-        PosZLong.tryingValid(0L).success.value.value shouldBe 0L
-        PosZLong.tryingValid(50L).success.value.value shouldBe 50L
-        PosZLong.tryingValid(100L).success.value.value shouldBe 100L
+        PosZLong.tryingValid(0L) shouldBe Success(0L)
+        PosZLong.tryingValid(50L) shouldBe Success(50L)
+        PosZLong.tryingValid(100L) shouldBe Success(100L)
       }
 
       it("returns an AssertionError wrapped in a Failure if the passed Long is lesser than 0") {
@@ -98,7 +98,7 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
         PosZLong.tryingValid(-99L).failure.exception shouldBe an [AssertionError]
       }
     }
-    describe("should offer a passOrElse factory method that") {
+    /*describe("should offer a passOrElse factory method that") {
       it("returns a Pass if the given Long is greater than or equal 0") {
         PosZLong.passOrElse(0L)(i => i) shouldBe Pass
         PosZLong.passOrElse(50L)(i => i) shouldBe Pass

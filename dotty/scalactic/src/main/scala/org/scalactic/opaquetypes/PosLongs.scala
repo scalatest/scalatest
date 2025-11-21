@@ -17,6 +17,7 @@ package org.scalactic.opaquetypes
 
 import org.scalactic.Resources
 import scala.compiletime.{ constValueOpt, error }
+import scala.util.{Try, Success, Failure}
 
 object PosLongs {
 
@@ -53,6 +54,38 @@ object PosLongs {
       if (l < 0L) 
         throw new AssertionError(Resources.invalidPosZLong)
       else l  
+
+    /**
+      * A factory/validation method that produces a <code>PosZLong</code>, wrapped
+      * in a <code>Success</code>, given a valid <code>Long</code> value, or if the
+      * given <code>Long</code> is invalid, an <code>AssertionError</code>, wrapped
+      * in a <code>Failure</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Long</code> value and if
+      * it is a PosZLong <code>Long</code>, it will return a <code>PosZLong</code>
+      * representing that value, wrapped in a <code>Success</code>.
+      * Otherwise, if the passed <code>Long</code> value is not PosZLong, this
+      * method will return an <code>AssertionError</code>, wrapped in a <code>Failure</code>.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code> factory method
+      * in that <code>apply</code> is implemented via a macro that inspects
+      * <code>Int</code> literals at compile time, whereas this method inspects
+      * <code>Int</code> values at run time.
+      * </p>
+      *
+      * @param value the <code>Int</code> to inspect, and if a non-negative integer, return
+      *     wrapped in a <code>Success(PosZLong)</code>.
+      * @return the specified <code>Long</code> value wrapped
+      *     in a <code>Success(PosZLong)</code>, if it is a non-negative integer, else a <code>Failure(AssertionError)</code>.
+      */
+    def tryingValid(value: Long): Try[PosZLong] =
+      if (value >= 0L)
+        Success(value)
+      else
+        Failure(new AssertionError(Resources.invalidPosZLong))  
 
   }
 
