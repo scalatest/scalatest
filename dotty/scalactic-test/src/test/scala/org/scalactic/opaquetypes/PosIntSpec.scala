@@ -117,7 +117,7 @@ class PosIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with G
         PosInt.goodOrElse(-99)(i => i.toLong + 3L) shouldBe Bad(-96L)
       }
     }
-    /*describe("should offer a rightOrElse factory method that") {
+    describe("should offer a rightOrElse factory method that") {
       it("returns a PosInt wrapped in a Right if the given Int is greater than 0") {
         PosInt.rightOrElse(50)(i => i) shouldBe Right(PosInt(50))
         PosInt.rightOrElse(100)(i => i) shouldBe Right(PosInt(100))
@@ -128,7 +128,7 @@ class PosIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with G
         PosInt.rightOrElse(-99)(i => i.toLong + 3L) shouldBe Left(-96L)
       }
     }
-    describe("should offer an isValid predicate method that") {
+    /*describe("should offer an isValid predicate method that") {
       it("returns true if the passed Int is greater than 0") {
         PosInt.isValid(50) shouldBe true
         PosInt.isValid(100) shouldBe true
