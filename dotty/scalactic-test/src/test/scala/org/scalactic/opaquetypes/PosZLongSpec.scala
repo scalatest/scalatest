@@ -156,13 +156,13 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
       PosZLong.MinValue shouldEqual PosZLong(0L)
     }
 
-    /*it("should be sortable") {
+    it("should be sortable") {
       val xs = List(PosZLong(2), PosZLong(0), PosZLong(1), PosZLong(3))
       xs.sorted shouldEqual List(PosZLong(0), PosZLong(1), PosZLong(2),
                                  PosZLong(3))
     }
 
-    describe("when created with apply method") {
+    /*describe("when created with apply method") {
 
       it("should compile when 8 is passed in") {
         "PosZLong(8)" should compile

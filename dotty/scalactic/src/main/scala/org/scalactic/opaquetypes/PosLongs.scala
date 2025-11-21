@@ -26,11 +26,33 @@ object PosLongs {
   opaque type PosZLong = Long
 
   object PosZLong {
+
+    /** Compile-time factory for creating a [[PosZLong]] from an integer literal.
+      *
+      * This inline method inspects the provided integer literal at compile time
+      * and rejects negative literals. Use it as: `PosZLong(5)`. For non-literal
+      * values, use [[ensuringValid]] or [[from]].
+      *
+      * @tparam I the singleton Int literal type
+      * @param i the Int literal
+      * @return a [[PosZLong]] representing the given non-negative literal
+      * @throws a compile-time error if the literal is negative or not a literal
+      */
+    inline def apply[I <: Int & Singleton](inline i: I): PosZLong =
+      inline constValueOpt[I] match {
+        case Some(v: Int) =>
+          inline if v < 0 then
+            error("PosZLong cannot be instantiated with a negative int literal")
+          else
+            v.asInstanceOf[PosZLong]
+        case None =>
+          error("PosZLong.apply requires an int or long literal")
+      }
     
     /** Compile-time factory for creating a [[PosZLong]] from an long literal.
       *
       * This inline method inspects the provided long literal at compile time
-      * and rejects negative literals. Use it as: `PosZLong(5)`. For non-literal
+      * and rejects negative literals. Use it as: `PosZLong(5L)`. For non-literal
       * values, use [[ensuringValid]] or [[from]].
       *
       * @tparam L the singleton Long literal type
@@ -46,7 +68,7 @@ object PosLongs {
           else
             v.asInstanceOf[PosZLong]
         case None =>
-          error("PosZLong.apply requires an long literal")
+          error("PosZLong.apply requires an int or long literal")
       }
 
     /** 
@@ -237,6 +259,11 @@ object PosLongs {
     * The smallest value representable as a non-negative long <code>Long</code>, which is <code>PosZLong(0)</code>.
     */
     val MinValue: PosZLong = PosZLong.ensuringValid(0L)
+
+    /** Ordering instance for PosZLong that orders by numeric value. */
+    given Ordering[PosZLong] with {
+      def compare(x: PosZLong, y: PosZLong): Int = x.compareTo(y)
+    }
 
   }
 
