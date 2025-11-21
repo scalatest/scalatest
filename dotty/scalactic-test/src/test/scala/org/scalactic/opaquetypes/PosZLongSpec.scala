@@ -151,12 +151,12 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
         PosZLong.fromOrElse(-99L, PosZLong(42L)) shouldBe PosZLong(42L)
       }
     } 
-    /*it("should offer MaxValue and MinValue factory methods") {
+    it("should offer MaxValue and MinValue factory methods") {
       PosZLong.MaxValue shouldEqual PosZLong.from(Long.MaxValue).get
       PosZLong.MinValue shouldEqual PosZLong(0L)
     }
 
-    it("should be sortable") {
+    /*it("should be sortable") {
       val xs = List(PosZLong(2), PosZLong(0), PosZLong(1), PosZLong(3))
       xs.sorted shouldEqual List(PosZLong(0), PosZLong(1), PosZLong(2),
                                  PosZLong(3))
