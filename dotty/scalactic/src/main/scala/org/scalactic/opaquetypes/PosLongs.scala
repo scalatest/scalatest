@@ -17,17 +17,20 @@ package org.scalactic.opaquetypes
 
 import org.scalactic.Resources
 
-opaque type PosZLong = Long
+object PosLongs {
 
-object PosZLong {
-  
-  def from(l: Long): Option[PosZLong] =
-    if (l >= 0L) Some(l) else None
+  opaque type PosZLong = Long
 
-  def ensuringValid(l: Long): PosZLong = 
-    if (l < 0L) 
-      throw new AssertionError(Resources.invalidPosZLong)
-    else l  
+  object PosZLong {
+    
+    def from(l: Long): Option[PosZLong] =
+      if (l >= 0L) Some(l) else None
+
+    def ensuringValid(l: Long): PosZLong = 
+      if (l < 0L) 
+        throw new AssertionError(Resources.invalidPosZLong)
+      else l  
+
+  }
 
 }
-

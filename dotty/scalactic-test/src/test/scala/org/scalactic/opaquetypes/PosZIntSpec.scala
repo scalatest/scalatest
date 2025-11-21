@@ -59,6 +59,7 @@ class PosZIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
 
   import PosInts.PosZInt
   import NegInts.NegZInt
+  import PosLongs.PosZLong
 
   describe("A PosZInt") {
     describe("should offer a from factory method that") {
