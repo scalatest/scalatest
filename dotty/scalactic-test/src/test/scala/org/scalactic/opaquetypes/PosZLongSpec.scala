@@ -98,7 +98,7 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
         PosZLong.tryingValid(-99L).failure.exception shouldBe an [AssertionError]
       }
     }
-    /*describe("should offer a passOrElse factory method that") {
+    describe("should offer a passOrElse factory method that") {
       it("returns a Pass if the given Long is greater than or equal 0") {
         PosZLong.passOrElse(0L)(i => i) shouldBe Pass
         PosZLong.passOrElse(50L)(i => i) shouldBe Pass
@@ -109,7 +109,7 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
         PosZLong.passOrElse(-99L)(i => i.toLong + 3L) shouldBe Fail(-96L)
       }
     }
-    describe("should offer a goodOrElse factory method that") {
+    /*describe("should offer a goodOrElse factory method that") {
       it("returns a PosZInt wrapped in a Good if the given Long is greater than or equal 0") {
         PosZLong.goodOrElse(0L)(i => i) shouldBe Good(PosZLong(0L))
         PosZLong.goodOrElse(50L)(i => i) shouldBe Good(PosZLong(50L))

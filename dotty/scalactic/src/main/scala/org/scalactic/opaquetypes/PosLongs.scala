@@ -18,6 +18,7 @@ package org.scalactic.opaquetypes
 import org.scalactic.Resources
 import scala.compiletime.{ constValueOpt, error }
 import scala.util.{Try, Success, Failure}
+import org.scalactic.{Validation, Pass, Fail}
 
 object PosLongs {
 
@@ -47,11 +48,19 @@ object PosLongs {
           error("PosZLong.apply requires an long literal")
       }
 
+    /** 
+    * Return true when the provided Long is a valid [[PosZLong]] value (>= 0). 
+    *
+    * @param value the Long to validate
+    * @return true if the specified Long is a non-negative long, else false
+    */
+    def isValid(value: Long): Boolean = value >= 0  
+
     def from(l: Long): Option[PosZLong] =
-      if (l >= 0L) Some(l) else None
+      if (isValid(l)) Some(l) else None
 
     def ensuringValid(l: Long): PosZLong = 
-      if (l < 0L) 
+      if (!isValid(l)) 
         throw new AssertionError(Resources.invalidPosZLong)
       else l  
 
@@ -76,16 +85,49 @@ object PosLongs {
       * <code>Int</code> values at run time.
       * </p>
       *
-      * @param value the <code>Int</code> to inspect, and if a non-negative integer, return
+      * @param value the <code>Int</code> to inspect, and if a non-negative long, return
       *     wrapped in a <code>Success(PosZLong)</code>.
       * @return the specified <code>Long</code> value wrapped
-      *     in a <code>Success(PosZLong)</code>, if it is a non-negative integer, else a <code>Failure(AssertionError)</code>.
+      *     in a <code>Success(PosZLong)</code>, if it is a non-negative long, else a <code>Failure(AssertionError)</code>.
       */
     def tryingValid(value: Long): Try[PosZLong] =
-      if (value >= 0L)
+      if (isValid(value))
         Success(value)
       else
-        Failure(new AssertionError(Resources.invalidPosZLong))  
+        Failure(new AssertionError(Resources.invalidPosZLong))
+
+    /**
+      * A validation method that produces a <code>Pass</code>
+      * given a valid <code>Long</code> value, or
+      * an error value of type <code>E</code> produced by passing the
+      * given <em>invalid</em> <code>Long</code> value
+      * to the given function <code>f</code>, wrapped in a <code>Fail</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Long</code> value and if
+      * it is a non-negative <code>Long</code>, it will return a <code>Pass</code>.
+      * Otherwise, the passed <code>Long</code> value is not a non-negative long, so this
+      * method will return a result of type <code>E</code> obtained by passing
+      * the invalid <code>Long</code> value to the given function <code>f</code>,
+      * wrapped in a `Fail`.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code> factory method
+      * in that <code>apply</code> is implemented via a macro that inspects
+      * <code>Long</code> literals at compile time, whereas this method inspects
+      * <code>Long</code> values at run time.
+      * </p>
+      *
+      * @tparam E error type produced by f
+      * @param value the `Long` to validate that it is a non-negative long.
+      * @param f function to produce an error when value is invalid
+      * @return a `Pass` if the specified `Long` value is a non-negative long,
+      *   else a `Fail` containing an error value produced by passing the
+      *   specified `Long` to the given function `f`.
+      */
+    def passOrElse[E](value: Long)(f: Long => E): Validation[E] =
+      if (isValid(value)) Pass else Fail(f(value))          
 
   }
 
