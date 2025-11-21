@@ -131,7 +131,7 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
         PosZLong.rightOrElse(-99L)(i => i.toLong + 3L) shouldBe Left(-96L)
       }
     }
-    /*describe("should offer an isValid predicate method that") {
+    describe("should offer an isValid predicate method that") {
       it("returns true if the passed Long is greater than or equal to 0") {
         PosZLong.isValid(50L) shouldBe true
         PosZLong.isValid(100L) shouldBe true
@@ -142,16 +142,16 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
     } 
     describe("should offer a fromOrElse factory method that") {
       it("returns a PosZLong if the passed Long is greater than or equal to 0") {
-        PosZLong.fromOrElse(50L, PosZLong(42L)).value shouldBe 50L
-        PosZLong.fromOrElse(100L, PosZLong(42L)).value shouldBe 100L
-        PosZLong.fromOrElse(0L, PosZLong(42L)).value shouldBe 0L
+        PosZLong.fromOrElse(50L, PosZLong(42L)) shouldBe PosZLong(50L)
+        PosZLong.fromOrElse(100L, PosZLong(42L)) shouldBe PosZLong(100L)
+        PosZLong.fromOrElse(0L, PosZLong(42L)) shouldBe PosZLong(0L)
       }
       it("returns a given default if the passed Long is NOT greater than or equal to 0") {
-        PosZLong.fromOrElse(-1L, PosZLong(42L)).value shouldBe 42L
-        PosZLong.fromOrElse(-99L, PosZLong(42L)).value shouldBe 42L
+        PosZLong.fromOrElse(-1L, PosZLong(42L)) shouldBe PosZLong(42L)
+        PosZLong.fromOrElse(-99L, PosZLong(42L)) shouldBe PosZLong(42L)
       }
     } 
-    it("should offer MaxValue and MinValue factory methods") {
+    /*it("should offer MaxValue and MinValue factory methods") {
       PosZLong.MaxValue shouldEqual PosZLong.from(Long.MaxValue).get
       PosZLong.MinValue shouldEqual PosZLong(0L)
     }

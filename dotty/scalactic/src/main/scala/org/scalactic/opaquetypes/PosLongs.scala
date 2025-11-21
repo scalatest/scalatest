@@ -196,7 +196,37 @@ object PosLongs {
     *     in a <code>Right(PosZLong)</code>, if it is PosZLong, else a <code>Left(f(value))</code>.
     */
     def rightOrElse[L](value: Long)(f: Long => L): Either[L, PosZLong] =
-      if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))  
+      if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))
+
+    /**
+      * A factory method that produces a <code>PosZLong</code> given a
+      * <code>Long</code> value and a default <code>PosZLong</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Long</code> value and if
+      * it is a positive <code>Long</code>, <em>i.e.</em>, a value greater
+      * than 0.0, it will return a <code>PosZLong</code> representing that value.
+      * Otherwise, the passed <code>Long</code> value is 0 or negative, so this
+      * method will return the passed <code>default</code> value.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code>
+      * factory method in that <code>apply</code> is implemented
+      * via a macro that inspects <code>Long</code> literals at
+      * compile time, whereas <code>from</code> inspects
+      * <code>Long</code> values at run time.
+      * </p>
+      *
+      * @param value the <code>Long</code> to inspect, and if positive, return.
+      * @param default the <code>PosZLong</code> to return if the passed
+      *     <code>Long</code> value is not positive.
+      * @return the specified <code>Long</code> value wrapped in a
+      *     <code>PosZLong</code>, if it is positive, else the
+      *     <code>default</code> <code>PosZLong</code> value.
+      */
+    def fromOrElse(value: Long, default: => PosZLong): PosZLong =
+      if (isValid(value)) value else default    
 
   }
 
