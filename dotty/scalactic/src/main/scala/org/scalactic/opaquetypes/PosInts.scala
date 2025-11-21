@@ -643,7 +643,31 @@ object PosInts {
     /**
       * The smallest value representable as a positive integer <code>Int</code>, which is <code>PosInt(1)</code>.
       */
-    val MinValue: PosZInt = 1  
+    val MinValue: PosInt = 1  
+
+    /** Convert a [[PosInt]] to a plain Int (unwrap). */
+    given Conversion[PosInt, Int] with {
+      def apply(x: PosInt): Int = x
+    }
+  
+    /** Convert a compile-time Int literal or runtime Int to a [[PosInt]].
+      *
+      * The inline overload checks integer literals at compile time; the runtime
+      * overload validates and throws for negative values.
+      */
+    given Conversion[Int, PosInt] with {
+      inline def apply[I <: Int & Singleton](inline x: I): PosInt =
+        inline constValueOpt[I] match {
+          case Some(v: Int) =>
+            inline if v <= 0 then
+              error("PosInt cannot be instantiated with a positive integer literal")
+            else
+              v.asInstanceOf[PosInt]
+          case None =>
+            error("PosInt conversion requires an integer literal")
+        }
+      def apply(x: Int): PosInt = PosInt.ensuringValid(x)
+    }
   }
 
 }

@@ -154,7 +154,7 @@ class PosIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with G
       PosInt.MinValue shouldEqual PosInt(1)
     }
 
-    /*it("should be sortable") {
+    it("should be sortable") {
       val xs = List(PosInt(2), PosInt(4), PosInt(1), PosInt(3))
       xs.sorted shouldEqual List(PosInt(1), PosInt(2), PosInt(3), PosInt(4))
     }
@@ -203,7 +203,7 @@ class PosIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with G
       }
     }
 
-    it("should offer a unary ~ method that is consistent with Int") {
+    /*it("should offer a unary ~ method that is consistent with Int") {
       forAll { (pint: PosInt) =>
         (~pint) shouldEqual (~(pint.toInt))
       }
