@@ -221,7 +221,7 @@ class PosIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with G
       }
     }
 
-    /*it("should offer << methods that are consistent with Int") {
+    it("should offer << methods that are consistent with Int") {
       forAll { (pint: PosInt, shift: Int) =>
         pint << shift shouldEqual pint.toInt << shift
       }
@@ -349,7 +349,7 @@ class PosIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with G
     it("should offer an ensuringValid method that takes an Int => Int, throwing AssertionError if the result is invalid") {
       PosInt(33).ensuringValid(_ + 1) shouldEqual PosInt(34)
       an [AssertionError] should be thrownBy { PosInt.MaxValue.ensuringValid(_ + 1) }
-    }*/
+    }
   }
 }
 
