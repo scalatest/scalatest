@@ -203,13 +203,13 @@ class PosIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with G
       }
     }
 
-    /*it("should offer a unary ~ method that is consistent with Int") {
+    it("should offer a unary ~ method that is consistent with Int") {
       forAll { (pint: PosInt) =>
         (~pint) shouldEqual (~(pint.toInt))
       }
     }
 
-    it("should offer a unary + method that is consistent with Int") {
+    /*it("should offer a unary + method that is consistent with Int") {
       forAll { (p: PosInt) =>
         (+p).toInt shouldEqual (+(p.toInt))
       }

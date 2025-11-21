@@ -1223,6 +1223,71 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[PosInt] = posIntGenerator
 
+//DOTTY-ONLY /** Generator that produces opaquetypes.PosInts.PosInt independently of anyvals.PosInt.*/
+//DOTTY-ONLY val opaquetypesPosIntGenerator: Generator[org.scalactic.opaquetypes.PosInts.PosInt] =
+//DOTTY-ONLY   new Generator[org.scalactic.opaquetypes.PosInts.PosInt] {
+//DOTTY-ONLY
+//DOTTY-ONLY   import org.scalactic.opaquetypes.PosInts.PosInt
+//DOTTY-ONLY
+//DOTTY-ONLY   case class NextRoseTree(value: PosInt, sizeParam: SizeParam, isValidFun: (PosInt, SizeParam) => Boolean) extends RoseTree[PosInt] {
+//DOTTY-ONLY     def shrinks: LazyListOrStream[RoseTree[PosInt]] = {
+//DOTTY-ONLY       def resLazyListOrStream(theValue: PosInt): LazyListOrStream[RoseTree[PosInt]] = {
+//DOTTY-ONLY         if (theValue.asInstanceOf[Int] == 0) LazyListOrStream.empty
+//DOTTY-ONLY         else {
+//DOTTY-ONLY           val half: Int = theValue.asInstanceOf[Int] / 2
+//DOTTY-ONLY           // ensure strictly positive for PosInt (> 0)
+//DOTTY-ONLY           val halfPos = if (half <= 0) 1 else half
+//DOTTY-ONLY           val posIntHalf = PosInt.ensuringValid(halfPos)
+//DOTTY-ONLY           if (isValidFun(posIntHalf, sizeParam))
+//DOTTY-ONLY             NextRoseTree(posIntHalf, sizeParam, isValidFun) #:: resLazyListOrStream(posIntHalf)
+//DOTTY-ONLY           else
+//DOTTY-ONLY             resLazyListOrStream(posIntHalf)
+//DOTTY-ONLY         }
+//DOTTY-ONLY       }
+//DOTTY-ONLY       resLazyListOrStream(value)
+//DOTTY-ONLY     }
+//DOTTY-ONLY   }
+//DOTTY-ONLY
+//DOTTY-ONLY   private val edges: List[PosInt] = List(PosInt.MinValue, PosInt.ensuringValid(2), PosInt.MaxValue)
+//DOTTY-ONLY
+//DOTTY-ONLY   override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosInt], Randomizer) = {
+//DOTTY-ONLY     val (allEdges, nextRnd) = Randomizer.shuffle(edges, rnd)
+//DOTTY-ONLY     (allEdges.take(maxLength), nextRnd)
+//DOTTY-ONLY   }
+//DOTTY-ONLY
+//DOTTY-ONLY   override def roseTreeOfEdge(edge: PosInt, sizeParam: SizeParam, isValidFun: (PosInt, SizeParam) => Boolean): RoseTree[PosInt] =
+//DOTTY-ONLY     NextRoseTree(edge, sizeParam, isValidFun)
+//DOTTY-ONLY
+//DOTTY-ONLY   def nextImpl(szp: SizeParam, isValidFun: (PosInt, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[PosInt], Randomizer) = {
+//DOTTY-ONLY     // generate an Int in [1, Int.MaxValue] then wrap as opaquetypes.PosInt
+//DOTTY-ONLY     val (i, rnd2) = rnd.chooseInt(1, Int.MaxValue)
+//DOTTY-ONLY     val p = PosInt.ensuringValid(i)
+//DOTTY-ONLY     (NextRoseTree(p, szp, isValidFun), rnd2)
+//DOTTY-ONLY   }
+//DOTTY-ONLY
+//DOTTY-ONLY   override def canonicals: LazyListOrStream[RoseTree[PosInt]] = {
+//DOTTY-ONLY     case class CanonicalRoseTree(value: PosInt) extends RoseTree[PosInt] {
+//DOTTY-ONLY       def shrinks: LazyListOrStream[RoseTree[PosInt]] = {
+//DOTTY-ONLY         def resLazyListOrStream(theValue: PosInt): LazyListOrStream[RoseTree[PosInt]] =
+//DOTTY-ONLY           if (theValue.asInstanceOf[Int] == 1) LazyListOrStream.empty
+//DOTTY-ONLY           else {
+//DOTTY-ONLY             val minusOne: PosInt = PosInt.ensuringValid(theValue.asInstanceOf[Int] - 1)
+//DOTTY-ONLY             if (minusOne.asInstanceOf[Int] == 1) Rose(minusOne) #:: LazyListOrStream.empty
+//DOTTY-ONLY             else Rose(minusOne) #:: resLazyListOrStream(minusOne)
+//DOTTY-ONLY           }
+//DOTTY-ONLY         resLazyListOrStream(value)
+//DOTTY-ONLY       }
+//DOTTY-ONLY     }
+//DOTTY-ONLY     LazyListOrStream(PosInt.ensuringValid(1), PosInt.ensuringValid(2)).map(v => CanonicalRoseTree(v))
+//DOTTY-ONLY   }
+//DOTTY-ONLY
+//DOTTY-ONLY   override def toString = "Generator[org.scalactic.opaquetypes.PosInts.PosInt]"
+//DOTTY-ONLY
+//DOTTY-ONLY   override def shrinksForValue(valueToShrink: PosInt): Option[LazyListOrStream[RoseTree[PosInt]]] =
+//DOTTY-ONLY     Some(NextRoseTree(valueToShrink, SizeParam(PosZInt.ensuringValid(1), PosZInt.ensuringValid(0), PosZInt.ensuringValid(1)), isValid).shrinks)
+//DOTTY-ONLY }
+//DOTTY-ONLY given given_Generator_opaquetypes_PosInt: Generator[org.scalactic.opaquetypes.PosInts.PosInt] = opaquetypesPosIntGenerator
+
   /**
     * A [[Generator]] that produces positive integers, including zero.
     */
