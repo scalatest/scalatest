@@ -120,7 +120,7 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
         PosZLong.goodOrElse(-99L)(i => i.toLong + 3L) shouldBe Bad(-96L)
       }
     }
-    /*describe("should offer a rightOrElse factory method that") {
+    describe("should offer a rightOrElse factory method that") {
       it("returns a PosZLong wrapped in a Right if the given Int is greater than or equal 0") {
         PosZLong.rightOrElse(0L)(i => i) shouldBe Right(PosZLong(0L))
         PosZLong.rightOrElse(50L)(i => i) shouldBe Right(PosZLong(50L))
@@ -131,7 +131,7 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
         PosZLong.rightOrElse(-99L)(i => i.toLong + 3L) shouldBe Left(-96L)
       }
     }
-    describe("should offer an isValid predicate method that") {
+    /*describe("should offer an isValid predicate method that") {
       it("returns true if the passed Long is greater than or equal to 0") {
         PosZLong.isValid(50L) shouldBe true
         PosZLong.isValid(100L) shouldBe true
