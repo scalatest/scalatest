@@ -128,7 +128,7 @@ class PosIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with G
         PosInt.rightOrElse(-99)(i => i.toLong + 3L) shouldBe Left(-96L)
       }
     }
-    /*describe("should offer an isValid predicate method that") {
+    describe("should offer an isValid predicate method that") {
       it("returns true if the passed Int is greater than 0") {
         PosInt.isValid(50) shouldBe true
         PosInt.isValid(100) shouldBe true
@@ -149,7 +149,7 @@ class PosIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with G
         PosInt.fromOrElse(-99, PosInt(42)).value shouldBe 42
       }
     } 
-    it("should offer MaxValue and MinValue factory methods") {
+    /*it("should offer MaxValue and MinValue factory methods") {
       PosInt.MaxValue shouldEqual PosInt.from(Int.MaxValue).get
       PosInt.MinValue shouldEqual PosInt(1)
     }
