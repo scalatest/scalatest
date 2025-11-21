@@ -55,6 +55,7 @@ trait PosIntSpecSupport {
 class PosIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with GeneratorDrivenPropertyChecks with PosIntSpecSupport {
 
   import PosInts.PosInt
+  import NegInts.NegInt
 
   describe("A PosInt") {
 

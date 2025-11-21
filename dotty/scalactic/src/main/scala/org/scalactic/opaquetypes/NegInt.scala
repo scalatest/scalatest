@@ -17,13 +17,15 @@ package org.scalactic.opaquetypes
 
 import org.scalactic.Resources
 
-opaque type NegInt = Int
+object NegInts {
+  opaque type NegInt = Int
 
-object NegInt {
+  object NegInt {
 
-  def ensuringValid(i: Int): NegInt = 
-    if (i >= 0) 
-      throw new AssertionError(Resources.invalidNegInt)
-    else i
+    def ensuringValid(i: Int): NegInt = 
+      if (i >= 0) 
+        throw new AssertionError(Resources.invalidNegInt)
+      else i
 
+  }
 }
