@@ -265,6 +265,11 @@ object PosLongs {
       def compare(x: PosZLong, y: PosZLong): Int = x.compareTo(y)
     }
 
+    extension (x: PosZLong) {
+      /** Return the underlying Long value. */
+      def value: Long = x
+    }
+
   }
 
 }

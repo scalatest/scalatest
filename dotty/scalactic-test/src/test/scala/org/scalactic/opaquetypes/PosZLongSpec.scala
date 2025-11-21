@@ -162,7 +162,7 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
                                  PosZLong(3))
     }
 
-    /*describe("when created with apply method") {
+    describe("when created with apply method") {
 
       it("should compile when 8 is passed in") {
         "PosZLong(8)" should compile
@@ -190,7 +190,7 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
         "PosZLong(b)" shouldNot compile
       }
     }
-    describe("when specified as a plain-old Long") {
+    /*describe("when specified as a plain-old Long") {
 
       def takesPosZLong(pos: PosZLong): Long = pos.value
 
