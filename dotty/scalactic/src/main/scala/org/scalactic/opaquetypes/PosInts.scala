@@ -21,6 +21,7 @@ import scala.util.{Try, Success, Failure}
 import org.scalactic.{Validation, Pass, Fail}
 import org.scalactic.{Or, Good, Bad}
 import PosLongs.PosZLong
+import PosFloats.PosZFloat
 
 object PosInts {
 

@@ -17,17 +17,20 @@ package org.scalactic.opaquetypes
 
 import org.scalactic.Resources
 
-opaque type PosZFloat = Float
+object PosFloats {
 
-object PosZFloat {
-  
-  def from(f: Float): Option[PosZFloat] =
-    if (f >= 0.0f) Some(f) else None
+  opaque type PosZFloat = Float
 
-  def ensuringValid(f: Float): PosZFloat = 
-    if (f < 0.0f) 
-      throw new AssertionError(Resources.invalidPosZFloat)
-    else f
+  object PosZFloat {
+    
+    def from(f: Float): Option[PosZFloat] =
+      if (f >= 0.0f) Some(f) else None
+
+    def ensuringValid(f: Float): PosZFloat = 
+      if (f < 0.0f) 
+        throw new AssertionError(Resources.invalidPosZFloat)
+      else f
+
+  } 
 
 }
-
