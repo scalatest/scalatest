@@ -412,7 +412,7 @@ object PosInts {
    * Instances of this type are guaranteed to be > 0. Use the factory and
    * validation methods in the companion object to create or validate values.
    */
-  opaque type PosInt = Int
+  opaque type PosInt <: PosZInt = Int
 
   /** Companion object for the [[PosInt]] opaque type.
    *
