@@ -22,6 +22,7 @@ import org.scalactic.{Validation, Pass, Fail}
 import org.scalactic.{Or, Good, Bad}
 import PosLongs.PosZLong
 import PosFloats.PosZFloat
+import PosDoubles.PosZDouble
 
 object PosInts {
 

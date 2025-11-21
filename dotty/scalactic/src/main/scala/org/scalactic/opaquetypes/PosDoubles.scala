@@ -17,17 +17,21 @@ package org.scalactic.opaquetypes
 
 import org.scalactic.Resources
 
-opaque type PosZDouble = Double
+object PosDoubles {
 
-object PosZDouble {
-  
-  def from(d: Double): Option[PosZDouble] =
-    if (d >= 0.0) Some(d) else None
+  opaque type PosZDouble = Double
 
-  def ensuringValid(d: Double): PosZDouble = 
-    if (d < 0.0) 
-      throw new AssertionError(Resources.invalidPosZDouble)
-    else d
+  object PosZDouble {
+    
+    def from(d: Double): Option[PosZDouble] =
+      if (d >= 0.0) Some(d) else None
+
+    def ensuringValid(d: Double): PosZDouble = 
+      if (d < 0.0) 
+        throw new AssertionError(Resources.invalidPosZDouble)
+      else d
+
+  } 
 
 }
 
