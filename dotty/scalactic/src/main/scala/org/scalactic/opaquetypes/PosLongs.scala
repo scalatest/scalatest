@@ -19,6 +19,7 @@ import org.scalactic.Resources
 import scala.compiletime.{ constValueOpt, error }
 import scala.util.{Try, Success, Failure}
 import org.scalactic.{Validation, Pass, Fail}
+import org.scalactic.{Or, Good, Bad}
 
 object PosLongs {
 
@@ -128,6 +129,40 @@ object PosLongs {
       */
     def passOrElse[E](value: Long)(f: Long => E): Validation[E] =
       if (isValid(value)) Pass else Fail(f(value))          
+
+    /**
+      * A factory/validation method that produces a <code>PosZLong</code>, wrapped
+      * in a <code>Good</code>, given a valid <code>Long</code> value, or if the
+      * given <code>Long</code> is invalid, an error value of type <code>B</code>
+      * produced by passing the given <em>invalid</em> <code>Long</code> value
+      * to the given function <code>f</code>, wrapped in a <code>Bad</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Long</code> value and if
+      * it is a PosZLong <code>Long</code>, it will return a <code>PosZLong</code>
+      * representing that value, wrapped in a <code>Good</code>.
+      * Otherwise, the passed <code>Long</code> value is not PosZLong, so this
+      * method will return a result of type <code>B</code> obtained by passing
+      * the invalid <code>Long</code> value to the given function <code>f</code>,
+      * wrapped in a `Bad`.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code> factory method
+      * in that <code>apply</code> is implemented via a macro that inspects
+      * <code>Long</code> literals at compile time, whereas this method inspects
+      * <code>Long</code> values at run time.
+      * </p>
+      *
+      * @tparam B error type produced by f
+      * @param value the <code>Long</code> to inspect, and if PosZLong, return
+      *     wrapped in a <code>Good(PosZLong)</code>.
+      * @param f function to produce an error when value is invalid
+      * @return the specified <code>Long</code> value wrapped
+      *     in a <code>Good(PosZLong)</code>, if it is PosZLong, else a <code>Bad(f(value))</code>.
+      */
+    def goodOrElse[B](value: Long)(f: Long => B): PosZLong Or B =
+      if (isValid(value)) Good(value) else Bad(f(value))
 
   }
 
