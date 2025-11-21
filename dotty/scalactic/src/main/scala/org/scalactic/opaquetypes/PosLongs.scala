@@ -16,6 +16,7 @@
 package org.scalactic.opaquetypes
 
 import org.scalactic.Resources
+import scala.compiletime.{ constValueOpt, error }
 
 object PosLongs {
 
@@ -23,6 +24,28 @@ object PosLongs {
 
   object PosZLong {
     
+    /** Compile-time factory for creating a [[PosZLong]] from an integer literal.
+      *
+      * This inline method inspects the provided integer literal at compile time
+      * and rejects negative literals. Use it as: `PosZLong(5)`. For non-literal
+      * values, use [[ensuringValid]] or [[from]].
+      *
+      * @tparam I the singleton Int literal type
+      * @param l the Long literal
+      * @return a [[PosZLong]] representing the given non-negative literal
+      * @throws a compile-time error if the literal is negative or not a literal
+      */
+    inline def apply[L <: Long & Singleton](inline l: L): PosZLong =
+      inline constValueOpt[L] match {
+        case Some(v: Long) =>
+          inline if v < 0L then
+            error("PosZLong cannot be instantiated with a negative integer literal")
+          else
+            v.asInstanceOf[PosZLong]
+        case None =>
+          error("PosZLong.apply requires an long literal")
+      }
+
     def from(l: Long): Option[PosZLong] =
       if (l >= 0L) Some(l) else None
 
