@@ -634,6 +634,16 @@ object PosInts {
       */
     def fromOrElse(value: Int, default: => PosInt): PosInt =
       if (isValid(value)) value else default
+
+    /**
+      * The largest value representable as a positive integer <code>Int</code>, which is <code>PosInt(2147483647)</code>.
+      */
+    val MaxValue: PosInt = Int.MaxValue
+
+    /**
+      * The smallest value representable as a positive integer <code>Int</code>, which is <code>PosInt(1)</code>.
+      */
+    val MinValue: PosZInt = 1  
   }
 
 }

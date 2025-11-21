@@ -149,12 +149,12 @@ class PosIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with G
         PosInt.fromOrElse(-99, PosInt(42)).value shouldBe 42
       }
     } 
-    /*it("should offer MaxValue and MinValue factory methods") {
+    it("should offer MaxValue and MinValue factory methods") {
       PosInt.MaxValue shouldEqual PosInt.from(Int.MaxValue).get
       PosInt.MinValue shouldEqual PosInt(1)
     }
 
-    it("should be sortable") {
+    /*it("should be sortable") {
       val xs = List(PosInt(2), PosInt(4), PosInt(1), PosInt(3))
       xs.sorted shouldEqual List(PosInt(1), PosInt(2), PosInt(3), PosInt(4))
     }
