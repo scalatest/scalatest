@@ -260,6 +260,11 @@ object PosLongs {
     */
     val MinValue: PosZLong = PosZLong.ensuringValid(0L)
 
+    /** Convert a [[PosZInt]] to a plain Int (unwrap). */
+    given Conversion[PosZLong, Long] with {
+      def apply(x: PosZLong): Long = x
+    }
+
     /** Convert a compile-time Int literal or runtime Int to a [[PosZLong]].
       *
       * The inline overload checks integer literals at compile time; the runtime

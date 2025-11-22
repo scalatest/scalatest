@@ -1529,6 +1529,66 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[PosZLong] = posZLongGenerator
 
+//DOTTY-ONLY /* Generator that produces opaquetypes.PosLongs.PosZLong independently of anyvals. */
+//DOTTY-ONLY val opaquetypesPosZLongGenerator: Generator[org.scalactic.opaquetypes.PosLongs.PosZLong] =
+//DOTTY-ONLY   new Generator[org.scalactic.opaquetypes.PosLongs.PosZLong] {
+//DOTTY-ONLY
+//DOTTY-ONLY     import org.scalactic.opaquetypes.PosLongs.PosZLong
+//DOTTY-ONLY
+//DOTTY-ONLY     case class NextRoseTree(value: PosZLong, sizeParam: SizeParam, isValidFun: (PosZLong, SizeParam) => Boolean) extends RoseTree[PosZLong] {
+//DOTTY-ONLY       def shrinks: LazyListOrStream[RoseTree[PosZLong]] = {
+//DOTTY-ONLY         def resLazyListOrStream(theValue: PosZLong): LazyListOrStream[RoseTree[PosZLong]] = {
+//DOTTY-ONLY           if (theValue.value == 0L) LazyListOrStream.empty
+//DOTTY-ONLY           else {
+//DOTTY-ONLY             val half: Long = theValue.asInstanceOf[Long] / 2L
+//DOTTY-ONLY             val posZLongHalf = PosZLong.ensuringValid(half)
+//DOTTY-ONLY             if (isValidFun(posZLongHalf, sizeParam))
+//DOTTY-ONLY               NextRoseTree(posZLongHalf, sizeParam, isValidFun) #:: resLazyListOrStream(posZLongHalf)
+//DOTTY-ONLY             else
+//DOTTY-ONLY               resLazyListOrStream(posZLongHalf)
+//DOTTY-ONLY           }
+//DOTTY-ONLY         }
+//DOTTY-ONLY         resLazyListOrStream(value)
+//DOTTY-ONLY       }
+//DOTTY-ONLY     }
+//DOTTY-ONLY
+//DOTTY-ONLY     private val edges: List[PosZLong] = List(PosZLong.MinValue, PosZLong.ensuringValid(1L), PosZLong.MaxValue)
+//DOTTY-ONLY
+//DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZLong], Randomizer) = {
+//DOTTY-ONLY       val (allEdges, nextRnd) = Randomizer.shuffle(edges, rnd)
+//DOTTY-ONLY       (allEdges.take(maxLength), nextRnd)
+//DOTTY-ONLY     }
+//DOTTY-ONLY
+//DOTTY-ONLY     override def roseTreeOfEdge(edge: PosZLong, sizeParam: SizeParam, isValidFun: (PosZLong, SizeParam) => Boolean): RoseTree[PosZLong] =
+//DOTTY-ONLY       NextRoseTree(edge, sizeParam, isValidFun)
+//DOTTY-ONLY
+//DOTTY-ONLY     def nextImpl(szp: SizeParam, isValidFun: (PosZLong, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[PosZLong], Randomizer) = {
+//DOTTY-ONLY       val (posZLong, rnd2) = rnd.nextOpaqueTypePosZLong
+//DOTTY-ONLY       (NextRoseTree(posZLong, szp, isValidFun), rnd2)
+//DOTTY-ONLY     }
+//DOTTY-ONLY
+//DOTTY-ONLY     override def canonicals: LazyListOrStream[RoseTree[PosZLong]] = {
+//DOTTY-ONLY       case class CanonicalRoseTree(value: PosZLong) extends RoseTree[PosZLong] {
+//DOTTY-ONLY         def shrinks: LazyListOrStream[RoseTree[PosZLong]] = {
+//DOTTY-ONLY           def resLazyListOrStream(theValue: PosZLong): LazyListOrStream[RoseTree[PosZLong]] =
+//DOTTY-ONLY             if (theValue.value == 0L) LazyListOrStream.empty
+//DOTTY-ONLY             else {
+//DOTTY-ONLY               val minusOne: PosZLong = PosZLong.ensuringValid(theValue.value - 1L)
+//DOTTY-ONLY               if (minusOne.value == 0L) Rose(minusOne) #:: LazyListOrStream.empty
+//DOTTY-ONLY               else Rose(minusOne) #:: resLazyListOrStream(minusOne)
+//DOTTY-ONLY             }
+//DOTTY-ONLY           resLazyListOrStream(value)
+//DOTTY-ONLY         }
+//DOTTY-ONLY       }
+//DOTTY-ONLY       LazyListOrStream(PosZLong.ensuringValid(0L), PosZLong.ensuringValid(1L)).map(v => CanonicalRoseTree(v))
+//DOTTY-ONLY     }
+//DOTTY-ONLY
+//DOTTY-ONLY     override def toString = "Generator[org.scalactic.opaquetypes.PosLongs.PosZLong]"
+//DOTTY-ONLY
+//DOTTY-ONLY     override def shrinksForValue(valueToShrink: PosZLong): Option[LazyListOrStream[RoseTree[PosZLong]]] =
+//DOTTY-ONLY       Some(NextRoseTree(valueToShrink, SizeParam(PosZInt.ensuringValid(1), PosZInt.ensuringValid(0), PosZInt.ensuringValid(1)), isValid).shrinks)
+//DOTTY-ONLY   }
+//DOTTY-ONLY given given_Generator_opaquetypes_PosZLong: Generator[org.scalactic.opaquetypes.PosLongs.PosZLong] = opaquetypesPosZLongGenerator
   /**
     * A [[Generator]] that produces positive Floats, excluding zero.
     */

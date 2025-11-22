@@ -221,13 +221,13 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
       }
     }
 
-    /*it("should offer a unary ~ method that is consistent with Long") {
+    it("should offer a unary ~ method that is consistent with Long") {
       forAll { (pzlong: PosZLong) =>
         (~pzlong) shouldEqual (~(pzlong.toLong))
       }
     }
 
-    it("should offer a unary + method that is consistent with Long") {
+    /*it("should offer a unary + method that is consistent with Long") {
       forAll { (p: PosZLong) =>
         (+p).toLong shouldEqual (+(p.toLong))
       }
