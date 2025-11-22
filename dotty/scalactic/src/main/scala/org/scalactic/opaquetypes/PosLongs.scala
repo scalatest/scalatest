@@ -311,6 +311,26 @@ object PosLongs {
     extension (x: PosZLong) {
       /** Return the underlying Long value. */
       def value: Long = x
+      /**
+        * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
+        */
+      /** Return the greater of this and that. */
+      def max(that: PosZLong): PosZLong = math.max(x, that)
+
+      /**
+        * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
+        */
+      /** Return the lesser of this and that. */
+      def min(that: PosZLong): PosZLong = math.min(x, that)
+
+      /** Return the unsigned binary string representation of the underlying Long. */
+      def toBinaryString: String = java.lang.Long.toBinaryString(x)
+
+      /** Return the unsigned hexadecimal string representation of the underlying Long. */
+      def toHexString: String = java.lang.Long.toHexString(x)
+
+      /** Return the unsigned octal string representation of the underlying Long. */
+      def toOctalString: String = java.lang.Long.toOctalString(x)
     }
 
   }

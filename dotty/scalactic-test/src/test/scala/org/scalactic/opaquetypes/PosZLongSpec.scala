@@ -321,7 +321,7 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
       }
     }
 
-    /*it("should offer 'min' and 'max' methods that are consistent with Long") {
+    it("should offer 'min' and 'max' methods that are consistent with Long") {
       forAll { (pzlong1: PosZLong, pzlong2: PosZLong) =>
         pzlong1.max(pzlong2).toLong shouldEqual pzlong1.toLong.max(pzlong2.toLong)
         pzlong1.min(pzlong2).toLong shouldEqual pzlong1.toLong.min(pzlong2.toLong)
@@ -347,7 +347,7 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
     }
 
     // SKIP-SCALATESTJS,NATIVE-START
-    it("should offer 'to' and 'until' method that is consistent with Long") {
+    /*it("should offer 'to' and 'until' method that is consistent with Long") {
       def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
         a.start == b.start && a.end == b.end && a.step == b.step
 
