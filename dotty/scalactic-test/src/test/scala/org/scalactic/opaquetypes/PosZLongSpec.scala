@@ -190,7 +190,7 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
         "PosZLong(b)" shouldNot compile
       }
     }
-    /*describe("when specified as a plain-old Long") {
+    describe("when specified as a plain-old Long") {
 
       def takesPosZLong(pos: PosZLong): Long = pos.value
 
@@ -221,7 +221,7 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
       }
     }
 
-    it("should offer a unary ~ method that is consistent with Long") {
+    /*it("should offer a unary ~ method that is consistent with Long") {
       forAll { (pzlong: PosZLong) =>
         (~pzlong) shouldEqual (~(pzlong.toLong))
       }

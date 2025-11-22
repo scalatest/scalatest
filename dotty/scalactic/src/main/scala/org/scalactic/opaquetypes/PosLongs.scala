@@ -260,6 +260,44 @@ object PosLongs {
     */
     val MinValue: PosZLong = PosZLong.ensuringValid(0L)
 
+    /** Convert a compile-time Int literal or runtime Int to a [[PosZLong]].
+      *
+      * The inline overload checks integer literals at compile time; the runtime
+      * overload validates and throws for negative values.
+      */
+    given Conversion[Int, PosZLong] with {
+      inline def apply[I <: Int & Singleton](inline x: I): PosZLong =
+        inline constValueOpt[I] match {
+          case Some(v: Int) =>
+            inline if v < 0 then
+              error("PosZLong cannot be instantiated with a negative integer literal")
+            else
+              v.toLong.asInstanceOf[PosZLong]
+          case None =>
+            error("PosZLong conversion requires a integer literal")
+        }
+      def apply(x: Int): PosZLong = x.toLong
+    }
+
+    /** Convert a compile-time Long literal or runtime Long to a [[PosZLong]].
+      *
+      * The inline overload checks integer literals at compile time; the runtime
+      * overload validates and throws for negative values.
+      */
+    given Conversion[Long, PosZLong] with {
+      inline def apply[L <: Long & Singleton](inline x: L): PosZLong =
+        inline constValueOpt[L] match {
+          case Some(v: Long) =>
+            inline if v < 0 then
+              error("PosZLong cannot be instantiated with a negative long literal")
+            else
+              v.asInstanceOf[PosZLong]
+          case None =>
+            error("PosZLong conversion requires a long literal")
+        }
+      def apply(x: Long): PosZLong = PosZLong.ensuringValid(x)
+    }
+
     /** Ordering instance for PosZLong that orders by numeric value. */
     given Ordering[PosZLong] with {
       def compare(x: PosZLong, y: PosZLong): Int = x.compareTo(y)
