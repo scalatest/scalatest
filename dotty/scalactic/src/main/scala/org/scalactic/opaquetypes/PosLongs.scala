@@ -22,11 +22,33 @@ import org.scalactic.{Validation, Pass, Fail}
 import org.scalactic.{Or, Good, Bad}
 import scala.collection.immutable.NumericRange
 
+import PosFloats.PosZFloat
+import PosDoubles.PosZDouble
+
 object PosLongs {
 
   opaque type PosZLong = Long
 
-  object PosZLong {
+  trait PosZLongConversionsLowPriority {
+    /** Convert a [[PosZLong]] to a Float preserving its numeric value. */
+    given Conversion[PosZLong, Float] with {
+      def apply(pos: PosZLong): Float = pos.toFloat
+    }
+    /** Convert a [[PosZLong]] to a Double preserving its numeric value. */
+    given Conversion[PosZLong, Double] with {
+      def apply(pos: PosZLong): Double = pos.toDouble
+    }
+    /** Convert a [[PosZLong]] to a [[PosZFloat]] with the same numeric value. */
+    given Conversion[PosZLong, PosZFloat] with {
+      def apply(pos: PosZLong): PosZFloat = PosZFloat.ensuringValid(pos.toFloat)
+    }
+    /** Convert a [[PosZLong]] to a [[PosZDouble]] with the same numeric value. */
+    given Conversion[PosZLong, PosZDouble] with {
+      def apply(pos: PosZLong): PosZDouble = PosZDouble.ensuringValid(pos.toDouble)
+    }
+  }
+
+  object PosZLong extends PosZLongConversionsLowPriority {
 
     /** Compile-time factory for creating a [[PosZLong]] from an integer literal.
       *

@@ -30,6 +30,8 @@ import scala.util.{Failure, Success, Try}
 
 import PosLongs.PosZLong
 import NegLongs.NegZLong
+import PosFloats.PosZFloat
+import PosDoubles.PosZDouble
 
 //import org.scalactic.StrictCheckedEquality
 
@@ -360,7 +362,7 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
     }
     // SKIP-SCALATESTJS,NATIVE-END
 
-    /*it("should offer widening methods for basic types that are consistent with Long") {
+    it("should offer widening methods for basic types that are consistent with Long") {
       forAll { (pzlong: PosZLong) =>
         def widen(value: Long): Long = value
         widen(pzlong) shouldEqual widen(pzlong.toLong)
@@ -382,7 +384,7 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
         widen(pzlong) shouldEqual widen(PosZDouble.from(pzlong.toLong).get)
       }
     }
-    it("should offer an ensuringValid method that takes a Long => Long, throwing AssertionError if the result is invalid") {
+    /*it("should offer an ensuringValid method that takes a Long => Long, throwing AssertionError if the result is invalid") {
       PosZLong(33L).ensuringValid(_ + 1L) shouldEqual PosZLong(34L)
       an [AssertionError] should be thrownBy { PosZLong.MaxValue.ensuringValid(_ + 1L) }
     }*/
