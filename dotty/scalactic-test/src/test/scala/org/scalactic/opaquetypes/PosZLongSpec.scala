@@ -347,7 +347,7 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
     }
 
     // SKIP-SCALATESTJS,NATIVE-START
-    /*it("should offer 'to' and 'until' method that is consistent with Long") {
+    it("should offer 'to' and 'until' method that is consistent with Long") {
       def rangeEqual[T](a: NumericRange[T], b: NumericRange[T]): Boolean =
         a.start == b.start && a.end == b.end && a.step == b.step
 
@@ -360,7 +360,7 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
     }
     // SKIP-SCALATESTJS,NATIVE-END
 
-    it("should offer widening methods for basic types that are consistent with Long") {
+    /*it("should offer widening methods for basic types that are consistent with Long") {
       forAll { (pzlong: PosZLong) =>
         def widen(value: Long): Long = value
         widen(pzlong) shouldEqual widen(pzlong.toLong)

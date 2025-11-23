@@ -20,6 +20,7 @@ import scala.compiletime.{ constValueOpt, error }
 import scala.util.{Try, Success, Failure}
 import org.scalactic.{Validation, Pass, Fail}
 import org.scalactic.{Or, Good, Bad}
+import scala.collection.immutable.NumericRange
 
 object PosLongs {
 
@@ -331,6 +332,48 @@ object PosLongs {
 
       /** Return the unsigned octal string representation of the underlying Long. */
       def toOctalString: String = java.lang.Long.toOctalString(x)
+
+      /**
+        * Create a <code>Range</code> from this <code>PosZInt</code> value
+        * until the specified <code>end</code> (exclusive) with step value 1.
+        *
+        * @param end The final bound of the range to make.
+        * @return A [[scala.collection.immutable.Range]] from `this` up to but
+        * not including `end`.
+        */
+      def until(end: Long): NumericRange.Exclusive[Long] = NumericRange.Exclusive(x, end, 1L)
+
+      /**
+        * Create a <code>Range</code> from this <code>PosZInt</code> value
+        * until the specified <code>end</code> (exclusive) with the specified <code>step</code> value.
+        *
+        * @param end The final bound of the range to make.
+        * @param step The number to increase by for each step of the range.
+        * @return A [[scala.collection.immutable.Range]] from `this` up to but
+        * not including `end`.
+        */
+      def until(end: Long, step: Long): NumericRange.Exclusive[Long] = NumericRange.Exclusive(x, end, step)
+
+      /**
+        * Create an inclusive <code>Range</code> from this <code>PosZInt</code> value
+        * to the specified <code>end</code> with step value 1.
+        *
+        * @param end The final bound of the range to make.
+        * @return A [[scala.collection.immutable.Range]] from `'''this'''` up to
+        * and including `end`.
+        */
+      def to(end: Long): NumericRange.Inclusive[Long] = NumericRange.Inclusive(x, end, 1L)
+
+      /**
+        * Create an inclusive <code>Range</code> from this <code>PosZInt</code> value
+        * to the specified <code>end</code> with the specified <code>step</code> value.
+        *
+        * @param end The final bound of the range to make.
+        * @param step The number to increase by for each step of the range.
+        * @return A [[scala.collection.immutable.Range]] from `'''this'''` up to
+        * and including `end`.
+        */
+      def to(end: Long, step: Long): NumericRange.Inclusive[Long] = NumericRange.Inclusive(x, end, step)
     }
 
   }
