@@ -396,6 +396,19 @@ object PosLongs {
         * and including `end`.
         */
       def to(end: Long, step: Long): NumericRange.Inclusive[Long] = NumericRange.Inclusive(x, end, step)
+
+      /** Apply a transformation and ensure the result is a valid [[PosZLong]].
+        *
+        * @param f function to transform the underlying Long
+        * @return the transformed value as PosZLong if valid
+        * @throws AssertionError if the result of f is negative
+        */
+      def ensuringValid(f: Long => Long): PosZLong = {
+        val res = f(x)
+        if (res < 0)
+          throw new AssertionError(Resources.invalidPosZLong)
+        else res
+      }
     }
 
   }
