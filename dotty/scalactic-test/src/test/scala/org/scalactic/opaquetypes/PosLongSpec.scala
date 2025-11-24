@@ -213,13 +213,13 @@ class PosLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
         "takesPosLong(b)" shouldNot compile
       }
 
-      /*it("should offer a unary ~ method that is consistent with Long") {
+      it("should offer a unary ~ method that is consistent with Long") {
         forAll { (plong: PosLong) =>
           (~plong) shouldEqual (~(plong.toLong))
         }
       }
 
-      it("should offer a unary + method that is consistent with Long") {
+      /*it("should offer a unary + method that is consistent with Long") {
         forAll { (p: PosLong) =>
           (+p).toLong shouldEqual (+(p.toLong))
         }

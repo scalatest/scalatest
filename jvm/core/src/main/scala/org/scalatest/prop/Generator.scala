@@ -1469,6 +1469,69 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosLong]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[PosLong] = posLongGenerator
+//DOTTY-ONLY /* Generator that produces opaquetypes.PosLongs.PosLong independently of anyvals. */
+//DOTTY-ONLY val opaquetypesPosLongGenerator: Generator[org.scalactic.opaquetypes.PosLongs.PosLong] =
+//DOTTY-ONLY   new Generator[org.scalactic.opaquetypes.PosLongs.PosLong] {
+//DOTTY-ONLY
+//DOTTY-ONLY   import org.scalactic.opaquetypes.PosLongs.PosLong
+//DOTTY-ONLY
+//DOTTY-ONLY   case class NextRoseTree(value: PosLong, sizeParam: SizeParam, isValidFun: (PosLong, SizeParam) => Boolean) extends RoseTree[PosLong] {
+//DOTTY-ONLY     def shrinks: LazyListOrStream[RoseTree[PosLong]] = {
+//DOTTY-ONLY       def resLazyListOrStream(theValue: PosLong): LazyListOrStream[RoseTree[PosLong]] = {
+//DOTTY-ONLY         if (theValue.value == 1L) LazyListOrStream.empty
+//DOTTY-ONLY         else {
+//DOTTY-ONLY           val half: Long = theValue.value / 2L
+//DOTTY-ONLY           val halfPos = if (half <= 0L) 1L else half
+//DOTTY-ONLY           val posLongHalf = PosLong.ensuringValid(halfPos)
+//DOTTY-ONLY           if (isValidFun(posLongHalf, sizeParam))
+//DOTTY-ONLY             NextRoseTree(posLongHalf, sizeParam, isValidFun) #:: resLazyListOrStream(posLongHalf)
+//DOTTY-ONLY           else
+//DOTTY-ONLY             resLazyListOrStream(posLongHalf)
+//DOTTY-ONLY         }
+//DOTTY-ONLY       }
+//DOTTY-ONLY       resLazyListOrStream(value)
+//DOTTY-ONLY     }
+//DOTTY-ONLY   }
+//DOTTY-ONLY
+//DOTTY-ONLY   private val edges: List[PosLong] = List(PosLong.MinValue, PosLong.ensuringValid(2L), PosLong.MaxValue)
+//DOTTY-ONLY
+//DOTTY-ONLY   override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosLong], Randomizer) = {
+//DOTTY-ONLY     val (allEdges, nextRnd) = Randomizer.shuffle(edges, rnd)
+//DOTTY-ONLY     (allEdges.take(maxLength), nextRnd)
+//DOTTY-ONLY   }
+//DOTTY-ONLY
+//DOTTY-ONLY   override def roseTreeOfEdge(edge: PosLong, sizeParam: SizeParam, isValidFun: (PosLong, SizeParam) => Boolean): RoseTree[PosLong] =
+//DOTTY-ONLY     NextRoseTree(edge, sizeParam, isValidFun)
+//DOTTY-ONLY
+//DOTTY-ONLY   def nextImpl(szp: SizeParam, isValidFun: (PosLong, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[PosLong], Randomizer) = {
+//DOTTY-ONLY     val (plAny, rnd2) = rnd.nextPosLong
+//DOTTY-ONLY     val plPrimitive: Long = plAny.value
+//DOTTY-ONLY     val p = PosLong.ensuringValid(plPrimitive)
+//DOTTY-ONLY     (NextRoseTree(p, szp, isValidFun), rnd2)
+//DOTTY-ONLY   }
+//DOTTY-ONLY
+//DOTTY-ONLY   override def canonicals: LazyListOrStream[RoseTree[PosLong]] = {
+//DOTTY-ONLY     case class CanonicalRoseTree(value: PosLong) extends RoseTree[PosLong] {
+//DOTTY-ONLY       def shrinks: LazyListOrStream[RoseTree[PosLong]] = {
+//DOTTY-ONLY         def resLazyListOrStream(theValue: PosLong): LazyListOrStream[RoseTree[PosLong]] =
+//DOTTY-ONLY           if (theValue.value == 1L) LazyListOrStream.empty
+//DOTTY-ONLY           else {
+//DOTTY-ONLY             val minusOne: PosLong = PosLong.ensuringValid(theValue.value - 1L)
+//DOTTY-ONLY             if (minusOne.value == 1L) Rose(minusOne) #:: LazyListOrStream.empty
+//DOTTY-ONLY             else Rose(minusOne) #:: resLazyListOrStream(minusOne)
+//DOTTY-ONLY           }
+//DOTTY-ONLY         resLazyListOrStream(value)
+//DOTTY-ONLY       }
+//DOTTY-ONLY     }
+//DOTTY-ONLY     LazyListOrStream(PosLong.ensuringValid(1L), PosLong.ensuringValid(2L)).map(v => CanonicalRoseTree(v))
+//DOTTY-ONLY   }
+//DOTTY-ONLY
+//DOTTY-ONLY   override def toString = "Generator[org.scalactic.opaquetypes.PosLongs.PosLong]"
+//DOTTY-ONLY
+//DOTTY-ONLY   override def shrinksForValue(valueToShrink: PosLong): Option[LazyListOrStream[RoseTree[PosLong]]] =
+//DOTTY-ONLY     Some(NextRoseTree(valueToShrink, SizeParam(PosZInt.ensuringValid(1), PosZInt.ensuringValid(0), PosZInt.ensuringValid(1)), isValid).shrinks)
+//DOTTY-ONLY }
+//DOTTY-ONLY given given_Generator_opaquetypes_PosLong: Generator[org.scalactic.opaquetypes.PosLongs.PosLong] = opaquetypesPosLongGenerator
 
   /**
     * A [[Generator]] that produces positive Longs, including zero.
