@@ -128,7 +128,7 @@ class PosLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
         PosLong.rightOrElse(-99L)(i => i + 3L) shouldBe Left(-96L)
       }
     }
-    /*describe("should offer an isValid predicate method that") {
+    describe("should offer an isValid predicate method that") {
       it("returns true if the passed Long is greater than 0") {
         PosLong.isValid(50L) shouldBe true
         PosLong.isValid(100L) shouldBe true
@@ -149,7 +149,7 @@ class PosLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
         PosLong.fromOrElse(-99L, PosLong(42L)).value shouldBe 42L
       }
     } 
-    it("should offer MaxValue and MinValue factory methods") {
+    /*it("should offer MaxValue and MinValue factory methods") {
       PosLong.MaxValue shouldEqual PosLong.from(Long.MaxValue).get
       PosLong.MinValue shouldEqual PosLong(1L)
     }
