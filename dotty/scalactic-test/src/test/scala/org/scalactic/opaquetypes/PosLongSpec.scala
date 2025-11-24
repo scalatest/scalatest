@@ -185,7 +185,7 @@ class PosLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
         "PosLong(b)" shouldNot compile
       }
     }
-    /*describe("when specified as a plain-old Long") {
+    describe("when specified as a plain-old Long") {
 
       def takesPosLong(pos: PosLong): Long = pos.value
 
@@ -213,7 +213,7 @@ class PosLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
         "takesPosLong(b)" shouldNot compile
       }
 
-      it("should offer a unary ~ method that is consistent with Long") {
+      /*it("should offer a unary ~ method that is consistent with Long") {
         forAll { (plong: PosLong) =>
           (~plong) shouldEqual (~(plong.toLong))
         }
@@ -396,12 +396,12 @@ class PosLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
           def widen(value: NonZeroDouble): NonZeroDouble = value
           widen(plong) shouldEqual widen(NonZeroDouble.from(plong.toLong).get)
         }
-      }
+      }*/
     }
     it("should offer an ensuringValid method that takes an Long => Long, throwing AssertionError if the result is invalid") {
       PosLong(33L).ensuringValid(_ + 1L) shouldEqual PosLong(34L)
       an [AssertionError] should be thrownBy { PosLong.MaxValue.ensuringValid(_ + 1L) }
-    }*/
+    }
   }
 }
 

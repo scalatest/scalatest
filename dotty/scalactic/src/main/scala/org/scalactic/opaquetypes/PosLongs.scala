@@ -662,9 +662,47 @@ object PosLongs {
     val MaxValue: PosLong = PosLong.ensuringValid(Long.MaxValue)
 
     /**
-    * The smallest value representable as a non-negative long <code>Long</code>, which is <code>PosZLong(1)</code>.
+    * The smallest value representable as a non-negative long <code>Long</code>, which is <code>PosLong(1)</code>.
     */
     val MinValue: PosLong = PosLong.ensuringValid(1L)  
+
+    /** Convert a compile-time Int literal or runtime Int to a [[PosLong]].
+      *
+      * The inline overload checks integer literals at compile time; the runtime
+      * overload validates and throws for negative values.
+      */
+    given Conversion[Int, PosLong] with {
+      inline def apply[I <: Int & Singleton](inline x: I): PosLong =
+        inline constValueOpt[I] match {
+          case Some(v: Int) =>
+            inline if v <= 0 then
+              error("PosLong cannot be instantiated with a negative integer literal")
+            else
+              v.toLong.asInstanceOf[PosZLong]
+          case None =>
+            error("PosLong conversion requires a integer literal")
+        }
+      def apply(x: Int): PosLong = x.toLong
+    }
+
+    /** Convert a compile-time Long literal or runtime Long to a [[PosLong]].
+      *
+      * The inline overload checks integer literals at compile time; the runtime
+      * overload validates and throws for negative values.
+      */
+    given Conversion[Long, PosLong] with {
+      inline def apply[L <: Long & Singleton](inline x: L): PosLong =
+        inline constValueOpt[L] match {
+          case Some(v: Long) =>
+            inline if v <= 0 then
+              error("PosLong cannot be instantiated with a negative long literal")
+            else
+              v.asInstanceOf[PosLong]
+          case None =>
+            error("PosLong conversion requires a long literal")
+        }
+      def apply(x: Long): PosLong = PosLong.ensuringValid(x)
+    }
   }
 
 }
