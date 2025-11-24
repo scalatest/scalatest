@@ -569,6 +569,40 @@ object PosLongs {
       */
     def goodOrElse[B](value: Long)(f: Long => B): PosLong Or B =
       if (isValid(value)) Good(value) else Bad(f(value))  
+
+    /**
+    * A factory/validation method that produces a <code>PosLong</code>, wrapped
+    * in a <code>Right</code>, given a valid <code>Long</code> value, or if the
+    * given <code>Long</code> is invalid, an error value of type <code>L</code>
+    * produced by passing the given <em>invalid</em> <code>Long</code> value
+    * to the given function <code>f</code>, wrapped in a <code>Left</code>.
+    *
+    * <p>
+    * This method will inspect the passed <code>Long</code> value and if
+    * it is a PosLong <code>Long</code>, it will return a <code>PosLong</code>
+    * representing that value, wrapped in a <code>Right</code>.
+    * Otherwise, the passed <code>Long</code> value is not PosLong, so this
+    * method will return a result of type <code>L</code> obtained by passing
+    * the invalid <code>Long</code> value to the given function <code>f</code>,
+    * wrapped in a `Left`.
+    * </p>
+    *
+    * <p>
+    * This factory method differs from the <code>apply</code> factory method
+    * in that <code>apply</code> is implemented via a macro that inspects
+    * <code>Long</code> literals at compile time, whereas this method inspects
+    * <code>Long</code> values at run time.
+    * </p>
+    *
+    * @tparam L error type produced by f
+    * @param value the <code>Long</code> to inspect, and if PosLong, return
+    *     wrapped in a <code>Right(PosLong)</code>.
+    * @param f function to produce an error when value is invalid
+    * @return the specified <code>Long</code> value wrapped
+    *     in a <code>Right(PosLong)</code>, if it is PosLong, else a <code>Left(f(value))</code>.
+    */
+    def rightOrElse[L](value: Long)(f: Long => L): Either[L, PosLong] =
+      if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))  
   }
 
 }
