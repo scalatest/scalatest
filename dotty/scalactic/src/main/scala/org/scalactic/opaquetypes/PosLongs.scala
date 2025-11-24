@@ -502,6 +502,39 @@ object PosLongs {
         Success(value)
       else
         Failure(new AssertionError(Resources.invalidPosLong))
+
+    /**
+      * A validation method that produces a <code>Pass</code>
+      * given a valid <code>Long</code> value, or
+      * an error value of type <code>E</code> produced by passing the
+      * given <em>invalid</em> <code>Long</code> value
+      * to the given function <code>f</code>, wrapped in a <code>Fail</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Long</code> value and if
+      * it is a non-negative <code>Long</code>, it will return a <code>Pass</code>.
+      * Otherwise, the passed <code>Long</code> value is not a non-negative long, so this
+      * method will return a result of type <code>E</code> obtained by passing
+      * the invalid <code>Long</code> value to the given function <code>f</code>,
+      * wrapped in a `Fail`.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code> factory method
+      * in that <code>apply</code> is implemented via a macro that inspects
+      * <code>Long</code> literals at compile time, whereas this method inspects
+      * <code>Long</code> values at run time.
+      * </p>
+      *
+      * @tparam E error type produced by f
+      * @param value the `Long` to validate that it is a non-negative long.
+      * @param f function to produce an error when value is invalid
+      * @return a `Pass` if the specified `Long` value is a non-negative long,
+      *   else a `Fail` containing an error value produced by passing the
+      *   specified `Long` to the given function `f`.
+      */
+    def passOrElse[E](value: Long)(f: Long => E): Validation[E] =
+      if (isValid(value)) Pass else Fail(f(value))    
   }
 
 }
