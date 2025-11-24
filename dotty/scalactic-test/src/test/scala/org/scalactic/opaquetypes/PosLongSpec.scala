@@ -71,7 +71,7 @@ class PosLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
         PosLong.from(-99L) shouldBe None
       }
     } 
-    /*describe("should offer an ensuringValid factory method that") {
+    describe("should offer an ensuringValid factory method that") {
       it("returns Some[PosLong if the passed Long is greater than 0") {
         PosLong.ensuringValid(50L).value shouldBe 50L
         PosLong.ensuringValid(100L).value shouldBe 100L
@@ -82,7 +82,7 @@ class PosLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
         an [AssertionError] should be thrownBy PosLong.ensuringValid(-99L)
       }
     }
-    describe("should offer a tryingValid factory method that") {
+    /*describe("should offer a tryingValid factory method that") {
       import TryValues.*
       it("returns a PosLong wrapped in a Success if the passed Long is greater than 0") {
         PosLong.tryingValid(50L).success.value.value shouldBe 50L

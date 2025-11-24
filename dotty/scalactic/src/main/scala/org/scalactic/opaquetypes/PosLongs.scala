@@ -460,6 +460,17 @@ object PosLongs {
     def from(l: Long): Option[PosLong] =
       if (isValid(l)) Some(l) else None  
 
+    /** Create a [[PosLong]], throwing an AssertionError if the given Int is invalid.
+     *
+     * @param l the Long to inspect
+     * @return the [[PosLong]] if the given Long is greater than 0
+     * @throws AssertionError if the given Long is less than or equal to 0
+     */
+    def ensuringValid(l: Long): PosLong = 
+      if (!isValid(l)) 
+        throw new AssertionError(Resources.invalidPosLong)
+      else l  
+
   }
 
 }
