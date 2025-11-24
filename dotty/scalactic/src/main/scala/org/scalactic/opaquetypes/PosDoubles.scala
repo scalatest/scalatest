@@ -31,6 +31,20 @@ object PosDoubles {
         throw new AssertionError(Resources.invalidPosZDouble)
       else d
 
+  }
+
+  opaque type PosDouble = Double
+
+  object PosDouble {
+    
+    def from(d: Double): Option[PosDouble] =
+      if (d > 0.0) Some(d) else None
+
+    def ensuringValid(d: Double): PosDouble = 
+      if (d <= 0.0) 
+        throw new AssertionError(Resources.invalidPosDouble)
+      else d
+
   } 
 
 }

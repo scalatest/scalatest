@@ -22,8 +22,8 @@ import org.scalactic.{Validation, Pass, Fail}
 import org.scalactic.{Or, Good, Bad}
 import scala.collection.immutable.NumericRange
 
-import PosFloats.PosZFloat
-import PosDoubles.PosZDouble
+import PosFloats.{ PosZFloat, PosFloat }
+import PosDoubles.{ PosZDouble, PosDouble } 
 
 object PosLongs {
 
@@ -421,6 +421,28 @@ object PosLongs {
     given Conversion[PosLong, Long] with {
       def apply(x: PosLong): Long = x
     }
+
+    /** Compile-time factory for creating a [[PosLong]] from an integer literal.
+      *
+      * This inline method inspects the provided integer literal at compile time
+      * and rejects negative literals. Use it as: `PosLong(5)`. For non-literal
+      * values, use [[ensuringValid]] or [[from]].
+      *
+      * @tparam I the singleton Int literal type
+      * @param i the Int literal
+      * @return a [[PosLong]] representing the given non-negative literal
+      * @throws a compile-time error if the literal is negative or not a literal
+      */
+    inline def apply[I <: Int & Singleton](inline i: I): PosLong =
+      inline constValueOpt[I] match {
+        case Some(v: Int) =>
+          inline if v <= 0 then
+            error("PosLong cannot be instantiated with a negative int literal")
+          else
+            v.asInstanceOf[PosLong]
+        case None =>
+          error("PosLong.apply requires an int or long literal")
+      }
 
     /** Compile-time factory for creating a [[PosLong]] from an long literal.
       *

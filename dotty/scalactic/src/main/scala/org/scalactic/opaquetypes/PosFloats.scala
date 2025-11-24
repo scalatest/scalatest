@@ -31,6 +31,20 @@ object PosFloats {
         throw new AssertionError(Resources.invalidPosZFloat)
       else f
 
+  }
+
+  opaque type PosFloat = Float
+
+  object PosFloat {
+    
+    def from(f: Float): Option[PosFloat] =
+      if (f >= 0.0f) Some(f) else None
+
+    def ensuringValid(f: Float): PosFloat = 
+      if (f < 0.0f) 
+        throw new AssertionError(Resources.invalidPosFloat)
+      else f
+
   } 
 
 }

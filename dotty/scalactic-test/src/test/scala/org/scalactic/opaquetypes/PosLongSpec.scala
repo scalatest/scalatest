@@ -154,7 +154,7 @@ class PosLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
       PosLong.MinValue shouldEqual PosLong(1L)
     }
 
-    /*it("should be sortable") {
+    it("should be sortable") {
       val xs = List(PosLong(2), PosLong(4), PosLong(1), PosLong(3))
       xs.sorted shouldEqual List(PosLong(1), PosLong(2), PosLong(3), PosLong(4))
     }
@@ -185,7 +185,7 @@ class PosLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
         "PosLong(b)" shouldNot compile
       }
     }
-    describe("when specified as a plain-old Long") {
+    /*describe("when specified as a plain-old Long") {
 
       def takesPosLong(pos: PosLong): Long = pos.value
 
