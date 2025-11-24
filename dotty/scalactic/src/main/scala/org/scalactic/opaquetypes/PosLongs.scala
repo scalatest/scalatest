@@ -131,7 +131,7 @@ object PosLongs {
       * <code>Long</code> values at run time.
       * </p>
       *
-      * @param value the <code>Long</code> to inspect, and if a non-negative long, return
+      * @param value the <code>Long</code> to inspect, and if a zero or non-negative long, return
       *     wrapped in a <code>Success(PosZLong)</code>.
       * @return the specified <code>Long</code> value wrapped
       *     in a <code>Success(PosZLong)</code>, if it is a non-negative long, else a <code>Failure(AssertionError)</code>.
@@ -471,6 +471,37 @@ object PosLongs {
         throw new AssertionError(Resources.invalidPosLong)
       else l  
 
+    /**
+      * A factory/validation method that produces a <code>PosLong</code>, wrapped
+      * in a <code>Success</code>, given a valid <code>Long</code> value, or if the
+      * given <code>Long</code> is invalid, an <code>AssertionError</code>, wrapped
+      * in a <code>Failure</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Long</code> value and if
+      * it is a PosLong <code>Long</code>, it will return a <code>PosLong</code>
+      * representing that value, wrapped in a <code>Success</code>.
+      * Otherwise, if the passed <code>Long</code> value is not PosLong, this
+      * method will return an <code>AssertionError</code>, wrapped in a <code>Failure</code>.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code> factory method
+      * in that <code>apply</code> is implemented via a macro that inspects
+      * <code>Long</code> literals at compile time, whereas this method inspects
+      * <code>Long</code> values at run time.
+      * </p>
+      *
+      * @param value the <code>Long</code> to inspect, and if a non-negative long, return
+      *     wrapped in a <code>Success(PosLong)</code>.
+      * @return the specified <code>Long</code> value wrapped
+      *     in a <code>Success(PosLong)</code>, if it is a non-negative long, else a <code>Failure(AssertionError)</code>.
+      */
+    def tryingValid(value: Long): Try[PosLong] =
+      if (isValid(value))
+        Success(value)
+      else
+        Failure(new AssertionError(Resources.invalidPosLong))
   }
 
 }
