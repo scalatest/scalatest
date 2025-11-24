@@ -106,7 +106,7 @@ class PosLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
         PosLong.passOrElse(-99L)(i => i + 3L) shouldBe Fail(-96L)
       }
     }
-    /*describe("should offer a goodOrElse factory method that") {
+    describe("should offer a goodOrElse factory method that") {
       it("returns a PosLong wrapped in a Good if the given Long is greater than 0") {
         PosLong.goodOrElse(50L)(i => i) shouldBe Good(PosLong(50L))
         PosLong.goodOrElse(100L)(i => i) shouldBe Good(PosLong(100L))
@@ -117,7 +117,7 @@ class PosLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
         PosLong.goodOrElse(-99L)(i => i + 3L) shouldBe Bad(-96L)
       }
     }
-    describe("should offer a rightOrElse factory method that") {
+    /*describe("should offer a rightOrElse factory method that") {
       it("returns a PosLong wrapped in a Right if the given Long is greater than 0") {
         PosLong.rightOrElse(50L)(i => i) shouldBe Right(PosLong(50L))
         PosLong.rightOrElse(100L)(i => i) shouldBe Right(PosLong(100L))

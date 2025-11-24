@@ -534,7 +534,41 @@ object PosLongs {
       *   specified `Long` to the given function `f`.
       */
     def passOrElse[E](value: Long)(f: Long => E): Validation[E] =
-      if (isValid(value)) Pass else Fail(f(value))    
+      if (isValid(value)) Pass else Fail(f(value))
+
+    /**
+      * A factory/validation method that produces a <code>PosLong</code>, wrapped
+      * in a <code>Good</code>, given a valid <code>Long</code> value, or if the
+      * given <code>Long</code> is invalid, an error value of type <code>B</code>
+      * produced by passing the given <em>invalid</em> <code>Long</code> value
+      * to the given function <code>f</code>, wrapped in a <code>Bad</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Long</code> value and if
+      * it is a PosLong <code>Long</code>, it will return a <code>PosLong</code>
+      * representing that value, wrapped in a <code>Good</code>.
+      * Otherwise, the passed <code>Long</code> value is not PosLong, so this
+      * method will return a result of type <code>B</code> obtained by passing
+      * the invalid <code>Long</code> value to the given function <code>f</code>,
+      * wrapped in a `Bad`.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code> factory method
+      * in that <code>apply</code> is implemented via a macro that inspects
+      * <code>Long</code> literals at compile time, whereas this method inspects
+      * <code>Long</code> values at run time.
+      * </p>
+      *
+      * @tparam B error type produced by f
+      * @param value the <code>Long</code> to inspect, and if PosLong, return
+      *     wrapped in a <code>Good(PosLong)</code>.
+      * @param f function to produce an error when value is invalid
+      * @return the specified <code>Long</code> value wrapped
+      *     in a <code>Good(PosLong)</code>, if it is PosLong, else a <code>Bad(f(value))</code>.
+      */
+    def goodOrElse[B](value: Long)(f: Long => B): PosLong Or B =
+      if (isValid(value)) Good(value) else Bad(f(value))  
   }
 
 }
