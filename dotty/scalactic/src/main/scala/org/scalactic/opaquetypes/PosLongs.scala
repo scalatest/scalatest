@@ -274,12 +274,12 @@ object PosLongs {
       if (isValid(value)) value else default    
 
     /**
-    * The largest value representable as a non-negative long <code>Long</code>, which is <code>PosZLong(9223372036854775807)</code>.
+    * The largest value representable as a zero and positive long <code>Long</code>, which is <code>PosZLong(9223372036854775807)</code>.
     */
     val MaxValue: PosZLong = PosZLong.ensuringValid(Long.MaxValue)
 
     /**
-    * The smallest value representable as a non-negative long <code>Long</code>, which is <code>PosZLong(0)</code>.
+    * The smallest value representable as a zero and positive long <code>Long</code>, which is <code>PosZLong(0)</code>.
     */
     val MinValue: PosZLong = PosZLong.ensuringValid(0L)
 
@@ -633,6 +633,16 @@ object PosLongs {
       */
     def fromOrElse(value: Long, default: => PosLong): PosLong =
       if (isValid(value)) value else default    
+
+    /**
+    * The largest value representable as a non-negative long <code>Long</code>, which is <code>PosLong(9223372036854775807)</code>.
+    */
+    val MaxValue: PosLong = PosLong.ensuringValid(Long.MaxValue)
+
+    /**
+    * The smallest value representable as a non-negative long <code>Long</code>, which is <code>PosZLong(1)</code>.
+    */
+    val MinValue: PosLong = PosLong.ensuringValid(1L)  
   }
 
 }
