@@ -413,4 +413,53 @@ object PosLongs {
 
   }
 
+  opaque type PosLong <: PosZLong = Long
+
+  object PosLong {
+
+    /** Convert a [[PosLong]] to a plain Long (unwrap). */
+    given Conversion[PosLong, Long] with {
+      def apply(x: PosLong): Long = x
+    }
+
+    /** Compile-time factory for creating a [[PosLong]] from an long literal.
+      *
+      * This inline method inspects the provided long literal at compile time
+      * and rejects negative literals. Use it as: `PosLong(5L)`. For non-literal
+      * values, use [[ensuringValid]] or [[from]].
+      *
+      * @tparam L the singleton Long literal type
+      * @param l the Long literal
+      * @return a [[PosLong]] representing the given non-negative literal
+      * @throws a compile-time error if the literal is negative or not a literal
+      */
+    inline def apply[L <: Long & Singleton](inline l: L): PosLong =
+      inline constValueOpt[L] match {
+        case Some(v: Long) =>
+          inline if v <= 0L then
+            error("PosLong cannot be instantiated with a negative long literal")
+          else
+            v.asInstanceOf[PosLong]
+        case None =>
+          error("PosLong.apply requires an int or long literal")
+      }
+
+    /** 
+     * Return true when the provided Int is a valid [[PosLong]] value (> 0L). 
+     *
+     * @param value the Long to validate
+     * @return true if the specified Long is a positive long, else false
+     */
+    def isValid(value: Long): Boolean = value > 0L  
+
+    /** Create a [[PosLong]] if the given Int is valid.
+      *
+      * @param l the Long to inspect
+      * @return Some([[PosLong]]) if the given Long is greater than 0, else None
+      */
+    def from(l: Long): Option[PosLong] =
+      if (isValid(l)) Some(l) else None  
+
+  }
+
 }
