@@ -23,13 +23,16 @@ import org.scalactic.{Or, Good, Bad}
 import scala.collection.immutable.NumericRange
 
 import PosFloats.{ PosZFloat, PosFloat }
-import PosDoubles.{ PosZDouble, PosDouble } 
+import PosDoubles.{ PosZDouble, PosDouble }
+import NonZeroLongs.NonZeroLong
+import NonZeroFloats.NonZeroFloat
+import NonZeroDoubles.NonZeroDouble
 
 object PosLongs {
 
   opaque type PosZLong = Long
 
-  trait PosZLongConversionsLowPriority {
+  trait PosZLongConversionsLowLowPriority {
     /** Convert a [[PosZLong]] to a Float preserving its numeric value. */
     given Conversion[PosZLong, Float] with {
       def apply(pos: PosZLong): Float = pos.toFloat
@@ -38,6 +41,9 @@ object PosLongs {
     given Conversion[PosZLong, Double] with {
       def apply(pos: PosZLong): Double = pos.toDouble
     }
+  }
+
+  trait PosZLongConversionsLowPriority extends PosZLongConversionsLowLowPriority {
     /** Convert a [[PosZLong]] to a [[PosZFloat]] with the same numeric value. */
     given Conversion[PosZLong, PosZFloat] with {
       def apply(pos: PosZLong): PosZFloat = PosZFloat.ensuringValid(pos.toFloat)
@@ -415,7 +421,38 @@ object PosLongs {
 
   opaque type PosLong <: PosZLong = Long
 
-  object PosLong {
+  trait PosLongConversionsLowPriority {
+    /** Convert a [[PosLong]] to a Float preserving its numeric value. */
+    given Conversion[PosLong, Float] with {
+      def apply(pos: PosLong): Float = pos.toFloat
+    }
+    /** Convert a [[PosLong]] to a Double preserving its numeric value. */
+    given Conversion[PosLong, Double] with {
+      def apply(pos: PosLong): Double = pos.toDouble
+    }
+    /** Convert a [[PosLong]] to a [[PosFloat]] with the same numeric value. */
+    given Conversion[PosLong, PosFloat] with {
+      def apply(pos: PosLong): PosFloat = PosFloat.ensuringValid(pos.toFloat)
+    }
+    /** Convert a [[PosLong]] to a [[PosDouble]] with the same numeric value. */
+    given Conversion[PosLong, PosDouble] with {
+      def apply(pos: PosLong): PosDouble = PosDouble.ensuringValid(pos.toDouble)
+    }
+    /** Convert a [[PosLong]] to a [[NonZeroLong]] with the same numeric value. */
+    given Conversion[PosLong, NonZeroLong] with {
+      def apply(pos: PosLong): NonZeroLong = NonZeroLong.ensuringValid(pos.toLong)
+    }
+    /** Convert a [[PosLong]] to a [[NonZeroFloat]] with the same numeric value. */
+    given Conversion[PosLong, NonZeroFloat] with {
+      def apply(pos: PosLong): NonZeroFloat = NonZeroFloat.ensuringValid(pos.toFloat)
+    }
+    /** Convert a [[PosLong]] to a [[NonZeroDouble]] with the same numeric value. */
+    given Conversion[PosLong, NonZeroDouble] with {
+      def apply(pos: PosLong): NonZeroDouble = NonZeroDouble.ensuringValid(pos.toDouble)
+    }
+  }
+
+  object PosLong extends PosLongConversionsLowPriority {
 
     /** Convert a [[PosLong]] to a plain Long (unwrap). */
     given Conversion[PosLong, Long] with {

@@ -17,19 +17,16 @@ package org.scalactic.opaquetypes
 
 import org.scalactic.Resources
 
-object NegLongs {
-  opaque type NegZLong = Long
-  object NegZLong {
-    def ensuringValid(l: Long): NegZLong = 
-      if (l > 0) 
-        throw new AssertionError(Resources.invalidNegZLong)
+object NonZeroLongs {
+  opaque type NonZeroLong = Long
+  object NonZeroLong {
+    def ensuringValid(l: Long): NonZeroLong = 
+      if (l == 0) 
+        throw new AssertionError(Resources.invalidNonZeroLong)
       else l
+    def from(l: Long): Option[NonZeroLong] =
+      if (l == 0) None else Some(l)  
   }
-  opaque type NegLong = Long
-  object NegLong {
-    def ensuringValid(l: Long): NegLong = 
-      if (l >= 0) 
-        throw new AssertionError(Resources.invalidNegLong)
-      else l
-  }
+  opaque type NonZeroFloat = Float
+  opaque type NonZeroDouble = Double
 }

@@ -27,7 +27,13 @@ import scala.util.{Failure, Success, Try}
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 
-import PosLongs.PosLong
+import PosLongs.{ PosLong, PosZLong }
+import NegLongs.NegLong
+import PosFloats.{ PosFloat, PosZFloat }
+import PosDoubles.{ PosDouble, PosZDouble }
+import NonZeroLongs.NonZeroLong
+import NonZeroFloats.NonZeroFloat
+import NonZeroDoubles.NonZeroDouble
 
 trait PosLongSpecSupport {
 
@@ -219,7 +225,7 @@ class PosLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
         }
       }
 
-      /*it("should offer a unary + method that is consistent with Long") {
+      it("should offer a unary + method that is consistent with Long") {
         forAll { (p: PosLong) =>
           (+p).toLong shouldEqual (+(p.toLong))
         }
@@ -396,7 +402,7 @@ class PosLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
           def widen(value: NonZeroDouble): NonZeroDouble = value
           widen(plong) shouldEqual widen(NonZeroDouble.from(plong.toLong).get)
         }
-      }*/
+      }
     }
     it("should offer an ensuringValid method that takes an Long => Long, throwing AssertionError if the result is invalid") {
       PosLong(33L).ensuringValid(_ + 1L) shouldEqual PosLong(34L)
