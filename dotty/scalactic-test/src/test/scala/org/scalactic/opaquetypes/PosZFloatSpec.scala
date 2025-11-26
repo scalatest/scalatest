@@ -328,7 +328,7 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       }
     }
 
-    /*it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Float") {
+    it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Float") {
       forAll { (pzfloat: PosZFloat) =>
         // SKIP-SCALATESTJS,NATIVE-START
         pzfloat.round.toFloat shouldEqual pzfloat.toFloat.round
@@ -338,7 +338,7 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       }
     }
 
-    it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Float") {
+    /*it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Float") {
       forAll { (pzfloat: PosZFloat) =>
         pzfloat.toRadians.toFloat shouldEqual pzfloat.toFloat.toRadians
         pzfloat.toDegrees.toFloat shouldEqual pzfloat.toFloat.toDegrees

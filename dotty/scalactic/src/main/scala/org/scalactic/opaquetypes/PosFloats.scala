@@ -21,6 +21,8 @@ import scala.util.{Try, Success, Failure}
 import org.scalactic.{Validation, Pass, Fail}
 import org.scalactic.{Or, Good, Bad}
 
+import PosInts.PosZInt
+
 object PosFloats {
 
   opaque type PosZFloat = Float
@@ -404,6 +406,22 @@ object PosFloats {
         val longValue = p.toLong
         longValue.toFloat == p || longValue == Long.MaxValue && p < Float.PositiveInfinity || longValue == Long.MinValue && p > Float.NegativeInfinity
       }
+      /**
+        * Rounds this `PosZFloat` value to the nearest whole number value that can be expressed as an `PosZInt`, returning the result as a `PosZInt`.
+        */
+      def round: PosZInt = PosZInt.ensuringValid(math.round(value))
+
+      /**
+        * Returns the smallest (closest to 0) `PosZFloat` that is greater than or equal to this `PosZFloat`
+        * and represents a mathematical integer.
+        */
+      def ceil: PosZFloat = PosZFloat.ensuringValid(math.ceil(value).toFloat)
+
+      /**
+        * Returns the greatest (closest to infinity) `PosZFloat` that is less than or equal to
+        * this `PosZFloat` and represents a mathematical integer.
+        */
+      def floor: PosZFloat = PosZFloat.ensuringValid(math.floor(value).toFloat)
     }  
 
   }
