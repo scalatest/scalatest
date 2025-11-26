@@ -18,6 +18,7 @@ package org.scalactic.opaquetypes
 import org.scalactic.Resources
 import scala.compiletime.{ constValueOpt, error }
 import scala.util.{Try, Success, Failure}
+import org.scalactic.{Validation, Pass, Fail}
 
 object PosFloats {
 
@@ -46,6 +47,14 @@ object PosFloats {
         case None =>
           error("PosZFloat.apply requires a float literal")
       }
+
+    /** 
+      * Return true when the provided Float is a valid [[PosZFloat]] value (>= 0). 
+      *
+      * @param value the Float to validate
+      * @return true if the specified Float is a non-negative float, else false
+      */
+    def isValid(value: Float): Boolean = value >= 0.0f  
     
     /** Construct a [[PosZFloat]] from a runtime Float if it is non-negative.
       *
@@ -53,7 +62,7 @@ object PosFloats {
       * @return Some(PosZFloat) if f >= 0, otherwise None
       */
     def from(f: Float): Option[PosZFloat] =
-      if (f >= 0.0f) Some(f) else None
+      if (isValid(f)) Some(f) else None
 
     /** Ensure the runtime Float is non-negative and return it as a [[PosZFloat]].
       *
@@ -62,9 +71,10 @@ object PosFloats {
       * @throws AssertionError if the given Float is negative
       */
     def ensuringValid(f: Float): PosZFloat = 
-      if (f < 0.0f) 
+      if (isValid(f)) 
+        f
+      else   
         throw new AssertionError(Resources.invalidPosZFloat)
-      else f
 
     /**
      * A factory/validation method that produces a <code>PosZFloat</code>, wrapped
@@ -93,10 +103,43 @@ object PosFloats {
      *     in a <code>Success(PosZFloat)</code>, if it is a non-negative float, else a <code>Failure(AssertionError)</code>.
      */
     def tryingValid(value: Float): Try[PosZFloat] =
-      if (value >= 0.0f)
+      if (isValid(value))
         Success(value)
       else
-        Failure(new AssertionError(Resources.invalidPosZFloat))  
+        Failure(new AssertionError(Resources.invalidPosZFloat))
+
+    /**
+    * A validation method that produces a <code>Pass</code>
+    * given a valid <code>Float</code> value, or
+    * an error value of type <code>E</code> produced by passing the
+    * given <em>invalid</em> <code>Float</code> value
+    * to the given function <code>f</code>, wrapped in a <code>Fail</code>.
+    *
+    * <p>
+    * This method will inspect the passed <code>Float</code> value and if
+    * it is a non-negative float <code>Float</code>, it will return a <code>Pass</code>.
+    * Otherwise, the passed <code>Float</code> value is not a non-negative float, so this
+    * method will return a result of type <code>E</code> obtained by passing
+    * the invalid <code>Float</code> value to the given function <code>f</code>,
+    * wrapped in a `Fail`.
+    * </p>
+    *
+    * <p>
+    * This factory method differs from the <code>apply</code> factory method
+    * in that <code>apply</code> is implemented via a macro that inspects
+    * <code>Float</code> literals at compile time, whereas this method inspects
+    * <code>Float</code> values at run time.
+    * </p>
+    *
+    * @tparam E error type produced by f
+    * @param value the `Float` to validate that it is a non-negative float.
+    * @param f function to produce an error when value is invalid
+    * @return a `Pass` if the specified `Float` value is a non-negative float,
+    *   else a `Fail` containing an error value produced by passing the
+    *   specified `Float` to the given function `f`.
+    */
+    def passOrElse[E](value: Float)(f: Float => E): Validation[E] =
+      if (isValid(value)) Pass else Fail(f(value))    
 
     extension (p: PosZFloat) {
       /** Return the underlying Float value. */
