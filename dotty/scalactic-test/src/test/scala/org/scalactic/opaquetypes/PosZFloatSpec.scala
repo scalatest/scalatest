@@ -196,7 +196,7 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
                                  PosZFloat(2.2F), PosZFloat(3.3F))
     }
 
-    /*describe("when created with apply method") {
+    describe("when created with apply method") {
 
       it("should compile when 8 is passed in") {
         "PosZFloat(8)" should compile
@@ -231,7 +231,7 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
         "PosZFloat(c)" shouldNot compile
       }
     }
-    describe("when specified as a plain-old Float") {
+    /*describe("when specified as a plain-old Float") {
 
       def takesPosZFloat(pos: PosZFloat): Float = pos.value
 

@@ -34,7 +34,7 @@ object PosFloats {
       * values, use [[ensuringValid]] or [[from]].
       *
       * @tparam F the singleton Float literal type
-      * @param i the Float literal
+      * @param f the Float literal
       * @return a [[PosZFloat]] representing the given non-negative literal
       * @throws a compile-time error if the literal is negative or not a literal
       */
@@ -46,8 +46,52 @@ object PosFloats {
           else
             v.asInstanceOf[PosZFloat]
         case None =>
-          error("PosZFloat.apply requires a float literal")
+          error("PosZFloat.apply requires a integer, long or float literal")
       }
+
+    /** Compile-time factory for creating a [[PosZFloat]] from a integer literal.
+      *
+      * This inline method inspects the provided integer literal at compile time
+      * and rejects negative literals. Use it as: `PosZFloat(5)`. For non-literal
+      * values, use [[ensuringValid]] or [[from]].
+      *
+      * @tparam I the singleton Int literal type
+      * @param i the Int literal
+      * @return a [[PosZFloat]] representing the given non-negative literal
+      * @throws a compile-time error if the literal is negative or not a literal
+      */
+    inline def apply[I <: Int & Singleton](inline i: I): PosZFloat =
+      inline constValueOpt[I] match {
+        case Some(v: Int) =>
+          inline if v < 0 then
+            error("PosZFloat cannot be instantiated with a negative integer literal")
+          else
+            v.asInstanceOf[PosZFloat]
+        case None =>
+          error("PosZFloat.apply requires an integer, long or float literal")
+      }
+
+    /** Compile-time factory for creating a [[PosZFloat]] from a long literal.
+      *
+      * This inline method inspects the provided long literal at compile time
+      * and rejects negative literals. Use it as: `PosZFloat(5L)`. For non-literal
+      * values, use [[ensuringValid]] or [[from]].
+      *
+      * @tparam L the singleton Long literal type
+      * @param l the Long literal
+      * @return a [[PosZFloat]] representing the given non-negative literal
+      * @throws a compile-time error if the literal is negative or not a literal
+      */
+    inline def apply[L <: Long & Singleton](inline l: L): PosZFloat =
+      inline constValueOpt[L] match {
+        case Some(v: Long) =>
+          inline if v < 0L then
+            error("PosZFloat cannot be instantiated with a negative long literal")
+          else
+            v.asInstanceOf[PosZFloat]
+        case None =>
+          error("PosZFloat.apply requires an integer, long or float literal")
+      }    
 
     /** 
       * Return true when the provided Float is a valid [[PosZFloat]] value (>= 0). 
