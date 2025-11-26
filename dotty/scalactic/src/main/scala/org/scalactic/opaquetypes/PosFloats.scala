@@ -27,6 +27,11 @@ object PosFloats {
 
   object PosZFloat {
 
+    /** Convert a [[PosZFloat]] to a plain Float (unwrap). */
+    given Conversion[PosZFloat, Float] with {
+      def apply(x: PosZFloat): Float = x
+    }
+
     /** Convert a compile-time Int literal or runtime Int to a [[PosZFloat]].
       *
       * The inline overload checks integer literals at compile time; the runtime
@@ -356,6 +361,12 @@ object PosFloats {
       * <code>PosZFloat(Float.PositiveInfinity)</code>.
       */
     val PositiveInfinity: PosZFloat = Float.PositiveInfinity
+
+    /**
+      * The smallest positive value greater than 0.0f representable
+      * as a <code>PosZFloat</code>, which is <code>PosZFloat(Float.MinPositiveValue)</code>.
+      */
+    val MinPositiveValue: PosZFloat = Float.MinPositiveValue
 
     /** Ordering instance for PosZFloat that orders by numeric value. */
     given Ordering[PosZFloat] with {

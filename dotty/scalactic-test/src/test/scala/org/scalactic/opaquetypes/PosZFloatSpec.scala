@@ -269,13 +269,13 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       }
     }
 
-    /*it("should offer a unary + method that is consistent with Float") {
+    it("should offer a unary + method that is consistent with Float") {
       forAll { (p: PosZFloat) =>
         (+p).toFloat shouldEqual (+(p.toFloat))
       }
     }
 
-    it("should offer a unary - method that returns NegZFloat") {
+    /*it("should offer a unary - method that returns NegZFloat") {
       forAll { (p: PosZFloat) =>
         (-p) shouldEqual (NegZFloat.ensuringValid(-(p.toFloat)))
       }
