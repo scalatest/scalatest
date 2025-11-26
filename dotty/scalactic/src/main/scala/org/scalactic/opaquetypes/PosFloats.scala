@@ -397,6 +397,13 @@ object PosFloats {
         * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
         */
       def min(that: PosZFloat): PosZFloat = math.min(p, that)
+      /**
+        * Indicates whether this `PosZFloat` has a value that is a whole number: it is finite and it has no fraction part.
+        */
+      def isWhole = {
+        val longValue = p.toLong
+        longValue.toFloat == p || longValue == Long.MaxValue && p < Float.PositiveInfinity || longValue == Long.MinValue && p > Float.NegativeInfinity
+      }
     }  
 
   }

@@ -322,13 +322,13 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       }
     }
 
-    /*it("should offer an 'isWhole' method that is consistent with Float") {
+    it("should offer an 'isWhole' method that is consistent with Float") {
       forAll { (pzfloat: PosZFloat) =>
         pzfloat.isWhole shouldEqual pzfloat.toFloat.isWhole
       }
     }
 
-    it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Float") {
+    /*it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Float") {
       forAll { (pzfloat: PosZFloat) =>
         // SKIP-SCALATESTJS,NATIVE-START
         pzfloat.round.toFloat shouldEqual pzfloat.toFloat.round
