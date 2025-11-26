@@ -104,12 +104,12 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
         an [AssertionError] should be thrownBy PosZFloat.ensuringValid(Float.NegativeInfinity)
       }
     }
-    /*describe("should offer a tryingValid factory method that") {
+    describe("should offer a tryingValid factory method that") {
       import TryValues.*
       it("returns a PosZFloat wrapped in a Success if the passed Float is greater than or equal 0") {
-        PosZFloat.tryingValid(0.0f).success.value.value shouldBe 0.0f
-        PosZFloat.tryingValid(50.0f).success.value.value shouldBe 50.0f
-        PosZFloat.tryingValid(100.0f).success.value.value shouldBe 100.0f
+        PosZFloat.tryingValid(0.0f) shouldBe Success(PosZFloat(0.0f))
+        PosZFloat.tryingValid(50.0f) shouldBe Success(PosZFloat(50.0f))
+        PosZFloat.tryingValid(100.0f) shouldBe Success(PosZFloat(100.0f))
       }
 
       it("returns an AssertionError wrapped in a Failure if the passed Float is lesser than 0") {
@@ -117,7 +117,7 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
         PosZFloat.tryingValid(-99.0f).failure.exception shouldBe an [AssertionError]
       }
     }
-    describe("should offer a passOrElse factory method that") {
+    /*describe("should offer a passOrElse factory method that") {
       it("returns a Pass if the given Float is greater than or equal 0") {
         PosZFloat.passOrElse(0.0f)(i => i) shouldBe Pass
         PosZFloat.passOrElse(50.0f)(i => i) shouldBe Pass
