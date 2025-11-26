@@ -22,16 +22,33 @@ import org.scalactic.{Validation, Pass, Fail}
 import org.scalactic.{Or, Good, Bad}
 
 import PosInts.PosZInt
+import PosDoubles.PosZDouble
 
 object PosFloats {
 
   opaque type PosZFloat = Float
 
-  object PosZFloat {
+  /** Lower-priority given conversions for PosZFloat.
+    *
+    * These conversions are provided at low priority to avoid 
+    * conflict resolution in the presence of other numeric conversions.
+    */
+  trait PosZIntConversionsLowPriority {
+    /** Convert a [[PosZFloat]] to a plain Double (unwrap). */
+    given Conversion[PosZFloat, Double] with {
+      def apply(x: PosZFloat): Double = x.toDouble
+    }
+    /** Convert a [[PosZFloat]] to a plain PosZDouble (unwrap). */
+    given Conversion[PosZFloat, PosZDouble] with {
+      def apply(x: PosZFloat): PosZDouble = PosZDouble.ensuringValid(x.toDouble)
+    }
+  }
+
+  object PosZFloat extends PosZIntConversionsLowPriority {
 
     /** Convert a [[PosZFloat]] to a plain Float (unwrap). */
     given Conversion[PosZFloat, Float] with {
-      def apply(x: PosZFloat): Float = x
+      def apply(x: PosZFloat): Float = x.toFloat
     }
 
     /** Convert a compile-time Int literal or runtime Int to a [[PosZFloat]].
