@@ -338,14 +338,14 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       }
     }
 
-    /*it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Float") {
+    it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Float") {
       forAll { (pzfloat: PosZFloat) =>
         pzfloat.toRadians.toFloat shouldEqual pzfloat.toFloat.toRadians
         pzfloat.toDegrees.toFloat shouldEqual pzfloat.toFloat.toDegrees
       }
     }
 
-    it("should offer widening methods for basic types that are consistent with Float") {
+    /*it("should offer widening methods for basic types that are consistent with Float") {
       forAll { (pzfloat: PosZFloat) =>
         def widen(value: Float): Float = value
         widen(pzfloat) shouldEqual widen(pzfloat.toFloat)

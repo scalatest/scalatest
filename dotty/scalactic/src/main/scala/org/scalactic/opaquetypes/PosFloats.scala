@@ -422,6 +422,19 @@ object PosFloats {
         * this `PosZFloat` and represents a mathematical integer.
         */
       def floor: PosZFloat = PosZFloat.ensuringValid(math.floor(value).toFloat)
+
+      /** Converts an angle measured in degrees to an approximately equivalent
+        * angle measured in radians.
+        *
+        * @return the measurement of the angle x in radians.
+        */
+      def toRadians: Float = math.toRadians(value.toDouble).toFloat
+
+      /** Converts an angle measured in radians to an approximately equivalent
+        * angle measured in degrees.
+        * @return the measurement of the angle x in degrees.
+        */
+      def toDegrees: Float = math.toDegrees(value.toDouble).toFloat
     }  
 
   }
