@@ -256,6 +256,11 @@ object PosFloats {
       */
     val PositiveInfinity: PosZFloat = Float.PositiveInfinity
 
+    /** Ordering instance for PosZFloat that orders by numeric value. */
+    given Ordering[PosZFloat] with {
+      def compare(x: PosZFloat, y: PosZFloat): Int = x.compareTo(y)
+    }
+
     extension (p: PosZFloat) {
       /** Return the underlying Float value. */
       def value: Float = p
