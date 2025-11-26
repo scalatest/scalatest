@@ -30,6 +30,7 @@ import org.scalactic.{Good, Bad}
 import scala.util.{Try, Success, Failure}
 
 import PosFloats.PosZFloat
+import NegFloats.NegZFloat
 
 trait PosZFloatSpecSupport {
 
@@ -275,13 +276,13 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       }
     }
 
-    /*it("should offer a unary - method that returns NegZFloat") {
+    it("should offer a unary - method that returns NegZFloat") {
       forAll { (p: PosZFloat) =>
         (-p) shouldEqual (NegZFloat.ensuringValid(-(p.toFloat)))
       }
     }
 
-    it("should offer a 'plus' method that takes a PosZFloat and returns a PosFloat") {
+    /*it("should offer a 'plus' method that takes a PosZFloat and returns a PosFloat") {
 
       forAll { (posZFloat1: PosZFloat, posZFloat2: PosZFloat) =>
         (posZFloat1 plus posZFloat2) should === (PosZFloat.ensuringValid(posZFloat1.toFloat + posZFloat2.toFloat))
