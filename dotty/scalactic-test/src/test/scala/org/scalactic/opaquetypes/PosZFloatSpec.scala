@@ -128,7 +128,7 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
         PosZFloat.passOrElse(-99.0f)(i => i + 3.0f) shouldBe Fail(-96.0f)
       }
     }
-    /*describe("should offer a goodOrElse factory method that") {
+    describe("should offer a goodOrElse factory method that") {
       it("returns a PosZFloat wrapped in a Good if the given Float is greater than or equal 0") {
         PosZFloat.goodOrElse(0.0f)(i => i) shouldBe Good(PosZFloat(0.0f))
         PosZFloat.goodOrElse(50.0f)(i => i) shouldBe Good(PosZFloat(50.0f))
@@ -171,7 +171,7 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
         PosZFloat.fromOrElse(-99.9f, PosZFloat(42.0f)).value shouldBe 42.0f
       }
     }
-    it("should offer MaxValue and MinValue factory methods") {
+    /*it("should offer MaxValue and MinValue factory methods") {
       PosZFloat.MaxValue shouldEqual PosZFloat.from(Float.MaxValue).get
       PosZFloat.MinValue shouldEqual PosZFloat(0.0f)
     }
