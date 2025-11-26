@@ -366,12 +366,11 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       an [AssertionError] should be thrownBy { PosZFloat.MaxValue.ensuringValid(_ - PosZFloat.MaxValue - 1) }
       an [AssertionError] should be thrownBy { PosZFloat.MaxValue.ensuringValid(_ => Float.NegativeInfinity) }
     }
-    /*it("should offer an isFinite method that returns true if the value does not represent infinity") {
-      forAll { (n: PosZFiniteFloat) =>
-        (n: PosZFloat).isFinite should be (true)
-        PosZFloat.PositiveInfinity.isFinite should be (false)
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: PosZFloat) =>
+        n.isFinite should be (n != PosZFloat.PositiveInfinity)
       }
-    }*/
+    }
   }
 }
 

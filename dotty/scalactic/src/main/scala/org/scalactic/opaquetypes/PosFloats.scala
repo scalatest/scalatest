@@ -488,6 +488,11 @@ object PosFloats {
         if (PosZFloat.isValid(candidateResult)) PosZFloat.ensuringValid(candidateResult)
         else throw new AssertionError(s"${candidateResult.toString()}, the result of applying the passed function to ${value.toString()}, was not a valid PosZFloat")
       }
+
+      /**
+        * True if this <code>PosZFloat</code> value is any finite value (i.e., it is neither positive nor negative infinity), else false.
+        */
+      def isFinite: Boolean = !value.isInfinite
     }  
 
   }
