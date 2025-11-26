@@ -240,6 +240,22 @@ object PosFloats {
     def fromOrElse(value: Float, default: => PosZFloat): PosZFloat =
       if (isValid(value)) value else default
 
+    /**
+      * The largest value representable as a non-negative <code>Float</code>, which is <code>PosZFloat(Float.MaxValue)</code>.
+      */
+    val MaxValue: PosZFloat = Float.MaxValue
+
+    /**
+      * The smallest value representable as a non-negative <code>Float</code>, which is <code>PosZFloat(0.0f)</code>.
+      */
+    val MinValue: PosZFloat = 0.0f
+
+    /**
+      * Positive infinity as a <code>PosZFloat</code>, which is
+      * <code>PosZFloat(Float.PositiveInfinity)</code>.
+      */
+    val PositiveInfinity: PosZFloat = Float.PositiveInfinity
+
     extension (p: PosZFloat) {
       /** Return the underlying Float value. */
       def value: Float = p
