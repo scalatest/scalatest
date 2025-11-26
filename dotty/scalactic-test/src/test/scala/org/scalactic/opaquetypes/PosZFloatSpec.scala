@@ -29,6 +29,7 @@ import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 import scala.util.{Try, Success, Failure}
 
+import PosInts.PosInt
 import PosFloats.PosZFloat
 import NegFloats.NegZFloat
 
@@ -282,7 +283,7 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       }
     }
 
-    /*it("should offer a 'plus' method that takes a PosZFloat and returns a PosFloat") {
+    it("should offer a 'plus' method that takes a PosZFloat and returns a PosFloat") {
 
       forAll { (posZFloat1: PosZFloat, posZFloat2: PosZFloat) =>
         (posZFloat1 plus posZFloat2) should === (PosZFloat.ensuringValid(posZFloat1.toFloat + posZFloat2.toFloat))
@@ -314,7 +315,7 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       PosZFloat(1.0f) plus PosInt(2) should === (PosZFloat(3.0f))
     }
 
-    it("should offer 'min' and 'max' methods that are consistent with Float") {
+    /*it("should offer 'min' and 'max' methods that are consistent with Float") {
       forAll { (pfloat1: PosZFloat, pfloat2: PosZFloat) =>
         pfloat1.max(pfloat2).toFloat shouldEqual pfloat1.toFloat.max(pfloat2.toFloat)
         pfloat1.min(pfloat2).toFloat shouldEqual pfloat1.toFloat.min(pfloat2.toFloat)

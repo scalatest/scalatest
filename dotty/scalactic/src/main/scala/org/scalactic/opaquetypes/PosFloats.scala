@@ -378,6 +378,17 @@ object PosFloats {
       def value: Float = p
       /** Return true if this PosZFloat is positive infinity. */
       def isPosInfinity: Boolean = p == Float.PositiveInfinity
+      /**
+        * Returns the <code>PosZFloat</code> sum of this value and `x`.
+        *
+        * <p>
+        * This method will always succeed (not throw an exception) because
+        * adding a non-negative Float to another non-negative Float
+        * will always result in another non-negative Float
+        * value (though the result may be infinity).
+        * </p>
+        */
+      def plus(x: PosZFloat): PosZFloat = PosZFloat.ensuringValid(value + x)
     }  
 
   }
