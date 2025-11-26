@@ -315,14 +315,14 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       PosZFloat(1.0f) plus PosInt(2) should === (PosZFloat(3.0f))
     }
 
-    /*it("should offer 'min' and 'max' methods that are consistent with Float") {
+    it("should offer 'min' and 'max' methods that are consistent with Float") {
       forAll { (pfloat1: PosZFloat, pfloat2: PosZFloat) =>
         pfloat1.max(pfloat2).toFloat shouldEqual pfloat1.toFloat.max(pfloat2.toFloat)
         pfloat1.min(pfloat2).toFloat shouldEqual pfloat1.toFloat.min(pfloat2.toFloat)
       }
     }
 
-    it("should offer an 'isWhole' method that is consistent with Float") {
+    /*it("should offer an 'isWhole' method that is consistent with Float") {
       forAll { (pzfloat: PosZFloat) =>
         pzfloat.isWhole shouldEqual pzfloat.toFloat.isWhole
       }

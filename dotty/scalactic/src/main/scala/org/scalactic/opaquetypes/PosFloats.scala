@@ -389,6 +389,14 @@ object PosFloats {
         * </p>
         */
       def plus(x: PosZFloat): PosZFloat = PosZFloat.ensuringValid(value + x)
+      /**
+        * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
+        */
+      def max(that: PosZFloat): PosZFloat = math.max(p, that)
+      /**
+        * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
+        */
+      def min(that: PosZFloat): PosZFloat = math.min(p, that)
     }  
 
   }
