@@ -360,13 +360,13 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
         widen(pzfloat) shouldEqual widen(PosZDouble.from(pzfloat.toFloat).get)
       }
     }
-    /*it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
+    it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
       PosZFloat(33.0f).ensuringValid(_ + 1.0f) shouldEqual PosZFloat(34.0f)
       PosZFloat(33.0f).ensuringValid(_ => Float.PositiveInfinity) shouldEqual PosZFloat.ensuringValid(Float.PositiveInfinity)
       an [AssertionError] should be thrownBy { PosZFloat.MaxValue.ensuringValid(_ - PosZFloat.MaxValue - 1) }
-      an [AssertionError] should be thrownBy { PosFloat.MaxValue.ensuringValid(_ => Float.NegativeInfinity) }
+      an [AssertionError] should be thrownBy { PosZFloat.MaxValue.ensuringValid(_ => Float.NegativeInfinity) }
     }
-    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+    /*it("should offer an isFinite method that returns true if the value does not represent infinity") {
       forAll { (n: PosZFiniteFloat) =>
         (n: PosZFloat).isFinite should be (true)
         PosZFloat.PositiveInfinity.isFinite should be (false)
