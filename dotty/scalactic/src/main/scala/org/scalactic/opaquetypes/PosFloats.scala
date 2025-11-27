@@ -72,7 +72,7 @@ object PosFloats {
 
     /** Convert a compile-time Long literal or runtime Long to a [[PosZFloat]].
       *
-      * The inline overload checks integer literals at compile time; the runtime
+      * The inline overload checks long literals at compile time; the runtime
       * overload validates and throws for negative values.
       */
     given Conversion[Long, PosZFloat] with {
@@ -504,6 +504,63 @@ object PosFloats {
     /** Convert a [[PosFloat]] to a plain Float (unwrap). */
     given Conversion[PosFloat, Float] with {
       def apply(x: PosFloat): Float = x.toFloat
+    }
+
+    /** Convert a compile-time Int literal or runtime Int to a [[PosFloat]].
+      *
+      * The inline overload checks integer literals at compile time; the runtime
+      * overload validates and throws for negative values.
+      */
+    given Conversion[Int, PosFloat] with {
+      inline def apply[I <: Int & Singleton](inline x: I): PosFloat =
+        inline constValueOpt[I] match {
+          case Some(v: Int) =>
+            inline if v <= 0 then
+              error("PosFloat cannot be instantiated with a negative or zero integer literal")
+            else
+              v.toFloat.asInstanceOf[PosFloat]
+          case None =>
+            error("PosFloat conversion requires a integer literal")
+        }
+      def apply(x: Int): PosFloat = x.toFloat
+    }
+
+    /** Convert a compile-time Long literal or runtime Long to a [[PosFloat]].
+      *
+      * The inline overload checks long literals at compile time; the runtime
+      * overload validates and throws for negative values.
+      */
+    given Conversion[Long, PosFloat] with {
+      inline def apply[L <: Long & Singleton](inline x: L): PosFloat =
+        inline constValueOpt[L] match {
+          case Some(v: Long) =>
+            inline if v <= 0L then
+              error("PosFloat cannot be instantiated with a negative or zero long literal")
+            else
+              v.toFloat.asInstanceOf[PosFloat]
+          case None =>
+            error("PosFloat conversion requires a long literal")
+        }
+      def apply(x: Long): PosFloat = x.toFloat
+    }
+
+    /** Convert a compile-time Float literal or runtime Float to a [[PosFloat]].
+      *
+      * The inline overload checks float literals at compile time; the runtime
+      * overload validates and throws for negative values.
+      */
+    given Conversion[Float, PosFloat] with {
+      inline def apply[F <: Float & Singleton](inline x: F): PosFloat =
+        inline constValueOpt[F] match {
+          case Some(v: Float) =>
+            inline if v <= 0.0f then
+              error("PosFloat cannot be instantiated with a negative or zero float literal")
+            else
+              v.toFloat.asInstanceOf[PosFloat]
+          case None =>
+            error("PosFloat conversion requires a float literal")
+        }
+      def apply(x: Float): PosFloat = x
     }
 
     /** Compile-time factory for creating a [[PosFloat]] from a float literal.

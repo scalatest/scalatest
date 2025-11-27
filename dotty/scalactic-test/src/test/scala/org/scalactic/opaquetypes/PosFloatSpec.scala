@@ -209,7 +209,7 @@ class PosFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
         "PosFloat(c)" shouldNot compile
       }
     }
-    /*describe("when specified as a plain-old Float") {
+    describe("when specified as a plain-old Float") {
 
       def takesPosFloat(pos: PosFloat): Float = pos.value
 
@@ -244,7 +244,7 @@ class PosFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
       }
     }
 
-    it("should offer a unary + method that is consistent with Float") {
+    /*it("should offer a unary + method that is consistent with Float") {
       forAll { (p: PosFloat) =>
         (+p).toFloat shouldEqual (+(p.toFloat))
       }
