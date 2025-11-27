@@ -63,6 +63,8 @@ class PosFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
       it("returns Some[PosFloat] if the passed Float is greater than 0") {
         PosFloat.from(50.23F) shouldBe Some(PosFloat(50.23F))
         PosFloat.from(100.0F) shouldBe Some(PosFloat(100.0F))
+        PosFloat.from(50.23F) shouldBe Some(50.23F)
+        PosFloat.from(100.0F) shouldBe Some(100.0F)
       }
       it("returns None if the passed Float is NOT greater than 0") {
         PosFloat.from(0.0F) shouldBe None
