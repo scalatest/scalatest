@@ -718,6 +718,12 @@ object PosFloats {
       */
     val MinValue: PosFloat = Float.MinPositiveValue
 
+    /**
+      * Positive infinity as a <code>PosZFloat</code>, which is
+      * <code>PosZFloat(Float.PositiveInfinity)</code>.
+      */
+    val PositiveInfinity: PosZFloat = Float.PositiveInfinity
+
     extension (p: PosFloat) {
       /** Return the underlying Float value. */
       def value: Float = p
