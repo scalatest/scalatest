@@ -509,24 +509,68 @@ object PosFloats {
     /** Compile-time factory for creating a [[PosFloat]] from a float literal.
       *
       * This inline method inspects the provided float literal at compile time
-      * and rejects negative literals. Use it as: `PosFloat(5.0f)`. For non-literal
+      * and rejects non-positive literals. Use it as: `PosFloat(5.0f)`. For non-literal
       * values, use [[ensuringValid]] or [[from]].
       *
       * @tparam F the singleton Float literal type
       * @param f the Float literal
-      * @return a [[PosFloat]] representing the given non-negative literal
-      * @throws a compile-time error if the literal is negative or not a literal
+      * @return a [[PosFloat]] representing the given positive literal
+      * @throws a compile-time error if the literal is non-positive or not a literal
       */
     inline def apply[F <: Float & Singleton](inline f: F): PosFloat =
       inline constValueOpt[F] match {
         case Some(v: Float) =>
           inline if v <= 0.0f then
-            error("PosFloat cannot be instantiated with a negative float literal")
+            error("PosFloat cannot be instantiated with a negative or zero float literal")
           else
             v.asInstanceOf[PosFloat]
         case None =>
           error("PosFloat.apply requires a integer, long or float literal")
       }
+
+    /** Compile-time factory for creating a [[PosFloat]] from a integer literal.
+      *
+      * This inline method inspects the provided integer literal at compile time
+      * and rejects non-positive literals. Use it as: `PosFloat(5)`. For non-literal
+      * values, use [[ensuringValid]] or [[from]].
+      *
+      * @tparam F the singleton Float literal type
+      * @param f the float literal
+      * @return a [[PosFloat]] representing the given positive literal
+      * @throws a compile-time error if the literal is non-positive or not a literal
+      */
+    inline def apply[I <: Int & Singleton](inline f: I): PosFloat =
+      inline constValueOpt[I] match {
+        case Some(v: Int) =>
+          inline if v <= 0 then
+            error("PosFloat cannot be instantiated with a negative or zero integer literal")
+          else
+            v.toFloat.asInstanceOf[PosFloat]
+        case None =>
+          error("PosFloat.apply requires a integer, long or float literal")
+      }
+
+    /** Compile-time factory for creating a [[PosFloat]] from a long literal.
+      *
+      * This inline method inspects the provided long literal at compile time
+      * and rejects non-positive literals. Use it as: `PosFloat(5L)`. For non-literal
+      * values, use [[ensuringValid]] or [[from]].
+      *
+      * @tparam L the singleton Long literal type
+      * @param l the long literal
+      * @return a [[PosLong]] representing the given positive literal
+      * @throws a compile-time error if the literal is non-positive or not a literal
+      */
+    inline def apply[L <: Long & Singleton](inline l: L): PosFloat =
+      inline constValueOpt[L] match {
+        case Some(v: Long) =>
+          inline if v <= 0L then
+            error("PosFloat cannot be instantiated with a negative or zero long literal")
+          else
+            v.toFloat.asInstanceOf[PosFloat]
+        case None =>
+          error("PosFloat.apply requires a integer, long or float literal")
+      }    
 
     /** 
       * Return true when the provided Float is a valid [[PosFloat]] value (> 0). 

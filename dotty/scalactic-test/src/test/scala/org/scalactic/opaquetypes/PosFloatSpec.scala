@@ -171,7 +171,7 @@ class PosFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
       "PosFloat(1.0f).isNegInfinity" shouldNot compile
     }
 
-    /*it("should be sortable") {
+    it("should be sortable") {
       val xs = List(PosFloat(2.2F), PosFloat(4.4F), PosFloat(1.1F),
                     PosFloat(3.3F))
       xs.sorted shouldEqual List(PosFloat(1.1F), PosFloat(2.2F), PosFloat(3.3F),
@@ -209,7 +209,7 @@ class PosFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
         "PosFloat(c)" shouldNot compile
       }
     }
-    describe("when specified as a plain-old Float") {
+    /*describe("when specified as a plain-old Float") {
 
       def takesPosFloat(pos: PosFloat): Float = pos.value
 
