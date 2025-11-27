@@ -708,6 +708,16 @@ object PosFloats {
     def fromOrElse(value: Float, default: => PosFloat): PosFloat =
       if (isValid(value)) value else default
 
+    /**
+      * The largest value representable as a positive <code>Float</code>, which is <code>PosZFloat(Float.MaxValue)</code>.
+      */
+    val MaxValue: PosFloat = Float.MaxValue
+
+    /**
+      * The smallest value representable as a positive <code>Float</code>, which is <code>PosZFloat(Float.MinPositiveValue)</code>.
+      */
+    val MinValue: PosFloat = Float.MinPositiveValue
+
     extension (p: PosFloat) {
       /** Return the underlying Float value. */
       def value: Float = p
