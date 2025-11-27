@@ -527,14 +527,55 @@ object PosFloats {
         case None =>
           error("PosFloat.apply requires a integer, long or float literal")
       }
+
+    /** 
+      * Return true when the provided Float is a valid [[PosFloat]] value (> 0). 
+      *
+      * @param value the Float to validate
+      * @return true if the specified Float is a positive float, else false
+      */
+    def isValid(value: Float): Boolean = value > 0.0f  
     
     def from(f: Float): Option[PosFloat] =
-      if (f > 0.0f) Some(f) else None
+      if (isValid(f)) Some(f) else None
 
     def ensuringValid(f: Float): PosFloat = 
-      if (f <= 0.0f) 
+      if (isValid(f))
+        f
+      else 
         throw new AssertionError(Resources.invalidPosFloat)
-      else f
+
+    /**
+     * A factory/validation method that produces a <code>PosFloat</code>, wrapped
+     * in a <code>Success</code>, given a valid <code>Float</code> value, or if the
+     * given <code>Float</code> is invalid, an <code>AssertionError</code>, wrapped
+     * in a <code>Failure</code>.
+     *
+     * <p>
+     * This method will inspect the passed <code>Float</code> value and if
+     * it is a PosFloat <code>Float</code>, it will return a <code>PosFloat</code>
+     * representing that value, wrapped in a <code>Success</code>.
+     * Otherwise, if the passed <code>Float</code> value is not PosFloat, this
+     * method will return an <code>AssertionError</code>, wrapped in a <code>Failure</code>.
+     * </p>
+     *
+     * <p>
+     * This factory method differs from the <code>apply</code> factory method
+     * in that <code>apply</code> is implemented via a macro that inspects
+     * <code>Float</code> literals at compile time, whereas this method inspects
+     * <code>Float</code> values at run time.
+     * </p>
+     *
+     * @param value the <code>Float</code> to inspect, and if a non-negative float, return
+     *     wrapped in a <code>Success(PosFloat)</code>.
+     * @return the specified <code>Float</code> value wrapped
+     *     in a <code>Success(PosFloat)</code>, if it is a non-negative float, else a <code>Failure(AssertionError)</code>.
+     */
+    def tryingValid(value: Float): Try[PosFloat] =
+      if (isValid(value))
+        Success(value)
+      else
+        Failure(new AssertionError(Resources.invalidPosFloat))  
 
     extension (p: PosFloat) {
       /** Return the underlying Float value. */
