@@ -160,7 +160,7 @@ class PosFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
     it("should offer a PositiveInfinity method") {
       PosFloat.PositiveInfinity shouldEqual PosFloat.ensuringValid(Float.PositiveInfinity)
     }
-    /*it("should offer a NegativeInfinity method") {
+    it("should offer a NegativeInfinity method") {
       "PosFloat.NegativeInfinity" shouldNot compile
     }
     it("should offer a isPosInfinity method that returns true if the instance is PositiveInfinity") {
@@ -171,7 +171,7 @@ class PosFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
       "PosFloat(1.0f).isNegInfinity" shouldNot compile
     }
 
-    it("should be sortable") {
+    /*it("should be sortable") {
       val xs = List(PosFloat(2.2F), PosFloat(4.4F), PosFloat(1.1F),
                     PosFloat(3.3F))
       xs.sorted shouldEqual List(PosFloat(1.1F), PosFloat(2.2F), PosFloat(3.3F),

@@ -727,6 +727,8 @@ object PosFloats {
     extension (p: PosFloat) {
       /** Return the underlying Float value. */
       def value: Float = p
+      /** Return true if this PosZFloat is positive infinity. */
+      def isPosInfinity: Boolean = p == Float.PositiveInfinity
     }  
 
   } 
