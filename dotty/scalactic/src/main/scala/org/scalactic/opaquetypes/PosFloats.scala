@@ -608,7 +608,41 @@ object PosFloats {
       *   specified `Float` to the given function `f`.
       */
     def passOrElse[E](value: Float)(f: Float => E): Validation[E] =
-      if (isValid(value)) Pass else Fail(f(value))    
+      if (isValid(value)) Pass else Fail(f(value))
+
+    /**
+      * A factory/validation method that produces a <code>PosFloat</code>, wrapped
+      * in a <code>Good</code>, given a valid <code>Float</code> value, or if the
+      * given <code>Float</code> is invalid, an error value of type <code>B</code>
+      * produced by passing the given <em>invalid</em> <code>Float</code> value
+      * to the given function <code>f</code>, wrapped in a <code>Bad</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Float</code> value and if
+      * it is a PosFloat <code>Float</code>, it will return a <code>PosFloat</code>
+      * representing that value, wrapped in a <code>Good</code>.
+      * Otherwise, the passed <code>Float</code> value is not PosFloat, so this
+      * method will return a result of type <code>B</code> obtained by passing
+      * the invalid <code>Float</code> value to the given function <code>f</code>,
+      * wrapped in a `Bad`.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code> factory method
+      * in that <code>apply</code> is implemented via a macro that inspects
+      * <code>Float</code> literals at compile time, whereas this method inspects
+      * <code>Float</code> values at run time.
+      * </p>
+      *
+      * @tparam B error type produced by f
+      * @param value the <code>Float</code> to inspect, and if PosFloat, return
+      *     wrapped in a <code>Good(PosFloat)</code>.
+      * @param f function to produce an error when value is invalid
+      * @return the specified <code>Float</code> value wrapped
+      *     in a <code>Good(PosFloat)</code>, if it is PosFloat, else a <code>Bad(f(value))</code>.
+      */
+    def goodOrElse[B](value: Float)(f: Float => B): PosFloat Or B =
+      if (isValid(value)) Good(value) else Bad(f(value))      
 
     extension (p: PosFloat) {
       /** Return the underlying Float value. */
