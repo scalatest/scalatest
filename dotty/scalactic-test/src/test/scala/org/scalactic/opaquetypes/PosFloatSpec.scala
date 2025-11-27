@@ -244,13 +244,13 @@ class PosFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
       }
     }
 
-    /*it("should offer a unary + method that is consistent with Float") {
+    it("should offer a unary + method that is consistent with Float") {
       forAll { (p: PosFloat) =>
         (+p).toFloat shouldEqual (+(p.toFloat))
       }
     }
 
-    it("should offer a unary - method that returns NegFloat") {
+    /*it("should offer a unary - method that returns NegFloat") {
       forAll { (p: PosFloat) =>
         (-p) shouldEqual (NegFloat.ensuringValid(-(p.toFloat)))
       }
