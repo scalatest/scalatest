@@ -497,7 +497,7 @@ object PosFloats {
 
   }
 
-  opaque type PosFloat = Float
+  opaque type PosFloat <: PosZFloat = Float
 
   object PosFloat {
 
@@ -722,14 +722,7 @@ object PosFloats {
       * Positive infinity as a <code>PosZFloat</code>, which is
       * <code>PosZFloat(Float.PositiveInfinity)</code>.
       */
-    val PositiveInfinity: PosZFloat = Float.PositiveInfinity
-
-    extension (p: PosFloat) {
-      /** Return the underlying Float value. */
-      def value: Float = p
-      /** Return true if this PosZFloat is positive infinity. */
-      def isPosInfinity: Boolean = p == Float.PositiveInfinity
-    }  
+    val PositiveInfinity: PosZFloat = Float.PositiveInfinity 
 
   } 
 
