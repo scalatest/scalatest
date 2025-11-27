@@ -678,6 +678,36 @@ object PosFloats {
     def rightOrElse[L](value: Float)(f: Float => L): Either[L, PosFloat] =
       if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))        
 
+    /**
+      * A factory method that produces a <code>PosFloat</code> given a
+      * <code>Float</code> value and a default <code>PosFloat</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Float</code> value and if
+      * it is a non-negative <code>Float</code>, <em>i.e.</em>, a value greater
+      * than 0.0, it will return a <code>PosFloat</code> representing that value.
+      * Otherwise, the passed <code>Float</code> value is 0 or negative, so this
+      * method will return the passed <code>default</code> value.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code>
+      * factory method in that <code>apply</code> is implemented
+      * via a macro that inspects <code>Float</code> literals at
+      * compile time, whereas <code>from</code> inspects
+      * <code>Float</code> values at run time.
+      * </p>
+      *
+      * @param value the <code>Float</code> to inspect, and if positive, return.
+      * @param default the <code>PosFloat</code> to return if the passed
+      *     <code>Float</code> value is not positive.
+      * @return the specified <code>Float</code> value wrapped in a
+      *     <code>PosFloat</code>, if it is positive, else the
+      *     <code>default</code> <code>PosFloat</code> value.
+      */
+    def fromOrElse(value: Float, default: => PosFloat): PosFloat =
+      if (isValid(value)) value else default
+
     extension (p: PosFloat) {
       /** Return the underlying Float value. */
       def value: Float = p

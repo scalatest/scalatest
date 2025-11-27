@@ -131,7 +131,7 @@ class PosFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
         PosFloat.rightOrElse(-99.9f)(i => i + 3.0f) shouldBe Left(-96.9f)
       }
     }
-    /*describe("should offer an isValid predicate method that") {
+    describe("should offer an isValid predicate method that") {
       it("returns true if the passed Float is greater than 0") {
         PosFloat.isValid(50.23f) shouldBe true
         PosFloat.isValid(100.0f) shouldBe true
@@ -152,15 +152,15 @@ class PosFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
         PosFloat.fromOrElse(-99.9f, PosFloat(42.0f)).value shouldBe 42.0f
       }
     }
-    it("should offer MaxValue and MinValue factory methods") {
+    /*it("should offer MaxValue and MinValue methods") {
       PosFloat.MaxValue shouldEqual PosFloat.from(Float.MaxValue).get
       PosFloat.MinValue shouldEqual
         PosFloat.from(Float.MinPositiveValue).get
     }
-    it("should offer a PositiveInfinity factory method") {
+    it("should offer a PositiveInfinity method") {
       PosFloat.PositiveInfinity shouldEqual PosFloat.ensuringValid(Float.PositiveInfinity)
     }
-    it("should offer a NegativeInfinity factory method") {
+    it("should offer a NegativeInfinity method") {
       "PosFloat.NegativeInfinity" shouldNot compile
     }
     it("should offer a isPosInfinity method that returns true if the instance is PositiveInfinity") {
