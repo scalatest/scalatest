@@ -500,9 +500,36 @@ object PosFloats {
   opaque type PosFloat = Float
 
   object PosFloat {
+
+    /** Convert a [[PosFloat]] to a plain Float (unwrap). */
+    given Conversion[PosFloat, Float] with {
+      def apply(x: PosFloat): Float = x.toFloat
+    }
+
+    /** Compile-time factory for creating a [[PosFloat]] from a float literal.
+      *
+      * This inline method inspects the provided float literal at compile time
+      * and rejects negative literals. Use it as: `PosFloat(5.0f)`. For non-literal
+      * values, use [[ensuringValid]] or [[from]].
+      *
+      * @tparam F the singleton Float literal type
+      * @param f the Float literal
+      * @return a [[PosFloat]] representing the given non-negative literal
+      * @throws a compile-time error if the literal is negative or not a literal
+      */
+    inline def apply[F <: Float & Singleton](inline f: F): PosFloat =
+      inline constValueOpt[F] match {
+        case Some(v: Float) =>
+          inline if v <= 0 then
+            error("PosFloat cannot be instantiated with a negative float literal")
+          else
+            v.asInstanceOf[PosFloat]
+        case None =>
+          error("PosFloat.apply requires a integer, long or float literal")
+      }
     
     def from(f: Float): Option[PosFloat] =
-      if (f >= 0.0f) Some(f) else None
+      if (f > 0.0f) Some(f) else None
 
     def ensuringValid(f: Float): PosFloat = 
       if (f < 0.0f) 
