@@ -520,7 +520,7 @@ object PosFloats {
     inline def apply[F <: Float & Singleton](inline f: F): PosFloat =
       inline constValueOpt[F] match {
         case Some(v: Float) =>
-          inline if v <= 0 then
+          inline if v <= 0.0f then
             error("PosFloat cannot be instantiated with a negative float literal")
           else
             v.asInstanceOf[PosFloat]
@@ -532,9 +532,14 @@ object PosFloats {
       if (f > 0.0f) Some(f) else None
 
     def ensuringValid(f: Float): PosFloat = 
-      if (f < 0.0f) 
+      if (f <= 0.0f) 
         throw new AssertionError(Resources.invalidPosFloat)
       else f
+
+    extension (p: PosFloat) {
+      /** Return the underlying Float value. */
+      def value: Float = p
+    }  
 
   } 
 
