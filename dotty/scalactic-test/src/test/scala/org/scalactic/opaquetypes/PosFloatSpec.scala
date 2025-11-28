@@ -27,7 +27,12 @@ import org.scalactic.{Good, Bad}
 import org.scalactic.{Pass, Fail}
 import org.scalactic.Equality
 
-import PosFloats.PosFloat
+import PosInts.PosInt
+import PosFloats.{PosZFloat, PosFloat}
+import PosDoubles.{PosDouble, PosZDouble}
+import NegFloats.NegFloat
+import NonZeroFloats.NonZeroFloat
+import NonZeroDoubles.NonZeroDouble
 
 trait PosFloatSpecSupport {
 
@@ -250,7 +255,7 @@ class PosFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
       }
     }
 
-    /*it("should offer a unary - method that returns NegFloat") {
+    it("should offer a unary - method that returns NegFloat") {
       forAll { (p: PosFloat) =>
         (-p) shouldEqual (NegFloat.ensuringValid(-(p.toFloat)))
       }
@@ -357,11 +362,10 @@ specifying floats so long as it is in the valid range for floats.
       }
     }
     it("should offer an isFinite method that returns true if the value does not represent infinity") {
-      forAll { (n: PosFiniteFloat) =>
-        (n: PosFloat).isFinite should be (true)
-        PosFloat.PositiveInfinity.isFinite should be (false)
+      forAll { (n: PosFloat) =>
+        n.isFinite should be (n != PosZFloat.PositiveInfinity)
       }
-    }*/
+    }
   }
   /*it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
     PosFloat(33.0f).ensuringValid(_ + 1.0f) shouldEqual PosFloat(34.0f)

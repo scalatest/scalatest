@@ -22,7 +22,9 @@ import org.scalactic.{Validation, Pass, Fail}
 import org.scalactic.{Or, Good, Bad}
 
 import PosInts.PosZInt
-import PosDoubles.PosZDouble
+import PosDoubles.{PosZDouble, PosDouble}
+import NonZeroFloats.NonZeroFloat
+import NonZeroDoubles.NonZeroDouble
 
 object PosFloats {
 
@@ -33,7 +35,7 @@ object PosFloats {
     * These conversions are provided at low priority to avoid 
     * conflict resolution in the presence of other numeric conversions.
     */
-  trait PosZIntConversionsLowPriority {
+  trait PosZFloatConversionsLowPriority {
     /** Convert a [[PosZFloat]] to a plain Double (unwrap). */
     given Conversion[PosZFloat, Double] with {
       def apply(x: PosZFloat): Double = x.toDouble
@@ -44,7 +46,7 @@ object PosFloats {
     }
   }
 
-  object PosZFloat extends PosZIntConversionsLowPriority {
+  object PosZFloat extends PosZFloatConversionsLowPriority {
 
     /** Convert a [[PosZFloat]] to a plain Float (unwrap). */
     given Conversion[PosZFloat, Float] with {
@@ -499,7 +501,35 @@ object PosFloats {
 
   opaque type PosFloat <: PosZFloat = Float
 
-  object PosFloat {
+  /** Lower-priority given conversions for PosFloat.
+    *
+    * These conversions are provided at low priority to avoid 
+    * conflict resolution in the presence of other numeric conversions.
+    */
+  trait PosFloatConversionsLowPriority extends PosZFloatConversionsLowPriority {
+    /** Convert a [[PosFloat]] to a plain Double (unwrap). */
+    given Conversion[PosFloat, Double] with {
+      def apply(x: PosFloat): Double = x.toDouble
+    }
+    /** Convert a [[PosFloat]] to a plain PosDouble (unwrap). */
+    given Conversion[PosFloat, PosDouble] with {
+      def apply(x: PosFloat): PosDouble = PosDouble.ensuringValid(x.toDouble)
+    }
+    /** Convert a [[PosFloat]] to a plain PosZDouble (unwrap). */
+    given Conversion[PosFloat, PosZDouble] with {
+      def apply(x: PosFloat): PosZDouble = PosZDouble.ensuringValid(x.toDouble)
+    }
+    /** Convert a [[PosFloat]] to a plain NonZeroFloat (unwrap). */
+    given Conversion[PosFloat, NonZeroFloat] with {
+      def apply(x: PosFloat): NonZeroFloat = NonZeroFloat.ensuringValid(x.toFloat)
+    }
+    /** Convert a [[PosFloat]] to a plain NonZeroDouble (unwrap). */
+    given Conversion[PosFloat, NonZeroDouble] with {
+      def apply(x: PosFloat): NonZeroDouble = NonZeroDouble.ensuringValid(x.toDouble)
+    }
+  }
+
+  object PosFloat extends PosFloatConversionsLowPriority {
 
     /** Convert a [[PosFloat]] to a plain Float (unwrap). */
     given Conversion[PosFloat, Float] with {
