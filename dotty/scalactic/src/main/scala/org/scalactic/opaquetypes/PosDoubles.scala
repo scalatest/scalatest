@@ -188,7 +188,37 @@ object PosDoubles {
       *     in a <code>Right(PosZDouble)</code>, if it is PosZDouble, else a <code>Left(f(value))</code>.
       */
     def rightOrElse[L](value: Double)(f: Double => L): Either[L, PosZDouble] =
-      if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))        
+      if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))
+
+    /**
+      * A factory method that produces a <code>PosZDouble</code> given a
+      * <code>Double</code> value and a default <code>PosZDouble</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Double</code> value and if
+      * it is a non-negative <code>Double</code>, <em>i.e.</em>, a value greater
+      * than 0.0, it will return a <code>PosZDouble</code> representing that value.
+      * Otherwise, the passed <code>Double</code> value is 0 or negative, so this
+      * method will return the passed <code>default</code> value.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code>
+      * factory method in that <code>apply</code> is implemented
+      * via a macro that inspects <code>Double</code> literals at
+      * compile time, whereas <code>from</code> inspects
+      * <code>Double</code> values at run time.
+      * </p>
+      *
+      * @param value the <code>Double</code> to inspect, and if positive, return.
+      * @param default the <code>PosZDouble</code> to return if the passed
+      *     <code>Double</code> value is not positive.
+      * @return the specified <code>Double</code> value wrapped in a
+      *     <code>PosZDouble</code>, if it is positive, else the
+      *     <code>default</code> <code>PosZDouble</code> value.
+      */
+    def fromOrElse(value: Double, default: => PosZDouble): PosZDouble =
+      if (isValid(value)) value else default          
     
     def from(d: Double): Option[PosZDouble] =
       if (d >= 0.0) Some(d) else None
