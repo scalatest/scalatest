@@ -367,11 +367,11 @@ specifying floats so long as it is in the valid range for floats.
       }
     }
   }
-  /*it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
+  it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
     PosFloat(33.0f).ensuringValid(_ + 1.0f) shouldEqual PosFloat(34.0f)
     PosFloat(33.0f).ensuringValid(_ => Float.PositiveInfinity) shouldEqual PosFloat.ensuringValid(Float.PositiveInfinity)
     an [AssertionError] should be thrownBy { PosFloat.MaxValue.ensuringValid(_ - PosFloat.MaxValue) }
     an [AssertionError] should be thrownBy { PosFloat.MaxValue.ensuringValid(_ => Float.NegativeInfinity) }
-  }*/
+  }
 }
 
