@@ -163,7 +163,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
         PosZDouble.fromOrElse(-99.9, PosZDouble(42.0)) shouldBe PosZDouble(42.0)
       }
     }
-    /*it("should offer MaxValue, MinValue, and MinPositiveValue factory methods") {
+    it("should offer MaxValue, MinValue, and MinPositiveValue factory methods") {
       PosZDouble.MaxValue shouldEqual PosZDouble.from(Double.MaxValue).get
       PosZDouble.MinValue shouldEqual PosZDouble(0.0)
       PosZDouble.MinPositiveValue shouldEqual
@@ -175,7 +175,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
     it("should not offer a PositiveInfinity factory method") {
       "PosZDouble.NegativeInfinity" shouldNot compile
     }
-    it("should offer a isPosInfinity method that returns true if the instance is PositiveInfinity") {
+    /*it("should offer a isPosInfinity method that returns true if the instance is PositiveInfinity") {
       PosZDouble.ensuringValid(Float.PositiveInfinity).isPosInfinity shouldBe true
       PosZDouble(1.0f).isPosInfinity shouldBe false
     }

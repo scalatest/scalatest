@@ -228,6 +228,28 @@ object PosDoubles {
         throw new AssertionError(Resources.invalidPosZDouble)
       else d
 
+    /**
+      * The largest value representable as a positive <code>Double</code>, which is <code>PosDouble(Double.MaxValue)</code>.
+      */
+    val MaxValue: PosDouble = Double.MaxValue
+
+    /**
+      * The smallest value representable as a positive <code>Double</code>, which is <code>PosDouble(Double.MinPositiveValue)</code>.
+      */
+    val MinValue: PosDouble = 0.0
+
+    /**
+      * Positive infinity as a <code>PosDouble</code>, which is
+      * <code>PosDouble(Double.PositiveInfinity)</code>.
+      */
+    val PositiveInfinity: PosDouble = Double.PositiveInfinity  
+
+    /**
+      * The smallest positive value greater than 0.0f representable
+      * as a <code>PosZDouble</code>, which is <code>PosZDouble(Double.MinPositiveValue)</code>.
+      */
+    val MinPositiveValue: PosZDouble = Double.MinPositiveValue
+
   }
 
   opaque type PosDouble = Double
