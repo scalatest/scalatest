@@ -183,14 +183,14 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       "PosZDouble(1.0f).isNegInfinity" shouldNot compile
     }
 
-    /*it("should be sortable") {
+    it("should be sortable") {
       val xs = List(PosZDouble(2.2), PosZDouble(0.0), PosZDouble(1.1),
                     PosZDouble(3.3))
       xs.sorted shouldEqual List(PosZDouble(0.0), PosZDouble(1.1),
                                  PosZDouble(2.2), PosZDouble(3.3))
     }
 
-    describe("when created with apply method") {
+    /*describe("when created with apply method") {
 
       it("should compile when 8 is passed in") {
         "PosZDouble(8)" should compile

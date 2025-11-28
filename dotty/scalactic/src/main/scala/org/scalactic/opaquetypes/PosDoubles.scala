@@ -272,6 +272,11 @@ object PosDoubles {
       */
     val MinPositiveValue: PosZDouble = Double.MinPositiveValue
 
+    /** Ordering instance for PosZDouble that orders by numeric value. */
+    given Ordering[PosZDouble] with {
+      def compare(x: PosZDouble, y: PosZDouble): Int = x.compareTo(y)
+    }
+
     extension (p: PosZDouble) {
       /** Return true if this PosZDouble is positive infinity. */
       def isPosInfinity: Boolean = p == Double.PositiveInfinity
