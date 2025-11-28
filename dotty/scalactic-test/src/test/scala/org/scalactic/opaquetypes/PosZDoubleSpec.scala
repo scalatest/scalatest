@@ -83,12 +83,12 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
         PosZDouble.from(-99.9) shouldBe None
       }
     }
-    /*describe("should offer an ensuringValid factory method that") {
+    describe("should offer an ensuringValid factory method that") {
       it("returns PosZDouble if the passed Double is greater than or equal to 0") {
-        PosZDouble.ensuringValid(0.0).value shouldBe 0.0
-        PosZDouble.ensuringValid(50.23).value shouldBe 50.23
-        PosZDouble.ensuringValid(100.0).value shouldBe 100.0
-        PosZDouble.ensuringValid(Double.PositiveInfinity).value shouldBe Double.PositiveInfinity
+        PosZDouble.ensuringValid(0.0) shouldBe PosZDouble(0.0)
+        PosZDouble.ensuringValid(50.23) shouldBe PosZDouble(50.23)
+        PosZDouble.ensuringValid(100.0) shouldBe PosZDouble(100.0)
+        PosZDouble.ensuringValid(Double.PositiveInfinity) shouldBe PosZDouble(Double.PositiveInfinity)
       }
       it("throws AssertionError if the passed Double is NOT greater than or equal to 0") {
         an [AssertionError] should be thrownBy PosZDouble.ensuringValid(-0.00001)
@@ -99,9 +99,9 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
     describe("should offer a tryingValid factory method that") {
       import TryValues.*
       it("returns a PosZDouble wrapped in a Success if the passed Double is greater than or equal 0") {
-        PosZDouble.tryingValid(0.0).success.value.value shouldBe 0.0
-        PosZDouble.tryingValid(50.0).success.value.value shouldBe 50.0
-        PosZDouble.tryingValid(100.0f).success.value.value shouldBe 100.0
+        PosZDouble.tryingValid(0.0) shouldBe Success(PosZDouble(0.0))
+        PosZDouble.tryingValid(50.0) shouldBe Success(PosZDouble(50.0))
+        PosZDouble.tryingValid(100.0f) shouldBe Success(PosZDouble(100.0))
       }
 
       it("returns an AssertionError wrapped in a Failure if the passed Double is lesser than 0") {
@@ -109,7 +109,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
         PosZDouble.tryingValid(-99.0).failure.exception shouldBe an [AssertionError]
       }
     }
-    describe("should offer a passOrElse factory method that") {
+    /*describe("should offer a passOrElse factory method that") {
       it("returns a Pass if the given Double is greater than or equal 0") {
         PosZDouble.passOrElse(0.0)(i => i) shouldBe Pass
         PosZDouble.passOrElse(50.0)(i => i) shouldBe Pass
