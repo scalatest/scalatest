@@ -154,7 +154,41 @@ object PosDoubles {
       *     in a <code>Good(PosZDouble)</code>, if it is PosZDouble, else a <code>Bad(f(value))</code>.
       */
     def goodOrElse[B](value: Double)(f: Double => B): PosZDouble Or B =
-      if (isValid(value)) Good(value) else Bad(f(value))      
+      if (isValid(value)) Good(value) else Bad(f(value))
+
+    /**
+      * A factory/validation method that produces a <code>PosZDouble</code>, wrapped
+      * in a <code>Right</code>, given a valid <code>Double</code> value, or if the
+      * given <code>Double</code> is invalid, an error value of type <code>L</code>
+      * produced by passing the given <em>invalid</em> <code>Double</code> value
+      * to the given function <code>f</code>, wrapped in a <code>Left</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Double</code> value and if
+      * it is a PosZDouble <code>Double</code>, it will return a <code>PosZDouble</code>
+      * representing that value, wrapped in a <code>Right</code>.
+      * Otherwise, the passed <code>Double</code> value is not PosZDouble, so this
+      * method will return a result of type <code>L</code> obtained by passing
+      * the invalid <code>Double</code> value to the given function <code>f</code>,
+      * wrapped in a `Left`.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code> factory method
+      * in that <code>apply</code> is implemented via a macro that inspects
+      * <code>Double</code> literals at compile time, whereas this method inspects
+      * <code>Double</code> values at run time.
+      * </p>
+      *
+      * @tparam L error type produced by f
+      * @param value the <code>Double</code> to inspect, and if PosZDouble, return
+      *     wrapped in a <code>Right(PosZDouble)</code>.
+      * @param f function to produce an error when value is invalid
+      * @return the specified <code>Double</code> value wrapped
+      *     in a <code>Right(PosZDouble)</code>, if it is PosZDouble, else a <code>Left(f(value))</code>.
+      */
+    def rightOrElse[L](value: Double)(f: Double => L): Either[L, PosZDouble] =
+      if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))        
     
     def from(d: Double): Option[PosZDouble] =
       if (d >= 0.0) Some(d) else None
