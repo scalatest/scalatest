@@ -19,6 +19,7 @@ import org.scalactic.Resources
 import scala.compiletime.{ constValueOpt, error }
 import scala.util.{Try, Success, Failure}
 import org.scalactic.{Validation, Pass, Fail}
+import org.scalactic.{Or, Good, Bad}
 
 object PosDoubles {
 
@@ -119,7 +120,41 @@ object PosDoubles {
       *   specified `Double` to the given function `f`.
       */
     def passOrElse[E](value: Double)(f: Double => E): Validation[E] =
-      if (isValid(value)) Pass else Fail(f(value))    
+      if (isValid(value)) Pass else Fail(f(value))
+
+    /**
+      * A factory/validation method that produces a <code>PosZDouble</code>, wrapped
+      * in a <code>Good</code>, given a valid <code>Double</code> value, or if the
+      * given <code>Double</code> is invalid, an error value of type <code>B</code>
+      * produced by passing the given <em>invalid</em> <code>Double</code> value
+      * to the given function <code>f</code>, wrapped in a <code>Bad</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Double</code> value and if
+      * it is a PosZDouble <code>Double</code>, it will return a <code>PosZDouble</code>
+      * representing that value, wrapped in a <code>Good</code>.
+      * Otherwise, the passed <code>Double</code> value is not PosZDouble, so this
+      * method will return a result of type <code>B</code> obtained by passing
+      * the invalid <code>Double</code> value to the given function <code>f</code>,
+      * wrapped in a `Bad`.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code> factory method
+      * in that <code>apply</code> is implemented via a macro that inspects
+      * <code>Double</code> literals at compile time, whereas this method inspects
+      * <code>Double</code> values at run time.
+      * </p>
+      *
+      * @tparam B error type produced by f
+      * @param value the <code>Double</code> to inspect, and if PosZDouble, return
+      *     wrapped in a <code>Good(PosZDouble)</code>.
+      * @param f function to produce an error when value is invalid
+      * @return the specified <code>Double</code> value wrapped
+      *     in a <code>Good(PosZDouble)</code>, if it is PosZDouble, else a <code>Bad(f(value))</code>.
+      */
+    def goodOrElse[B](value: Double)(f: Double => B): PosZDouble Or B =
+      if (isValid(value)) Good(value) else Bad(f(value))      
     
     def from(d: Double): Option[PosZDouble] =
       if (d >= 0.0) Some(d) else None

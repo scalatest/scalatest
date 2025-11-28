@@ -120,7 +120,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
         PosZDouble.passOrElse(-99.0)(i => i + 3.0) shouldBe Fail(-96.0)
       }
     }
-    /*describe("should offer a goodOrElse factory method that") {
+    describe("should offer a goodOrElse factory method that") {
       it("returns a PosZDouble wrapped in a Good if the given Double is greater than or equal 0") {
         PosZDouble.goodOrElse(0.0)(i => i) shouldBe Good(PosZDouble(0.0))
         PosZDouble.goodOrElse(50.0)(i => i) shouldBe Good(PosZDouble(50.0))
@@ -131,7 +131,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
         PosZDouble.goodOrElse(-99.0)(i => i + 3.0f) shouldBe Bad(-96.0)
       }
     }
-    describe("should offer a rightOrElse factory method that") {
+    /*describe("should offer a rightOrElse factory method that") {
       it("returns a PosZDouble wrapped in a Right if the given Double is greater than or equal 0") {
         PosZDouble.rightOrElse(0.0)(i => i) shouldBe Right(PosZDouble(0.0))
         PosZDouble.rightOrElse(50.0)(i => i) shouldBe Right(PosZDouble(50.0))
