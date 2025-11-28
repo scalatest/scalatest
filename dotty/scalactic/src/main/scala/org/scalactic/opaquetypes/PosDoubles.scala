@@ -18,6 +18,7 @@ package org.scalactic.opaquetypes
 import org.scalactic.Resources
 import scala.compiletime.{ constValueOpt, error }
 import scala.util.{Try, Success, Failure}
+import org.scalactic.{Validation, Pass, Fail}
 
 object PosDoubles {
 
@@ -86,6 +87,39 @@ object PosDoubles {
         Success(value)
       else
         Failure(new AssertionError(Resources.invalidPosZDouble))
+
+    /**
+      * A validation method that produces a <code>Pass</code>
+      * given a valid <code>Double</code> value, or
+      * an error value of type <code>E</code> produced by passing the
+      * given <em>invalid</em> <code>Double</code> value
+      * to the given function <code>f</code>, wrapped in a <code>Fail</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Double</code> value and if
+      * it is a non-negative double <code>Double</code>, it will return a <code>Pass</code>.
+      * Otherwise, the passed <code>Double</code> value is not a non-negative double, so this
+      * method will return a result of type <code>E</code> obtained by passing
+      * the invalid <code>Double</code> value to the given function <code>f</code>,
+      * wrapped in a `Fail`.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code> factory method
+      * in that <code>apply</code> is implemented via a macro that inspects
+      * <code>Double</code> literals at compile time, whereas this method inspects
+      * <code>Double</code> values at run time.
+      * </p>
+      *
+      * @tparam E error type produced by f
+      * @param value the `Double` to validate that it is a non-negative double.
+      * @param f function to produce an error when value is invalid
+      * @return a `Pass` if the specified `Double` value is a non-negative double,
+      *   else a `Fail` containing an error value produced by passing the
+      *   specified `Double` to the given function `f`.
+      */
+    def passOrElse[E](value: Double)(f: Double => E): Validation[E] =
+      if (isValid(value)) Pass else Fail(f(value))    
     
     def from(d: Double): Option[PosZDouble] =
       if (d >= 0.0) Some(d) else None
