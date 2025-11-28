@@ -190,7 +190,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
                                  PosZDouble(2.2), PosZDouble(3.3))
     }
 
-    /*describe("when created with apply method") {
+    describe("when created with apply method") {
 
       it("should compile when 8 is passed in") {
         "PosZDouble(8)" should compile
@@ -231,7 +231,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
         "PosZDouble(d)" shouldNot compile
       }
     }
-    describe("when specified as a plain-old Double") {
+    /*describe("when specified as a plain-old Double") {
 
       def takesPosZDouble(poz: PosZDouble): Double = poz.value
 
