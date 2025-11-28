@@ -27,14 +27,14 @@ object PosDoubles {
 
   object PosZDouble {
 
-    /** Compile-time factory for creating a [[PosZDouble]] from a float literal.
+    /** Compile-time factory for creating a [[PosZDouble]] from a double literal.
       *
-      * This inline method inspects the provided float literal at compile time
+      * This inline method inspects the provided double literal at compile time
       * and rejects negative literals. Use it as: `PosZDouble(5.0)`. For non-literal
       * values, use [[ensuringValid]] or [[from]].
       *
-      * @tparam F the singleton Float literal type
-      * @param f the Float literal
+      * @tparam D the singleton Double literal type
+      * @param d the Double literal
       * @return a [[PosZDouble]] representing the given non-negative literal
       * @throws a compile-time error if the literal is negative or not a literal
       */
@@ -46,8 +46,30 @@ object PosDoubles {
           else
             v.asInstanceOf[PosZDouble]
         case None =>
-          error("PosZDouble.apply requires a integer, long or double literal")
+          error("PosZDouble.apply requires a integer, long, float or double literal")
       }
+
+    /** Compile-time factory for creating a [[PosZDouble]] from a float literal.
+      *
+      * This inline method inspects the provided float literal at compile time
+      * and rejects negative literals. Use it as: `PosZDouble(5.0f)`. For non-literal
+      * values, use [[ensuringValid]] or [[from]].
+      *
+      * @tparam F the singleton Float literal type
+      * @param f the Float literal
+      * @return a [[PosZDouble]] representing the given non-negative literal
+      * @throws a compile-time error if the literal is negative or not a literal
+      */
+    inline def apply[F <: Float & Singleton](inline f: F): PosZDouble =
+      inline constValueOpt[F] match {
+        case Some(v: Float) =>
+          inline if v < 0.0f then
+            error("PosZDouble cannot be instantiated with a negative float literal")
+          else
+            v.toDouble.asInstanceOf[PosZDouble]
+        case None =>
+          error("PosZDouble.apply requires a integer, long, float or double literal")
+      }  
 
     /** 
       * Return true when the provided Double is a valid [[PosZDouble]] value (>= 0). 
@@ -250,6 +272,10 @@ object PosDoubles {
       */
     val MinPositiveValue: PosZDouble = Double.MinPositiveValue
 
+    extension (p: PosZDouble) {
+      /** Return true if this PosZDouble is positive infinity. */
+      def isPosInfinity: Boolean = p == Double.PositiveInfinity
+    }
   }
 
   opaque type PosDouble = Double
