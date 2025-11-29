@@ -29,7 +29,7 @@ import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 import scala.util.{Try, Success, Failure}
 
-import PosDoubles.PosZDouble
+import PosDoubles.{PosZDouble, PosDouble}
 import NegDoubles.NegZDouble
 
 trait PosZDoubleSpecSupport {
@@ -289,7 +289,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       }
     }
 
-    /*it("should offer a 'plus' method that takes a PosZDouble and returns a PosDouble") {
+    it("should offer a 'plus' method that takes a PosZDouble and returns a PosDouble") {
 
       forAll { (posZDouble1: PosZDouble, posZDouble2: PosZDouble) =>
         (posZDouble1 plus posZDouble2) should === (PosZDouble.ensuringValid(posZDouble1.toDouble + posZDouble2.toDouble))
@@ -321,7 +321,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       PosZDouble(1.0) plus PosDouble(2.0) should === (PosZDouble(3.0))
     }
 
-    it("should offer 'min' and 'max' methods that are consistent with Double") {
+    /*it("should offer 'min' and 'max' methods that are consistent with Double") {
       forAll { (pzdouble1: PosZDouble, pzdouble2: PosZDouble) =>
         pzdouble1.max(pzdouble2).toDouble shouldEqual pzdouble1.toDouble.max(pzdouble2.toDouble)
         pzdouble1.min(pzdouble2).toDouble shouldEqual pzdouble1.toDouble.min(pzdouble2.toDouble)

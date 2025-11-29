@@ -378,18 +378,18 @@ object PosDoubles {
     /**
       * The largest value representable as a positive <code>Double</code>, which is <code>PosDouble(Double.MaxValue)</code>.
       */
-    val MaxValue: PosDouble = Double.MaxValue
+    val MaxValue: PosZDouble = Double.MaxValue
 
     /**
       * The smallest value representable as a positive <code>Double</code>, which is <code>PosDouble(Double.MinPositiveValue)</code>.
       */
-    val MinValue: PosDouble = 0.0
+    val MinValue: PosZDouble = 0.0
 
     /**
       * Positive infinity as a <code>PosDouble</code>, which is
       * <code>PosDouble(Double.PositiveInfinity)</code>.
       */
-    val PositiveInfinity: PosDouble = Double.PositiveInfinity  
+    val PositiveInfinity: PosZDouble = Double.PositiveInfinity  
 
     /**
       * The smallest positive value greater than 0.0f representable
@@ -407,12 +407,45 @@ object PosDoubles {
       def value: Double = p
       /** Return true if this PosZDouble is positive infinity. */
       def isPosInfinity: Boolean = p == Double.PositiveInfinity
+      /**
+        * Returns the <code>PosZFloat</code> sum of this value and `x`.
+        *
+        * <p>
+        * This method will always succeed (not throw an exception) because
+        * adding a non-negative Float to another non-negative Float
+        * will always result in another non-negative Float
+        * value (though the result may be infinity).
+        * </p>
+        */
+      def plus(x: PosZDouble): PosZDouble = PosZDouble.ensuringValid(value + x)
     }
   }
 
   opaque type PosDouble = Double
 
   object PosDouble {
+
+    /** Compile-time factory for creating a [[PosDouble]] from a double literal.
+      *
+      * This inline method inspects the provided double literal at compile time
+      * and rejects negative literals. Use it as: `PosDouble(5.0)`. For non-literal
+      * values, use [[ensuringValid]] or [[from]].
+      *
+      * @tparam D the singleton Double literal type
+      * @param d the Double literal
+      * @return a [[PosDouble]] representing the given non-negative literal
+      * @throws a compile-time error if the literal is negative or not a literal
+      */
+    inline def apply[D <: Double & Singleton](inline d: D): PosZDouble =
+      inline constValueOpt[D] match {
+        case Some(v: Double) =>
+          inline if v <= 0.0 then
+            error("PosDouble cannot be instantiated with a non-positive double literal")
+          else
+            v.asInstanceOf[PosDouble]
+        case None =>
+          error("PosDouble.apply requires a integer, long, float or double literal")
+      }
     
     def from(d: Double): Option[PosDouble] =
       if (d > 0.0) Some(d) else None
