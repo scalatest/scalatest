@@ -163,7 +163,7 @@ class PosDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       PosDouble(1.0).isPosInfinity shouldBe false
     }
 
-    /*it("should be sortable") {
+    it("should be sortable") {
       val xs = List(PosDouble(2.2), PosDouble(4.4), PosDouble(1.1),
                     PosDouble(3.3))
       xs.sorted shouldEqual List(PosDouble(1.1), PosDouble(2.2), PosDouble(3.3),
@@ -207,7 +207,7 @@ class PosDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
         "PosDouble(d)" shouldNot compile
       }
     }
-    describe("when specified as a plain-old Double") {
+    /*describe("when specified as a plain-old Double") {
 
       def takesPosDouble(pos: PosDouble): Double = pos.value
 
