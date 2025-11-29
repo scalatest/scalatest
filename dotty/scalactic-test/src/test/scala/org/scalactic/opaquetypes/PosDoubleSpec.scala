@@ -124,7 +124,7 @@ class PosDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
         PosDouble.rightOrElse(-99.9)(i => i + 3.0) shouldBe Left(-96.9)
       }
     }
-    /*describe("should offer an isValid predicate method that") {
+    describe("should offer an isValid predicate method that") {
       it("returns true if the passed Double is greater than 0") {
         PosDouble.isValid(50.23) shouldBe true
         PosDouble.isValid(100.0) shouldBe true
@@ -136,16 +136,16 @@ class PosDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
     }
     describe("should offer a fromOrElse factory method that") {
       it("returns a PosDouble if the passed Double is greater than 0") {
-        PosDouble.fromOrElse(50.23, PosDouble(42.0)).value shouldBe 50.23
-        PosDouble.fromOrElse(100.0, PosDouble(42.0)).value shouldBe 100.0
+        PosDouble.fromOrElse(50.23, PosDouble(42.0)) shouldBe PosDouble(50.23)
+        PosDouble.fromOrElse(100.0, PosDouble(42.0)) shouldBe PosDouble(100.0)
       }
       it("returns a given default if the passed Double is NOT greater than 0") {
-        PosDouble.fromOrElse(0.0, PosDouble(42.0)).value shouldBe 42.0
-        PosDouble.fromOrElse(-0.00001, PosDouble(42.0)).value shouldBe 42.0
-        PosDouble.fromOrElse(-99.9, PosDouble(42.0)).value shouldBe 42.0
+        PosDouble.fromOrElse(0.0, PosDouble(42.0)) shouldBe PosDouble(42.0)
+        PosDouble.fromOrElse(-0.00001, PosDouble(42.0)) shouldBe PosDouble(42.0)
+        PosDouble.fromOrElse(-99.9, PosDouble(42.0)) shouldBe PosDouble(42.0)
       }
     }
-    it("should offer MaxValue, MinValue, and MinPositiveValue factory methods") {
+    /*it("should offer MaxValue, MinValue, and MinPositiveValue factory methods") {
       PosDouble.MaxValue shouldEqual PosDouble.from(Double.MaxValue).get
       PosDouble.MinValue shouldEqual
         PosDouble.from(Double.MinPositiveValue).get

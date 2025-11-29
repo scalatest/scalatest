@@ -517,7 +517,7 @@ object PosDoubles {
       * @return a [[PosDouble]] representing the given non-negative literal
       * @throws a compile-time error if the literal is negative or not a literal
       */
-    inline def apply[D <: Double & Singleton](inline d: D): PosZDouble =
+    inline def apply[D <: Double & Singleton](inline d: D): PosDouble =
       inline constValueOpt[D] match {
         case Some(v: Double) =>
           inline if v <= 0.0 then
@@ -676,7 +676,37 @@ object PosDoubles {
       *     in a <code>Right(PosDouble)</code>, if it is PosDouble, else a <code>Left(f(value))</code>.
       */
     def rightOrElse[L](value: Double)(f: Double => L): Either[L, PosDouble] =
-      if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))  
+      if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))
+
+    /**
+      * A factory method that produces a <code>PosDouble</code> given a
+      * <code>Double</code> value and a default <code>PosDouble</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Double</code> value and if
+      * it is a non-negative <code>Double</code>, <em>i.e.</em>, a value greater
+      * than 0.0, it will return a <code>PosDouble</code> representing that value.
+      * Otherwise, the passed <code>Double</code> value is 0 or negative, so this
+      * method will return the passed <code>default</code> value.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code>
+      * factory method in that <code>apply</code> is implemented
+      * via a macro that inspects <code>Double</code> literals at
+      * compile time, whereas <code>from</code> inspects
+      * <code>Double</code> values at run time.
+      * </p>
+      *
+      * @param value the <code>Double</code> to inspect, and if positive, return.
+      * @param default the <code>PosDouble</code> to return if the passed
+      *     <code>Double</code> value is not positive.
+      * @return the specified <code>Double</code> value wrapped in a
+      *     <code>PosDouble</code>, if it is positive, else the
+      *     <code>default</code> <code>PosDouble</code> value.
+      */
+    def fromOrElse(value: Double, default: => PosDouble): PosDouble =
+      if (isValid(value)) value else default    
 
   } 
 
