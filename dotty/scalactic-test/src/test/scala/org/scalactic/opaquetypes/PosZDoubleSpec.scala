@@ -231,7 +231,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
         "PosZDouble(d)" shouldNot compile
       }
     }
-    /*describe("when specified as a plain-old Double") {
+    describe("when specified as a plain-old Double") {
 
       def takesPosZDouble(poz: PosZDouble): Double = poz.value
 
@@ -276,7 +276,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       }
     }
 
-    it("should offer a unary + method that is consistent with Double") {
+    /*it("should offer a unary + method that is consistent with Double") {
       forAll { (p: PosZDouble) =>
         (+p).toDouble shouldEqual (+(p.toDouble))
       }
