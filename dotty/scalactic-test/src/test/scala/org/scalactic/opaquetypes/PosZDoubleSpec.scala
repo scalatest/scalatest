@@ -321,7 +321,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       PosZDouble(1.0) plus PosDouble(2.0) should === (PosZDouble(3.0))
     }
 
-    /*it("should offer 'min' and 'max' methods that are consistent with Double") {
+    it("should offer 'min' and 'max' methods that are consistent with Double") {
       forAll { (pzdouble1: PosZDouble, pzdouble2: PosZDouble) =>
         pzdouble1.max(pzdouble2).toDouble shouldEqual pzdouble1.toDouble.max(pzdouble2.toDouble)
         pzdouble1.min(pzdouble2).toDouble shouldEqual pzdouble1.toDouble.min(pzdouble2.toDouble)
@@ -334,7 +334,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       }
     }
 
-    it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Double") {
+    /*it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Double") {
       forAll { (pzdouble: PosZDouble) =>
         pzdouble.round.toDouble shouldEqual pzdouble.toDouble.round
         pzdouble.ceil.toDouble shouldEqual pzdouble.toDouble.ceil

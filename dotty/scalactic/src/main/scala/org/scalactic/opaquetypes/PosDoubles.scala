@@ -418,6 +418,21 @@ object PosDoubles {
         * </p>
         */
       def plus(x: PosZDouble): PosZDouble = PosZDouble.ensuringValid(value + x)
+      /**
+        * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
+        */
+      def max(that: PosZDouble): PosZDouble = math.max(p, that)
+      /**
+        * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
+        */
+      def min(that: PosZDouble): PosZDouble = math.min(p, that)
+      /**
+        * Indicates whether this `PosZFloat` has a value that is a whole number: it is finite and it has no fraction part.
+        */
+      def isWhole = {
+        val longValue = p.toLong
+        longValue.toDouble == p || longValue == Long.MaxValue && p < Double.PositiveInfinity || longValue == Long.MinValue && p > Double.NegativeInfinity
+      }
     }
   }
 
