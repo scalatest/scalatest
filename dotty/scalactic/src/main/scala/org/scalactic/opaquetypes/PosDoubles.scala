@@ -502,7 +502,7 @@ object PosDoubles {
     }
   }
 
-  opaque type PosDouble = Double
+  opaque type PosDouble <: PosZDouble = Double
 
   object PosDouble {
 
@@ -529,12 +529,53 @@ object PosDoubles {
       }
     
     def from(d: Double): Option[PosDouble] =
-      if (d > 0.0) Some(d) else None
+      if (isValid(d)) Some(d) else None
+
+    /** 
+      * Return true when the provided Double is a valid [[PosDouble]] value (> 0.0). 
+      *
+      * @param value the Double to validate
+      * @return true if the specified Double is a non-negative double, else false
+      */
+    def isValid(value: Double): Boolean = value > 0.0    
 
     def ensuringValid(d: Double): PosDouble = 
-      if (d <= 0.0) 
+      if (isValid(d))
+        d
+      else  
         throw new AssertionError(Resources.invalidPosDouble)
-      else d
+
+    /**
+      * A factory/validation method that produces a <code>PosDouble</code>, wrapped
+      * in a <code>Success</code>, given a valid <code>Double</code> value, or if the
+      * given <code>Double</code> is invalid, an <code>AssertionError</code>, wrapped
+      * in a <code>Failure</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Double</code> value and if
+      * it is a PosDouble <code>Double</code>, it will return a <code>PosDouble</code>
+      * representing that value, wrapped in a <code>Success</code>.
+      * Otherwise, if the passed <code>Double</code> value is not PosDouble, this
+      * method will return an <code>AssertionError</code>, wrapped in a <code>Failure</code>.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code> factory method
+      * in that <code>apply</code> is implemented via a macro that inspects
+      * <code>Float</code> literals at compile time, whereas this method inspects
+      * <code>Float</code> values at run time.
+      * </p>
+      *
+      * @param value the <code>Double</code> to inspect, and if a non-negative double, return
+      *     wrapped in a <code>Success(PosDouble)</code>.
+      * @return the specified <code>Double</code> value wrapped
+      *     in a <code>Success(PosDouble)</code>, if it is a non-negative double, else a <code>Failure(AssertionError)</code>.
+      */
+    def tryingValid(value: Double): Try[PosDouble] =
+      if (isValid(value))
+        Success(value)
+      else
+        Failure(new AssertionError(Resources.invalidPosDouble))  
 
   } 
 
