@@ -711,18 +711,24 @@ object PosDoubles {
     /**
       * The largest value representable as a positive <code>Double</code>, which is <code>PosDouble(Double.MaxValue)</code>.
       */
-    val MaxValue: PosZDouble = Double.MaxValue
+    val MaxValue: PosDouble = Double.MaxValue
 
     /**
       * The smallest value representable as a positive <code>Double</code>, which is <code>PosDouble(Double.MinPositiveValue)</code>.
       */
-    val MinValue: PosZDouble = Double.MinPositiveValue 
+    val MinValue: PosDouble = Double.MinPositiveValue 
 
     /**
       * The smallest positive value greater than 0.0f representable
-      * as a <code>PosZDouble</code>, which is <code>PosZDouble(Double.MinPositiveValue)</code>.
+      * as a <code>PosDouble</code>, which is <code>PosDouble(Double.MinPositiveValue)</code>.
       */
-    val MinPositiveValue: PosZDouble = Double.MinPositiveValue      
+    val MinPositiveValue: PosDouble = Double.MinPositiveValue
+
+    /**
+      * Positive infinity as a <code>PosDouble</code>, which is
+      * <code>PosDouble(Double.PositiveInfinity)</code>.
+      */
+    val PositiveInfinity: PosDouble = Double.PositiveInfinity      
 
   } 
 

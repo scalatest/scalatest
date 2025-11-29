@@ -152,7 +152,7 @@ class PosDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       PosDouble.MinPositiveValue shouldEqual
         PosDouble.from(Double.MinPositiveValue).get
     }
-    /*it("should offer a PositiveInfinity factory method") {
+    it("should offer a PositiveInfinity factory method") {
       PosDouble.PositiveInfinity shouldEqual PosDouble.ensuringValid(Double.PositiveInfinity)
     }
     it("should not offer a NegativeInfinity factory method") {
@@ -163,7 +163,7 @@ class PosDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       PosDouble(1.0).isPosInfinity shouldBe false
     }
 
-    it("should be sortable") {
+    /*it("should be sortable") {
       val xs = List(PosDouble(2.2), PosDouble(4.4), PosDouble(1.1),
                     PosDouble(3.3))
       xs.sorted shouldEqual List(PosDouble(1.1), PosDouble(2.2), PosDouble(3.3),
