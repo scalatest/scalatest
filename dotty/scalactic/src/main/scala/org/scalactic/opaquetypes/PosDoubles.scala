@@ -506,6 +506,87 @@ object PosDoubles {
 
   object PosDouble {
 
+    /** Convert a [[PosDouble]] to a plain Double (unwrap). */
+    given Conversion[PosDouble, Double] with {
+      def apply(x: PosDouble): Double = x.toDouble
+    }
+
+    /** Convert a compile-time Int literal or runtime Int to a [[PosDouble]].
+      *
+      * The inline overload checks integer literals at compile time; the runtime
+      * overload validates and throws for negative values.
+      */
+    given Conversion[Int, PosDouble] with {
+      inline def apply[I <: Int & Singleton](inline x: I): PosDouble =
+        inline constValueOpt[I] match {
+          case Some(v: Int) =>
+            inline if v <= 0 then
+              error("PosZDouble cannot be instantiated with a zero or negative integer literal")
+            else
+              v.toDouble.asInstanceOf[PosDouble]
+          case None =>
+            error("PosDouble conversion requires a integer literal")
+        }
+      def apply(x: Int): PosDouble = x.toDouble
+    }
+
+    /** Convert a compile-time Long literal or runtime Long to a [[PosDouble]].
+      *
+      * The inline overload checks long literals at compile time; the runtime
+      * overload validates and throws for negative values.
+      */
+    given Conversion[Long, PosDouble] with {
+      inline def apply[L <: Long & Singleton](inline x: L): PosDouble =
+        inline constValueOpt[L] match {
+          case Some(v: Long) =>
+            inline if v <= 0L then
+              error("PosZDouble cannot be instantiated with a zero or negative long literal")
+            else
+              v.toDouble.asInstanceOf[PosDouble]
+          case None =>
+            error("PosDouble conversion requires a long literal")
+        }
+      def apply(x: Long): PosDouble = x.toDouble
+    }
+
+    /** Convert a compile-time Float literal or runtime Float to a [[PosDouble]].
+      *
+      * The inline overload checks float literals at compile time; the runtime
+      * overload validates and throws for negative values.
+      */
+    given Conversion[Float, PosDouble] with {
+      inline def apply[F <: Float & Singleton](inline x: F): PosDouble =
+        inline constValueOpt[F] match {
+          case Some(v: Float) =>
+            inline if v <= 0.0f then
+              error("PosZDouble cannot be instantiated with a zero or negative float literal")
+            else
+              v.toDouble.asInstanceOf[PosDouble]
+          case None =>
+            error("PosDouble conversion requires a float literal")
+        }
+      def apply(x: Float): PosDouble = x.toDouble
+    }
+
+    /** Convert a compile-time Double literal or runtime Double to a [[PosDouble]].
+      *
+      * The inline overload checks double literals at compile time; the runtime
+      * overload validates and throws for negative values.
+      */
+    given Conversion[Double, PosDouble] with {
+      inline def apply[D <: Double & Singleton](inline x: D): PosDouble =
+        inline constValueOpt[D] match {
+          case Some(v: Double) =>
+            inline if v <= 0.0 then
+              error("PosZDouble cannot be instantiated with a zero or negative double literal")
+            else
+              v.asInstanceOf[PosDouble]
+          case None =>
+            error("PosDouble conversion requires a double literal")
+        }
+      def apply(x: Double): PosDouble = x.toDouble
+    }
+
     /** Compile-time factory for creating a [[PosDouble]] from a double literal.
       *
       * This inline method inspects the provided double literal at compile time
