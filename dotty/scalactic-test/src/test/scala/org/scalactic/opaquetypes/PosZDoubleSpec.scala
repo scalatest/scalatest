@@ -342,13 +342,13 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       }
     }
 
-    /*it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Double") {
+    it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Double") {
       forAll { (pzdouble: PosZDouble) =>
         pzdouble.toRadians shouldEqual pzdouble.toDouble.toRadians
       }
     }
 
-    it("should offer widening methods for basic types that are consistent with Double") {
+    /*it("should offer widening methods for basic types that are consistent with Double") {
       forAll { (pzdouble: PosZDouble) =>
         def widen(value: Double): Double = value
         widen(pzdouble) shouldEqual widen(pzdouble.toDouble)

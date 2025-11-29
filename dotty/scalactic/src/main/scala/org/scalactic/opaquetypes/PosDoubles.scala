@@ -439,18 +439,22 @@ object PosDoubles {
         * Rounds this `PosZDouble` value to the nearest whole number value that can be expressed as an `PosZInt`, returning the result as a `PosZInt`.
         */
       def round: PosZLong = PosZLong.ensuringValid(math.round(value))
-
       /**
         * Returns the smallest (closest to 0) `PosZFloat` that is greater than or equal to this `PosZFloat`
         * and represents a mathematical integer.
         */
       def ceil: PosZDouble = PosZDouble.ensuringValid(math.ceil(value))
-
       /**
         * Returns the greatest (closest to infinity) `PosZFloat` that is less than or equal to
         * this `PosZFloat` and represents a mathematical integer.
         */
       def floor: PosZDouble = PosZDouble.ensuringValid(math.floor(value))
+      /** Converts an angle measured in degrees to an approximately equivalent
+        * angle measured in radians.
+        *
+        * @return the measurement of the angle x in radians.
+        */
+      def toRadians: Double = math.toRadians(value.toDouble)
     }
   }
 
