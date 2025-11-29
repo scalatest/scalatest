@@ -276,13 +276,13 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       }
     }
 
-    /*it("should offer a unary + method that is consistent with Double") {
+    it("should offer a unary + method that is consistent with Double") {
       forAll { (p: PosZDouble) =>
         (+p).toDouble shouldEqual (+(p.toDouble))
       }
     }
 
-    it("should offer a unary - method that returns NegZDouble") {
+    /*it("should offer a unary - method that returns NegZDouble") {
       forAll { (p: PosZDouble) =>
         (-p) shouldEqual (NegZDouble.ensuringValid(-(p.toDouble)))
       }

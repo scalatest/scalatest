@@ -27,6 +27,11 @@ object PosDoubles {
 
   object PosZDouble {
 
+    /** Convert a [[PosZDouble]] to a plain Double (unwrap). */
+    given Conversion[PosZDouble, Double] with {
+      def apply(x: PosZDouble): Double = x.toDouble
+    }
+
     /** Convert a compile-time Int literal or runtime Int to a [[PosZDouble]].
       *
       * The inline overload checks integer literals at compile time; the runtime
