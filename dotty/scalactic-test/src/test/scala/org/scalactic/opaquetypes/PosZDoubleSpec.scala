@@ -334,7 +334,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       }
     }
 
-    /*it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Double") {
+    it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Double") {
       forAll { (pzdouble: PosZDouble) =>
         pzdouble.round.toDouble shouldEqual pzdouble.toDouble.round
         pzdouble.ceil.toDouble shouldEqual pzdouble.toDouble.ceil
@@ -342,7 +342,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       }
     }
 
-    it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Double") {
+    /*it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Double") {
       forAll { (pzdouble: PosZDouble) =>
         pzdouble.toRadians shouldEqual pzdouble.toDouble.toRadians
       }
