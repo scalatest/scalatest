@@ -706,7 +706,23 @@ object PosDoubles {
       *     <code>default</code> <code>PosDouble</code> value.
       */
     def fromOrElse(value: Double, default: => PosDouble): PosDouble =
-      if (isValid(value)) value else default    
+      if (isValid(value)) value else default
+
+    /**
+      * The largest value representable as a positive <code>Double</code>, which is <code>PosDouble(Double.MaxValue)</code>.
+      */
+    val MaxValue: PosZDouble = Double.MaxValue
+
+    /**
+      * The smallest value representable as a positive <code>Double</code>, which is <code>PosDouble(Double.MinPositiveValue)</code>.
+      */
+    val MinValue: PosZDouble = Double.MinPositiveValue 
+
+    /**
+      * The smallest positive value greater than 0.0f representable
+      * as a <code>PosZDouble</code>, which is <code>PosZDouble(Double.MinPositiveValue)</code>.
+      */
+    val MinPositiveValue: PosZDouble = Double.MinPositiveValue      
 
   } 
 
