@@ -30,6 +30,7 @@ import org.scalactic.{Good, Bad}
 import scala.util.{Try, Success, Failure}
 
 import PosDoubles.PosZDouble
+import NegDoubles.NegZDouble
 
 trait PosZDoubleSpecSupport {
 
@@ -282,13 +283,13 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       }
     }
 
-    /*it("should offer a unary - method that returns NegZDouble") {
+    it("should offer a unary - method that returns NegZDouble") {
       forAll { (p: PosZDouble) =>
         (-p) shouldEqual (NegZDouble.ensuringValid(-(p.toDouble)))
       }
     }
 
-    it("should offer a 'plus' method that takes a PosZDouble and returns a PosDouble") {
+    /*it("should offer a 'plus' method that takes a PosZDouble and returns a PosDouble") {
 
       forAll { (posZDouble1: PosZDouble, posZDouble2: PosZDouble) =>
         (posZDouble1 plus posZDouble2) should === (PosZDouble.ensuringValid(posZDouble1.toDouble + posZDouble2.toDouble))
