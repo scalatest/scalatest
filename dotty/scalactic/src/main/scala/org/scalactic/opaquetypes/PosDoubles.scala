@@ -495,6 +495,10 @@ object PosDoubles {
         if (PosZDouble.isValid(candidateResult)) PosZDouble.ensuringValid(candidateResult)
         else throw new AssertionError(s"${candidateResult.toString()}, the result of applying the passed function to ${value.toString()}, was not a valid PosZDouble")
       }
+      /**
+        * True if this <code>PosZDouble</code> value is any finite value (i.e., it is neither positive nor negative infinity), else false.
+        */
+      def isFinite: Boolean = !value.isInfinite
     }
   }
 

@@ -366,12 +366,11 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ - PosZDouble.MaxValue - 1) }
       an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
     }
-    /*it("should offer an isFinite method that returns true if the value does not represent infinity") {
-      forAll { (n: PosZFiniteDouble) =>
-        (n: PosZDouble).isFinite should be (true)
-        PosZDouble.PositiveInfinity.isFinite should be (false)
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: PosZDouble) =>
+        n.isFinite should be (n != PosZDouble.PositiveInfinity)
       }
-    }*/
+    }
   }
 }
 
