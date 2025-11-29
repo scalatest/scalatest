@@ -460,6 +460,41 @@ object PosDoubles {
         * @return the measurement of the angle x in degrees.
         */
       def toDegrees: Double = math.toDegrees(value.toDouble)
+      /**
+        * Applies the passed <code>Double =&gt; Double</code> function to the underlying <code>Double</code>
+        * value, and if the result is positive, returns the result wrapped in a <code>PosZDouble</code>,
+        * else throws <code>AssertionError</code>.
+        *
+        * <p>
+        * This method will inspect the result of applying the given function to this
+        * <code>PosZDouble</code>'s underlying <code>Double</code> value and if the result
+        * is non-negative, it will return a <code>PosZDouble</code> representing that value.
+        * Otherwise, the <code>Double</code> value returned by the given function is
+        * not non-negative, so this method will throw <code>AssertionError</code>.
+        * </p>
+        *
+        * <p>
+        * This method differs from a vanilla <code>assert</code> or <code>ensuring</code>
+        * call in that you get something you didn't already have if the assertion
+        * succeeds: a <em>type</em> that promises an <code>Double</code> is non-negative.
+        * With this method, you are asserting that you are convinced the result of
+        * the computation represented by applying the given function to this <code>PosZDouble</code>'s
+        * value will not produce invalid value.
+        * Instead of producing such invalid values, this method will throw <code>AssertionError</code>.
+        * </p>
+        *
+        * @param f the <code>Double =&gt; Double</code> function to apply to this <code>PosZDouble</code>'s
+        *     underlying <code>Double</code> value.
+        * @return the result of applying this <code>PosZDouble</code>'s underlying <code>Double</code> value to
+        *     to the passed function, wrapped in a <code>PosZDouble</code> if it is non-negative (else throws <code>AssertionError</code>).
+        * @throws AssertionError if the result of applying this <code>PosZDouble</code>'s underlying <code>Double</code> value to
+        *     to the passed function is not non-negative.
+        */
+      def ensuringValid(f: Double => Double): PosZDouble = {
+        val candidateResult: Double = f(value)
+        if (PosZDouble.isValid(candidateResult)) PosZDouble.ensuringValid(candidateResult)
+        else throw new AssertionError(s"${candidateResult.toString()}, the result of applying the passed function to ${value.toString()}, was not a valid PosZDouble")
+      }
     }
   }
 

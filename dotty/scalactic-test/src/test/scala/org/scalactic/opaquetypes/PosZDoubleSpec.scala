@@ -354,7 +354,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       }
     }
 
-    /*it("should offer widening methods for basic types that are consistent with Double") {
+    it("should offer widening methods for basic types that are consistent with Double") {
       forAll { (pzdouble: PosZDouble) =>
         def widen(value: Double): Double = value
         widen(pzdouble) shouldEqual widen(pzdouble.toDouble)
@@ -366,7 +366,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ - PosZDouble.MaxValue - 1) }
       an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
     }
-    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+    /*it("should offer an isFinite method that returns true if the value does not represent infinity") {
       forAll { (n: PosZFiniteDouble) =>
         (n: PosZDouble).isFinite should be (true)
         PosZDouble.PositiveInfinity.isFinite should be (false)
