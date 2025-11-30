@@ -893,6 +893,26 @@ object PosFloats {
       }
     }
 
-  } 
+  }
+
+  opaque type PosZFiniteFloat <: PosZFloat = Float
+
+  object PosZFiniteFloat {
+    /** 
+      * Return true when the provided Float is a valid [[PosZFiniteFloat]] value (>= 0 and != Float.PositiveInfinity). 
+      *
+      * @param value the Float to validate
+      * @return true if the specified Float is a non-negative float, else false
+      */
+    def isValid(value: Float): Boolean = value >= 0.0f && value != Float.PositiveInfinity
+    
+    /** Construct a [[PosZFiniteFloat]] from a runtime Float if it is positive and finite.
+      *
+      * @param f runtime Float to validate
+      * @return Some(PosZFiniteFloat) if f >= 0 and finite, otherwise None
+      */
+    def from(f: Float): Option[PosZFloat] =
+      if (isValid(f)) Some(f) else None
+  }
 
 }
