@@ -2365,6 +2365,81 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[PosDouble] = posDoubleGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.PosDoubles.PosDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesPosDoubleGenerator: Generator[org.scalactic.opaquetypes.PosDoubles.PosDouble] =
+  //DOTTY-ONLY   new Generator[org.scalactic.opaquetypes.PosDoubles.PosDouble] {
+  //DOTTY-ONLY
+  //DOTTY-ONLY   import org.scalactic.opaquetypes.PosDoubles.PosDouble
+  //DOTTY-ONLY
+  //DOTTY-ONLY     case class NextRoseTree(value: PosDouble, sizeParam: SizeParam, isValidFun: (PosDouble, SizeParam) => Boolean) extends RoseTree[PosDouble] {
+  //DOTTY-ONLY       def shrinks: LazyListOrStream[RoseTree[PosDouble]] = {
+  //DOTTY-ONLY         def resLazyListOrStream(theValue: PosDouble): LazyListOrStream[RoseTree[PosDouble]] = {
+  //DOTTY-ONLY           val dv: Double = theValue.value
+  //DOTTY-ONLY           if (dv == 1.0) LazyListOrStream.empty
+  //DOTTY-ONLY           else if (dv < 1.0) {
+  //DOTTY-ONLY             if (isValidFun(PosDouble.ensuringValid(1.0), sizeParam))
+  //DOTTY-ONLY               Rose(PosDouble.ensuringValid(1.0)) #:: LazyListOrStream.empty
+  //DOTTY-ONLY             else
+  //DOTTY-ONLY               LazyListOrStream.empty
+  //DOTTY-ONLY           }
+  //DOTTY-ONLY           else {
+  //DOTTY-ONLY             // Nearest whole numbers closer to zero
+  //DOTTY-ONLY             val nearest = PosDouble.ensuringValid(math.floor(dv))
+  //DOTTY-ONLY             if (isValidFun(nearest, sizeParam)) Rose(nearest) #:: LazyListOrStream.empty
+  //DOTTY-ONLY             else {
+  //DOTTY-ONLY               // Square-root based shrink like PosDouble generator
+  //DOTTY-ONLY               val sqrt: Double = math.sqrt(dv)
+  //DOTTY-ONLY               val whole = PosDouble.ensuringValid(math.floor(sqrt))
+  //DOTTY-ONLY               if (isValidFun(whole, sizeParam)) Rose(whole) #:: LazyListOrStream.empty
+  //DOTTY-ONLY               else LazyListOrStream.empty
+  //DOTTY-ONLY             }
+  //DOTTY-ONLY           }
+  //DOTTY-ONLY         }
+  //DOTTY-ONLY         resLazyListOrStream(value)
+  //DOTTY-ONLY       }
+  //DOTTY-ONLY     }
+  //DOTTY-ONLY
+  //DOTTY-ONLY     private val edges: List[PosDouble] = List(PosDouble.ensuringValid(Double.MinPositiveValue), PosDouble.ensuringValid(1.0), PosDouble.ensuringValid(Double.MaxValue), PosDouble.ensuringValid(Double.PositiveInfinity))
+  //DOTTY-ONLY
+  //DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosDouble], Randomizer) = {
+  //DOTTY-ONLY       val (allEdges, nextRnd) = Randomizer.shuffle(edges, rnd)
+  //DOTTY-ONLY       (allEdges.take(maxLength), nextRnd)
+  //DOTTY-ONLY     }
+  //DOTTY-ONLY
+  //DOTTY-ONLY     override def roseTreeOfEdge(edge: PosDouble, sizeParam: SizeParam, isValidFun: (PosDouble, SizeParam) => Boolean): RoseTree[PosDouble] =
+  //DOTTY-ONLY       NextRoseTree(edge, sizeParam, isValidFun)
+  //DOTTY-ONLY
+  //DOTTY-ONLY     def nextImpl(szp: SizeParam, isValidFun: (PosDouble, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[PosDouble], Randomizer) = {
+  //DOTTY-ONLY       // Reuse anyvals Randomizer helper, then wrap primitive value into opaquetypes PosDouble
+  //DOTTY-ONLY       val (anyPosDouble, rnd2) = rnd.nextPosDouble
+  //DOTTY-ONLY       val p = PosDouble.ensuringValid(anyPosDouble.value)
+  //DOTTY-ONLY       (NextRoseTree(p, szp, isValidFun), rnd2)
+  //DOTTY-ONLY     }
+  //DOTTY-ONLY
+  //DOTTY-ONLY     override def canonicals: LazyListOrStream[RoseTree[PosDouble]] = {
+  //DOTTY-ONLY       case class CanonicalRoseTree(value: PosDouble) extends RoseTree[PosDouble] {
+  //DOTTY-ONLY         def shrinks: LazyListOrStream[RoseTree[PosDouble]] = {
+  //DOTTY-ONLY           def resLazyListOrStream(theValue: PosDouble): LazyListOrStream[RoseTree[PosDouble]] = {
+  //DOTTY-ONLY             if (theValue.value == 1.0) LazyListOrStream.empty
+  //DOTTY-ONLY             else {
+  //DOTTY-ONLY               val minusOne: PosDouble = PosDouble.ensuringValid(theValue.value - 1.0)
+  //DOTTY-ONLY               if (minusOne.value == 1.0) Rose(minusOne) #:: LazyListOrStream.empty
+  //DOTTY-ONLY               else Rose(minusOne) #:: resLazyListOrStream(minusOne)
+  //DOTTY-ONLY             }
+  //DOTTY-ONLY           }
+  //DOTTY-ONLY           resLazyListOrStream(value)
+  //DOTTY-ONLY         }
+  //DOTTY-ONLY       }
+  //DOTTY-ONLY       LazyListOrStream(PosDouble.ensuringValid(1.0)).map(v => CanonicalRoseTree(v))
+  //DOTTY-ONLY     }
+  //DOTTY-ONLY
+  //DOTTY-ONLY     override def toString = "Generator[org.scalactic.opaquetypes.PosDoubles.PosDouble]"
+  //DOTTY-ONLY
+  //DOTTY-ONLY     override def shrinksForValue(valueToShrink: PosDouble): Option[LazyListOrStream[RoseTree[PosDouble]]] =
+  //DOTTY-ONLY       Some(NextRoseTree(valueToShrink, SizeParam(PosZInt.ensuringValid(1), PosZInt.ensuringValid(0), PosZInt.ensuringValid(1)), isValid).shrinks)
+  //DOTTY-ONLY   }
+  //DOTTY-ONLY given given_Generator_opaquetypes_PosDouble: Generator[org.scalactic.opaquetypes.PosDoubles.PosDouble] = opaquetypesPosDoubleGenerator
+
   /**
     * A [[Generator]] that produces positive Doubles, excluding zero and infinity.
     */
@@ -6413,7 +6488,3 @@ object Generator {
     }
   //DOTTY-ONLY given givenSortedMapGenerator[K, V](using genOfTuple2KV: Generator[(K, V)], ordering: Ordering[K]): (Generator[SortedMap[K, V]] with HavingSize[SortedMap[K, V]]) = sortedMapGenerator(using genOfTuple2KV, ordering)
 }
-
-
-
-
