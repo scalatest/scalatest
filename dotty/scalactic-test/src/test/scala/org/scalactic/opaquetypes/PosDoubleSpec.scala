@@ -336,18 +336,17 @@ class PosDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       }
     }
 
-    /*it("should offer an ensuringValid method that takes a Double => Double, throwing AssertionError if the result is invalid") {
+    it("should offer an ensuringValid method that takes a Double => Double, throwing AssertionError if the result is invalid") {
       PosDouble(33.0).ensuringValid(_ + 1.0) shouldEqual PosDouble(34.0)
       PosDouble(33.0).ensuringValid(_ => Double.PositiveInfinity) shouldEqual PosDouble.ensuringValid(Double.PositiveInfinity)
       an [AssertionError] should be thrownBy { PosDouble.MaxValue.ensuringValid(_ - PosDouble.MaxValue) }
       an [AssertionError] should be thrownBy { PosDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
     }
     it("should offer an isFinite method that returns true if the value does not represent infinity") {
-      forAll { (n: PosFiniteDouble) =>
-        (n: PosDouble).isFinite should be (true)
-        PosDouble.PositiveInfinity.isFinite should be (false)
+      forAll { (n: PosDouble) =>
+        n.isFinite should be (n != PosZDouble.PositiveInfinity)
       }
-    }*/
+    }
   }
 }
 
