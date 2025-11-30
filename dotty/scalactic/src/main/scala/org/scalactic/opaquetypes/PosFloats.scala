@@ -898,6 +898,27 @@ object PosFloats {
   opaque type PosZFiniteFloat <: PosZFloat = Float
 
   object PosZFiniteFloat {
+    /** Compile-time factory for creating a [[PosZFiniteFloat]] from a float literal.
+      *
+      * This inline method inspects the provided float literal at compile time
+      * and rejects negative literals. Use it as: `PosZFiniteFloat(5.0f)`. For non-literal
+      * values, use [[ensuringValid]] or [[from]].
+      *
+      * @tparam F the singleton Float literal type
+      * @param f the Float literal
+      * @return a [[PosZFiniteFloat]] representing the given non-negative literal
+      * @throws a compile-time error if the literal is negative or not a literal
+      */
+    inline def apply[F <: Float & Singleton](inline f: F): PosZFiniteFloat =
+      inline constValueOpt[F] match {
+        case Some(v: Float) =>
+          inline if v < 0 && v != Float.PositiveInfinity then
+            error("PosZFiniteFloat cannot be instantiated with a negative float literal or positive infinity")
+          else
+            v.asInstanceOf[PosZFiniteFloat]
+        case None =>
+          error("PosZFiniteFloat.apply requires a integer, long or float literal")
+      }
     /** 
       * Return true when the provided Float is a valid [[PosZFiniteFloat]] value (>= 0 and != Float.PositiveInfinity). 
       *
@@ -911,8 +932,20 @@ object PosFloats {
       * @param f runtime Float to validate
       * @return Some(PosZFiniteFloat) if f >= 0 and finite, otherwise None
       */
-    def from(f: Float): Option[PosZFloat] =
+    def from(f: Float): Option[PosZFiniteFloat] =
       if (isValid(f)) Some(f) else None
+
+    /** Ensure the runtime Float is positive and not positive infinity, return it as a [[PosZFiniteFloat]].
+      *
+      * @param f runtime Float to check
+      * @return the given float as a [[PosZFiniteFloat]] if valid
+      * @throws AssertionError if the given Float is negative
+      */
+    def ensuringValid(f: Float): PosZFiniteFloat = 
+      if (isValid(f)) 
+        f
+      else   
+        throw new AssertionError(Resources.invalidPosZFiniteFloat)  
   }
 
 }

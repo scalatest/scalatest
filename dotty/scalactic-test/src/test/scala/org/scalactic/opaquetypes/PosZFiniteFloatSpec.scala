@@ -82,20 +82,20 @@ class PosZFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matche
   describe("A PosZFiniteFloat") {
     describe("should offer a from factory method that") {
       it("returns Some[PosZFiniteFloat] if the passed Float is greater than or equal to 0") {
-        PosZFiniteFloat.from(0.0f).value.value shouldBe 0.0f
-        PosZFiniteFloat.from(50.23f).value.value shouldBe 50.23f
-        PosZFiniteFloat.from(100.0f).value.value shouldBe 100.0f
+        PosZFiniteFloat.from(0.0f) shouldBe Some(PosZFiniteFloat(0.0f))
+        PosZFiniteFloat.from(50.23f) shouldBe Some(PosZFiniteFloat(50.23f))
+        PosZFiniteFloat.from(100.0f) shouldBe Some(PosZFiniteFloat(100.0f))
       }
       it("returns None if the passed Float is NOT greater than or equal to 0") {
         PosZFiniteFloat.from(-0.00001f) shouldBe None
         PosZFiniteFloat.from(-99.9f) shouldBe None
       }
     }
-    /*describe("should offer an ensuringValid factory method that") {
+    describe("should offer an ensuringValid factory method that") {
       it("returns PosZFiniteFloat if the passed Float is greater than or equal to 0") {
-        PosZFiniteFloat.ensuringValid(0.0f).value shouldBe 0.0f
-        PosZFiniteFloat.ensuringValid(50.23f).value shouldBe 50.23f
-        PosZFiniteFloat.ensuringValid(100.0f).value shouldBe 100.0f
+        PosZFiniteFloat.ensuringValid(0.0f) shouldBe PosZFiniteFloat(0.0f)
+        PosZFiniteFloat.ensuringValid(50.23f) shouldBe PosZFiniteFloat(50.23f)
+        PosZFiniteFloat.ensuringValid(100.0f) shouldBe PosZFiniteFloat(100.0f)
       }
       it("throws AssertionError if the passed Float is NOT greater than or equal to 0") {
         an [AssertionError] should be thrownBy PosZFiniteFloat.ensuringValid(-0.00001f)
@@ -104,7 +104,7 @@ class PosZFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matche
         an [AssertionError] should be thrownBy PosZFiniteFloat.ensuringValid(Float.NegativeInfinity)
       }
     }
-    describe("should offer a tryingValid factory method that") {
+    /*describe("should offer a tryingValid factory method that") {
       import TryValues.*
       it("returns a PosZFiniteFloat wrapped in a Success if the passed Float is greater than or equal 0") {
         PosZFiniteFloat.tryingValid(0.0f).success.value.value shouldBe 0.0f
