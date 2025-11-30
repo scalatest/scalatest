@@ -22,6 +22,7 @@ import org.scalactic.{Validation, Pass, Fail}
 import org.scalactic.{Or, Good, Bad}
 
 import PosLongs.PosZLong
+import NonZeroDoubles.NonZeroDouble
 
 object PosDoubles {
 
@@ -509,6 +510,11 @@ object PosDoubles {
     /** Convert a [[PosDouble]] to a plain Double (unwrap). */
     given Conversion[PosDouble, Double] with {
       def apply(x: PosDouble): Double = x.toDouble
+    }
+
+    /** Convert a [[PosDouble]] to a plain NonZeroDouble (unwrap). */
+    given Conversion[PosDouble, NonZeroDouble] with {
+      def apply(x: PosDouble): NonZeroDouble = NonZeroDouble.ensuringValid(x.toDouble)
     }
 
     /** Convert a compile-time Int literal or runtime Int to a [[PosDouble]].

@@ -29,7 +29,10 @@ import org.scalatest.Inspectors
 import org.scalactic.{Good, Bad}
 import org.scalactic.{Pass, Fail}
 
-import PosDoubles.PosDouble
+import PosDoubles.{PosDouble, PosZDouble}
+import NegDoubles.NegDouble
+import PosInts.PosInt
+import NonZeroDoubles.NonZeroDouble
 
 trait PosDoubleSpecSupport {
 
@@ -254,7 +257,7 @@ class PosDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       }
     }
 
-    /*it("should offer a unary - method that returns NegDouble") {
+    it("should offer a unary - method that returns NegDouble") {
       forAll { (p: PosDouble) =>
         (-p) shouldEqual (NegDouble.ensuringValid(-(p.toDouble)))
       }
@@ -333,7 +336,7 @@ class PosDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       }
     }
 
-    it("should offer an ensuringValid method that takes a Double => Double, throwing AssertionError if the result is invalid") {
+    /*it("should offer an ensuringValid method that takes a Double => Double, throwing AssertionError if the result is invalid") {
       PosDouble(33.0).ensuringValid(_ + 1.0) shouldEqual PosDouble(34.0)
       PosDouble(33.0).ensuringValid(_ => Double.PositiveInfinity) shouldEqual PosDouble.ensuringValid(Double.PositiveInfinity)
       an [AssertionError] should be thrownBy { PosDouble.MaxValue.ensuringValid(_ - PosDouble.MaxValue) }
