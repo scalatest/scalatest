@@ -977,7 +977,40 @@ object PosFloats {
       if (isValid(value))
         Success(value)
       else
-        Failure(new AssertionError(Resources.invalidPosZFiniteFloat))    
+        Failure(new AssertionError(Resources.invalidPosZFiniteFloat))
+
+    /**
+    * A validation method that produces a <code>Pass</code>
+    * given a valid <code>Float</code> value, or
+    * an error value of type <code>E</code> produced by passing the
+    * given <em>invalid</em> <code>Float</code> value
+    * to the given function <code>f</code>, wrapped in a <code>Fail</code>.
+    *
+    * <p>
+    * This method will inspect the passed <code>Float</code> value and if
+    * it is a positive finite float <code>Float</code>, it will return a <code>Pass</code>.
+    * Otherwise, the passed <code>Float</code> value is not a positive finite float, so this
+    * method will return a result of type <code>E</code> obtained by passing
+    * the invalid <code>Float</code> value to the given function <code>f</code>,
+    * wrapped in a `Fail`.
+    * </p>
+    *
+    * <p>
+    * This factory method differs from the <code>apply</code> factory method
+    * in that <code>apply</code> is implemented via a macro that inspects
+    * <code>Float</code> literals at compile time, whereas this method inspects
+    * <code>Float</code> values at run time.
+    * </p>
+    *
+    * @tparam E error type produced by f
+    * @param value the `Float` to validate that it is a positive finite float.
+    * @param f function to produce an error when value is invalid
+    * @return a `Pass` if the specified `Float` value is a positive finite float,
+    *   else a `Fail` containing an error value produced by passing the
+    *   specified `Float` to the given function `f`.
+    */
+    def passOrElse[E](value: Float)(f: Float => E): Validation[E] =
+      if (isValid(value)) Pass else Fail(f(value))        
   }
 
 }
