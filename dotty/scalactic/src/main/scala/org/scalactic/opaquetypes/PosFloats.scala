@@ -975,7 +975,7 @@ object PosFloats {
     inline def apply[F <: Float & Singleton](inline f: F): PosZFiniteFloat =
       inline constValueOpt[F] match {
         case Some(v: Float) =>
-          inline if v < 0.0f && v != Float.PositiveInfinity then
+          inline if v < 0.0f || v == Float.PositiveInfinity || v == Float.NegativeInfinity then
             error("PosZFiniteFloat cannot be instantiated with a negative float literal or positive infinity")
           else
             v.asInstanceOf[PosZFiniteFloat]
@@ -1033,7 +1033,7 @@ object PosFloats {
       * @param value the Float to validate
       * @return true if the specified Float is a non-negative float, else false
       */
-    def isValid(value: Float): Boolean = value >= 0.0f && value != Float.PositiveInfinity
+    def isValid(value: Float): Boolean = value >= 0.0f && value.isFinite
     
     /** Construct a [[PosZFiniteFloat]] from a runtime Float if it is positive and finite.
       *
@@ -1207,7 +1207,7 @@ object PosFloats {
       * <code>Float</code> values at run time.
       * </p>
       *
-      * @param value the <code>Float</code> to inspect, and if positive and finite, return.
+      * @param value the <code>Float</code> to inspect, and if zero, positive and finite, return.
       * @param default the <code>PosZFiniteFloat</code> to return if the passed
       *     <code>Float</code> value is not positive.
       * @return the specified <code>Float</code> value wrapped in a
@@ -1269,6 +1269,44 @@ object PosFloats {
   opaque type PosFiniteFloat <: PosZFiniteFloat = Float
 
   object PosFiniteFloat {
+
+    /** Compile-time factory for creating a [[PosFiniteFloat]] from a float literal.
+      *
+      * This inline method inspects the provided float literal at compile time
+      * and rejects negative, zero literals and infinity. Use it as: `PosFiniteFloat(5.0f)`. For non-literal
+      * values, use [[ensuringValid]] or [[from]].
+      *
+      * @tparam F the singleton Float literal type
+      * @param f the Float literal
+      * @return a [[PosFiniteFloat]] representing the given non-negative, none-zero and finite literal
+      * @throws a compile-time error if the literal is negative, infinity or not a literal
+      */
+    inline def apply[F <: Float & Singleton](inline f: F): PosZFiniteFloat =
+      inline constValueOpt[F] match {
+        case Some(v: Float) =>
+          inline if v <= 0.0f && v != Float.PositiveInfinity && v != Float.NegativeInfinity then
+            error("PosFiniteFloat cannot be instantiated with a negative float literal or infinity")
+          else
+            v.asInstanceOf[PosFiniteFloat]
+        case None =>
+          error("PosFiniteFloat.apply requires a integer, long or float literal")
+      }
+
+    /** 
+      * Return true when the provided Float is a valid [[PosFiniteFloat]] value (> 0 and != Float.PositiveInfinity). 
+      *
+      * @param value the Float to validate
+      * @return true if the specified Float is a positive float and finite, else false
+      */
+    def isValid(value: Float): Boolean = value > 0.0f && value != Float.PositiveInfinity && value != Float.NegativeInfinity
+    
+    /** Construct a [[PosZFiniteFloat]] from a runtime Float if it is positive and finite.
+      *
+      * @param f runtime Float to validate
+      * @return Some(PosZFiniteFloat) if f >= 0 and finite, otherwise None
+      */
+    def from(f: Float): Option[PosZFiniteFloat] =
+      if (isValid(f)) Some(f) else None    
 
     /**
       * The largest value representable as a non-negative <code>Float</code>, which is <code>PosZFloat(Float.MaxValue)</code>.
