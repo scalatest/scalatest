@@ -899,6 +899,11 @@ object PosFloats {
 
   object PosZFiniteFloat {
 
+    /** Convert a [[PosZFiniteFloat]] to a plain Float (unwrap). */
+    given Conversion[PosZFiniteFloat, Float] with {
+      def apply(x: PosZFiniteFloat): Float = x.toFloat
+    }
+
     /** Convert a compile-time Int literal or runtime Int to a [[PosZFiniteFloat]].
       *
       * The inline overload checks integer literals at compile time; the runtime

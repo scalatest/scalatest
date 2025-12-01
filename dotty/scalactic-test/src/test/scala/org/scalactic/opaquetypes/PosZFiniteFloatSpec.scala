@@ -30,6 +30,7 @@ import org.scalactic.{Good, Bad}
 import scala.util.{Try, Success, Failure}
 
 import PosFloats.PosZFiniteFloat
+import NegFloats.NegZFiniteFloat
 
 trait PosZFiniteFloatSpecSupport {
 
@@ -271,13 +272,13 @@ class PosZFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matche
       }
     }
 
-    /*it("should offer a unary - method that returns NegZFiniteFloat") {
+    it("should offer a unary - method that returns NegZFiniteFloat") {
       forAll { (p: PosZFiniteFloat) =>
         (-p) shouldEqual (NegZFiniteFloat.ensuringValid(-(p.toFloat)))
       }
     }
 
-    it("should offer 'min' and 'max' methods that are consistent with Float") {
+    /*it("should offer 'min' and 'max' methods that are consistent with Float") {
       forAll { (pfloat1: PosZFiniteFloat, pfloat2: PosZFiniteFloat) =>
         pfloat1.max(pfloat2).toFloat shouldEqual pfloat1.toFloat.max(pfloat2.toFloat)
         pfloat1.min(pfloat2).toFloat shouldEqual pfloat1.toFloat.min(pfloat2.toFloat)
