@@ -83,7 +83,7 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
         an [AssertionError] should be thrownBy PosFiniteFloat.ensuringValid(Float.NegativeInfinity)
       }
     }
-    /*describe("should offer a tryingValid factory method that") {
+    describe("should offer a tryingValid factory method that") {
       import TryValues.*
       it("returns a PosFiniteFloat wrapped in a Success if the passed PosFiniteFloat is greater than 0") {
         PosFiniteFloat.tryingValid(50.3f).success.value.value shouldBe 50.3f
@@ -96,7 +96,7 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
         PosFiniteFloat.tryingValid(-99.9f).failure.exception shouldBe an [AssertionError]
       }
     }
-    describe("should offer a passOrElse factory method that") {
+    /*describe("should offer a passOrElse factory method that") {
       it("returns a Pass if the given Float is greater than 0") {
         PosFiniteFloat.passOrElse(50.0f)(i => i) shouldBe Pass
         PosFiniteFloat.passOrElse(100.0f)(i => i) shouldBe Pass
