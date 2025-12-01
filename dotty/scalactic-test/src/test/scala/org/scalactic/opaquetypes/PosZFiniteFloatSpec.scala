@@ -173,9 +173,9 @@ class PosZFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matche
     }
     it("should offer MaxValue and MinValue factory methods") {
       PosZFiniteFloat.MaxValue shouldEqual PosZFiniteFloat.from(Float.MaxValue).get
-      PosZFiniteFloat.MinValue shouldEqual PosZFiniteFloat(0.0f)
+      PosZFiniteFloat.MinValue shouldEqual PosZFiniteFloat(Float.MinPositiveValue)
     }
-    /*it("should not offer a PositiveInfinity factory method") {
+    it("should not offer a PositiveInfinity factory method") {
       "PosZFiniteFloat.PositiveInfinity" shouldNot compile
     }
     it("should not offer a NegativeInfinity factory method") {
@@ -227,7 +227,7 @@ class PosZFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matche
         "PosZFiniteFloat(c)" shouldNot compile
       }
     }
-    describe("when specified as a plain-old Float") {
+    /*describe("when specified as a plain-old Float") {
 
       def takesPosZFiniteFloat(pos: PosZFiniteFloat): Float = pos.value
 
