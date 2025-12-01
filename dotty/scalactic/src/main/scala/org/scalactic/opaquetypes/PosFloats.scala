@@ -1312,6 +1312,18 @@ object PosFloats {
       * The largest value representable as a non-negative <code>Float</code>, which is <code>PosZFloat(Float.MaxValue)</code>.
       */
     val MaxValue: PosFiniteFloat = Float.MaxValue
+
+    /** Ensure the runtime Float is positive and not positive infinity, return it as a [[PosFiniteFloat]].
+      *
+      * @param f runtime Float to check
+      * @return the given float as a [[PosFiniteFloat]] if valid
+      * @throws AssertionError if the given Float is negative, zero or infinity
+      */
+    def ensuringValid(f: Float): PosFiniteFloat = 
+      if (isValid(f)) 
+        f
+      else   
+        throw new AssertionError(Resources.invalidPosFiniteFloat)
   }
 
 }
