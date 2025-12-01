@@ -171,11 +171,11 @@ class PosZFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matche
         PosZFiniteFloat.fromOrElse(-99.9f, PosZFiniteFloat(42.0f)).value shouldBe 42.0f
       }
     }
-    /*it("should offer MaxValue and MinValue factory methods") {
+    it("should offer MaxValue and MinValue factory methods") {
       PosZFiniteFloat.MaxValue shouldEqual PosZFiniteFloat.from(Float.MaxValue).get
       PosZFiniteFloat.MinValue shouldEqual PosZFiniteFloat(0.0f)
     }
-    it("should not offer a PositiveInfinity factory method") {
+    /*it("should not offer a PositiveInfinity factory method") {
       "PosZFiniteFloat.PositiveInfinity" shouldNot compile
     }
     it("should not offer a NegativeInfinity factory method") {

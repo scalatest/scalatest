@@ -1107,7 +1107,17 @@ object PosFloats {
       *     <code>default</code> <code>PosZFiniteFloat</code> value.
       */
     def fromOrElse(value: Float, default: => PosZFiniteFloat): PosZFiniteFloat =
-      if (isValid(value)) value else default            
+      if (isValid(value)) value else default
+
+    /**
+      * The largest value representable as a positive and finite <code>Float</code>, which is <code>PosZFiniteFloat(Float.MaxValue)</code>.
+      */
+    val MaxValue: PosZFiniteFloat = Float.MaxValue
+
+    /**
+      * The smallest value representable as a positive and finite <code>Float</code>, which is <code>PosZFiniteFloat(0.0f)</code>.
+      */
+    val MinValue: PosZFiniteFloat = Float.MinPositiveValue              
   }
 
 }
