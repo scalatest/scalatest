@@ -1225,7 +1225,55 @@ object PosFloats {
     /**
       * The smallest value representable as a positive and finite <code>Float</code>, which is <code>PosZFiniteFloat(0.0f)</code>.
       */
-    val MinValue: PosZFiniteFloat = Float.MinPositiveValue              
+    val MinValue: PosZFiniteFloat = Float.MinPositiveValue
+
+    extension (p: PosZFiniteFloat) {
+      /**
+        * Applies the passed <code>Float =&gt; Float</code> function to the underlying <code>Float</code>
+        * value, and if the result is positive, returns the result wrapped in a <code>PosZFiniteFloat</code>,
+        * else throws <code>AssertionError</code>.
+        *
+        * <p>
+        * This method will inspect the result of applying the given function to this
+        * <code>PosZFiniteFloat</code>'s underlying <code>Float</code> value and if the result
+        * is non-negative, it will return a <code>PosZFiniteFloat</code> representing that value.
+        * Otherwise, the <code>Float</code> value returned by the given function is
+        * not non-negative, so this method will throw <code>AssertionError</code>.
+        * </p>
+        *
+        * <p>
+        * This method differs from a vanilla <code>assert</code> or <code>ensuring</code>
+        * call in that you get something you didn't already have if the assertion
+        * succeeds: a <em>type</em> that promises an <code>Float</code> is non-negative.
+        * With this method, you are asserting that you are convinced the result of
+        * the computation represented by applying the given function to this <code>PosZFiniteFloat</code>'s
+        * value will not produce invalid value.
+        * Instead of producing such invalid values, this method will throw <code>AssertionError</code>.
+        * </p>
+        *
+        * @param f the <code>Float =&gt; Float</code> function to apply to this <code>PosZFiniteFloat</code>'s
+        *     underlying <code>Float</code> value.
+        * @return the result of applying this <code>PosZFiniteFloat</code>'s underlying <code>Float</code> value to
+        *     to the passed function, wrapped in a <code>PosZFiniteFloat</code> if it is non-negative (else throws <code>AssertionError</code>).
+        * @throws AssertionError if the result of applying this <code>PosZFiniteFloat</code>'s underlying <code>Float</code> value to
+        *     to the passed function is not non-negative.
+        */
+      def ensuringValid(f: Float => Float): PosZFiniteFloat = {
+        val candidateResult: Float = f(p)
+        if (PosZFiniteFloat.isValid(candidateResult)) PosZFiniteFloat.ensuringValid(candidateResult)
+        else throw new AssertionError(s"${candidateResult.toString()}, the result of applying the passed function to ${p.toString()}, was not a valid PosZFiniteFloat")
+      }
+    }              
+  }
+
+  opaque type PosFiniteFloat <: PosZFiniteFloat = Float
+
+  object PosFiniteFloat {
+
+    /**
+      * The largest value representable as a non-negative <code>Float</code>, which is <code>PosZFloat(Float.MaxValue)</code>.
+      */
+    val MaxValue: PosFiniteFloat = Float.MaxValue
   }
 
 }

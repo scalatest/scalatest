@@ -29,8 +29,9 @@ import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 import scala.util.{Try, Success, Failure}
 
-import PosFloats.PosZFiniteFloat
+import PosFloats.{PosZFiniteFloat, PosFiniteFloat}
 import NegFloats.NegZFiniteFloat
+import PosDoubles.PosZDouble
 
 trait PosZFiniteFloatSpecSupport {
 
@@ -278,7 +279,7 @@ class PosZFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matche
       }
     }
 
-    /*it("should offer 'min' and 'max' methods that are consistent with Float") {
+    it("should offer 'min' and 'max' methods that are consistent with Float") {
       forAll { (pfloat1: PosZFiniteFloat, pfloat2: PosZFiniteFloat) =>
         pfloat1.max(pfloat2).toFloat shouldEqual pfloat1.toFloat.max(pfloat2.toFloat)
         pfloat1.min(pfloat2).toFloat shouldEqual pfloat1.toFloat.min(pfloat2.toFloat)
@@ -327,6 +328,6 @@ class PosZFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matche
       an [AssertionError] should be thrownBy { PosZFiniteFloat.MaxValue.ensuringValid(_ - PosZFiniteFloat.MaxValue - 1) }
       an [AssertionError] should be thrownBy { PosFiniteFloat.MaxValue.ensuringValid(_ => Float.PositiveInfinity) }
       an [AssertionError] should be thrownBy { PosFiniteFloat.MaxValue.ensuringValid(_ => Float.NegativeInfinity) }
-    }*/
+    }
   }
 }
