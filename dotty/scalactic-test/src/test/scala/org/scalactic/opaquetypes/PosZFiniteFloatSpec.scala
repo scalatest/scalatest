@@ -265,13 +265,13 @@ class PosZFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matche
       }
     }
 
-    /*it("should offer a unary + method that is consistent with Float") {
+    it("should offer a unary + method that is consistent with Float") {
       forAll { (p: PosZFiniteFloat) =>
         (+p).toFloat shouldEqual (+(p.toFloat))
       }
     }
 
-    it("should offer a unary - method that returns NegZFiniteFloat") {
+    /*it("should offer a unary - method that returns NegZFiniteFloat") {
       forAll { (p: PosZFiniteFloat) =>
         (-p) shouldEqual (NegZFiniteFloat.ensuringValid(-(p.toFloat)))
       }
