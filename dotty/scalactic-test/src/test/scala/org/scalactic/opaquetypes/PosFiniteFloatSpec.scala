@@ -96,7 +96,7 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
         PosFiniteFloat.tryingValid(-99.9f).failure.exception shouldBe an [AssertionError]
       }
     }
-    /*describe("should offer a passOrElse factory method that") {
+    describe("should offer a passOrElse factory method that") {
       it("returns a Pass if the given Float is greater than 0") {
         PosFiniteFloat.passOrElse(50.0f)(i => i) shouldBe Pass
         PosFiniteFloat.passOrElse(100.0f)(i => i) shouldBe Pass
@@ -107,7 +107,7 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
         PosFiniteFloat.passOrElse(-99.0f)(i => i + 3.0f) shouldBe Fail(-96.0f)
       }
     }
-    describe("should offer a goodOrElse factory method that") {
+    /*describe("should offer a goodOrElse factory method that") {
       it("returns a PosFiniteFloat wrapped in a Good if the given Float is greater than 0") {
         PosFiniteFloat.goodOrElse(50.3f)(i => i) shouldBe Good(PosFiniteFloat(50.3f))
         PosFiniteFloat.goodOrElse(100.0f)(i => i) shouldBe Good(PosFiniteFloat(100.0f))
