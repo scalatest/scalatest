@@ -107,7 +107,7 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
         PosFiniteFloat.passOrElse(-99.0f)(i => i + 3.0f) shouldBe Fail(-96.0f)
       }
     }
-    /*describe("should offer a goodOrElse factory method that") {
+    describe("should offer a goodOrElse factory method that") {
       it("returns a PosFiniteFloat wrapped in a Good if the given Float is greater than 0") {
         PosFiniteFloat.goodOrElse(50.3f)(i => i) shouldBe Good(PosFiniteFloat(50.3f))
         PosFiniteFloat.goodOrElse(100.0f)(i => i) shouldBe Good(PosFiniteFloat(100.0f))
@@ -118,7 +118,7 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
         PosFiniteFloat.goodOrElse(-99.0f)(i => i + 3.0f) shouldBe Bad(-96.0f)
       }
     }
-    describe("should offer a rightOrElse factory method that") {
+    /*describe("should offer a rightOrElse factory method that") {
       it("returns a PosFiniteFloat wrapped in a Right if the given Float is greater than 0") {
         PosFiniteFloat.rightOrElse(50.3f)(i => i) shouldBe Right(PosFiniteFloat(50.3f))
         PosFiniteFloat.rightOrElse(100.0f)(i => i) shouldBe Right(PosFiniteFloat(100.0f))
