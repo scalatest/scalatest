@@ -361,7 +361,8 @@ class PosZIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
       }
       forAll { (pzint: PosZInt) =>
         def widen(value: Float): Float = value
-        widen(pzint) shouldEqual widen(pzint.toInt)
+        "widen(pzint) shouldEqual widen(pzint.toInt)" shouldNot compile
+        succeed
       }
       forAll { (pzint: PosZInt) =>
         def widen(value: Double): Double = value
@@ -373,7 +374,8 @@ class PosZIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
       }
       forAll { (pzint: PosZInt) =>
         def widen(value: PosZFloat): PosZFloat = value
-        widen(pzint) shouldEqual widen(PosZFloat.from(pzint.toInt).get)
+        "widen(pzint) shouldEqual widen(PosZFloat.from(pzint.toInt).get)" shouldNot compile
+        succeed
       }
       forAll { (pzint: PosZInt) =>
         def widen(value: PosZDouble): PosZDouble = value

@@ -298,8 +298,8 @@ error] /Users/bv/nobkp/delus/st-add-to-3.1.x/scalactic-test/src/test/scala/org/s
 You know, I wonder if our macro could be friendlier and allow a Double literal for
 specifying floats so long as it is in the valid range for floats.
 */
-      // Sanity check that implicit widening conversions work too.
-      (PosFloat(1.0f) plus PosInt(2)) should === (PosFloat(3.0f))
+      // Sanity check that widening conversions from PosInt to PosFloat should not work.
+      "(PosFloat(1.0f) plus PosInt(2)) should === (PosFloat(3.0f))" shouldNot compile
     }
 
     it("should offer 'min' and 'max' methods that are consistent with Float") {

@@ -410,6 +410,7 @@ object PosFloats {
         * </p>
         */
       def plus(x: PosZFloat): PosZFloat = PosZFloat.ensuringValid(value + x)
+      
       /**
         * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
         */

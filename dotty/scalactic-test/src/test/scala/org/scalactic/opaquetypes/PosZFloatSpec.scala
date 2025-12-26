@@ -311,9 +311,8 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
         (a plus b).value should be >= 0.0f
       }
 
-      // Sanity check that implicit widening conversions work too.
-      // Here a PosInt gets "widened" to a PosZFloat.
-      PosZFloat(1.0f) plus PosInt(2) should === (PosZFloat(3.0f))
+      // Sanity check that widening conversions does not work for PosInt - PosZFloat.
+      "PosZFloat(1.0f) plus PosInt(2) should === (PosZFloat(3.0f))" shouldNot compile
     }
 
     it("should offer 'min' and 'max' methods that are consistent with Float") {

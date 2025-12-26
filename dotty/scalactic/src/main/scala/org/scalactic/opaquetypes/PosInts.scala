@@ -43,10 +43,6 @@ object PosInts {
     given Conversion[PosZInt, Long] with {
       def apply(pos: PosZInt): Long = pos.toLong
     }
-    /** Convert a [[PosZInt]] to a Float preserving its numeric value. */
-    given Conversion[PosZInt, Float] with {
-      def apply(pos: PosZInt): Float = pos.toFloat
-    }
     /** Convert a [[PosZInt]] to a Double preserving its numeric value. */
     given Conversion[PosZInt, Double] with {
       def apply(pos: PosZInt): Double = pos.toDouble
@@ -54,10 +50,6 @@ object PosInts {
     /** Convert a [[PosZInt]] to a [[PosZLong]] with the same numeric value. */
     given Conversion[PosZInt, PosZLong] with {
       def apply(pos: PosZInt): PosZLong = PosZLong.ensuringValid(pos.toLong)
-    }
-    /** Convert a [[PosZInt]] to a [[PosZFloat]] with the same numeric value. */
-    given Conversion[PosZInt, PosZFloat] with {
-      def apply(pos: PosZInt): PosZFloat = PosZFloat.ensuringValid(pos.toFloat)
     }
     /** Convert a [[PosZInt]] to a [[PosZDouble]] with the same numeric value. */
     given Conversion[PosZInt, PosZDouble] with {
