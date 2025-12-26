@@ -32,18 +32,7 @@ object PosLongs {
 
   opaque type PosZLong = Long
 
-  trait PosZLongConversionsLowLowPriority {
-    /** Convert a [[PosZLong]] to a Float preserving its numeric value. */
-    given Conversion[PosZLong, Float] with {
-      def apply(pos: PosZLong): Float = pos.toFloat
-    }
-    /** Convert a [[PosZLong]] to a Double preserving its numeric value. */
-    given Conversion[PosZLong, Double] with {
-      def apply(pos: PosZLong): Double = pos.toDouble
-    }
-  }
-
-  trait PosZLongConversionsLowPriority extends PosZLongConversionsLowLowPriority {
+  trait PosZLongConversionsLowPriority {
     /** Convert a [[PosZLong]] to a [[PosZFloat]] with the same numeric value. */
     given Conversion[PosZLong, PosZFloat] with {
       def apply(pos: PosZLong): PosZFloat = PosZFloat.ensuringValid(pos.toFloat)
