@@ -364,7 +364,8 @@ class PosLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
         }
         forAll { (plong: PosLong) =>
           def widen(value: Float): Float = value
-          widen(plong) shouldEqual widen(plong.toLong)
+          "widen(plong) shouldEqual widen(plong.toLong)" shouldNot compile
+          succeed
         }
         forAll { (plong: PosLong) =>
           def widen(value: Double): Double = value

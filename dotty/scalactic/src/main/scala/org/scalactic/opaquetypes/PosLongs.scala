@@ -400,10 +400,6 @@ object PosLongs {
   opaque type PosLong <: PosZLong = Long
 
   trait PosLongConversionsLowPriority {
-    /** Convert a [[PosLong]] to a Float preserving its numeric value. */
-    given Conversion[PosLong, Float] with {
-      def apply(pos: PosLong): Float = pos.toFloat
-    }
     /** Convert a [[PosLong]] to a Double preserving its numeric value. */
     given Conversion[PosLong, Double] with {
       def apply(pos: PosLong): Double = pos.toDouble
