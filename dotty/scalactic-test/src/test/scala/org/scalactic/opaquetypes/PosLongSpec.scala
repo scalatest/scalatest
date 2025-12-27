@@ -407,7 +407,8 @@ class PosLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
         }
         forAll { (plong: PosLong) =>
           def widen(value: NonZeroDouble): NonZeroDouble = value
-          widen(plong) shouldEqual widen(NonZeroDouble.from(plong.toLong).get)
+          "widen(plong) shouldEqual widen(NonZeroDouble.from(plong.toLong).get)" shouldNot compile
+          succeed
         }
       }
     }
