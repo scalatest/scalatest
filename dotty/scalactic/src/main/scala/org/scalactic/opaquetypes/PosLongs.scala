@@ -404,10 +404,6 @@ object PosLongs {
     given Conversion[PosLong, NonZeroLong] with {
       def apply(pos: PosLong): NonZeroLong = NonZeroLong.ensuringValid(pos.toLong)
     }
-    /** Convert a [[PosLong]] to a [[NonZeroFloat]] with the same numeric value. */
-    given Conversion[PosLong, NonZeroFloat] with {
-      def apply(pos: PosLong): NonZeroFloat = NonZeroFloat.ensuringValid(pos.toFloat)
-    }
     /** Convert a [[PosLong]] to a [[NonZeroDouble]] with the same numeric value. */
     given Conversion[PosLong, NonZeroDouble] with {
       def apply(pos: PosLong): NonZeroDouble = NonZeroDouble.ensuringValid(pos.toDouble)
