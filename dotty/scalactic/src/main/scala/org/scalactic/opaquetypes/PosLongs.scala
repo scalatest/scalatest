@@ -400,10 +400,6 @@ object PosLongs {
   opaque type PosLong <: PosZLong = Long
 
   trait PosLongConversionsLowPriority {
-    /** Convert a [[PosLong]] to a [[PosFloat]] with the same numeric value. */
-    given Conversion[PosLong, PosFloat] with {
-      def apply(pos: PosLong): PosFloat = PosFloat.ensuringValid(pos.toFloat)
-    }
     /** Convert a [[PosLong]] to a [[PosDouble]] with the same numeric value. */
     given Conversion[PosLong, PosDouble] with {
       def apply(pos: PosLong): PosDouble = PosDouble.ensuringValid(pos.toDouble)
