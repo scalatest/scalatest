@@ -362,7 +362,7 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
     }
     // SKIP-SCALATESTJS,NATIVE-END
 
-    it("should offer widening methods for basic types that are consistent with Long") {
+    it("should not offer widening methods for basic types that are consistent with Long") {
       forAll { (pzlong: PosZLong) =>
         def widen(value: Long): Long = value
         widen(pzlong) shouldEqual widen(pzlong.toLong)
@@ -379,11 +379,13 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
       }
       forAll { (pzlong: PosZLong) =>
         def widen(value: PosZFloat): PosZFloat = value
-        widen(pzlong) shouldEqual widen(PosZFloat.from(pzlong.toLong).get)
+        "widen(pzlong) shouldEqual widen(PosZFloat.from(pzlong.toLong).get)" shouldNot compile
+        succeed
       }
       forAll { (pzlong: PosZLong) =>
         def widen(value: PosZDouble): PosZDouble = value
-        widen(pzlong) shouldEqual widen(PosZDouble.from(pzlong.toLong).get)
+        "widen(pzlong) shouldEqual widen(PosZDouble.from(pzlong.toLong).get)" shouldNot compile
+        succeed
       }
     }
     it("should offer an ensuringValid method that takes a Long => Long, throwing AssertionError if the result is invalid") {
