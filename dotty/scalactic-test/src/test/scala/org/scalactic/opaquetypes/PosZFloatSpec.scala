@@ -238,18 +238,18 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
 
       def takesPosZFloat(pos: PosZFloat): Float = pos.value
 
-      it("should compile when 8 is passed in") {
+      it("should not compile when 8 is passed in") {
         "takesPosZFloat(8)" shouldNot compile
-        "takesPosZFloat(8L)" should compile
-        takesPosZFloat(8L) shouldEqual 8.0F
+        "takesPosZFloat(8L)" shouldNot compile
+        "takesPosZFloat(8L) shouldEqual 8.0F" shouldNot compile
         "takesPosZFloat(8.0F)" should compile
         takesPosZFloat(8.0F) shouldEqual 8.0F
       }
 
-      it("should compile when 0 is passed in") {
+      it("should not compile when 0 is passed in") {
         "takesPosZFloat(0)" shouldNot compile
-        "takesPosZFloat(0L)" should compile
-        takesPosZFloat(0L) shouldEqual 0.0F
+        "takesPosZFloat(0L)" shouldNot compile
+        "takesPosZFloat(0L) shouldEqual 0.0F" shouldNot compile
         "takesPosZFloat(0.0F)" should compile
         takesPosZFloat(0.0F) shouldEqual 0.0F
       }
