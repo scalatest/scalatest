@@ -64,11 +64,11 @@ trait GenMustMatchersTestsBase {
           for (shouldLine <- shouldLines) {
             val mustLine: String =
               if (scalaJS) {
-                if (shouldLine.trim == "// SKIP-SCALATESTJS,NATIVE-START") {
+                if (shouldLine.trim == "// SKIP-SCALATESTJS,NATIVE-START" || shouldLine.trim == "// SKIP-SCALATESTJS-START") {
                   skipMode = true
                   ""
                 }
-                else if (shouldLine.trim == "// SKIP-SCALATESTJS,NATIVE-END") {
+                else if (shouldLine.trim == "// SKIP-SCALATESTJS,NATIVE-END" || shouldLine.trim == "// SKIP-SCALATESTJS-END") {
                   skipMode = false
                   ""
                 }

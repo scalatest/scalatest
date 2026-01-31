@@ -27,7 +27,7 @@ trait NativeBuild { this: BuildCommons =>
     //
     // Details: https://github.com/scala-native/scala-native/issues/1930
     Compile / resourceDirectories += (Compile / classDirectory).value, 
-    crossScalaVersions := Seq("2.13.18", "2.12.20")
+    crossScalaVersions := Seq("2.13.18", "2.12.21")
   )
 
   lazy val scalacticMacroNative = project.in(file("native/scalactic-macro"))
@@ -679,7 +679,7 @@ trait NativeBuild { this: BuildCommons =>
         Compile / sourceGenerators += {
           Def.task{
             GenCommonTestNative.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-            GenCompatibleClasses.genTest((Compile / sourceManaged).value, version.value, scalaVersion.value)
+            GenCompatibleClasses.genTest((Compile / sourceManaged).value, version.value, scalaVersion.value, scalaJS = false, scalaNative = true)
           }.taskValue
         },
         publishArtifact := false,
