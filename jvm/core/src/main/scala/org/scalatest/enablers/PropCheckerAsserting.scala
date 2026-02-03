@@ -35,19 +35,33 @@ import org.scalactic.ColCompatHelper._
 trait PropCheckerAsserting[T] {
 
   /**
-    * The result type of the <code>check</code> method.
+    * The outcome type returned by the <code>check</code> methods.
+    *
+    * This is the final result that users receive after running a property check.
+    * It typically represents an assertion outcome (e.g., <code>Expectation</code>, <code>Assertion</code>,
+    * or <code>Future[Assertion]</code>) that indicates whether the property check passed or failed.
     */
-  type Result
+  type CheckResult
 
-  type S
+  /**
+    * The type of result produced by evaluating the property function.
+    *
+    * This type represents the value that is passed to <code>discard</code> and <code>succeed</code>
+    * methods to determine if a property evaluation should be discarded, succeeded, or failed.
+    *
+    * For synchronous assertions, this is typically the same as the property function's return type (e.g., <code>Expectation</code> or <code>Assertion</code>).
+    * For asynchronous assertions (e.g., <code>Future[Assertion]</code>), this is the unwrapped type (e.g., <code>Assertion</code>),
+    * allowing the <code>discard</code> and <code>succeed</code> methods to operate on the actual result value after the Future completes.
+    */
+  type PropResult
 
-  def discard(result: S): Boolean
+  def discard(result: PropResult): Boolean
 
-  def succeed(result: S): (Boolean, Option[Throwable])
+  def succeed(result: PropResult): (Boolean, Option[Throwable])
 
-  //private[scalatest] def indicateSuccess(message: => String): Result
+  //private[scalatest] def indicateSuccess(message: => String): CheckResult
 
-  //private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Result
+  //private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): CheckResult
 
   /**
     * Perform the property check using the given function, generator and <code>Configuration.Parameters</code>.
@@ -59,7 +73,7 @@ trait PropCheckerAsserting[T] {
     * @param pos the <code>Position</code> of the caller's site
     * @param names the list of names
     * @param argNames the list of argument names
-    * @return the <code>Result</code> of the property check.
+    * @return the <code>CheckResult</code> of the property check.
     */
   def check1[A](fun: (A) => T,
                genA: org.scalatest.prop.Generator[A],
@@ -67,7 +81,7 @@ trait PropCheckerAsserting[T] {
                prettifier: Prettifier,
                pos: source.Position,
                names: List[String],
-               argNames: Option[List[String]] = None): Result
+               argNames: Option[List[String]] = None): CheckResult
 
   def check2[A, B](fun: (A, B) => T,
                    genA: org.scalatest.prop.Generator[A],
@@ -76,7 +90,7 @@ trait PropCheckerAsserting[T] {
                    prettifier: Prettifier,
                    pos: source.Position,
                    names: List[String],
-                   argNames: Option[List[String]] = None): Result
+                   argNames: Option[List[String]] = None): CheckResult
 
   def check3[A, B, C](fun: (A, B, C) => T,
                       genA: org.scalatest.prop.Generator[A],
@@ -86,7 +100,7 @@ trait PropCheckerAsserting[T] {
                       prettifier: Prettifier,
                       pos: source.Position,
                       names: List[String],
-                      argNames: Option[List[String]] = None): Result
+                      argNames: Option[List[String]] = None): CheckResult
 
   def check4[A, B, C, D](fun: (A, B, C, D) => T,
                          genA: org.scalatest.prop.Generator[A],
@@ -97,7 +111,7 @@ trait PropCheckerAsserting[T] {
                          prettifier: Prettifier,
                          pos: source.Position,
                          names: List[String],
-                         argNames: Option[List[String]] = None): Result
+                         argNames: Option[List[String]] = None): CheckResult
 
   def check5[A, B, C, D, E](fun: (A, B, C, D, E) => T,
                             genA: org.scalatest.prop.Generator[A],
@@ -109,7 +123,7 @@ trait PropCheckerAsserting[T] {
                             prettifier: Prettifier,
                             pos: source.Position,
                             names: List[String],
-                            argNames: Option[List[String]] = None): Result
+                            argNames: Option[List[String]] = None): CheckResult
 
   def check6[A, B, C, D, E, F](fun: (A, B, C, D, E, F) => T,
                                genA: org.scalatest.prop.Generator[A],
@@ -122,7 +136,7 @@ trait PropCheckerAsserting[T] {
                                prettifier: Prettifier,
                                pos: source.Position,
                                names: List[String],
-                               argNames: Option[List[String]] = None): Result
+                               argNames: Option[List[String]] = None): CheckResult
 
 }
 
@@ -131,11 +145,11 @@ abstract class ExpectationPropCheckerAsserting {
   import PropCheckerAsserting.PropCheckerAssertingImpl
 
   // SKIP-DOTTY-START
-  implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): PropCheckerAsserting[Expectation] { type Result = Expectation } = {
+  implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): PropCheckerAsserting[Expectation] { type CheckResult = Expectation } = {
   // SKIP-DOTTY-END
-  //DOTTY-ONLY def assertingNatureOfExpectation(using prettifier: Prettifier): PropCheckerAsserting[Expectation] { type Result = Expectation } = {
+  //DOTTY-ONLY def assertingNatureOfExpectation(using prettifier: Prettifier): PropCheckerAsserting[Expectation] { type CheckResult = Expectation } = {
     new PropCheckerAssertingImpl[Expectation] {
-      type Result = Expectation
+      type CheckResult = Expectation
       def discard(result: Expectation): Boolean = result.isVacuousYes
       def succeed(result: Expectation): (Boolean, Option[Throwable]) = (result.isYes, result.cause)
       private[scalatest] def indicateSuccess(message: => String): Expectation = Fact.Yes(message, prettifier)
@@ -156,14 +170,14 @@ abstract class ExpectationPropCheckerAsserting {
       }
     }
   }
-  //DOTTY-ONLY given given_assertingNatureOfExpectation(using prettifier: Prettifier): PropCheckerAsserting[Expectation] { type Result = Expectation } = assertingNatureOfExpectation(using prettifier)
+  //DOTTY-ONLY given given_assertingNatureOfExpectation(using prettifier: Prettifier): PropCheckerAsserting[Expectation] { type CheckResult = Expectation } = assertingNatureOfExpectation(using prettifier)
 }
 
 object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
 
   abstract class PropCheckerAssertingImpl[T] extends PropCheckerAsserting[T] {
 
-    type S = T
+    type PropResult = T
 
     /**
       * Checks a property for all combinations of generated values of type A.
@@ -824,7 +838,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, initEEdges, initFEdges, afterFEdgesRnd, initialSizes, initSeed)
     }
 
-    private def checkResult(result: PropertyCheckResult, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): Result = {
+    private def checkResult(result: PropertyCheckResult, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): CheckResult = {
       val (args, labels) = argsAndLabels(result)
       result match {
         case PropertyCheckResult.Exhausted(succeeded, discarded, names, argsPassed, initSeed) =>
@@ -863,7 +877,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                   prettifier: Prettifier,
                   pos: source.Position,
                   names: List[String],
-                  argNames: Option[List[String]] = None): Result = {
+                  argNames: Option[List[String]] = None): CheckResult = {
       val result = checkForAll(names, prms, genA)(fun)
       checkResult(result, prettifier, pos, argNames)
     }
@@ -875,7 +889,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                      prettifier: Prettifier,
                      pos: source.Position,
                      names: List[String],
-                     argNames: Option[List[String]] = None): Result = {
+                     argNames: Option[List[String]] = None): CheckResult = {
       val result = checkForAll(names, prms, genA, genB)(fun)
       checkResult(result, prettifier, pos, argNames)
     }
@@ -888,7 +902,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                         prettifier: Prettifier,
                         pos: source.Position,
                         names: List[String],
-                        argNames: Option[List[String]] = None): Result = {
+                        argNames: Option[List[String]] = None): CheckResult = {
       val result = checkForAll(names, prms, genA, genB, genC)(fun)
       checkResult(result, prettifier, pos, argNames)
     }
@@ -902,7 +916,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                            prettifier: Prettifier,
                            pos: source.Position,
                            names: List[String],
-                           argNames: Option[List[String]] = None): Result = {
+                           argNames: Option[List[String]] = None): CheckResult = {
       val result = checkForAll(names, prms, genA, genB, genC, genD)(fun)
       checkResult(result, prettifier, pos, argNames)
     }
@@ -917,7 +931,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                               prettifier: Prettifier,
                               pos: source.Position,
                               names: List[String],
-                              argNames: Option[List[String]] = None): Result = {
+                              argNames: Option[List[String]] = None): CheckResult = {
       val result = checkForAll(names, prms, genA, genB, genC, genD, genE)(fun)
       checkResult(result, prettifier, pos, argNames)
     }
@@ -933,14 +947,14 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                                  prettifier: Prettifier,
                                  pos: source.Position,
                                  names: List[String],
-                                 argNames: Option[List[String]] = None): Result = {
+                                 argNames: Option[List[String]] = None): CheckResult = {
       val result = checkForAll(names, prms, genA, genB, genC, genD, genE, genF)(fun)
       checkResult(result, prettifier, pos, argNames)
     }
 
-    private[scalatest] def indicateSuccess(message: => String): Result
+    private[scalatest] def indicateSuccess(message: => String): CheckResult
 
-    private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Result
+    private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): CheckResult
 
   }
 
@@ -948,8 +962,8 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
 
     implicit val executionContext: scala.concurrent.ExecutionContext
 
-    type Result = Future[Assertion]
-    type S = T
+    type CheckResult = Future[Assertion]
+    type PropResult = T
 
     /**
       * Checks a property for all combinations of generated values of type A.
@@ -2003,7 +2017,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                   prettifier: Prettifier,
                   pos: source.Position,
                   names: List[String],
-                  argNames: Option[List[String]] = None): Result = {
+                  argNames: Option[List[String]] = None): CheckResult = {
       val future = checkForAll(names, prms, genA)(fun)
       future.map { result =>
         checkResult(result, prettifier, pos, argNames)
@@ -2033,7 +2047,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                      prettifier: Prettifier,
                      pos: source.Position,
                      names: List[String],
-                     argNames: Option[List[String]] = None): Result = {
+                     argNames: Option[List[String]] = None): CheckResult = {
       val future = checkForAll(names, prms, genA, genB)(fun)
       future.map { result =>
         checkResult(result, prettifier, pos, argNames)
@@ -2066,7 +2080,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                         prettifier: Prettifier,
                         pos: source.Position,
                         names: List[String],
-                        argNames: Option[List[String]] = None): Result = {
+                        argNames: Option[List[String]] = None): CheckResult = {
       val future = checkForAll(names, prms, genA, genB, genC)(fun)
       future.map { result =>
         checkResult(result, prettifier, pos, argNames)
@@ -2102,7 +2116,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                            prettifier: Prettifier,
                            pos: source.Position,
                            names: List[String],
-                           argNames: Option[List[String]] = None): Result = {
+                           argNames: Option[List[String]] = None): CheckResult = {
       val future = checkForAll(names, prms, genA, genB, genC, genD)(fun)
       future.map { result =>
         checkResult(result, prettifier, pos, argNames)
@@ -2141,7 +2155,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                               prettifier: Prettifier,
                               pos: source.Position,
                               names: List[String],
-                              argNames: Option[List[String]] = None): Result = {
+                              argNames: Option[List[String]] = None): CheckResult = {
       val future = checkForAll(names, prms, genA, genB, genC, genD, genE)(fun)
       future.map { result =>
         checkResult(result, prettifier, pos, argNames)
@@ -2183,7 +2197,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                                  prettifier: Prettifier,
                                  pos: source.Position,
                                  names: List[String],
-                                 argNames: Option[List[String]] = None): Result = {
+                                 argNames: Option[List[String]] = None): CheckResult = {
       val future = checkForAll(names, prms, genA, genB, genC, genD, genE, genF)(fun)
       future.map { result =>
         checkResult(result, prettifier, pos, argNames)
@@ -2197,11 +2211,11 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
   }
 
   // SKIP-DOTTY-START
-  implicit def assertingNatureOfAssertion: PropCheckerAsserting[Assertion] { type Result = Assertion } = {
+  implicit def assertingNatureOfAssertion: PropCheckerAsserting[Assertion] { type CheckResult = Assertion } = {
   // SKIP-DOTTY-END
-  //DOTTY-ONLY def assertingNatureOfAssertion: PropCheckerAsserting[Assertion] { type Result = Assertion } = { 
+  //DOTTY-ONLY def assertingNatureOfAssertion: PropCheckerAsserting[Assertion] { type CheckResult = Assertion } = {
     new PropCheckerAssertingImpl[Assertion] {
-      type Result = Assertion
+      type CheckResult = Assertion
       def discard(result: Assertion): Boolean = false
       def succeed(result: Assertion): (Boolean, Option[Throwable]) = (true, None)
       private[scalatest] def indicateSuccess(message: => String): Assertion = Succeeded
@@ -2219,12 +2233,12 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       }
     }
   }
-  //DOTTY-ONLY given given_assertingNatureOfAssertion: PropCheckerAsserting[Assertion] { type Result = Assertion } = assertingNatureOfAssertion
+  //DOTTY-ONLY given given_assertingNatureOfAssertion: PropCheckerAsserting[Assertion] { type CheckResult = Assertion } = assertingNatureOfAssertion
 
   // SKIP-DOTTY-START
-  implicit def assertingNatureOfFutureAssertion(implicit exeCtx: scala.concurrent.ExecutionContext): PropCheckerAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
+  implicit def assertingNatureOfFutureAssertion(implicit exeCtx: scala.concurrent.ExecutionContext): PropCheckerAsserting[Future[Assertion]] { type CheckResult = Future[Assertion] } = {
   // SKIP-DOTTY-END
-  //DOTTY-ONLY def assertingNatureOfFutureAssertion(using exeCtx: scala.concurrent.ExecutionContext): PropCheckerAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
+  //DOTTY-ONLY def assertingNatureOfFutureAssertion(using exeCtx: scala.concurrent.ExecutionContext): PropCheckerAsserting[Future[Assertion]] { type CheckResult = Future[Assertion] } = {
     new FuturePropCheckerAssertingImpl[Assertion] {
       implicit val executionContext = exeCtx
       def discard(result: Assertion): Boolean = false
@@ -2244,7 +2258,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       }
     }
   }
-  //DOTTY-ONLY given given_assertingNatureOfFutureAssertion(using exeCtx: scala.concurrent.ExecutionContext): PropCheckerAsserting[Future[Assertion]] { type Result = Future[Assertion] } = assertingNatureOfFutureAssertion(using exeCtx)
+  //DOTTY-ONLY given given_assertingNatureOfFutureAssertion(using exeCtx: scala.concurrent.ExecutionContext): PropCheckerAsserting[Future[Assertion]] { type CheckResult = Future[Assertion] } = assertingNatureOfFutureAssertion(using exeCtx)
 
   private[enablers] def argsAndLabels(result: PropertyCheckResult): (List[PropertyArgument], List[String]) = {
 

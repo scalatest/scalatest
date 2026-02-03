@@ -584,7 +584,7 @@ trait GeneratorDrivenPropertyChecks extends CommonGenerators with Whenever with 
         asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position
-      ): asserting.Result = {
+      ): asserting.CheckResult = {
       val param = getParameter(configParams, config)
       asserting.check1(fun, genA, param, prettifier, pos, List.empty)
     }
@@ -614,7 +614,7 @@ trait GeneratorDrivenPropertyChecks extends CommonGenerators with Whenever with 
         asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position
-      ): asserting.Result = {
+      ): asserting.CheckResult = {
       val param = getParameter(configParams, config)
       asserting.check2(fun, genA, genB, param, prettifier, pos, List.empty)
     }
@@ -645,7 +645,7 @@ trait GeneratorDrivenPropertyChecks extends CommonGenerators with Whenever with 
         asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position
-      ): asserting.Result = {
+      ): asserting.CheckResult = {
       val param = getParameter(configParams, config)
       asserting.check3(fun, genA, genB, genC, param, prettifier, pos, List.empty)
     }
@@ -677,7 +677,7 @@ trait GeneratorDrivenPropertyChecks extends CommonGenerators with Whenever with 
         asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position
-      ): asserting.Result = {
+      ): asserting.CheckResult = {
       val param = getParameter(configParams, config)
       asserting.check4(fun, genA, genB, genC, genD, param, prettifier, pos, List.empty)
     }
@@ -710,7 +710,7 @@ trait GeneratorDrivenPropertyChecks extends CommonGenerators with Whenever with 
         asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position
-      ): asserting.Result = {
+      ): asserting.CheckResult = {
       val param = getParameter(configParams, config)
       asserting.check5(fun, genA, genB, genC, genD, genE, param, prettifier, pos, List.empty)
     }
@@ -744,7 +744,7 @@ trait GeneratorDrivenPropertyChecks extends CommonGenerators with Whenever with 
         asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position
-      ): asserting.Result = {
+      ): asserting.CheckResult = {
       val param = getParameter(configParams, config)
       asserting.check6(fun, genA, genB, genC, genD, genE, genF, param, prettifier, pos, List.empty)
     }
@@ -760,7 +760,7 @@ trait GeneratorDrivenPropertyChecks extends CommonGenerators with Whenever with 
     prettifier: Prettifier,
     pos: source.Position,
     asserting: PropCheckerAsserting[ASSERTION]
-  ): asserting.Result =
+  ): asserting.CheckResult =
     asserting.check$n$(fun, $genRefs$, getParameter(List.empty, config), prettifier, pos, List.empty)
 
   def forAll[$alphaUpper$, ASSERTION]($namesAndTypes$)(fun: ($alphaUpper$) => ASSERTION)
@@ -770,7 +770,7 @@ $gens$,
       prettifier: Prettifier,
       pos: source.Position,
       asserting: PropCheckerAsserting[ASSERTION]
-    ): asserting.Result =
+    ): asserting.CheckResult =
       asserting.check$n$(fun, $genRefs$, getParameter(List.empty, config), prettifier, pos, List($alphaLower$))
 
   def forAll[$alphaUpper$, ASSERTION]($namesAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
@@ -780,7 +780,7 @@ $gens$,
       prettifier: Prettifier,
       pos: source.Position,
       asserting: PropCheckerAsserting[ASSERTION]
-    ): asserting.Result =
+    ): asserting.CheckResult =
       asserting.check$n$(fun, $genRefs$, getParameter(configParams, config), prettifier, pos, List($alphaLower$))
 
   def forAll[$alphaUpper$, ASSERTION]($gens$)(fun: ($alphaUpper$) => ASSERTION)
@@ -789,7 +789,7 @@ $gens$,
       prettifier: Prettifier,
       pos: source.Position,
       asserting: PropCheckerAsserting[ASSERTION]
-    ): asserting.Result =
+    ): asserting.CheckResult =
     asserting.check$n$(fun, $genRefs$, getParameter(List.empty, config), prettifier, pos, List.empty)
 
   def forAll[$alphaUpper$, ASSERTION]($gens$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
@@ -798,7 +798,7 @@ $gens$,
       prettifier: Prettifier,
       pos: source.Position,
       asserting: PropCheckerAsserting[ASSERTION]
-    ): asserting.Result =
+    ): asserting.CheckResult =
     asserting.check$n$(fun, $genRefs$, getParameter(configParams, config), prettifier, pos, List.empty)
 
   def forAll[$alphaUpper$, ASSERTION]($gensAndNames$)(fun: ($alphaUpper$) => ASSERTION)
@@ -807,7 +807,7 @@ $gens$,
       prettifier: Prettifier,
       pos: source.Position,
       asserting: PropCheckerAsserting[ASSERTION]
-    ): asserting.Result = {
+    ): asserting.CheckResult = {
     $tupleBusters$
     asserting.check$n$(fun, $genRefs$, getParameter(List.empty, config), prettifier, pos, List($argNameNames$))
   }
@@ -818,7 +818,7 @@ $gens$,
       prettifier: Prettifier,
       pos: source.Position,
       asserting: PropCheckerAsserting[ASSERTION]
-    ): asserting.Result = {
+    ): asserting.CheckResult = {
       $tupleBusters$
       asserting.check$n$(fun, $genRefs$, getParameter(configParams, config), prettifier, pos, List($argNameNames$))
     }
