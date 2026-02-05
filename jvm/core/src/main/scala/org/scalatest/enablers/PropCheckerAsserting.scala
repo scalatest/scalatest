@@ -46,7 +46,7 @@ import org.scalactic.ColCompatHelper._
  * </p>
  *
  * <ul>
- * <li><code>T</code> - The return type of the property function being checked.
+ * <li><code>Prop</code> - The return type of the property function being checked.
  *     For synchronous assertions, this is typically <code>Assertion</code> or <code>Expectation</code>.
  *     For asynchronous assertions, this is typically <code>Future[Assertion]</code>.</li>
  * <li><code>CheckResult</code> - The outcome type returned by the <code>check</code> methods.
@@ -85,11 +85,11 @@ import org.scalactic.ColCompatHelper._
  * implicit val assertingNatureOfFutureAssertion: PropCheckerAsserting[Future[Assertion], Future[Assertion], Assertion] = ...
  * </pre>
  *
- * @tparam T the return type of the property function being checked
+ * @tparam Prop the return type of the property function being checked
  * @tparam CheckResult the outcome type returned by the check methods
  * @tparam PropResult the type of result produced by evaluating the property function
  */
-trait PropCheckerAsserting[T, CheckResult, PropResult] {
+trait PropCheckerAsserting[Prop, CheckResult, PropResult] {
 
   /**
    * Determines whether a property evaluation should be discarded.
@@ -137,7 +137,7 @@ trait PropCheckerAsserting[T, CheckResult, PropResult] {
     * @param argNames the list of argument names
     * @return the <code>CheckResult</code> of the property check.
     */
-  def check1[A](fun: (A) => T,
+  def check1[A](fun: (A) => Prop,
                genA: org.scalatest.prop.Generator[A],
                prms: Configuration.Parameter,
                prettifier: Prettifier,
@@ -145,7 +145,7 @@ trait PropCheckerAsserting[T, CheckResult, PropResult] {
                names: List[String],
                argNames: Option[List[String]] = None): CheckResult
 
-  def check2[A, B](fun: (A, B) => T,
+  def check2[A, B](fun: (A, B) => Prop,
                    genA: org.scalatest.prop.Generator[A],
                    genB: org.scalatest.prop.Generator[B],
                    prms: Configuration.Parameter,
@@ -154,7 +154,7 @@ trait PropCheckerAsserting[T, CheckResult, PropResult] {
                    names: List[String],
                    argNames: Option[List[String]] = None): CheckResult
 
-  def check3[A, B, C](fun: (A, B, C) => T,
+  def check3[A, B, C](fun: (A, B, C) => Prop,
                       genA: org.scalatest.prop.Generator[A],
                       genB: org.scalatest.prop.Generator[B],
                       genC: org.scalatest.prop.Generator[C],
@@ -164,7 +164,7 @@ trait PropCheckerAsserting[T, CheckResult, PropResult] {
                       names: List[String],
                       argNames: Option[List[String]] = None): CheckResult
 
-  def check4[A, B, C, D](fun: (A, B, C, D) => T,
+  def check4[A, B, C, D](fun: (A, B, C, D) => Prop,
                          genA: org.scalatest.prop.Generator[A],
                          genB: org.scalatest.prop.Generator[B],
                          genC: org.scalatest.prop.Generator[C],
@@ -175,7 +175,7 @@ trait PropCheckerAsserting[T, CheckResult, PropResult] {
                          names: List[String],
                          argNames: Option[List[String]] = None): CheckResult
 
-  def check5[A, B, C, D, E](fun: (A, B, C, D, E) => T,
+  def check5[A, B, C, D, E](fun: (A, B, C, D, E) => Prop,
                             genA: org.scalatest.prop.Generator[A],
                             genB: org.scalatest.prop.Generator[B],
                             genC: org.scalatest.prop.Generator[C],
@@ -187,7 +187,7 @@ trait PropCheckerAsserting[T, CheckResult, PropResult] {
                             names: List[String],
                             argNames: Option[List[String]] = None): CheckResult
 
-  def check6[A, B, C, D, E, F](fun: (A, B, C, D, E, F) => T,
+  def check6[A, B, C, D, E, F](fun: (A, B, C, D, E, F) => Prop,
                                genA: org.scalatest.prop.Generator[A],
                                genB: org.scalatest.prop.Generator[B],
                                genC: org.scalatest.prop.Generator[C],
@@ -236,7 +236,7 @@ abstract class ExpectationPropCheckerAsserting {
 
 object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
 
-  abstract class PropCheckerAssertingImpl[T, CheckResult] extends PropCheckerAsserting[T, CheckResult, T] {
+  abstract class PropCheckerAssertingImpl[Prop, CheckResult] extends PropCheckerAsserting[Prop, CheckResult, Prop] {
 
     /**
       * Checks a property for all combinations of generated values of type A.
@@ -254,7 +254,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       * @param fun the function to apply to the generated values
       * @return the result of the property check
       */
-    private def checkForAll[A](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A])(fun: (A) => T): PropertyCheckResult = {
+    private def checkForAll[A](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A])(fun: (A) => Prop): PropertyCheckResult = {
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
@@ -270,7 +270,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
           }
         val (roseTreeOfA, nextEdges, nextNextRnd) = genA.next(SizeParam(PosZInt(0), maxSize, size), edges, nextRnd) // TODO: Move PosZInt farther out
         val a = roseTreeOfA.value
-        val result: Try[T] = Try { fun(a) }
+        val result: Try[Prop] = Try { fun(a) }
         val argsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a))
         result match {
           case Success(r) =>
@@ -305,7 +305,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
             val (bestA, err) =
               roseTreeOfA.shrinkSearch(
                 value => {
-                  val result: Try[T] = Try { fun(value) }
+                  val result: Try[Prop] = Try { fun(value) }
                   result match {
                     case Success(_) => None
                     case Failure(shrunkEx) => Some(shrunkEx)
@@ -347,7 +347,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
     private def checkForAll[A, B](names: List[String], config: Parameter,
                           genA: org.scalatest.prop.Generator[A],
                           genB: org.scalatest.prop.Generator[B])
-                         (fun: (A, B) => T): PropertyCheckResult = {
+                         (fun: (A, B) => Prop): PropertyCheckResult = {
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
@@ -365,7 +365,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
         val (roseTreeOfB, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
         val a = roseTreeOfA.value
         val b = roseTreeOfB.value
-        val result: Try[T] = Try { fun(a, b) }
+        val result: Try[Prop] = Try { fun(a, b) }
         val argsPassed =
           List(
             if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a),
@@ -404,7 +404,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
             val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
             val (bestAB, err) =
               roseTreeOfAB.shrinkSearch {
-                case (a, b) => 
+                case (a, b) =>
                   Try { fun(a, b) } match {
                     case Success(_) => None
                     case Failure(shrunkEx) => Some(shrunkEx)
@@ -449,7 +449,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                              genA: org.scalatest.prop.Generator[A],
                              genB: org.scalatest.prop.Generator[B],
                              genC: org.scalatest.prop.Generator[C])
-                            (fun: (A, B, C) => T): PropertyCheckResult = {
+                            (fun: (A, B, C) => Prop): PropertyCheckResult = {
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
@@ -469,7 +469,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
         val a = roseTreeOfA.value
         val b = roseTreeOfB.value
         val c = roseTreeOfC.value
-        val result: Try[T] = Try { fun(a, b, c) }
+        val result: Try[Prop] = Try { fun(a, b, c) }
         val argsPassed =
           List(
             if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a),
@@ -509,7 +509,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
             val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
             val (bestABC, err) =
               roseTreeOfABC.shrinkSearch {
-                case (a, b, c) => 
+                case (a, b, c) =>
                   Try { fun(a, b, c) } match {
                     case Success(_) => None
                     case Failure(shrunkEx) => Some(shrunkEx)
@@ -554,97 +554,97 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       * @return the result of the property check
       */
     private def checkForAll[A, B, C, D](names: List[String], config: Parameter,
-                                genA: org.scalatest.prop.Generator[A],
-                                genB: org.scalatest.prop.Generator[B],
-                                genC: org.scalatest.prop.Generator[C],
-                                genD: org.scalatest.prop.Generator[D])
-                               (fun: (A, B, C, D) => T): PropertyCheckResult = {
-      val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
-      val minSize = config.minSize
-      val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
-
-      @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
-        val (size, nextInitialSizes, rnd1) =
-          initialSizes match {
-            case head :: tail => (head, tail, rnd)
-            case Nil =>
-              val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
-              (sz, Nil, nextRnd)
-          }
-        val (roseTreeOfA, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, size), aEdges, rnd1)
-        val (roseTreeOfB, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
-        val (roseTreeOfC, nextCEdges, rnd4) = genC.next(SizeParam(PosZInt(0), maxSize, size), cEdges, rnd3)
-        val (roseTreeOfD, nextDEdges, rnd5) = genD.next(SizeParam(PosZInt(0), maxSize, size), dEdges, rnd4)
-        val a = roseTreeOfA.value
-        val b = roseTreeOfB.value
-        val c = roseTreeOfC.value
-        val d = roseTreeOfD.value
-        val result: Try[T] = Try { fun(a, b, c, d) }
-        val argsPassed =
-          List(
-            if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a),
-            if (names.isDefinedAt(1)) PropertyArgument(Some(names(1)), b) else PropertyArgument(None, b),
-            if (names.isDefinedAt(2)) PropertyArgument(Some(names(2)), c) else PropertyArgument(None, c),
-            if (names.isDefinedAt(3)) PropertyArgument(Some(names(3)), d) else PropertyArgument(None, d)
-          )
-        result match {
-          case Success(r) =>
-            if (discard(r)) {
-              val nextDiscardedCount = discardedCount + 1
-              if (nextDiscardedCount < maxDiscarded)
-                loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes, initSeed)
-              else
-                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
-            }
-            else {
-              val (success, cause) = succeed(r)
-              if (success) {
-                val nextSucceededCount = succeededCount + 1
-                if (nextSucceededCount < config.minSuccessful)
-                  loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes, initSeed)
-                else
-                  PropertyCheckResult.Success(argsPassed, initSeed)
+                                    genA: org.scalatest.prop.Generator[A],
+                                    genB: org.scalatest.prop.Generator[B],
+                                    genC: org.scalatest.prop.Generator[C],
+                                    genD: org.scalatest.prop.Generator[D])
+                                   (fun: (A, B, C, D) => Prop): PropertyCheckResult = {
+          val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
+          val minSize = config.minSize
+          val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
+    
+          @tailrec
+          def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
+            val (size, nextInitialSizes, rnd1) =
+              initialSizes match {
+                case head :: tail => (head, tail, rnd)
+                case Nil =>
+                  val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
+                  (sz, Nil, nextRnd)
               }
-              else
-                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)
-            }
-
-          case Failure(ex: DiscardedEvaluationException) =>
-            val nextDiscardedCount = discardedCount + 1
-            if (nextDiscardedCount < maxDiscarded)
-              loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes, initSeed)
-            else
-              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
-          case Failure(ex) => 
-            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
-            val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
-            val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
-            val (bestABCD, err) =
-              roseTreeOfABCD.shrinkSearch { 
-                case (a, b, c, d) => 
-                  val result: Try[T] = Try { fun(a, b, c, d) }
-                  result match {
-                    case Success(_) => None
-                    case Failure(shrunkEx) => Some(shrunkEx)
+            val (roseTreeOfA, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, size), aEdges, rnd1)
+            val (roseTreeOfB, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
+            val (roseTreeOfC, nextCEdges, rnd4) = genC.next(SizeParam(PosZInt(0), maxSize, size), cEdges, rnd3)
+            val (roseTreeOfD, nextDEdges, rnd5) = genD.next(SizeParam(PosZInt(0), maxSize, size), dEdges, rnd4)
+            val a = roseTreeOfA.value
+            val b = roseTreeOfB.value
+            val c = roseTreeOfC.value
+            val d = roseTreeOfD.value
+            val result: Try[Prop] = Try { fun(a, b, c, d) }
+            val argsPassed =
+              List(
+                if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a),
+                if (names.isDefinedAt(1)) PropertyArgument(Some(names(1)), b) else PropertyArgument(None, b),
+                if (names.isDefinedAt(2)) PropertyArgument(Some(names(2)), c) else PropertyArgument(None, c),
+                if (names.isDefinedAt(3)) PropertyArgument(Some(names(3)), d) else PropertyArgument(None, d)
+              )
+            result match {
+              case Success(r) =>
+                if (discard(r)) {
+                  val nextDiscardedCount = discardedCount + 1
+                  if (nextDiscardedCount < maxDiscarded)
+                    loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes, initSeed)
+                  else
+                    new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
+                }
+                else {
+                  val (success, cause) = succeed(r)
+                  if (success) {
+                    val nextSucceededCount = succeededCount + 1
+                    if (nextSucceededCount < config.minSuccessful)
+                      loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes, initSeed)
+                    else
+                      PropertyCheckResult.Success(argsPassed, initSeed)
                   }
-              }.getOrElse((roseTreeOfA.value, ex))
-            val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCD) else PropertyArgument(None, bestABCD))
-            val theRes = new PropertyCheckResult.Failure(succeededCount, Some(err), names, shrunkArgsPassed, initSeed)
-            theRes
+                  else
+                    new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)
+                }
+    
+              case Failure(ex: DiscardedEvaluationException) =>
+                val nextDiscardedCount = discardedCount + 1
+                if (nextDiscardedCount < maxDiscarded)
+                  loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes, initSeed)
+                else
+                  new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
+              case Failure(ex) =>
+                val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
+                val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
+                val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
+                val (bestABCD, err) =
+                  roseTreeOfABCD.shrinkSearch {
+                    case (a, b, c, d) =>
+                      val result: Try[Prop] = Try { fun(a, b, c, d) }
+                      result match {
+                        case Success(_) => None
+                        case Failure(shrunkEx) => Some(shrunkEx)
+                      }
+                  }.getOrElse((roseTreeOfA.value, ex))
+                val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCD) else PropertyArgument(None, bestABCD))
+                val theRes = new PropertyCheckResult.Failure(succeededCount, Some(err), names, shrunkArgsPassed, initSeed)
+                theRes
+            }
+          }
+    
+          val initRnd = Randomizer.default // This can be set by a cmd line param.
+          val initSeed = initRnd.seed
+          val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
+          val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
+          val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
+          val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
+          val (initCEdges, afterCEdgesRnd) = genC.initEdges(maxEdges, afterBEdgesRnd)
+          val (initDEdges, afterDEdgesRnd) = genD.initEdges(maxEdges, afterCEdgesRnd)
+          loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, afterDEdgesRnd, initialSizes, initSeed)
         }
-      }
-
-      val initRnd = Randomizer.default // This can be set by a cmd line param.
-      val initSeed = initRnd.seed
-      val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
-      val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
-      val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
-      val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
-      val (initCEdges, afterCEdgesRnd) = genC.initEdges(maxEdges, afterBEdgesRnd)
-      val (initDEdges, afterDEdgesRnd) = genD.initEdges(maxEdges, afterCEdgesRnd)
-      loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, afterDEdgesRnd, initialSizes, initSeed)
-    }
 
     /**
       * Checks a property for all combinations of generated values of types A, B, C, D, and E.
@@ -676,7 +676,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                                    genC: org.scalatest.prop.Generator[C],
                                    genD: org.scalatest.prop.Generator[D],
                                    genE: org.scalatest.prop.Generator[E])
-                                  (fun: (A, B, C, D, E) => T): PropertyCheckResult = {
+                                  (fun: (A, B, C, D, E) => Prop): PropertyCheckResult = {
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
@@ -700,7 +700,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
         val c = roseTreeOfC.value
         val d = roseTreeOfD.value
         val e = roseTreeOfE.value
-        val result: Try[T] = Try { fun(a, b, c, d, e) }
+        val result: Try[Prop] = Try { fun(a, b, c, d, e) }
         val argsPassed =
           List(
             if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a),
@@ -743,7 +743,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
             val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
             val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
             val (bestABCDE, err) =
-              roseTreeOfABCDE.shrinkSearch { case (a, b, c, d, e) => 
+              roseTreeOfABCDE.shrinkSearch { case (a, b, c, d, e) =>
                 Try { fun(a, b, c, d, e) } match {
                   case Success(_) => None
                   case Failure(shrunkEx) => Some(shrunkEx)
@@ -800,7 +800,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                                       genD: org.scalatest.prop.Generator[D],
                                       genE: org.scalatest.prop.Generator[E],
                                       genF: org.scalatest.prop.Generator[F])
-                                     (fun: (A, B, C, D, E, F) => T): PropertyCheckResult = {
+                                     (fun: (A, B, C, D, E, F) => Prop): PropertyCheckResult = {
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
@@ -826,7 +826,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
         val d = roseTreeOfD.value
         val e = roseTreeOfE.value
         val f = roseTreeOfF.value
-        val result: Try[T] = Try { fun(a, b, c, d, e, f) }
+        val result: Try[Prop] = Try { fun(a, b, c, d, e, f) }
         val argsPassed =
           List(
             if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a),
@@ -872,7 +872,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
             val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
             val roseTreeOfABCDEF = RoseTree.map2(roseTreeOfABCDE, roseTreeOfF) { case ((a, b, c, d, e), f) => (a, b, c, d, e, f)}
             val (bestABCDEF, err) =
-              roseTreeOfABCDEF.shrinkSearch { case (a, b, c, d, e, f) => 
+              roseTreeOfABCDEF.shrinkSearch { case (a, b, c, d, e, f) =>
                 Try { fun(a, b, c, d, e, f) } match {
                   case Success(_) => None
                   case Failure(shrunkEx) => Some(shrunkEx)
@@ -930,7 +930,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       }
     }
 
-    def check1[A](fun: (A) => T,
+    def check1[A](fun: (A) => Prop,
                   genA: org.scalatest.prop.Generator[A],
                   prms: Configuration.Parameter,
                   prettifier: Prettifier,
@@ -941,7 +941,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       checkResult(result, prettifier, pos, argNames)
     }
 
-    def check2[A, B](fun: (A, B) => T,
+    def check2[A, B](fun: (A, B) => Prop,
                      genA: org.scalatest.prop.Generator[A],
                      genB: org.scalatest.prop.Generator[B],
                      prms: Configuration.Parameter,
@@ -953,7 +953,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       checkResult(result, prettifier, pos, argNames)
     }
 
-    def check3[A, B, C](fun: (A, B, C) => T,
+    def check3[A, B, C](fun: (A, B, C) => Prop,
                         genA: org.scalatest.prop.Generator[A],
                         genB: org.scalatest.prop.Generator[B],
                         genC: org.scalatest.prop.Generator[C],
@@ -966,7 +966,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       checkResult(result, prettifier, pos, argNames)
     }
 
-    def check4[A, B, C, D](fun: (A, B, C, D) => T,
+    def check4[A, B, C, D](fun: (A, B, C, D) => Prop,
                            genA: org.scalatest.prop.Generator[A],
                            genB: org.scalatest.prop.Generator[B],
                            genC: org.scalatest.prop.Generator[C],
@@ -980,7 +980,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       checkResult(result, prettifier, pos, argNames)
     }
 
-    def check5[A, B, C, D, E](fun: (A, B, C, D, E) => T,
+    def check5[A, B, C, D, E](fun: (A, B, C, D, E) => Prop,
                               genA: org.scalatest.prop.Generator[A],
                               genB: org.scalatest.prop.Generator[B],
                               genC: org.scalatest.prop.Generator[C],
@@ -995,7 +995,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       checkResult(result, prettifier, pos, argNames)
     }
 
-    def check6[A, B, C, D, E, F](fun: (A, B, C, D, E, F) => T,
+    def check6[A, B, C, D, E, F](fun: (A, B, C, D, E, F) => Prop,
                                  genA: org.scalatest.prop.Generator[A],
                                  genB: org.scalatest.prop.Generator[B],
                                  genC: org.scalatest.prop.Generator[C],
@@ -1017,7 +1017,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
 
   }
 
-  abstract class FuturePropCheckerAssertingImpl[T] extends PropCheckerAsserting[Future[T], Future[T], T] {
+  abstract class FuturePropCheckerAssertingImpl[PropResult] extends PropCheckerAsserting[Future[PropResult], Future[PropResult], PropResult] {
 
     implicit val executionContext: scala.concurrent.ExecutionContext
 
@@ -1037,7 +1037,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       * @param fun the function to apply to the generated values
       * @return a Future containing the result of the property check
       */
-    private def checkForAll[A](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A])(fun: (A) => Future[T]): Future[PropertyCheckResult] = {
+    private def checkForAll[A](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A])(fun: (A) => Future[PropResult]): Future[PropertyCheckResult] = {
 
       case class AccumulatedResult(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedA: Option[A])
 
@@ -1097,7 +1097,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
               case Some(f: PropertyCheckResult.Failure) => 
                 roseTreeOfA.shrinkSearchForFuture(
                   value => {
-                    val result: Future[T] = fun(value)
+                    val result: Future[PropResult] = fun(value)
                     result.map { r =>
                       None
                     }.recoverWith {
@@ -1138,7 +1138,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
           case ex: Throwable =>
             roseTreeOfA.shrinkSearchForFuture(
               value => {
-                val result: Future[T] = fun(value)
+                val result: Future[PropResult] = fun(value)
                 result.map { r =>
                   None
                 }.recoverWith {
@@ -1186,7 +1186,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       * @param fun the function to apply to the generated values
       * @return a Future containing the result of the property check
       */
-    private def checkForAll[A, B](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B])(fun: (A, B) => Future[T]): Future[PropertyCheckResult] = {
+    private def checkForAll[A, B](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B])(fun: (A, B) => Future[PropResult]): Future[PropertyCheckResult] = {
 
       case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedAB: Option[(A, B)])
 
@@ -1253,7 +1253,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
               case Some(f: PropertyCheckResult.Failure) => 
                 val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
                 roseTreeOfAB.shrinkSearchForFuture { case (a, b) =>
-                  val result: Future[T] = fun(a, b)
+                  val result: Future[PropResult] = fun(a, b)
                   result.map { r =>
                     None
                   }.recoverWith {
@@ -1344,7 +1344,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       * @return a Future containing the result of the property check
       */
     private def checkForAll[A, B, C](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B],
-                                     genC: org.scalatest.prop.Generator[C])(fun: (A, B, C) => Future[T]): Future[PropertyCheckResult] = {
+                                     genC: org.scalatest.prop.Generator[C])(fun: (A, B, C) => Future[PropResult]): Future[PropertyCheckResult] = {
 
       case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedABC: Option[(A, B, C)])
 
@@ -1413,7 +1413,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                 val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
                 val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
                 roseTreeOfABC.shrinkSearchForFuture { case (a, b, c) =>
-                  val result: Future[T] = fun(a, b, c)
+                  val result: Future[PropResult] = fun(a, b, c)
                   result.map { r =>
                     None
                   }.recoverWith {
@@ -1508,7 +1508,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       * @return a Future containing the result of the property check
       */
     private def checkForAll[A, B, C, D](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B],
-                                     genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D])(fun: (A, B, C, D) => Future[T]): Future[PropertyCheckResult] = {
+                                     genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D])(fun: (A, B, C, D) => Future[PropResult]): Future[PropertyCheckResult] = {
 
       case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedABCD: Option[(A, B, C, D)])
 
@@ -1680,7 +1680,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       * @return a Future containing the result of the property check
       */
     private def checkForAll[A, B, C, D, E](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B],
-                                        genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D], genE: org.scalatest.prop.Generator[E])(fun: (A, B, C, D, E) => Future[T]): Future[PropertyCheckResult] = {
+                                        genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D], genE: org.scalatest.prop.Generator[E])(fun: (A, B, C, D, E) => Future[PropResult]): Future[PropertyCheckResult] = {
 
       case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedABCDE: Option[(A, B, C, D, E)])
 
@@ -1861,7 +1861,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       */
     private def checkForAll[A, B, C, D, E, F](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B],
                                            genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D], genE: org.scalatest.prop.Generator[E],
-                                           genF: org.scalatest.prop.Generator[F])(fun: (A, B, C, D, E, F) => Future[T]): Future[PropertyCheckResult] = {
+                                           genF: org.scalatest.prop.Generator[F])(fun: (A, B, C, D, E, F) => Future[PropResult]): Future[PropertyCheckResult] = {
 
       case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], fEdges: List[F], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedABCDEF: Option[(A, B, C, D, E, F)])
 
@@ -2020,7 +2020,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, initEEdges, initFEdges, afterFEdgesRnd, initialSizes, initSeed).map(_.result.getOrElse(PropertyCheckResult.Success(List.empty, initSeed)))
     }
 
-    private def checkResult(result: PropertyCheckResult, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): T = {
+    private def checkResult(result: PropertyCheckResult, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): PropResult = {
       val (args, labels) = argsAndLabels(result)
       result match {
         case PropertyCheckResult.Exhausted(succeeded, discarded, names, argsPassed, initSeed) =>
@@ -2067,14 +2067,13 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       * @param fun the function to apply to the generated value
       * @return the result of the property check
       */
-    def check1[A](fun: (A) => Future[T],
-                  genA: org.scalatest.prop.Generator[A],
-                  prms: Configuration.Parameter,
-                  prettifier: Prettifier,
-                  pos: source.Position,
-                  names: List[String],
-                  argNames: Option[List[String]] = None): Future[T] = {
-      val future = checkForAll(names, prms, genA)(fun)
+    def check1[A](fun: (A) => Future[PropResult],
+                   genA: org.scalatest.prop.Generator[A],
+                   prms: Configuration.Parameter,
+                   prettifier: Prettifier,
+                   pos: source.Position,
+                   names: List[String],
+                   argNames: Option[List[String]] = None): Future[PropResult] = {      val future = checkForAll(names, prms, genA)(fun)
       future.map { result =>
         checkResult(result, prettifier, pos, argNames)
       }
@@ -2096,15 +2095,14 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       * @param fun the function to apply to the generated values
       * @return the result of the property check
       */
-    def check2[A, B](fun: (A, B) => Future[T],
-                     genA: org.scalatest.prop.Generator[A],
-                     genB: org.scalatest.prop.Generator[B],
-                     prms: Configuration.Parameter,
-                     prettifier: Prettifier,
-                     pos: source.Position,
-                     names: List[String],
-                     argNames: Option[List[String]] = None): Future[T] = {
-      val future = checkForAll(names, prms, genA, genB)(fun)
+    def check2[A, B](fun: (A, B) => Future[PropResult],
+                       genA: org.scalatest.prop.Generator[A],
+                       genB: org.scalatest.prop.Generator[B],
+                       prms: Configuration.Parameter,
+                       prettifier: Prettifier,
+                       pos: source.Position,
+                       names: List[String],
+                       argNames: Option[List[String]] = None): Future[PropResult] = {      val future = checkForAll(names, prms, genA, genB)(fun)
       future.map { result =>
         checkResult(result, prettifier, pos, argNames)
       }
@@ -2128,7 +2126,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       * @param fun the function to apply to the generated values
       * @return the result of the property check
       */
-    def check3[A, B, C](fun: (A, B, C) => Future[T],
+    def check3[A, B, C](fun: (A, B, C) => Future[PropResult],
                           genA: org.scalatest.prop.Generator[A],
                           genB: org.scalatest.prop.Generator[B],
                           genC: org.scalatest.prop.Generator[C],
@@ -2136,7 +2134,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                           prettifier: Prettifier,
                           pos: source.Position,
                           names: List[String],
-                          argNames: Option[List[String]] = None): Future[T] = {      val future = checkForAll(names, prms, genA, genB, genC)(fun)
+                          argNames: Option[List[String]] = None): Future[PropResult] = {      val future = checkForAll(names, prms, genA, genB, genC)(fun)
       future.map { result =>
         checkResult(result, prettifier, pos, argNames)
       }
@@ -2162,7 +2160,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       * @param fun the function to apply to the generated values
       * @return the result of the property check
       */
-    def check4[A, B, C, D](fun: (A, B, C, D) => Future[T],
+    def check4[A, B, C, D](fun: (A, B, C, D) => Future[PropResult],
                              genA: org.scalatest.prop.Generator[A],
                              genB: org.scalatest.prop.Generator[B],
                              genC: org.scalatest.prop.Generator[C],
@@ -2171,7 +2169,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                              prettifier: Prettifier,
                              pos: source.Position,
                              names: List[String],
-                             argNames: Option[List[String]] = None): Future[T] = {      val future = checkForAll(names, prms, genA, genB, genC, genD)(fun)
+                             argNames: Option[List[String]] = None): Future[PropResult] = {      val future = checkForAll(names, prms, genA, genB, genC, genD)(fun)
       future.map { result =>
         checkResult(result, prettifier, pos, argNames)
       }
@@ -2199,7 +2197,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       * @param fun the function to apply to the generated values
       * @return the result of the property check
       */
-    def check5[A, B, C, D, E](fun: (A, B, C, D, E) => Future[T],
+    def check5[A, B, C, D, E](fun: (A, B, C, D, E) => Future[PropResult],
                                 genA: org.scalatest.prop.Generator[A],
                                 genB: org.scalatest.prop.Generator[B],
                                 genC: org.scalatest.prop.Generator[C],
@@ -2209,7 +2207,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                                 prettifier: Prettifier,
                                 pos: source.Position,
                                 names: List[String],
-                                argNames: Option[List[String]] = None): Future[T] = {      val future = checkForAll(names, prms, genA, genB, genC, genD, genE)(fun)
+                                argNames: Option[List[String]] = None): Future[PropResult] = {      val future = checkForAll(names, prms, genA, genB, genC, genD, genE)(fun)
       future.map { result =>
         checkResult(result, prettifier, pos, argNames)
       }
@@ -2239,7 +2237,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       * @param fun the function to apply to the generated values
       * @return the result of the property check
       */
-    def check6[A, B, C, D, E, F](fun: (A, B, C, D, E, F) => Future[T],
+    def check6[A, B, C, D, E, F](fun: (A, B, C, D, E, F) => Future[PropResult],
                                    genA: org.scalatest.prop.Generator[A],
                                    genB: org.scalatest.prop.Generator[B],
                                    genC: org.scalatest.prop.Generator[C],
@@ -2250,15 +2248,15 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                                    prettifier: Prettifier,
                                    pos: source.Position,
                                    names: List[String],
-                                   argNames: Option[List[String]] = None): Future[T] = {      val future = checkForAll(names, prms, genA, genB, genC, genD, genE, genF)(fun)
+                                   argNames: Option[List[String]] = None): Future[PropResult] = {      val future = checkForAll(names, prms, genA, genB, genC, genD, genE, genF)(fun)
       future.map { result =>
         checkResult(result, prettifier, pos, argNames)
       }
     }
 
-    private[scalatest] def indicateFutureSuccess(message: => String): T
+    private[scalatest] def indicateFutureSuccess(message: => String): PropResult
 
-    private[scalatest] def indicateFutureFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): T
+    private[scalatest] def indicateFutureFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): PropResult
 
   }
 
