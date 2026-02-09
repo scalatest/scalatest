@@ -27,19 +27,28 @@ import scala.concurrent.Future
   * Currently, an [[org.scalatest.prop.Whenever Whenever]] expression will have result type <code>Assertion</code>, if the function passed has result type <code>Assertion</code>,
   * else it will have result type <code>Unit</code>.
   * </p>
+  *
+  * <p>
+  * The trait is parameterized with two type parameters:
+  * </p>
+  *
+  * <ul>
+  * <li><code>T</code> - The type of the function passed to <code>whenever</code>.</li>
+  * <li><code>Result</code> - The result type of the <code>whenever</code> method.
+  *     This is the final result that users receive after evaluating the function.</li>
+  * </ul>
+  *
+  * @tparam T the type of the function passed to <code>whenever</code>
+  * @tparam Result the result type of the <code>whenever</code> method
   */
-trait WheneverAsserting[T] {
-  /**
-    * The result type of the <code>whenever</code> method.
-    */
-  type Result
-
+trait WheneverAsserting[T, Result] {
   /**
     * Implementation method for [[org.scalatest.prop.Whenever Whenever]]'s <code>whenever</code> syntax.
     *
     * @param condition the boolean condition that determines whether <code>whenever</code> will evaluate the
     *    <code>fun</code> function (<code>condition</code> is true) or throws <code>DiscardedEvaluationException</code> (<code>condition</code> is false)
     * @param fun the function to evaluate if the specified <code>condition</code> is true
+    * @return the result of evaluating the function
     */
   def whenever(condition: Boolean)(fun: => T): Result
 }
@@ -55,11 +64,10 @@ abstract class UnitWheneverAsserting {
     * when check fails.
     */
   // SKIP-DOTTY-START
-  implicit def assertingNatureOfT[T]: WheneverAsserting[T] { type Result = Unit } = {
+  implicit def assertingNatureOfT[T]: WheneverAsserting[T, Unit] = {
   // SKIP-DOTTY-END
-  //DOTTY-ONLY def assertingNatureOfT[T]: WheneverAsserting[T] { type Result = Unit } = {
-    new WheneverAsserting[T] {
-      type Result = Unit
+  //DOTTY-ONLY def assertingNatureOfT[T]: WheneverAsserting[T, Unit] = {
+    new WheneverAsserting[T, Unit] {
       def whenever(condition: Boolean)(fun: => T): Unit =
         if (!condition)
           throw new DiscardedEvaluationException
@@ -67,7 +75,7 @@ abstract class UnitWheneverAsserting {
           fun
     }
   }
-  //DOTTY-ONLY given [T]: WheneverAsserting[T] { type Result = Unit } = assertingNatureOfT
+  //DOTTY-ONLY given [T]: WheneverAsserting[T, Unit] = assertingNatureOfT
 }
 
 /**
@@ -76,11 +84,10 @@ abstract class UnitWheneverAsserting {
   */
 abstract class ExpectationWheneverAsserting extends UnitWheneverAsserting {
   // SKIP-DOTTY-START
-  implicit def assertingNatureOfExpectation: WheneverAsserting[Expectation] { type Result = Expectation } = {
+  implicit def assertingNatureOfExpectation: WheneverAsserting[Expectation, Expectation] = {
   // SKIP-DOTTY-END
-  //DOTTY-ONLY def assertingNatureOfExpectation: WheneverAsserting[Expectation] { type Result = Expectation } = {
-    new WheneverAsserting[Expectation] {
-      type Result = Expectation
+  //DOTTY-ONLY def assertingNatureOfExpectation: WheneverAsserting[Expectation, Expectation] = {
+    new WheneverAsserting[Expectation, Expectation] {
       def whenever(condition: Boolean)(fun: => Expectation): Expectation =
         if (!condition)
           throw new DiscardedEvaluationException
@@ -88,13 +95,12 @@ abstract class ExpectationWheneverAsserting extends UnitWheneverAsserting {
          fun
     }
   }
-  //DOTTY-ONLY given WheneverAsserting[Expectation] { type Result = Expectation } = assertingNatureOfExpectation
+  //DOTTY-ONLY given WheneverAsserting[Expectation, Expectation] = assertingNatureOfExpectation
   // SKIP-DOTTY-START
-  implicit def assertingNatureOfFutureAssertion: WheneverAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
+  implicit def assertingNatureOfFutureAssertion: WheneverAsserting[Future[Assertion], Future[Assertion]] = {
   // SKIP-DOTTY-END
-  //DOTTY-ONLY def assertingNatureOfFutureAssertion: WheneverAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
-    new WheneverAsserting[Future[Assertion]] {
-      type Result = Future[Assertion]
+  //DOTTY-ONLY def assertingNatureOfFutureAssertion: WheneverAsserting[Future[Assertion], Future[Assertion]] = {
+    new WheneverAsserting[Future[Assertion], Future[Assertion]] {
       def whenever(condition: Boolean)(fun: => Future[Assertion]): Future[Assertion] =
         if (!condition)
           throw new DiscardedEvaluationException
@@ -102,7 +108,7 @@ abstract class ExpectationWheneverAsserting extends UnitWheneverAsserting {
           fun
     }
   }
-  //DOTTY-ONLY given WheneverAsserting[Future[Assertion]] { type Result = Future[Assertion] } = assertingNatureOfFutureAssertion
+  //DOTTY-ONLY given WheneverAsserting[Future[Assertion], Future[Assertion]] = assertingNatureOfFutureAssertion
 }
 
 /**
@@ -111,11 +117,10 @@ abstract class ExpectationWheneverAsserting extends UnitWheneverAsserting {
   */
 object WheneverAsserting extends ExpectationWheneverAsserting {
   // SKIP-DOTTY-START
-  implicit def assertingNatureOfAssertion: WheneverAsserting[Assertion] { type Result = Assertion } = {
+  implicit def assertingNatureOfAssertion: WheneverAsserting[Assertion, Assertion] = {
   // SKIP-DOTTY-END
-  //DOTTY-ONLY def assertingNatureOfAssertion: WheneverAsserting[Assertion] { type Result = Assertion } = {
-    new WheneverAsserting[Assertion] {
-      type Result = Assertion
+  //DOTTY-ONLY def assertingNatureOfAssertion: WheneverAsserting[Assertion, Assertion] = {
+    new WheneverAsserting[Assertion, Assertion] {
       def whenever(condition: Boolean)(fun: => Assertion): Assertion =
         if (!condition)
           throw new DiscardedEvaluationException
@@ -123,5 +128,5 @@ object WheneverAsserting extends ExpectationWheneverAsserting {
           fun
     }
   }
-  //DOTTY-ONLY given WheneverAsserting[Assertion] { type Result = Assertion } = assertingNatureOfAssertion
+  //DOTTY-ONLY given WheneverAsserting[Assertion, Assertion] = assertingNatureOfAssertion
 }
