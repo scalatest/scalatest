@@ -318,6 +318,8 @@ object PosLongs {
     extension (x: PosZLong) {
       /** Return the underlying Long value. */
       def value: Long = x
+      /** Absolute value (no-op for non-negative longs). */
+      def abs: PosZLong = x
       /**
         * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
         */

@@ -330,6 +330,12 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
       }
     }
 
+    it("should offer an 'abs' method that returns the same value") {
+      forAll { (pzlong: PosZLong) =>
+        pzlong.abs.toLong shouldEqual pzlong.toLong
+      }
+    }
+
     it("should offer a 'toBinaryString' method that is consistent with Long") {
       forAll { (pzlong: PosZLong) =>
         pzlong.toBinaryString shouldEqual pzlong.toLong.toBinaryString
