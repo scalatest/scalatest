@@ -2121,7 +2121,7 @@ used for test events like succeeded/failed, etc.
       for (m <- theSuite.getClass.getMethods; if isTestMethod(m))
         yield if (takesInformer(m)) m.getName + InformerInParens else m.getName
 
-    val result = TreeSet.from(testNameArray)(EncodedOrdering)
+    val result = TreeSet(testNameArray: _*)(EncodedOrdering)
     if (result.size != testNameArray.length) {
       throw new NotAllowedException("Howdy", 0)
     }

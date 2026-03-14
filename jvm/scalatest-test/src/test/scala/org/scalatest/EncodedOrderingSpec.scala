@@ -23,11 +23,11 @@ class EncodedOrderingSpec extends AnyWordSpec {
   "EncodedOrdering" should {
     "sort unencoded strings the same as the default string ordering" in {
       val default = TreeSet("testHi", "testHo", "testPlus", "testMinus")
-      val encoded = TreeSet.from(List("testHi", "testHo", "testPlus", "testMinus"))(EncodedOrdering)
+      val encoded = TreeSet("testHi", "testHo", "testPlus", "testMinus")(EncodedOrdering)
       assert(default.iterator.toList === encoded.iterator.toList)
     }
     "sort encoded strings in unencoded order" in {
-      val set = TreeSet.from(List(encode("test: ho"), encode("test: hi"), encode("test: +"), encode("test: -")))(EncodedOrdering)
+      val set = TreeSet(encode("test: ho"), encode("test: hi"), encode("test: +"), encode("test: -"))(EncodedOrdering)
       val expected = List(encode("test: +"), encode("test: -"), encode("test: hi"), encode("test: ho"))
       assert(set.iterator.toList === expected)
     }
