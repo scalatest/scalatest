@@ -8,7 +8,7 @@ import scalanative.sbtplugin.ScalaNativePlugin
 trait BuildCommons {
 
   lazy val scalaVersionsSettings: Seq[Setting[_]] = Seq(
-    crossScalaVersions := Seq("2.13.10", "2.12.17", "2.11.12", "2.10.7"),
+    crossScalaVersions := Seq("2.13.4", "2.13.10", "2.12.13", "2.12.17", "2.11.12", "2.10.7"),
     scalaVersion := crossScalaVersions.value.head,
   )
 
