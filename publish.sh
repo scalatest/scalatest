@@ -18,7 +18,7 @@ sbt ++2.13.10 "project scalacticNative" clean publishSigned
 sbt "project scalacticDotty" clean publishSigned
 sbt "project scalacticDottyJS" clean publishSigned
 sbt "project scalacticDottyNative" clean publishSigned
-sbt "project scalactic" sonatypeBundleUpload
+sbt "project scalactic" sonaUpload
 
 sbt clean
 sbt scalatestCompatible/clean scalatestCompatible/publishSigned
@@ -43,7 +43,7 @@ sbt ++2.13.10 "project scalatestNative" clean publishSigned
 sbt "project scalatestDotty" clean publishSigned
 sbt "project scalatestDottyJS" clean publishSigned
 sbt "project scalatestDottyNative" clean publishSigned
-sbt "project scalatest" sonatypeBundleUpload
+sbt "project scalatest" sonaUpload
 
 sbt clean
 sbt "project scalatestApp" clean +publishSigned
@@ -68,4 +68,4 @@ sbt "project scalacticMacroNative" clean
 sbt ++2.12.17 "project scalatestAppNative" clean publishSigned
 sbt ++2.13.10 "project scalatestAppNative" clean publishSigned
 sbt "project scalatestAppDottyNative" clean publishSigned
-sbt "project scalatest" sonatypeBundleUpload
+sbt "project scalatest" sonaUpload

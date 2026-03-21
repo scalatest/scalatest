@@ -22,7 +22,7 @@ trait BuildCommons {
 
   val sjsPrefix = if (scalaJSVersion.startsWith("1.")) "_sjs1_" else "_sjs0.6_"  
 
-  val releaseVersion = "3.2.19"
+  val releaseVersion = "3.2.20"
 
   val previousReleaseVersion = "3.2.18"
 
