@@ -26,8 +26,7 @@ trait NativeBuild { this: BuildCommons =>
     // [error] * T89org.scalatest.tools.FrameworkL29org.scalatest.tools.Framework$SN$ReflectivelyInstantiate$
     //
     // Details: https://github.com/scala-native/scala-native/issues/1930
-    resourceDirectories in Compile += (classDirectory in Compile).value,
-    allowUnsafeScalaLibUpgrade := true
+    resourceDirectories in Compile += (classDirectory in Compile).value
   )
 
   lazy val scalacticMacroNative = project.in(file("native/scalactic-macro"))

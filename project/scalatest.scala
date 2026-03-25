@@ -116,7 +116,8 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           Seq()
         else
           scalaLibraries(scalaVersion.value),
-      }
+      }, 
+      allowUnsafeScalaLibUpgrade := true
     )
 
   lazy val scalatestDocSettings = Seq(

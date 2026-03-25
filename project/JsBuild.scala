@@ -16,8 +16,16 @@ trait JsBuild { this: BuildCommons =>
 
   lazy val deleteJsDependenciesTask = taskKey[Unit]("Delete JS_DEPENDENCIES")
 
+  private lazy val sharedJSSettings = 
+    if (scalaJSVersion.startsWith("1."))
+      Seq.empty
+    else // for scala-js 0.6  
+      Seq(
+        crossScalaVersions := Seq("2.13.4", "2.12.13", "2.11.12", "2.10.7")
+      )
+
   lazy val scalacticMacroJS = project.in(file("js/scalactic-macro"))
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(
       projectTitle := "Scalactic Macro.js",
       organization := "org.scalactic",
@@ -48,7 +56,7 @@ trait JsBuild { this: BuildCommons =>
 
   lazy val scalacticJS = project.in(file("js/scalactic"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(scalacticDocSettings: _*)
     .settings(
       projectTitle := "Scalactic.js",
@@ -106,7 +114,7 @@ trait JsBuild { this: BuildCommons =>
 
   lazy val scalatestAppJS = project.in(file("js/scalatest-app"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(
       projectTitle := "ScalaTest App",
       name := "scalatest-app",
@@ -199,7 +207,7 @@ trait JsBuild { this: BuildCommons =>
      .enablePlugins(ScalaJSPlugin)  
 
   lazy val commonTestJS = project.in(file("js/common-test"))
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
@@ -217,7 +225,7 @@ trait JsBuild { this: BuildCommons =>
     ).dependsOn(scalacticMacroJS, LocalProject("scalatestJS")).enablePlugins(ScalaJSPlugin)  
 
   lazy val scalacticTestJS = project.in(file("js/scalactic-test"))
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(
       projectTitle := "Scalactic Test.js",
       organization := "org.scalactic",
@@ -267,7 +275,7 @@ trait JsBuild { this: BuildCommons =>
     )
 
   lazy val scalatestTestJS = project.in(file("js/scalatest-test"))
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(sharedTestSettingsJS: _*)
     .settings(
       projectTitle := "ScalaTest Test",
@@ -298,7 +306,7 @@ trait JsBuild { this: BuildCommons =>
      )
 
   lazy val scalatestDiagramsTestJS = project.in(file("js/diagrams-test"))
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(sharedTestSettingsJS: _*)
     .settings(
       projectTitle := "ScalaTest Diagrams Test",
@@ -310,7 +318,7 @@ trait JsBuild { this: BuildCommons =>
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestFeatureSpecTestJS = project.in(file("js/featurespec-test"))
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(sharedTestSettingsJS: _*)
     .settings(
       projectTitle := "ScalaTest FeatureSpec Test",
@@ -322,7 +330,7 @@ trait JsBuild { this: BuildCommons =>
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestFlatSpecTestJS = project.in(file("js/flatspec-test"))
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(sharedTestSettingsJS: _*)
     .settings(
       projectTitle := "ScalaTest FlatSpec Test",
@@ -334,7 +342,7 @@ trait JsBuild { this: BuildCommons =>
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestFreeSpecTestJS = project.in(file("js/freespec-test"))
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(sharedTestSettingsJS: _*)
     .settings(
       projectTitle := "ScalaTest FreeSpec Test",
@@ -346,7 +354,7 @@ trait JsBuild { this: BuildCommons =>
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestFunSpecTestJS = project.in(file("js/funspec-test"))
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(sharedTestSettingsJS: _*)
     .settings(
       projectTitle := "ScalaTest FunSpec Test",
@@ -358,7 +366,7 @@ trait JsBuild { this: BuildCommons =>
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestFunSuiteTestJS = project.in(file("js/funsuite-test"))
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(sharedTestSettingsJS: _*)
     .settings(
       projectTitle := "ScalaTest FunSuite Test",
@@ -370,7 +378,7 @@ trait JsBuild { this: BuildCommons =>
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)         
 
   lazy val scalatestPropSpecTestJS = project.in(file("js/propspec-test"))
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(sharedTestSettingsJS: _*)
     .settings(
       projectTitle := "ScalaTest PropSpec Test",
@@ -382,7 +390,7 @@ trait JsBuild { this: BuildCommons =>
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestWordSpecTestJS = project.in(file("js/wordspec-test"))
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(sharedTestSettingsJS: _*)
     .settings(
       projectTitle := "ScalaTest WordSpec Test",
@@ -410,7 +418,7 @@ trait JsBuild { this: BuildCommons =>
 
   lazy val scalatestCoreJS = project.in(file("js/core"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(scalatestDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest Core JS",
@@ -493,7 +501,7 @@ trait JsBuild { this: BuildCommons =>
 
   lazy val scalatestFeatureSpecJS = project.in(file("js/featurespec"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(
       projectTitle := "ScalaTest FeatureSpec JS",
       organization := "org.scalatest",
@@ -525,7 +533,7 @@ trait JsBuild { this: BuildCommons =>
 
   lazy val scalatestFlatSpecJS = project.in(file("js/flatspec"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(
       projectTitle := "ScalaTest FlatSpec JS",
       organization := "org.scalatest",
@@ -557,7 +565,7 @@ trait JsBuild { this: BuildCommons =>
 
   lazy val scalatestFreeSpecJS = project.in(file("js/freespec"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(
       projectTitle := "ScalaTest FreeSpec JS",
       organization := "org.scalatest",
@@ -589,7 +597,7 @@ trait JsBuild { this: BuildCommons =>
 
   lazy val scalatestFunSuiteJS = project.in(file("js/funsuite"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(
       projectTitle := "ScalaTest FunSuite JS",
       organization := "org.scalatest",
@@ -621,7 +629,7 @@ trait JsBuild { this: BuildCommons =>
 
   lazy val scalatestFunSpecJS = project.in(file("js/funspec"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(
       projectTitle := "ScalaTest FunSpec JS",
       organization := "org.scalatest",
@@ -653,7 +661,7 @@ trait JsBuild { this: BuildCommons =>
 
   lazy val scalatestPropSpecJS = project.in(file("js/propspec"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(
       projectTitle := "ScalaTest PropSpec JS",
       organization := "org.scalatest",
@@ -685,7 +693,7 @@ trait JsBuild { this: BuildCommons =>
 
   lazy val scalatestWordSpecJS = project.in(file("js/wordspec"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(
       projectTitle := "ScalaTest WordSpec JS",
       organization := "org.scalatest",
@@ -717,7 +725,7 @@ trait JsBuild { this: BuildCommons =>
 
   lazy val scalatestDiagramsJS = project.in(file("js/diagrams"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(
       projectTitle := "ScalaTest Diagrams JS",
       organization := "org.scalatest",
@@ -749,7 +757,7 @@ trait JsBuild { this: BuildCommons =>
 
   lazy val scalatestMatchersCoreJS = project.in(file("js/matchers-core"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(
       projectTitle := "ScalaTest Matchers Core JS",
       organization := "org.scalatest",
@@ -783,7 +791,7 @@ trait JsBuild { this: BuildCommons =>
 
   lazy val scalatestShouldMatchersJS = project.in(file("js/shouldmatchers"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(
       projectTitle := "ScalaTest Should Matchers JS",
       organization := "org.scalatest",
@@ -815,7 +823,7 @@ trait JsBuild { this: BuildCommons =>
 
   lazy val scalatestMustMatchersJS = project.in(file("js/mustmatchers"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(
       projectTitle := "ScalaTest Must Matchers JS",
       organization := "org.scalatest",
@@ -847,7 +855,7 @@ trait JsBuild { this: BuildCommons =>
 
   lazy val scalatestJS = project.in(file("js/scalatest"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedJSSettings: _*)
     .settings(
       projectTitle := "ScalaTest JS",
       organization := "org.scalatest",
