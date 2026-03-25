@@ -24,7 +24,7 @@ trait BuildCommons {
 
   val releaseVersion = "3.2.20"
 
-  val previousReleaseVersion = "3.2.18"
+  val previousReleaseVersion = "3.2.19"
 
   val plusJUnitVersion = "3.2.10.0"
   val plusTestNGVersion = "3.2.10.0"
