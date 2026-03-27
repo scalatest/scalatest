@@ -573,7 +573,7 @@ import scala.collection.mutable.Builder
  *
  * <p>
  * <em>Note: The <code>Or</code> hierarchy was inspired in part by the disjoint union (<code>\/</code>) and <code>Validation</code> types of
- * <a href="http://code.google.com/p/scalaz/" target="_blank"><code>scalaz</code></a>, the <code>ProcessResult</code> type of
+ * <a href="https://github.com/scalaz/scalaz/" target="_blank"><code>scalaz</code></a>, the <code>ProcessResult</code> type of
  * <a href="https://github.com/typesafehub/activator/">Typesafe Activator</a>, and the <code>Result</code> type of
  * <a href="https://github.com/vpatryshev/ScalaKittens">ScalaKittens</a>.</em>
  * </p>

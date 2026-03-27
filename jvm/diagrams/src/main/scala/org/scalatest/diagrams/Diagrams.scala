@@ -152,7 +152,7 @@ import collection.immutable.TreeMap
  *         ...
  * </pre>
  *
- * <p>Trait <code>Diagrams</code> was inspired by Peter Niederwieser's work in <a href="http://code.google.com/p/spock/">Spock</a> and <a href="https://github.com/pniederw/expecty">Expecty</a>.
+ * <p>Trait <code>Diagrams</code> was inspired by Peter Niederwieser's work in <a href="https://github.com/spockframework/spock">Spock</a> and <a href="https://github.com/pniederw/expecty">Expecty</a>.
  */
 trait Diagrams extends Assertions {
 
