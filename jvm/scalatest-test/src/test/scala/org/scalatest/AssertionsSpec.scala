@@ -131,6 +131,14 @@ class AssertionsSpec extends AnyFunSpec {
       assert(result eq e)
     }
 
+    it("should catch any exception when the type parameter is left blank") {
+      val e = new RuntimeException
+      val result = intercept {
+        throw e
+      }
+      assert(result == e)
+    }
+
     describe("when the bit of code throws the wrong exception") {
       it("should include that wrong exception as the TFE's cause") {
         val wrongException = new RuntimeException("oops!")
@@ -178,6 +186,13 @@ class AssertionsSpec extends AnyFunSpec {
           assertThrows[Exception] { "hi" }
         }
       assert(caught.isInstanceOf[TestFailedException])
+    }
+
+    it("should catch any exception if the type parameter is left blank") {
+      val result = assertThrows {
+        throw new IllegalArgumentException
+      }
+      assert(result eq Succeeded)
     }
 
     describe("when the bit of code throws the wrong exception") {
