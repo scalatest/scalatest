@@ -220,7 +220,11 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     *
     * @return the element of this <code>NonEmptyArray</code> at index <code>idx</code>, where 0 indicates the first element.
     */
-  final def apply(idx: Int): T = toArray(idx)
+  final def apply(idx: Int): T = {
+    if (idx < 0 || idx >= toArray.length)
+      throw new IndexOutOfBoundsException(Resources.indexOutOfBounds(idx, toArray.length))
+    toArray(idx)
+  }
 
   /**
     * Finds the first element of this <code>NonEmptyArray</code> for which the given partial function is defined, if any, and applies the partial function to it.

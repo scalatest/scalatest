@@ -385,6 +385,17 @@ class Randomizer(val seed: Long) { thisRandomizer =>
     val pos = (ia.toLong << 32) + ib
     (PosZLong.ensuringValid(pos), rb)
   }
+//DOTTY-ONLY
+//DOTTY-ONLY /**
+//DOTTY-ONLY  * DOTTY-only helper that returns an opaquetypes PosZLong.
+//DOTTY-ONLY  * This is commented out on the JVM build and enabled for Dotty builds.
+//DOTTY-ONLY  */
+//DOTTY-ONLY def nextOpaqueTypePosZLong: (org.scalactic.opaquetypes.PosLongs.PosZLong, Randomizer) = {
+//DOTTY-ONLY   val (ia, ra) = thisRandomizer.next(31) // 31 ensures sign bit is 0
+//DOTTY-ONLY   val (ib, rb) = ra.next(32)
+//DOTTY-ONLY   val pos = (ia.toLong << 32) + ib
+//DOTTY-ONLY   (org.scalactic.opaquetypes.PosLongs.PosZLong.ensuringValid(pos), rb)
+//DOTTY-ONLY }
 
   // This is needed to distinguish negative and positive
   // zero floats because -0.0f == 0.0f

@@ -194,7 +194,11 @@ object NonEmptyArray {
   given [E]: Conversion[NonEmptyArray[E], PartialFunction[Int, E]] with {
     def apply(nonEmptyArray: NonEmptyArray[E]): PartialFunction[Int, E] =
       new PartialFunction[Int, E] {
-        def apply(i: Int): E = nonEmptyArray.toArray.apply(i)
+        def apply(i: Int): E = {
+          if (i < 0 || i >= nonEmptyArray.length)
+            throw new IndexOutOfBoundsException(Resources.indexOutOfBounds(i, nonEmptyArray.length))
+          nonEmptyArray.toArray.apply(i)
+        }
         def isDefinedAt(i: Int): Boolean = i >= 0 && i < nonEmptyArray.length
       }
   }
