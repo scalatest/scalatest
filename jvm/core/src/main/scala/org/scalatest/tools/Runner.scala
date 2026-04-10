@@ -1149,8 +1149,6 @@ object Runner {
         dispatch(
           DiscoveryCompleted(tracker.nextOrdinal(), Some(discoveryDuration)))
 
-        internalDiscoveredSuites.set(Some(discoSuites.map(_.suite.getClass.getName).toSet))  
-
         discoSuites
       }
     }
@@ -1215,6 +1213,8 @@ object Runner {
           val discoSuiteInstances = genDiscoSuites
 
           val suiteInstances: List[SuiteConfig] = namedSuiteInstances ::: junitSuiteInstances ::: discoSuiteInstances ::: testNGWrapperSuiteList
+
+          internalDiscoveredSuites.set(Some(suiteInstances.map(_.suite.getClass.getName).toSet))
 
           val testCountList =
             for (suiteConfig <- suiteInstances)
