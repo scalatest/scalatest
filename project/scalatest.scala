@@ -548,6 +548,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     )      
 
   lazy val rootProject = Project("root", file("."))
+                         .settings(sharedSettings: _*)
                          .aggregate(
                            scalacticMacro, 
                            scalactic, 
@@ -572,6 +573,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
   lazy val scalatestCompatible = project.in(file("jvm/compatible"))
     .enablePlugins(SbtOsgi)
     .settings(commonSharedSettings: _*)
+    .settings(scalaVersionsSettings: _*)
     .settings(scalatestDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest Compatible",
@@ -1505,6 +1507,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")*/
 
   lazy val gentests = project.in(file("gentests"))
+    .settings(gentestsSharedSettings: _*)
     .aggregate(genMustMatchersTests1, genMustMatchersTests2, genMustMatchersTests3, genMustMatchersTests4, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests1,
                genInspectorsShorthandsTests2, genTheyTests, genContainTests1, genContainTests2, genSortedTests, genLoneElementTests, genEmptyTests/*, genSafeStyleTests*/)
 

@@ -147,12 +147,19 @@ object GenCompatibleClasses {
     Seq(usingCompatFile)
   }
 
-  def genTest(baseTargetDir: File, version: String, scalaVersion: String): Seq[File] = {
+  def genTest(baseTargetDir: File, version: String, scalaVersion: String): Seq[File] =
+    genTest(baseTargetDir, version, scalaVersion, false, false)
+
+  def genTest(baseTargetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Seq[File] =
+    genTest(baseTargetDir, version, scalaVersion, scalaJS, false)
+
+  def genTest(baseTargetDir: File, version: String, scalaVersion: String, scalaJS: Boolean, scalaNative: Boolean): Seq[File] = {
     val targetDir = new File(baseTargetDir, "scala/org/scalatest")
     targetDir.mkdirs()
     val file = new File(targetDir, "CompatParColls.scala")
     if (!file.exists || generatorSource.lastModified > file.lastModified) {
-      val parMethod = if(ScalaVersionHelper.isStdLibCompat_213(scalaVersion)) "def par: T = oriCol" else ""
+      // Scala.js don't have parallel collections in their standard library
+      val parMethod = if(scalaJS || ScalaVersionHelper.isStdLibCompat_213(scalaVersion)) "def par: T = oriCol" else ""
       /*
        For recording purpose, this is the original version of CompatParColls that stops working in 2.13.0-M4
         /**

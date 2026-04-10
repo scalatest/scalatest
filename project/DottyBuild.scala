@@ -18,7 +18,7 @@ trait DottyBuild { this: BuildCommons =>
 
   // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.27/
   // lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.3.6")
+  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.3.7")
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     scalacOptions ++= List("-noindent", "-Xprint-suspension"/*, "-source", "future"*/)
