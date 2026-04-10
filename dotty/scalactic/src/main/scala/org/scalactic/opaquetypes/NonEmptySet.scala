@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic.opaques
+package org.scalactic.opaquetypes
 
 import scala.collection.GenSet
 import scala.collection.mutable.{ArrayBuffer, Buffer}
 import scala.language.higherKinds
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.reflect.ClassTag
+import org.scalactic.Resources
 
 /**
   * A non-empty Set: an ordered, immutable, non-empty collection of elements with <code>LinearSeq</code> performance characteristics.
@@ -154,6 +155,30 @@ object NonEmptySet {
     * @return an <code>Seq</code> containing this <code>NonEmptySet</code>s elements, wrapped in a <code>Some</code> 
     */
   def unapplySeq[T](nonEmptySet: NonEmptySet[T]): Option[Seq[T]] = Some(nonEmptySet.toSeq)
+
+  /**
+   *
+   * A factory/assertion method that produces a <code>NonEmptySet</code>
+   * given a valid <code>Set</code> value, or throws
+   * <code>AssertionError</code>, if given an invalid <code>Set</code> value.
+   *
+   * Note: you should use this method only when you are convinced that it will
+   * always succeed, i.e., never throw an exception. It is good practice to
+   * add a comment near the invocation of this method indicating ''why'' you
+   * think it will always succeed to document your reasoning. If you are not
+   * sure an `ensuringValid` call will always succeed, you should use one of
+   * the other factory or validation methods provided on this object instead:
+   * `from'.
+   *
+   * @param set the <code>Set</code> to check to see if it is a valid.
+   * @return the <code>NonEmptySet</code> if the passed set is valid..
+   * @throws AssertionError if the passed set is not valid.
+   */
+  def ensuringValid[T](set: Set[T]): NonEmptySet[T] =
+    if (set.size == 0)
+      throw new AssertionError(Resources.nonEmptySetEmpty)
+    else
+      set
 
   /**
     * Optionally construct a <code>NonEmptySet</code> containing the elements, if any, of a given <code>GenSet</code>.

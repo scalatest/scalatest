@@ -151,7 +151,7 @@ import org.scalactic.Resources
   * </pre>
   *
   */
-//DOTTY-ONLY @deprecated("Please use org.scalactic.opaques.NonEmptyString.", "3.3.0")  
+//DOTTY-ONLY @deprecated("Please use org.scalactic.opaquetypes.NonEmptyString.", "3.3.0")  
 final class NonEmptyString private (val theString: String) extends AnyVal {
 
   /**
@@ -1533,15 +1533,19 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
 /**
   * Companion object for class <code>NonEmptyString</code>.
   */
-//DOTTY-ONLY @deprecated("Please use org.scalactic.opaques.NonEmptyString.", "3.3.0")  
+//DOTTY-ONLY @deprecated("Please use org.scalactic.opaquetypes.NonEmptyString.", "3.3.0")  
 object NonEmptyString {
 
   /**
     * Constructs a new <code>NonEmptyString</code> given at least one element.
     *
     * @param s the <code>String</code> represented by this <code>NonEmptyString</code>
+    * @throws AssertionError if the passed <code>String</code> is empty
     */
-  def apply(s: String): NonEmptyString = new NonEmptyString(s)
+  def apply(s: String): NonEmptyString = {
+    if (s.isEmpty) throw new AssertionError(Resources.nonEmptyStringEmpty)
+    new NonEmptyString(s)
+  }
 
   /**
     * Constructs a new <code>NonEmptyString</code> given at least one character.

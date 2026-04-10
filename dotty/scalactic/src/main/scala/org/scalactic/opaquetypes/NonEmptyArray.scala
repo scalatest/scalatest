@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic.opaques
+package org.scalactic.opaquetypes
 
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.collection.GenSeq
@@ -41,7 +41,7 @@ import scala.language.higherKinds
   *
   * <pre class="stHighlight">
   * scala&gt; NonEmptyArray(1, 2, 3)
-  * res0: org.scalactic.opaques.NonEmptyArray[Int] = NonEmptyArray(1, 2, 3)
+  * res0: org.scalactic.opaquetypes.NonEmptyArray[Int] = NonEmptyArray(1, 2, 3)
   * </pre>
   *
   * <h2>Working with <code>NonEmptyArray</code>s</h2>
@@ -78,11 +78,11 @@ import scala.language.higherKinds
   * </p>
   *
   * <pre class="stREPL">
-  * scala&gt; import org.scalactic.opaques._
-  * import org.scalactic.opaques._
+  * scala&gt; import org.scalactic.opaquetypes._
+  * import org.scalactic.opaquetypes._
   *
   * scala&gt; for (i &lt;- NonEmptyArray(1, 2, 3)) yield i + 1
-  * res0: org.scalactic.opaques.NonEmptyArray[Int] = NonEmptyArray(2, 3, 4)
+  * res0: org.scalactic.opaquetypes.NonEmptyArray[Int] = NonEmptyArray(2, 3, 4)
   *
   * scala&gt; for (i &lt;- NonEmptyArray(1, 2, 3) if i &lt; 10) yield i + 1
   * res1: Array[Int] = Array(2, 3, 4)
@@ -91,7 +91,7 @@ import scala.language.higherKinds
   *      |   i &lt;- NonEmptyArray(1, 2, 3)
   *      |   j &lt;- NonEmptyArray('a', 'b', 'c')
   *      | } yield (i, j)
-  * res3: org.scalactic.opaques.NonEmptyArray[(Int, Char)] =
+  * res3: org.scalactic.opaquetypes.NonEmptyArray[(Int, Char)] =
   *         NonEmptyArray((1,a), (1,b), (1,c), (2,a), (2,b), (2,c), (3,a), (3,b), (3,c))
   *
   * scala&gt; for {
@@ -135,6 +135,30 @@ object NonEmptyArray {
     // TODO: Figure out how to get case NonEmptyArray() to not compile
     def unapplySeq[T](nonEmptyArray: NonEmptyArray[T]): Option[(T, Seq[T])] = Some(nonEmptyArray.head, nonEmptyArray.tail)
   */
+
+  /**
+   *
+   * A factory/assertion method that produces a <code>NonEmptyArray</code>
+   * given a valid <code>Array</code> value, or throws
+   * <code>AssertionError</code>, if given an invalid <code>Array</code> value.
+   *
+   * Note: you should use this method only when you are convinced that it will
+   * always succeed, i.e., never throw an exception. It is good practice to
+   * add a comment near the invocation of this method indicating ''why'' you
+   * think it will always succeed to document your reasoning. If you are not
+   * sure an `ensuringValid` call will always succeed, you should use one of
+   * the other factory or validation methods provided on this object instead:
+   * `from'.
+   *
+   * @param array the <code>Array</code> to check to see if it is a valid.
+   * @return the <code>NonEmptyArray</code> if the passed array is valid..
+   * @throws AssertionError if the passed array is not valid.
+   */
+  def ensuringValid[T](array: Array[T]): NonEmptyArray[T] =
+    if (array.length == 0)
+      throw new AssertionError(Resources.nonEmptyArrayEmpty)
+    else
+      array
 
   /**
     * Optionally construct a <code>NonEmptyArray</code> containing the elements, if any, of a given <code>GenSeq</code>.

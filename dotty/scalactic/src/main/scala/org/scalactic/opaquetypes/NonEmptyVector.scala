@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic.opaques
+package org.scalactic.opaquetypes
 
 import scala.collection.GenSeq
 import scala.collection.mutable.{ArrayBuffer, Buffer}
@@ -21,6 +21,7 @@ import scala.language.higherKinds
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.reflect.ClassTag
 import scala.collection.generic.CanBuildFrom
+import org.scalactic.Resources
 
 /**
   * A non-empty list: an ordered, immutable, non-empty collection of elements with <code>LinearSeq</code> performance characteristics.
@@ -155,6 +156,30 @@ object NonEmptyVector {
     * @return an <code>Seq</code> containing this <code>NonEmptyVector</code>s elements, wrapped in a <code>Some</code> 
     */
   def unapplySeq[T](nonEmptyVector: NonEmptyVector[T]): Option[Seq[T]] = Some(nonEmptyVector)
+
+  /**
+   *
+   * A factory/assertion method that produces a <code>NonEmptyVector</code>
+   * given a valid <code>Vector</code> value, or throws
+   * <code>AssertionError</code>, if given an invalid <code>Vector</code> value.
+   *
+   * Note: you should use this method only when you are convinced that it will
+   * always succeed, i.e., never throw an exception. It is good practice to
+   * add a comment near the invocation of this method indicating ''why'' you
+   * think it will always succeed to document your reasoning. If you are not
+   * sure an `ensuringValid` call will always succeed, you should use one of
+   * the other factory or validation methods provided on this object instead:
+   * `from'.
+   *
+   * @param vector the <code>Vector</code> to check to see if it is a valid.
+   * @return the <code>NonEmptyVector</code> if the passed vector is valid..
+   * @throws AssertionError if the passed vector is not valid.
+   */
+  def ensuringValid[T](vector: Vector[T]): NonEmptyVector[T] =
+    if (vector.length == 0)
+      throw new AssertionError(Resources.nonEmptyVectorEmpty)
+    else
+      vector
 
   /**
     * Optionally construct a <code>NonEmptyVector</code> containing the elements, if any, of a given <code>GenSeq</code>.

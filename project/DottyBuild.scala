@@ -72,7 +72,7 @@ trait DottyBuild { this: BuildCommons =>
     OsgiKeys.exportPackage := Seq(
       "org.scalactic",
       "org.scalactic.anyvals",
-      "org.scalactic.opaques",
+      "org.scalactic.opaquetypes",
       "org.scalactic.exceptions",
       "org.scalactic.source"
     ),
@@ -130,7 +130,7 @@ trait DottyBuild { this: BuildCommons =>
     OsgiKeys.exportPackage := Seq(
       "org.scalactic",
       "org.scalactic.anyvals",
-      "org.scalactic.opaques",
+      "org.scalactic.opaquetypes",
       "org.scalactic.exceptions",
       "org.scalactic.source"
     ),
@@ -188,7 +188,7 @@ trait DottyBuild { this: BuildCommons =>
     OsgiKeys.exportPackage := Seq(
       "org.scalactic",
       "org.scalactic.anyvals",
-      "org.scalactic.opaques",
+      "org.scalactic.opaquetypes",
       "org.scalactic.exceptions",
       "org.scalactic.source"
     ),
@@ -995,7 +995,7 @@ trait DottyBuild { this: BuildCommons =>
         "org.scalatest.wordspec",
         "org.scalactic",
         "org.scalactic.anyvals",
-        "org.scalactic.opaques",
+        "org.scalactic.opaquetypes",
         "org.scalactic.exceptions",
         "org.scalactic.source"
       ),
@@ -1135,7 +1135,7 @@ trait DottyBuild { this: BuildCommons =>
         "org.scalatest.wordspec",
         "org.scalactic",
         "org.scalactic.anyvals",
-        "org.scalactic.opaques",
+        "org.scalactic.opaquetypes",
         "org.scalactic.exceptions",
         "org.scalactic.source"
       ),
@@ -1273,7 +1273,7 @@ trait DottyBuild { this: BuildCommons =>
           "org.scalatest.wordspec",
           "org.scalactic",
           "org.scalactic.anyvals",
-          "org.scalactic.opaques",
+          "org.scalactic.opaquetypes",
           "org.scalactic.exceptions",
           "org.scalactic.source"
         ),

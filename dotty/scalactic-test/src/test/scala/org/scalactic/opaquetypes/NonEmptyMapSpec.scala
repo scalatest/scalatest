@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic.opaques
+package org.scalactic.opaquetypes
 
 import org.scalactic.ColCompatHelper.Iterable
 import scala.collection.mutable.Buffer
@@ -22,6 +22,7 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
 import org.scalactic.NormalizingEquality
+import org.scalactic.Resources
 
 import org.scalatest.CompatParColls.Converters._
 
@@ -41,6 +42,13 @@ class NonEmptyMapSpec extends UnitSpec {
     threesie(1) shouldBe "one"
     threesie(2) shouldBe "two"
     threesie(3) shouldBe "three"
+  }
+  it can "be constructed with ensuringValid method" in {
+    NonEmptyMap.ensuringValid(Map(1 -> "one", 2 -> "two", 3 -> "three")) shouldBe NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three")
+    NonEmptyMap.ensuringValid(Map("hi" -> "hello")) shouldBe NonEmptyMap("hi" -> "hello")
+    the [AssertionError] thrownBy {
+      NonEmptyMap.ensuringValid(Map.empty[Int, String])
+    } should have message Resources.nonEmptyMapEmpty
   }
   it can "be constructed from a Iterable via the from method on NonEmptyMap singleton" in {
     NonEmptyMap.from(Map.empty[Int, String]) shouldBe None

@@ -121,7 +121,7 @@ import org.scalactic.{Every, Resources}
   *
   * @tparam T the type of elements contained in this <code>NonEmptyArray</code>
   */
-//DOTTY-ONLY @deprecated("Please use org.scalactic.opaques.NonEmptyArray.", "3.3.0")
+//DOTTY-ONLY @deprecated("Please use org.scalactic.opaquetypes.NonEmptyArray.", "3.3.0")
 final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
 
   /**
@@ -1458,7 +1458,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
 /**
   * Companion object for class <code>NonEmptyArray</code>.
   */
-//DOTTY-ONLY @deprecated("Please use org.scalactic.opaques.NonEmptyArray.", "3.3.0")  
+//DOTTY-ONLY @deprecated("Please use org.scalactic.opaquetypes.NonEmptyArray.", "3.3.0")  
 object NonEmptyArray {
 
   /**
