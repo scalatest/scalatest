@@ -105,7 +105,10 @@ trait Whenever {
    * @param condition the boolean condition that determines whether <code>whenever</code> will evaluate the
    *    <code>fun</code> function (<code>condition</code> is true) or throw <code>DiscardedEvaluationException</code> (<code>condition</code> is `false`)
    * @param fun the function to evaluate if the specified <code>condition</code> is `true`
+   * @tparam T the type of the function passed to <code>whenever</code>
+   * @tparam R the result type of the <code>whenever</code> method
+   * @return the result of evaluating the function
    */
-  def whenever[T](condition: Boolean)(fun: => T)(implicit wa: WheneverAsserting[T]): wa.Result =
+  def whenever[T, R](condition: Boolean)(fun: => T)(implicit wa: WheneverAsserting[T, R]): R =
     wa.whenever(condition)(fun)
 }

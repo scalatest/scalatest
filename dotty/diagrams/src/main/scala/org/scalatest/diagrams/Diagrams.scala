@@ -330,11 +330,13 @@ object Diagrams extends Diagrams {
 
     // this is taken from expecty
     private[this] def filterAndSortByAnchor(anchorValues: List[AnchorValue]): Traversable[AnchorValue] = {
-      var map = TreeMap[Int, AnchorValue]()(Ordering.by(-_))
-      // values stemming from compiler generated code often have the same anchor as regular values
-      // and get recorded before them; let's filter them out
-      for (value <- anchorValues) if (!map.contains(value.anchor)) map += (value.anchor -> value)
+      val filtered = anchorValues.filterNot(v => isLambda(v.value))
+      val map = TreeMap.from(filtered.map(v => v.anchor -> v))(Ordering.by[Int, Int](k => -k))
       map.values
+    }
+
+    private[this] def isLambda(value: Any): Boolean = {
+      value != null && value.getClass.getName.contains("$$Lambda")
     }
 
     // this is taken from expecty
