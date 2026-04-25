@@ -27,6 +27,4 @@ object NonZeroLongs {
     def from(l: Long): Option[NonZeroLong] =
       if (l == 0) None else Some(l)  
   }
-  opaque type NonZeroFloat = Float
-  opaque type NonZeroDouble = Double
 }
