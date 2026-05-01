@@ -1229,7 +1229,7 @@ object PosFloats {
     }              
   }
 
-  opaque type PosFiniteFloat <: PosZFiniteFloat = Float
+  opaque type PosFiniteFloat = Float
 
   object PosFiniteFloat {
 
@@ -1244,10 +1244,10 @@ object PosFloats {
       * @return a [[PosFiniteFloat]] representing the given non-negative, none-zero and finite literal
       * @throws a compile-time error if the literal is negative, infinity or not a literal
       */
-    inline def apply[F <: Float & Singleton](inline f: F): PosZFiniteFloat =
+    inline def apply[F <: Float & Singleton](inline f: F): PosFiniteFloat =
       inline constValueOpt[F] match {
         case Some(v: Float) =>
-          inline if v <= 0.0f && v != Float.PositiveInfinity && v != Float.NegativeInfinity then
+              inline if v <= 0.0f || v == Float.PositiveInfinity || v == Float.NegativeInfinity then
             error("PosFiniteFloat cannot be instantiated with a negative float literal or infinity")
           else
             v.asInstanceOf[PosFiniteFloat]
@@ -1268,7 +1268,7 @@ object PosFloats {
       * @param f runtime Float to validate
       * @return Some(PosZFiniteFloat) if f >= 0 and finite, otherwise None
       */
-    def from(f: Float): Option[PosZFiniteFloat] =
+    def from(f: Float): Option[PosFiniteFloat] =
       if (isValid(f)) Some(f) else None    
 
     /** Construct a [[PosFiniteFloat]] from a runtime Float if it is positive and finite,
@@ -1280,7 +1280,7 @@ object PosFloats {
       *     <code>PosFiniteFloat</code>, if it is positive and finite, else the
       *     <code>default</code> <code>PosZFiniteFloat</code> value.
       */
-    def fromOrElse(value: Float, default: => PosZFiniteFloat): PosZFiniteFloat =
+    def fromOrElse(value: Float, default: => PosFiniteFloat): PosFiniteFloat =
       if (isValid(value)) value else default
 
     /**
@@ -1333,9 +1333,21 @@ object PosFloats {
      */
     def tryingValid(value: Float): Try[PosFiniteFloat] =
       if (isValid(value))
-        Success(value)
+        Success(ensuringValid(value))
       else
         Failure(new AssertionError(Resources.invalidPosFiniteFloat))
+
+    extension (p: PosFiniteFloat) {
+      /** Return the underlying Float value. */
+      def value: Float = p
+
+      /** Applies the passed Float => Float function and ensures the result is a PosFiniteFloat. */
+      def ensuringValid(f: Float => Float): PosFiniteFloat = {
+        val candidateResult: Float = f(p)
+        if (PosFiniteFloat.isValid(candidateResult)) PosFiniteFloat.ensuringValid(candidateResult)
+        else throw new AssertionError(s"${candidateResult.toString()}, the result of applying the passed function to ${p.toString()}, was not a valid PosFiniteFloat")
+      }
+    }
 
     /**
     * A validation method that produces a <code>Pass</code>
