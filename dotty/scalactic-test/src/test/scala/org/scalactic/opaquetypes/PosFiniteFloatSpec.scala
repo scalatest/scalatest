@@ -168,14 +168,14 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
       "PosFiniteFloat(1.0f).isNegInfinity" shouldNot compile
     }
 
-    /*it("should be sortable") {
+    it("should be sortable") {
       val xs = List(PosFiniteFloat(2.2F), PosFiniteFloat(4.4F), PosFiniteFloat(1.1F),
         PosFiniteFloat(3.3F))
       xs.sorted shouldEqual List(PosFiniteFloat(1.1F), PosFiniteFloat(2.2F), PosFiniteFloat(3.3F),
         PosFiniteFloat(4.4F))
     }
 
-    describe("when created with apply method") {
+    /*describe("when created with apply method") {
 
       it("should compile when 8 is passed in") {
         "PosFiniteFloat(8)" should compile

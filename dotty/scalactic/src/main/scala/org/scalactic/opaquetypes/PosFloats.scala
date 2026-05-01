@@ -1337,6 +1337,11 @@ object PosFloats {
       else
         Failure(new AssertionError(Resources.invalidPosFiniteFloat))
 
+    /** Ordering instance for PosFiniteFloat that orders by numeric value. */
+    given Ordering[PosFiniteFloat] with {
+      def compare(x: PosFiniteFloat, y: PosFiniteFloat): Int = java.lang.Float.compare(x, y)
+    }
+
     extension (p: PosFiniteFloat) {
       /** Return the underlying Float value. */
       def value: Float = p
