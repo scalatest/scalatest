@@ -1255,6 +1255,50 @@ object PosFloats {
           error("PosFiniteFloat.apply requires a integer, long or float literal")
       }
 
+    /** Compile-time factory for creating a [[PosFiniteFloat]] from an integer literal.
+      *
+      * This inline method inspects the provided integer literal at compile time
+      * and rejects non-positive literals. Use it as: `PosFiniteFloat(5)`. For non-literal
+      * values, use [[ensuringValid]] or [[from]].
+      *
+      * @tparam I the singleton Int literal type
+      * @param i the Int literal
+      * @return a [[PosFiniteFloat]] representing the given positive, finite literal
+      * @throws a compile-time error if the literal is non-positive or not a literal
+      */
+    inline def apply[I <: Int & Singleton](inline i: I): PosFiniteFloat =
+      inline constValueOpt[I] match {
+        case Some(v: Int) =>
+          inline if v <= 0 then
+            error("PosFiniteFloat cannot be instantiated with a negative or zero integer literal")
+          else
+            v.toFloat.asInstanceOf[PosFiniteFloat]
+        case None =>
+          error("PosFiniteFloat.apply requires a integer, long or float literal")
+      }
+
+    /** Compile-time factory for creating a [[PosFiniteFloat]] from a long literal.
+      *
+      * This inline method inspects the provided long literal at compile time
+      * and rejects non-positive literals. Use it as: `PosFiniteFloat(5L)`. For non-literal
+      * values, use [[ensuringValid]] or [[from]].
+      *
+      * @tparam L the singleton Long literal type
+      * @param l the Long literal
+      * @return a [[PosFiniteFloat]] representing the given positive, finite literal
+      * @throws a compile-time error if the literal is non-positive or not a literal
+      */
+    inline def apply[L <: Long & Singleton](inline l: L): PosFiniteFloat =
+      inline constValueOpt[L] match {
+        case Some(v: Long) =>
+          inline if v <= 0L then
+            error("PosFiniteFloat cannot be instantiated with a negative or zero long literal")
+          else
+            v.toFloat.asInstanceOf[PosFiniteFloat]
+        case None =>
+          error("PosFiniteFloat.apply requires a integer, long or float literal")
+      }
+
     /** 
       * Return true when the provided Float is a valid [[PosFiniteFloat]] value (> 0 and != Float.PositiveInfinity). 
       *

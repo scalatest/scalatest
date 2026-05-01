@@ -175,7 +175,7 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
         PosFiniteFloat(4.4F))
     }
 
-    /*describe("when created with apply method") {
+    describe("when created with apply method") {
 
       it("should compile when 8 is passed in") {
         "PosFiniteFloat(8)" should compile
@@ -206,7 +206,7 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
         "PosFiniteFloat(c)" shouldNot compile
       }
     }
-    describe("when specified as a plain-old Float") {
+    /*describe("when specified as a plain-old Float") {
 
       def takesPosFiniteFloat(pos: PosFiniteFloat): Float = pos.value
 
