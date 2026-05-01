@@ -1420,6 +1420,14 @@ object PosFloats {
       /** Return the underlying Float value. */
       def value: Float = p
 
+      /** Returns the larger of this value and `other`. */
+      def max(other: PosFiniteFloat): PosFiniteFloat =
+        if (p >= other) p else other
+
+      /** Returns the smaller of this value and `other`. */
+      def min(other: PosFiniteFloat): PosFiniteFloat =
+        if (p <= other) p else other
+
       /** Returns the negated value as a [[NegFiniteFloat]]. */
       def unary_- : NegFiniteFloat = NegFiniteFloat.ensuringValid(-p)
 

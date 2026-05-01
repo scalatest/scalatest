@@ -258,14 +258,14 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
       }
     }
 
-    /*it("should offer 'min' and 'max' methods that are consistent with Float") {
+    it("should offer 'min' and 'max' methods that are consistent with Float") {
       forAll { (pfloat1: PosFiniteFloat, pfloat2: PosFiniteFloat) =>
         pfloat1.max(pfloat2).toFloat shouldEqual pfloat1.toFloat.max(pfloat2.toFloat)
         pfloat1.min(pfloat2).toFloat shouldEqual pfloat1.toFloat.min(pfloat2.toFloat)
       }
     }
 
-    it("should offer an 'isWhole' method that is consistent with Float") {
+    /*it("should offer an 'isWhole' method that is consistent with Float") {
       forAll { (pfloat: PosFiniteFloat) =>
         pfloat.isWhole shouldEqual pfloat.toFloat.isWhole
       }
