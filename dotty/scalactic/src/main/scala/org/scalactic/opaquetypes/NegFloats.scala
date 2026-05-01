@@ -39,4 +39,12 @@ object NegFloats {
         throw new AssertionError(Resources.invalidNegZFloat)
       else f
   }
+
+  opaque type NegFiniteFloat = Float
+  object NegFiniteFloat {
+    def ensuringValid(f: Float): NegFiniteFloat =
+      if (f >= 0 || f == Float.NegativeInfinity || f == Float.PositiveInfinity)
+        throw new AssertionError(Resources.invalidNegFloat)
+      else f
+  }
 }

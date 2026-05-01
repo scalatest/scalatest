@@ -25,6 +25,7 @@ import PosInts.PosZInt
 import PosDoubles.{PosZDouble, PosDouble}
 import NonZeroFloats.NonZeroFloat
 import NonZeroDoubles.NonZeroDouble
+import NegFloats.NegFiniteFloat
 
 object PosFloats {
 
@@ -1418,6 +1419,9 @@ object PosFloats {
     extension (p: PosFiniteFloat) {
       /** Return the underlying Float value. */
       def value: Float = p
+
+      /** Returns the negated value as a [[NegFiniteFloat]]. */
+      def unary_- : NegFiniteFloat = NegFiniteFloat.ensuringValid(-p)
 
       /** Applies the passed Float => Float function and ensures the result is a PosFiniteFloat. */
       def ensuringValid(f: Float => Float): PosFiniteFloat = {
