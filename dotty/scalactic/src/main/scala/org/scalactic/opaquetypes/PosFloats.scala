@@ -1271,6 +1271,18 @@ object PosFloats {
     def from(f: Float): Option[PosZFiniteFloat] =
       if (isValid(f)) Some(f) else None    
 
+    /** Construct a [[PosFiniteFloat]] from a runtime Float if it is positive and finite,
+      * or return a default [[PosZFiniteFloat]] if not.
+      *
+      * @param value runtime Float to validate
+      * @param default the default [[PosZFiniteFloat]] to return if value is not positive and finite
+      * @return the specified <code>Float</code> value wrapped in a
+      *     <code>PosFiniteFloat</code>, if it is positive and finite, else the
+      *     <code>default</code> <code>PosZFiniteFloat</code> value.
+      */
+    def fromOrElse(value: Float, default: => PosZFiniteFloat): PosZFiniteFloat =
+      if (isValid(value)) value else default
+
     /**
       * The largest value representable as a non-negative <code>Float</code>, which is <code>PosZFloat(Float.MaxValue)</code>.
       */

@@ -139,7 +139,7 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
         PosFiniteFloat.isValid(-99.9f) shouldBe false
       }
     }
-    /*describe("should offer a fromOrElse factory method that") {
+    describe("should offer a fromOrElse factory method that") {
       it("returns a PosFiniteFloat if the passed Float is greater than 0") {
         PosFiniteFloat.fromOrElse(50.23f, PosFiniteFloat(42.0f)).value shouldBe 50.23f
         PosFiniteFloat.fromOrElse(100.0f, PosFiniteFloat(42.0f)).value shouldBe 100.0f
@@ -150,7 +150,7 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
         PosFiniteFloat.fromOrElse(-99.9f, PosFiniteFloat(42.0f)).value shouldBe 42.0f
       }
     }
-    it("should offer MaxValue and MinValue factory methods") {
+    /*it("should offer MaxValue and MinValue factory methods") {
       PosFiniteFloat.MaxValue shouldEqual PosFiniteFloat.from(Float.MaxValue).get
       PosFiniteFloat.MinValue shouldEqual
         PosFiniteFloat.from(Float.MinPositiveValue).get
