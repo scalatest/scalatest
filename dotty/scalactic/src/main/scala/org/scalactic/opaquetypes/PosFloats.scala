@@ -1288,6 +1288,11 @@ object PosFloats {
       */
     val MaxValue: PosFiniteFloat = Float.MaxValue
 
+    /**
+      * The smallest value representable as a positive and finite <code>Float</code>, which is <code>PosFiniteFloat(Float.MinPositiveValue)</code>.
+      */
+    val MinValue: PosFiniteFloat = Float.MinPositiveValue
+
     /** Ensure the runtime Float is positive and not positive infinity, return it as a [[PosFiniteFloat]].
       *
       * @param f runtime Float to check
