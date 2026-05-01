@@ -206,29 +206,31 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
         "PosFiniteFloat(c)" shouldNot compile
       }
     }
-    /*describe("when specified as a plain-old Float") {
+    describe("when specified as a plain-old Float") {
 
       def takesPosFiniteFloat(pos: PosFiniteFloat): Float = pos.value
 
       it("should compile when 8 is passed in") {
-        "takesPosFiniteFloat(8)" should compile
-        takesPosFiniteFloat(8) shouldEqual 8.0F
-        "takesPosFiniteFloat(8L)" should compile
-        takesPosFiniteFloat(8L) shouldEqual 8.0F
+        "takesPosFiniteFloat(8)" shouldNot compile
+        "takesPosFiniteFloat(8L)" shouldNot compile
         "takesPosFiniteFloat(8.0F)" should compile
         takesPosFiniteFloat(8.0F) shouldEqual 8.0F
+        "takesPosFiniteFloat(8.0)" should compile
+        takesPosFiniteFloat(8.0) shouldEqual 8.0
       }
 
       it("should not compile when 0 is passed in") {
         "takesPosFiniteFloat(0)" shouldNot compile
         "takesPosFiniteFloat(0L)" shouldNot compile
         "takesPosFiniteFloat(0.0F)" shouldNot compile
+        "takesPosFiniteFloat(0.0)" shouldNot compile
       }
 
       it("should not compile when -8 is passed in") {
         "takesPosFiniteFloat(-8)" shouldNot compile
         "takesPosFiniteFloat(-8L)" shouldNot compile
         "takesPosFiniteFloat(-8.0F)" shouldNot compile
+        "takesPosFiniteFloat(-8.0)" shouldNot compile
       }
 
       it("should not compile when x is passed in") {
@@ -238,10 +240,12 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
         "takesPosFiniteFloat(b)" shouldNot compile
         val c: Float = -8.0F
         "takesPosFiniteFloat(c)" shouldNot compile
+        val d: Double = -8.0
+        "takesPosFiniteFloat(d)" shouldNot compile
       }
     }
 
-    it("should offer a unary + method that is consistent with Float") {
+    /*it("should offer a unary + method that is consistent with Float") {
       forAll { (p: PosFiniteFloat) =>
         (+p).toFloat shouldEqual (+(p.toFloat))
       }

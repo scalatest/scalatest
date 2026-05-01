@@ -1233,6 +1233,35 @@ object PosFloats {
 
   object PosFiniteFloat {
 
+    /** Convert a [[PosFiniteFloat]] to a plain Float (unwrap). */
+    given Conversion[PosFiniteFloat, Float] with {
+      def apply(x: PosFiniteFloat): Float = x.toFloat
+    }
+
+    /** Convert a compile-time Float literal to a [[PosFiniteFloat]]. */
+    implicit inline def convertFloatToPosFiniteFloat[F <: Float & Singleton](inline x: F): PosFiniteFloat =
+      inline constValueOpt[F] match {
+        case Some(v: Float) =>
+          inline if v <= 0.0f || v == Float.PositiveInfinity || v == Float.NegativeInfinity then
+            error("PosFiniteFloat cannot be instantiated with a negative float literal or infinity")
+          else
+            v.asInstanceOf[PosFiniteFloat]
+        case None =>
+          error("PosFiniteFloat conversion requires a float literal")
+      }
+
+    /** Convert a compile-time Double literal to a [[PosFiniteFloat]]. */
+    implicit inline def convertDoubleToPosFiniteFloat[D <: Double & Singleton](inline x: D): PosFiniteFloat =
+      inline constValueOpt[D] match {
+        case Some(v: Double) =>
+          inline if v <= 0.0 || v == Double.PositiveInfinity || v == Double.NegativeInfinity then
+            error("PosFiniteFloat cannot be instantiated with a negative double literal or infinity")
+          else
+            v.toFloat.asInstanceOf[PosFiniteFloat]
+        case None =>
+          error("PosFiniteFloat conversion requires a double literal")
+      }
+
     /** Compile-time factory for creating a [[PosFiniteFloat]] from a float literal.
       *
       * This inline method inspects the provided float literal at compile time
