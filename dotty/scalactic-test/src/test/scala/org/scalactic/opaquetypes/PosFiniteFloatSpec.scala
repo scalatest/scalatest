@@ -281,7 +281,7 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
       }
     }
 
-    /*it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Float") {
+    it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Float") {
       forAll { (pfloat: PosFiniteFloat) =>
         pfloat.toRadians shouldEqual pfloat.toFloat.toRadians
       }
@@ -292,7 +292,7 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
       an [AssertionError] should be thrownBy { PosFiniteFloat.MaxValue.ensuringValid(_ - PosFiniteFloat.MaxValue) }
       an [AssertionError] should be thrownBy { PosFiniteFloat.MaxValue.ensuringValid(_ => Float.PositiveInfinity) }
       an [AssertionError] should be thrownBy { PosFiniteFloat.MaxValue.ensuringValid(_ => Float.NegativeInfinity) }
-    }*/
+    }
   }
 }
 

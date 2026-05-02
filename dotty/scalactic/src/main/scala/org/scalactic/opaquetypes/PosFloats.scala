@@ -1435,6 +1435,9 @@ object PosFloats {
       /** Returns the greatest PosZFiniteFloat that is <= this value and is a mathematical integer. */
       def floor: PosZFiniteFloat = PosZFiniteFloat.ensuringValid(math.floor(value).toFloat)
 
+      /** Converts an angle measured in degrees to an approximately equivalent angle measured in radians. */
+      def toRadians: Float = math.toRadians(value.toDouble).toFloat
+
       /** Returns the larger of this value and `other`. */
       def max(other: PosFiniteFloat): PosFiniteFloat =
         if (p >= other) p else other
