@@ -54,25 +54,6 @@ object PosDoubles {
       def apply(x: Int): PosZDouble = x.toDouble
     }
 
-    /** Convert a compile-time Long literal or runtime Long to a [[PosZDouble]].
-      *
-      * The inline overload checks long literals at compile time; the runtime
-      * overload validates and throws for negative values.
-      */
-    given Conversion[Long, PosZDouble] with {
-      inline def apply[L <: Long & Singleton](inline x: L): PosZDouble =
-        inline constValueOpt[L] match {
-          case Some(v: Long) =>
-            inline if v < 0L then
-              error("PosZDouble cannot be instantiated with a negative long literal")
-            else
-              v.toDouble.asInstanceOf[PosZDouble]
-          case None =>
-            error("PosZDouble conversion requires a long literal")
-        }
-      def apply(x: Long): PosZDouble = x.toDouble
-    }
-
     /** Convert a compile-time Float literal or runtime Float to a [[PosZDouble]].
       *
       * The inline overload checks float literals at compile time; the runtime
@@ -149,28 +130,6 @@ object PosDoubles {
         case Some(v: Float) =>
           inline if v < 0.0f then
             error("PosZDouble cannot be instantiated with a negative float literal")
-          else
-            v.toDouble.asInstanceOf[PosZDouble]
-        case None =>
-          error("PosZDouble.apply requires a integer, long, float or double literal")
-      }
-
-    /** Compile-time factory for creating a [[PosZDouble]] from a long literal.
-      *
-      * This inline method inspects the provided long literal at compile time
-      * and rejects negative literals. Use it as: `PosZDouble(5L)`. For non-literal
-      * values, use [[ensuringValid]] or [[from]].
-      *
-      * @tparam L the singleton Long literal type
-      * @param l the Long literal
-      * @return a [[PosZDouble]] representing the given non-negative literal
-      * @throws a compile-time error if the literal is negative or not a literal
-      */
-    inline def apply[L <: Long & Singleton](inline l: L): PosZDouble =
-      inline constValueOpt[L] match {
-        case Some(v: Long) =>
-          inline if v < 0L then
-            error("PosZDouble cannot be instantiated with a negative long literal")
           else
             v.toDouble.asInstanceOf[PosZDouble]
         case None =>
@@ -500,6 +459,53 @@ object PosDoubles {
         * True if this <code>PosZDouble</code> value is any finite value (i.e., it is neither positive nor negative infinity), else false.
         */
       def isFinite: Boolean = !value.isInfinite
+    }
+  }
+
+  opaque type PosZFiniteDouble <: PosZDouble = Double
+
+  object PosZFiniteDouble {
+
+    /** Convert a [[PosZFiniteDouble]] to a plain Double (unwrap). */
+    given Conversion[PosZFiniteDouble, Double] with {
+      def apply(x: PosZFiniteDouble): Double = x.toDouble
+    }
+
+    /** Returns true if the passed Double is non-negative and finite. */
+    def isValid(value: Double): Boolean = value >= 0.0 && value != Double.PositiveInfinity && value != Double.NegativeInfinity
+
+    /** Construct a [[PosZFiniteDouble]] from a runtime Double if it is non-negative and finite. */
+    def from(value: Double): Option[PosZFiniteDouble] =
+      if (isValid(value)) Some(value) else None
+
+    /** Construct a [[PosZFiniteDouble]] from a runtime Double if valid, else return the default. */
+    def fromOrElse(value: Double, default: => PosZFiniteDouble): PosZFiniteDouble =
+      if (isValid(value)) value else default
+
+    /** Ensure the runtime Double is non-negative and finite. */
+    def ensuringValid(value: Double): PosZFiniteDouble =
+      if (isValid(value)) value
+      else throw new AssertionError(Resources.invalidPosZDouble)
+
+    /** The largest finite non-negative Double value. */
+    val MaxValue: PosZFiniteDouble = Double.MaxValue
+
+    /** The smallest non-negative finite Double value. */
+    val MinValue: PosZFiniteDouble = 0.0
+
+    /** The smallest positive finite Double value. */
+    val MinPositiveValue: PosZFiniteDouble = Double.MinPositiveValue
+
+    extension (p: PosZFiniteDouble) {
+      /** Return the underlying Double value. */
+      def value: Double = p
+
+      /** Applies the passed function and ensures the result is a valid PosZFiniteDouble. */
+      def ensuringValid(f: Double => Double): PosZFiniteDouble = {
+        val candidateResult: Double = f(p)
+        if (PosZFiniteDouble.isValid(candidateResult)) PosZFiniteDouble.ensuringValid(candidateResult)
+        else throw new AssertionError(s"${candidateResult.toString()}, the result of applying the passed function to ${p.toString()}, was not a valid PosZFiniteDouble")
+      }
     }
   }
 

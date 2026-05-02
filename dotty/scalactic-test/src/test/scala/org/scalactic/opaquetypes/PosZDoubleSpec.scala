@@ -29,7 +29,7 @@ import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 import scala.util.{Try, Success, Failure}
 
-import PosDoubles.{PosZDouble, PosDouble}
+import PosDoubles.{PosZDouble, PosDouble, PosZFiniteDouble}
 import NegDoubles.NegZDouble
 
 trait PosZDoubleSpecSupport {
@@ -98,11 +98,11 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       }
     }
     describe("should offer a tryingValid factory method that") {
-      import TryValues.*
+      import TryValues._
       it("returns a PosZDouble wrapped in a Success if the passed Double is greater than or equal 0") {
-        PosZDouble.tryingValid(0.0) shouldBe Success(PosZDouble(0.0))
-        PosZDouble.tryingValid(50.0) shouldBe Success(PosZDouble(50.0))
-        PosZDouble.tryingValid(100.0f) shouldBe Success(PosZDouble(100.0))
+        PosZDouble.tryingValid(0.0).success.value.value shouldBe 0.0
+        PosZDouble.tryingValid(50.0).success.value.value shouldBe 50.0
+        PosZDouble.tryingValid(100.0f).success.value.value shouldBe 100.0
       }
 
       it("returns an AssertionError wrapped in a Failure if the passed Double is lesser than 0") {
@@ -155,13 +155,13 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
     }
     describe("should offer a fromOrElse factory method that") {
       it("returns a PosZDouble if the passed Double is greater than or equal to 0") {
-        PosZDouble.fromOrElse(50.23, PosZDouble(42.0)) shouldBe PosZDouble(50.23)
-        PosZDouble.fromOrElse(100.0, PosZDouble(42.0)) shouldBe PosZDouble(100.0)
-        PosZDouble.fromOrElse(0.0, PosZDouble(42.0)) shouldBe PosZDouble(0.0)
+        PosZDouble.fromOrElse(50.23, PosZDouble(42.0)).value shouldBe 50.23
+        PosZDouble.fromOrElse(100.0, PosZDouble(42.0)).value shouldBe 100.0
+        PosZDouble.fromOrElse(0.0, PosZDouble(42.0)).value shouldBe 0.0
       }
       it("returns a given default if the passed Double is NOT greater than or equal to 0") {
-        PosZDouble.fromOrElse(-0.00001, PosZDouble(42.0)) shouldBe PosZDouble(42.0)
-        PosZDouble.fromOrElse(-99.9, PosZDouble(42.0)) shouldBe PosZDouble(42.0)
+        PosZDouble.fromOrElse(-0.00001, PosZDouble(42.0)).value shouldBe 42.0
+        PosZDouble.fromOrElse(-99.9, PosZDouble(42.0)).value shouldBe 42.0
       }
     }
     it("should offer MaxValue, MinValue, and MinPositiveValue factory methods") {
@@ -196,8 +196,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       it("should compile when 8 is passed in") {
         "PosZDouble(8)" should compile
         PosZDouble(8).value shouldEqual 8.0
-        "PosZDouble(8L)" should compile
-        PosZDouble(8L).value shouldEqual 8.0
+        "PosZDouble(8L)" shouldNot compile
         "PosZDouble(8.0F)" should compile
         PosZDouble(8.0F).value shouldEqual 8.0
         "PosZDouble(8.0)" should compile
@@ -207,8 +206,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       it("should compile when 0 is passed in") {
         "PosZDouble(0)" should compile
         PosZDouble(0).value shouldEqual 0.0
-        "PosZDouble(0L)" should compile
-        PosZDouble(0L).value shouldEqual 0.0
+        "PosZDouble(0L)" shouldNot compile
         "PosZDouble(0.0F)" should compile
         PosZDouble(0.0F).value shouldEqual 0.0
         "PosZDouble(0.0)" should compile
@@ -239,8 +237,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       it("should compile when 8 is passed in") {
         "takesPosZDouble(8)" should compile
         takesPosZDouble(8) shouldEqual 8.0
-        "takesPosZDouble(8L)" should compile
-        takesPosZDouble(8L) shouldEqual 8.0
+        "takesPosZDouble(8L)" shouldNot compile
         "takesPosZDouble(8.0F)" should compile
         takesPosZDouble(8.0F) shouldEqual 8.0
         "takesPosZDouble(8.0)" should compile
@@ -250,8 +247,7 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       it("should compile when 0 is passed in") {
         "takesPosZDouble(0)" should compile
         takesPosZDouble(0) shouldEqual 0.0
-        "takesPosZDouble(0L)" should compile
-        takesPosZDouble(0L) shouldEqual 0.0
+        "takesPosZDouble(0L)" shouldNot compile
         "takesPosZDouble(0.0F)" should compile
         takesPosZDouble(0.0F) shouldEqual 0.0
         "takesPosZDouble(0.0)" should compile
@@ -342,15 +338,9 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       }
     }
 
-    it("should offer 'toRadians' methods that are consistent with Double") {
+    it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Double") {
       forAll { (pzdouble: PosZDouble) =>
         pzdouble.toRadians shouldEqual pzdouble.toDouble.toRadians
-      }
-    }
-
-    it("should offer toDegrees' methods that are consistent with Double") {
-      forAll { (pzdouble: PosZDouble) =>
-        pzdouble.toDegrees shouldEqual pzdouble.toDouble.toDegrees
       }
     }
 
@@ -365,10 +355,15 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       PosZDouble(33.0).ensuringValid(_ => Double.PositiveInfinity) shouldEqual PosZDouble.ensuringValid(Double.PositiveInfinity)
       an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ - PosZDouble.MaxValue - 1) }
       an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6710
+      an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ => Double.NaN) }
+      // SKIP-DOTTY-END
     }
     it("should offer an isFinite method that returns true if the value does not represent infinity") {
-      forAll { (n: PosZDouble) =>
-        n.isFinite should be (n != PosZDouble.PositiveInfinity)
+      forAll { (n: PosZFiniteDouble) =>
+        (n: PosZDouble).isFinite should be (true)
+        PosZDouble.PositiveInfinity.isFinite should be (false)
       }
     }
   }
