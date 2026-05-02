@@ -1420,6 +1420,21 @@ object PosFloats {
       /** Return the underlying Float value. */
       def value: Float = p
 
+      /** Indicates whether this PosFiniteFloat is finite and has no fraction part. */
+      def isWhole: Boolean = {
+        val longValue = p.toLong
+        longValue.toFloat == p || longValue == Long.MaxValue && p < Float.PositiveInfinity || longValue == Long.MinValue && p > Float.NegativeInfinity
+      }
+
+      /** Rounds this PosFiniteFloat to the nearest whole number as a PosZInt. */
+      def round: PosZInt = PosZInt.ensuringValid(math.round(value))
+
+      /** Returns the smallest PosFiniteFloat that is >= this value and is a mathematical integer. */
+      def ceil: PosFiniteFloat = PosFiniteFloat.ensuringValid(math.ceil(value).toFloat)
+
+      /** Returns the greatest PosZFiniteFloat that is <= this value and is a mathematical integer. */
+      def floor: PosZFiniteFloat = PosZFiniteFloat.ensuringValid(math.floor(value).toFloat)
+
       /** Returns the larger of this value and `other`. */
       def max(other: PosFiniteFloat): PosFiniteFloat =
         if (p >= other) p else other

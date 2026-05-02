@@ -265,7 +265,7 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
       }
     }
 
-    /*it("should offer an 'isWhole' method that is consistent with Float") {
+    it("should offer an 'isWhole' method that is consistent with Float") {
       forAll { (pfloat: PosFiniteFloat) =>
         pfloat.isWhole shouldEqual pfloat.toFloat.isWhole
       }
@@ -281,7 +281,7 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
       }
     }
 
-    it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Float") {
+    /*it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Float") {
       forAll { (pfloat: PosFiniteFloat) =>
         pfloat.toRadians shouldEqual pfloat.toFloat.toRadians
       }
