@@ -1,7 +1,7 @@
 ScalaTest
 =========
 
-[![Build Status](https://travis-ci.org/scalatest/scalatest.png?branch=3.1.x)](https://travis-ci.org/scalatest/scalatest)
+![Build Status](https://github.com/scalatest/scalatest/actions/workflows/ci.yml/badge.svg)
 
 ScalaTest is a free, open-source testing toolkit for Scala and
 Java programmers.
@@ -39,7 +39,7 @@ Building ScalaTest
 The followings are needed for building ScalaTest:
 
 *   JDK 8
-*   [SBT 1.3.13](https://www.scala-sbt.org/1.x/docs/Setup.html)
+*   [SBT 1.11.4](https://www.scala-sbt.org/1.x/docs/Setup.html)
 
 use the following SBT options instead:
 
