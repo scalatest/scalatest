@@ -32,4 +32,20 @@ object NegDoubles {
         throw new AssertionError(Resources.invalidNegDouble)
       else d
   }
+
+  opaque type NegZFiniteDouble = Double
+  object NegZFiniteDouble {
+    def ensuringValid(d: Double): NegZFiniteDouble =
+      if (d > 0 || d == Double.NegativeInfinity || d == Double.PositiveInfinity)
+        throw new AssertionError(Resources.invalidNegZDouble)
+      else d
+  }
+
+  opaque type NegFiniteDouble = Double
+  object NegFiniteDouble {
+    def ensuringValid(d: Double): NegFiniteDouble =
+      if (d >= 0 || d == Double.NegativeInfinity || d == Double.PositiveInfinity)
+        throw new AssertionError(Resources.invalidNegDouble)
+      else d
+  }
 }
