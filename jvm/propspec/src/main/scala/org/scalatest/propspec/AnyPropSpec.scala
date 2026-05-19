@@ -20,6 +20,8 @@ import org.scalatest.{Finders, Suite}
 /**
  * A suite of property-based tests.
  *
+ * The expected type of a test in this class is <code>Any</code>.
+ *
  * <table><tr><td class="usage">
  * <strong>Recommended Usage</strong>:
  * Class <code>AnyPropSpec</code> is a good fit for teams that want to write tests exclusively in terms of property checks, and is also a good choice

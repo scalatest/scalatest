@@ -22,6 +22,8 @@ import org.scalatest.{Finders, Suite}
  * are combined with text that specifies the behavior the tests verify.
  * </p>
  *
+ * The expected type of a test in this class is <code>Any</code>.
+ *
  * <table><tr><td class="usage">
  * <strong>Recommended Usage</strong>:
  * Class <code>AnyFlatSpec</code> is a good first step for teams wishing to move from xUnit to BDD, because its structure is flat like xUnit, so simple and familiar, 

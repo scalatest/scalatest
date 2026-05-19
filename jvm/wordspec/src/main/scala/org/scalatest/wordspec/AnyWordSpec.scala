@@ -21,6 +21,8 @@ import org.scalatest.{ Suite, Finders }
  * Facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
  * are combined with text that specifies the behavior the tests verify.
  * 
+ * The expected type of a test in this class is <code>Any</code>.
+ * 
  * <table><tr><td class="usage">
  * <strong>Recommended Usage</strong>:
  * For teams coming from specs or specs2, <code>AnyWordSpec</code> will feel familiar, and is often the most natural way to port specsN tests to 
