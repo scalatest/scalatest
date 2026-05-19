@@ -23,7 +23,7 @@ import org.scalactic.{Or, Good, Bad}
 
 import PosLongs.PosZLong
 import NonZeroDoubles.NonZeroDouble
-import NegDoubles.NegFiniteDouble
+import NegDoubles.{NegFiniteDouble, NegZFiniteDouble}
 
 object PosDoubles {
 
@@ -472,8 +472,89 @@ object PosDoubles {
       def apply(x: PosZFiniteDouble): Double = x.toDouble
     }
 
+    /** Convert a compile-time Int literal or runtime Int to a [[PosZFiniteDouble]]. */
+    given Conversion[Int, PosZFiniteDouble] with {
+      inline def apply[I <: Int & Singleton](inline x: I): PosZFiniteDouble =
+        inline constValueOpt[I] match {
+          case Some(v: Int) =>
+            inline if v < 0 then
+              error("PosZFiniteDouble cannot be instantiated with a negative integer literal")
+            else
+              v.toDouble.asInstanceOf[PosZFiniteDouble]
+          case None =>
+            error("PosZFiniteDouble conversion requires an integer literal")
+        }
+      def apply(x: Int): PosZFiniteDouble = x.toDouble
+    }
+
+    /** Convert a compile-time Float literal or runtime Float to a [[PosZFiniteDouble]]. */
+    given Conversion[Float, PosZFiniteDouble] with {
+      inline def apply[F <: Float & Singleton](inline x: F): PosZFiniteDouble =
+        inline constValueOpt[F] match {
+          case Some(v: Float) =>
+            inline if v < 0.0f then
+              error("PosZFiniteDouble cannot be instantiated with a negative float literal")
+            else
+              v.toDouble.asInstanceOf[PosZFiniteDouble]
+          case None =>
+            error("PosZFiniteDouble conversion requires a float literal")
+        }
+      def apply(x: Float): PosZFiniteDouble = x.toDouble
+    }
+
+    /** Convert a compile-time Double literal or runtime Double to a [[PosZFiniteDouble]]. */
+    given Conversion[Double, PosZFiniteDouble] with {
+      inline def apply[D <: Double & Singleton](inline x: D): PosZFiniteDouble =
+        inline constValueOpt[D] match {
+          case Some(v: Double) =>
+            inline if v < 0.0 || v == Double.PositiveInfinity || v == Double.NegativeInfinity then
+              error("PosZFiniteDouble cannot be instantiated with a negative or infinite double literal")
+            else
+              v.asInstanceOf[PosZFiniteDouble]
+          case None =>
+            error("PosZFiniteDouble conversion requires a double literal")
+        }
+      def apply(x: Double): PosZFiniteDouble = x
+    }
+
+    /** Compile-time factory for creating a [[PosZFiniteDouble]] from a double literal. */
+    inline def apply[D <: Double & Singleton](inline d: D): PosZFiniteDouble =
+      inline constValueOpt[D] match {
+        case Some(v: Double) =>
+          inline if v < 0.0 || v == Double.PositiveInfinity || v == Double.NegativeInfinity then
+            error("PosZFiniteDouble cannot be instantiated with a negative or infinite double literal")
+          else
+            v.asInstanceOf[PosZFiniteDouble]
+        case None =>
+          error("PosZFiniteDouble.apply requires an integer, float or double literal")
+      }
+
+    /** Compile-time factory for creating a [[PosZFiniteDouble]] from a float literal. */
+    inline def apply[F <: Float & Singleton](inline f: F): PosZFiniteDouble =
+      inline constValueOpt[F] match {
+        case Some(v: Float) =>
+          inline if v < 0.0f then
+            error("PosZFiniteDouble cannot be instantiated with a negative float literal")
+          else
+            v.toDouble.asInstanceOf[PosZFiniteDouble]
+        case None =>
+          error("PosZFiniteDouble.apply requires an integer, float or double literal")
+      }
+
+    /** Compile-time factory for creating a [[PosZFiniteDouble]] from an integer literal. */
+    inline def apply[I <: Int & Singleton](inline i: I): PosZFiniteDouble =
+      inline constValueOpt[I] match {
+        case Some(v: Int) =>
+          inline if v < 0 then
+            error("PosZFiniteDouble cannot be instantiated with a negative integer literal")
+          else
+            v.toDouble.asInstanceOf[PosZFiniteDouble]
+        case None =>
+          error("PosZFiniteDouble.apply requires an integer, float or double literal")
+      }
+
     /** Returns true if the passed Double is non-negative and finite. */
-    def isValid(value: Double): Boolean = value >= 0.0 && value != Double.PositiveInfinity && value != Double.NegativeInfinity
+    def isValid(value: Double): Boolean = value >= 0.0 && value.isFinite
 
     /** Construct a [[PosZFiniteDouble]] from a runtime Double if it is non-negative and finite. */
     def from(value: Double): Option[PosZFiniteDouble] =
@@ -488,10 +569,26 @@ object PosDoubles {
       if (isValid(value)) value
       else throw new AssertionError(Resources.invalidPosZDouble)
 
+    /** Produce a PosZFiniteDouble in a Success if valid, or an AssertionError in a Failure. */
+    def tryingValid(value: Double): Try[PosZFiniteDouble] =
+      if (isValid(value))
+        Success(value)
+      else
+        Failure(new AssertionError(Resources.invalidPosZDouble))
+
+    def passOrElse[E](value: Double)(f: Double => E): Validation[E] =
+      if (isValid(value)) Pass else Fail(f(value))
+
+    def goodOrElse[B](value: Double)(f: Double => B): PosZFiniteDouble Or B =
+      if (isValid(value)) Good(value) else Bad(f(value))
+
+    def rightOrElse[L](value: Double)(f: Double => L): Either[L, PosZFiniteDouble] =
+      if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))
+
     /** The largest finite non-negative Double value. */
     val MaxValue: PosZFiniteDouble = Double.MaxValue
 
-    /** The smallest non-negative finite Double value. */
+    /** The smallest non-negative finite Double value (zero). */
     val MinValue: PosZFiniteDouble = 0.0
 
     /** The smallest positive finite Double value. */
@@ -500,6 +597,39 @@ object PosDoubles {
     extension (p: PosZFiniteDouble) {
       /** Return the underlying Double value. */
       def value: Double = p
+
+      /** Return this value (unary +). */
+      def unary_+ : PosZFiniteDouble = p
+
+      /** Negate this value, returning a NegZFiniteDouble. */
+      def unary_- : NegZFiniteDouble = NegZFiniteDouble.ensuringValid(-p)
+
+      /** Returns the larger of this and that. */
+      def max(that: PosZFiniteDouble): PosZFiniteDouble = math.max(p, that)
+
+      /** Returns the smaller of this and that. */
+      def min(that: PosZFiniteDouble): PosZFiniteDouble = math.min(p, that)
+
+      /** Indicates whether this value is a whole number. */
+      def isWhole: Boolean = {
+        val longValue = p.toLong
+        longValue.toDouble == p || longValue == Long.MaxValue && p < Double.PositiveInfinity || longValue == Long.MinValue && p > Double.NegativeInfinity
+      }
+
+      /** Rounds this value to the nearest whole number as a PosZLong. */
+      def round: PosZLong = PosZLong.ensuringValid(math.round(p))
+
+      /** Returns the smallest PosZFiniteDouble >= this that is a mathematical integer. */
+      def ceil: PosZFiniteDouble = PosZFiniteDouble.ensuringValid(math.ceil(p))
+
+      /** Returns the greatest PosZFiniteDouble <= this that is a mathematical integer. */
+      def floor: PosZFiniteDouble = PosZFiniteDouble.ensuringValid(math.floor(p))
+
+      /** Converts this angle in degrees to radians. */
+      def toRadians: Double = math.toRadians(p)
+
+      /** Converts this angle in radians to degrees. */
+      def toDegrees: Double = math.toDegrees(p)
 
       /** Applies the passed function and ensures the result is a valid PosZFiniteDouble. */
       def ensuringValid(f: Double => Double): PosZFiniteDouble = {
