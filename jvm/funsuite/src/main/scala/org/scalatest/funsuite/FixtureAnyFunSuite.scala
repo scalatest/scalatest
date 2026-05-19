@@ -22,6 +22,8 @@ import org.scalatest.Suite.autoTagClassAnnotations
 /**
   * A sister class to <code>org.scalatest.funsuite.AnyFunSuite</code> that can pass a fixture object into its tests.
   *
+  * The expected type of a test in this class is <code>Fixture => Any</code>.
+  *
   * <table><tr><td class="usage">
   * <strong>Recommended Usage</strong>:
   * Use class <code>FixtureAnyFunSuite</code> in situations for which <a href="AnyFunSuite.html"><code>AnyFunSuite</code></a>

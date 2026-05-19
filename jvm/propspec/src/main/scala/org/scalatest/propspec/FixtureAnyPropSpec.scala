@@ -20,6 +20,8 @@ import org.scalatest.{Finders, Suite}
 /**
  * A sister class to <code>org.scalatest.propspec.AnyPropSpec</code> that can pass a fixture object into its tests.
  *
+ * The expected type of a test in this class is <code>Fixture => Any</code>.
+ *
  * <table><tr><td class="usage">
  * <strong>Recommended Usage</strong>:
  * Use class <code>FixtureAnyPropSpec</code> in situations for which <a href="AnyPropSpec.html"><code>AnyPropSpec</code></a>
