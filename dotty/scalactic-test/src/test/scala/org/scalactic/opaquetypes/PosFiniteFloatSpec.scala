@@ -28,6 +28,7 @@ import org.scalactic.{Pass, Fail}
 import org.scalactic.Equality
 
 import PosFloats.PosFiniteFloat
+import NegFloats.NegFiniteFloat
 
 trait PosFiniteFloatSpecSupport {
 
@@ -139,7 +140,7 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
         PosFiniteFloat.isValid(-99.9f) shouldBe false
       }
     }
-    /*describe("should offer a fromOrElse factory method that") {
+    describe("should offer a fromOrElse factory method that") {
       it("returns a PosFiniteFloat if the passed Float is greater than 0") {
         PosFiniteFloat.fromOrElse(50.23f, PosFiniteFloat(42.0f)).value shouldBe 50.23f
         PosFiniteFloat.fromOrElse(100.0f, PosFiniteFloat(42.0f)).value shouldBe 100.0f
@@ -211,24 +212,26 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
       def takesPosFiniteFloat(pos: PosFiniteFloat): Float = pos.value
 
       it("should compile when 8 is passed in") {
-        "takesPosFiniteFloat(8)" should compile
-        takesPosFiniteFloat(8) shouldEqual 8.0F
-        "takesPosFiniteFloat(8L)" should compile
-        takesPosFiniteFloat(8L) shouldEqual 8.0F
+        "takesPosFiniteFloat(8)" shouldNot compile
+        "takesPosFiniteFloat(8L)" shouldNot compile
         "takesPosFiniteFloat(8.0F)" should compile
         takesPosFiniteFloat(8.0F) shouldEqual 8.0F
+        "takesPosFiniteFloat(8.0)" should compile
+        takesPosFiniteFloat(8.0) shouldEqual 8.0
       }
 
       it("should not compile when 0 is passed in") {
         "takesPosFiniteFloat(0)" shouldNot compile
         "takesPosFiniteFloat(0L)" shouldNot compile
         "takesPosFiniteFloat(0.0F)" shouldNot compile
+        "takesPosFiniteFloat(0.0)" shouldNot compile
       }
 
       it("should not compile when -8 is passed in") {
         "takesPosFiniteFloat(-8)" shouldNot compile
         "takesPosFiniteFloat(-8L)" shouldNot compile
         "takesPosFiniteFloat(-8.0F)" shouldNot compile
+        "takesPosFiniteFloat(-8.0)" shouldNot compile
       }
 
       it("should not compile when x is passed in") {
@@ -238,6 +241,8 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
         "takesPosFiniteFloat(b)" shouldNot compile
         val c: Float = -8.0F
         "takesPosFiniteFloat(c)" shouldNot compile
+        val d: Double = -8.0
+        "takesPosFiniteFloat(d)" shouldNot compile
       }
     }
 
@@ -287,7 +292,7 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
       an [AssertionError] should be thrownBy { PosFiniteFloat.MaxValue.ensuringValid(_ - PosFiniteFloat.MaxValue) }
       an [AssertionError] should be thrownBy { PosFiniteFloat.MaxValue.ensuringValid(_ => Float.PositiveInfinity) }
       an [AssertionError] should be thrownBy { PosFiniteFloat.MaxValue.ensuringValid(_ => Float.NegativeInfinity) }
-    }*/
+    }
   }
 }
 

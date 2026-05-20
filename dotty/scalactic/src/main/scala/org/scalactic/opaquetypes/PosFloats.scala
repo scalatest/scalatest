@@ -25,6 +25,7 @@ import PosInts.PosZInt
 import PosDoubles.{PosZDouble, PosDouble}
 import NonZeroFloats.NonZeroFloat
 import NonZeroDoubles.NonZeroDouble
+import NegFloats.NegFiniteFloat
 
 object PosFloats {
 
@@ -1229,9 +1230,38 @@ object PosFloats {
     }              
   }
 
-  opaque type PosFiniteFloat <: PosZFiniteFloat = Float
+  opaque type PosFiniteFloat = Float
 
   object PosFiniteFloat {
+
+    /** Convert a [[PosFiniteFloat]] to a plain Float (unwrap). */
+    given Conversion[PosFiniteFloat, Float] with {
+      def apply(x: PosFiniteFloat): Float = x.toFloat
+    }
+
+    /** Convert a compile-time Float literal to a [[PosFiniteFloat]]. */
+    implicit inline def convertFloatToPosFiniteFloat[F <: Float & Singleton](inline x: F): PosFiniteFloat =
+      inline constValueOpt[F] match {
+        case Some(v: Float) =>
+          inline if v <= 0.0f || v == Float.PositiveInfinity || v == Float.NegativeInfinity then
+            error("PosFiniteFloat cannot be instantiated with a negative float literal or infinity")
+          else
+            v.asInstanceOf[PosFiniteFloat]
+        case None =>
+          error("PosFiniteFloat conversion requires a float literal")
+      }
+
+    /** Convert a compile-time Double literal to a [[PosFiniteFloat]]. */
+    implicit inline def convertDoubleToPosFiniteFloat[D <: Double & Singleton](inline x: D): PosFiniteFloat =
+      inline constValueOpt[D] match {
+        case Some(v: Double) =>
+          inline if v <= 0.0 || v == Double.PositiveInfinity || v == Double.NegativeInfinity then
+            error("PosFiniteFloat cannot be instantiated with a negative double literal or infinity")
+          else
+            v.toFloat.asInstanceOf[PosFiniteFloat]
+        case None =>
+          error("PosFiniteFloat conversion requires a double literal")
+      }
 
     /** Compile-time factory for creating a [[PosFiniteFloat]] from a float literal.
       *
@@ -1244,13 +1274,57 @@ object PosFloats {
       * @return a [[PosFiniteFloat]] representing the given non-negative, none-zero and finite literal
       * @throws a compile-time error if the literal is negative, infinity or not a literal
       */
-    inline def apply[F <: Float & Singleton](inline f: F): PosZFiniteFloat =
+    inline def apply[F <: Float & Singleton](inline f: F): PosFiniteFloat =
       inline constValueOpt[F] match {
         case Some(v: Float) =>
-          inline if v <= 0.0f && v != Float.PositiveInfinity && v != Float.NegativeInfinity then
+              inline if v <= 0.0f || v == Float.PositiveInfinity || v == Float.NegativeInfinity then
             error("PosFiniteFloat cannot be instantiated with a negative float literal or infinity")
           else
             v.asInstanceOf[PosFiniteFloat]
+        case None =>
+          error("PosFiniteFloat.apply requires a integer, long or float literal")
+      }
+
+    /** Compile-time factory for creating a [[PosFiniteFloat]] from an integer literal.
+      *
+      * This inline method inspects the provided integer literal at compile time
+      * and rejects non-positive literals. Use it as: `PosFiniteFloat(5)`. For non-literal
+      * values, use [[ensuringValid]] or [[from]].
+      *
+      * @tparam I the singleton Int literal type
+      * @param i the Int literal
+      * @return a [[PosFiniteFloat]] representing the given positive, finite literal
+      * @throws a compile-time error if the literal is non-positive or not a literal
+      */
+    inline def apply[I <: Int & Singleton](inline i: I): PosFiniteFloat =
+      inline constValueOpt[I] match {
+        case Some(v: Int) =>
+          inline if v <= 0 then
+            error("PosFiniteFloat cannot be instantiated with a negative or zero integer literal")
+          else
+            v.toFloat.asInstanceOf[PosFiniteFloat]
+        case None =>
+          error("PosFiniteFloat.apply requires a integer, long or float literal")
+      }
+
+    /** Compile-time factory for creating a [[PosFiniteFloat]] from a long literal.
+      *
+      * This inline method inspects the provided long literal at compile time
+      * and rejects non-positive literals. Use it as: `PosFiniteFloat(5L)`. For non-literal
+      * values, use [[ensuringValid]] or [[from]].
+      *
+      * @tparam L the singleton Long literal type
+      * @param l the Long literal
+      * @return a [[PosFiniteFloat]] representing the given positive, finite literal
+      * @throws a compile-time error if the literal is non-positive or not a literal
+      */
+    inline def apply[L <: Long & Singleton](inline l: L): PosFiniteFloat =
+      inline constValueOpt[L] match {
+        case Some(v: Long) =>
+          inline if v <= 0L then
+            error("PosFiniteFloat cannot be instantiated with a negative or zero long literal")
+          else
+            v.toFloat.asInstanceOf[PosFiniteFloat]
         case None =>
           error("PosFiniteFloat.apply requires a integer, long or float literal")
       }
@@ -1268,13 +1342,30 @@ object PosFloats {
       * @param f runtime Float to validate
       * @return Some(PosZFiniteFloat) if f >= 0 and finite, otherwise None
       */
-    def from(f: Float): Option[PosZFiniteFloat] =
+    def from(f: Float): Option[PosFiniteFloat] =
       if (isValid(f)) Some(f) else None    
+
+    /** Construct a [[PosFiniteFloat]] from a runtime Float if it is positive and finite,
+      * or return a default [[PosZFiniteFloat]] if not.
+      *
+      * @param value runtime Float to validate
+      * @param default the default [[PosZFiniteFloat]] to return if value is not positive and finite
+      * @return the specified <code>Float</code> value wrapped in a
+      *     <code>PosFiniteFloat</code>, if it is positive and finite, else the
+      *     <code>default</code> <code>PosZFiniteFloat</code> value.
+      */
+    def fromOrElse(value: Float, default: => PosFiniteFloat): PosFiniteFloat =
+      if (isValid(value)) value else default
 
     /**
       * The largest value representable as a non-negative <code>Float</code>, which is <code>PosZFloat(Float.MaxValue)</code>.
       */
     val MaxValue: PosFiniteFloat = Float.MaxValue
+
+    /**
+      * The smallest value representable as a positive and finite <code>Float</code>, which is <code>PosFiniteFloat(Float.MinPositiveValue)</code>.
+      */
+    val MinValue: PosFiniteFloat = Float.MinPositiveValue
 
     /** Ensure the runtime Float is positive and not positive infinity, return it as a [[PosFiniteFloat]].
       *
@@ -1316,9 +1407,55 @@ object PosFloats {
      */
     def tryingValid(value: Float): Try[PosFiniteFloat] =
       if (isValid(value))
-        Success(value)
+        Success(ensuringValid(value))
       else
         Failure(new AssertionError(Resources.invalidPosFiniteFloat))
+
+    /** Ordering instance for PosFiniteFloat that orders by numeric value. */
+    given Ordering[PosFiniteFloat] with {
+      def compare(x: PosFiniteFloat, y: PosFiniteFloat): Int = java.lang.Float.compare(x, y)
+    }
+
+    extension (p: PosFiniteFloat) {
+      /** Return the underlying Float value. */
+      def value: Float = p
+
+      /** Indicates whether this PosFiniteFloat is finite and has no fraction part. */
+      def isWhole: Boolean = {
+        val longValue = p.toLong
+        longValue.toFloat == p || longValue == Long.MaxValue && p < Float.PositiveInfinity || longValue == Long.MinValue && p > Float.NegativeInfinity
+      }
+
+      /** Rounds this PosFiniteFloat to the nearest whole number as a PosZInt. */
+      def round: PosZInt = PosZInt.ensuringValid(math.round(value))
+
+      /** Returns the smallest PosFiniteFloat that is >= this value and is a mathematical integer. */
+      def ceil: PosFiniteFloat = PosFiniteFloat.ensuringValid(math.ceil(value).toFloat)
+
+      /** Returns the greatest PosZFiniteFloat that is <= this value and is a mathematical integer. */
+      def floor: PosZFiniteFloat = PosZFiniteFloat.ensuringValid(math.floor(value).toFloat)
+
+      /** Converts an angle measured in degrees to an approximately equivalent angle measured in radians. */
+      def toRadians: Float = math.toRadians(value.toDouble).toFloat
+
+      /** Returns the larger of this value and `other`. */
+      def max(other: PosFiniteFloat): PosFiniteFloat =
+        if (p >= other) p else other
+
+      /** Returns the smaller of this value and `other`. */
+      def min(other: PosFiniteFloat): PosFiniteFloat =
+        if (p <= other) p else other
+
+      /** Returns the negated value as a [[NegFiniteFloat]]. */
+      def unary_- : NegFiniteFloat = NegFiniteFloat.ensuringValid(-p)
+
+      /** Applies the passed Float => Float function and ensures the result is a PosFiniteFloat. */
+      def ensuringValid(f: Float => Float): PosFiniteFloat = {
+        val candidateResult: Float = f(p)
+        if (PosFiniteFloat.isValid(candidateResult)) PosFiniteFloat.ensuringValid(candidateResult)
+        else throw new AssertionError(s"${candidateResult.toString()}, the result of applying the passed function to ${p.toString()}, was not a valid PosFiniteFloat")
+      }
+    }
 
     /**
     * A validation method that produces a <code>Pass</code>

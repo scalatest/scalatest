@@ -54,25 +54,6 @@ object PosDoubles {
       def apply(x: Int): PosZDouble = x.toDouble
     }
 
-    /** Convert a compile-time Long literal or runtime Long to a [[PosZDouble]].
-      *
-      * The inline overload checks long literals at compile time; the runtime
-      * overload validates and throws for negative values.
-      */
-    given Conversion[Long, PosZDouble] with {
-      inline def apply[L <: Long & Singleton](inline x: L): PosZDouble =
-        inline constValueOpt[L] match {
-          case Some(v: Long) =>
-            inline if v < 0L then
-              error("PosZDouble cannot be instantiated with a negative long literal")
-            else
-              v.toDouble.asInstanceOf[PosZDouble]
-          case None =>
-            error("PosZDouble conversion requires a long literal")
-        }
-      def apply(x: Long): PosZDouble = x.toDouble
-    }
-
     /** Convert a compile-time Float literal or runtime Float to a [[PosZDouble]].
       *
       * The inline overload checks float literals at compile time; the runtime
@@ -149,28 +130,6 @@ object PosDoubles {
         case Some(v: Float) =>
           inline if v < 0.0f then
             error("PosZDouble cannot be instantiated with a negative float literal")
-          else
-            v.toDouble.asInstanceOf[PosZDouble]
-        case None =>
-          error("PosZDouble.apply requires a integer, long, float or double literal")
-      }
-
-    /** Compile-time factory for creating a [[PosZDouble]] from a long literal.
-      *
-      * This inline method inspects the provided long literal at compile time
-      * and rejects negative literals. Use it as: `PosZDouble(5L)`. For non-literal
-      * values, use [[ensuringValid]] or [[from]].
-      *
-      * @tparam L the singleton Long literal type
-      * @param l the Long literal
-      * @return a [[PosZDouble]] representing the given non-negative literal
-      * @throws a compile-time error if the literal is negative or not a literal
-      */
-    inline def apply[L <: Long & Singleton](inline l: L): PosZDouble =
-      inline constValueOpt[L] match {
-        case Some(v: Long) =>
-          inline if v < 0L then
-            error("PosZDouble cannot be instantiated with a negative long literal")
           else
             v.toDouble.asInstanceOf[PosZDouble]
         case None =>
@@ -502,6 +461,8 @@ object PosDoubles {
       def isFinite: Boolean = !value.isInfinite
     }
   }
+
+  // ...existing code...
 
   opaque type PosDouble <: PosZDouble = Double
 
@@ -1268,10 +1229,15 @@ object PosDoubles {
       */
     val MaxValue: PosZFiniteDouble = Double.MaxValue
 
-    /** The smallest positive value representable as a [[PosZFiniteDouble]], which is
+    /** The smallest value representable as a positive and finite [[PosZFiniteDouble]], which is
       * <code>PosZFiniteDouble(Double.MinPositiveValue)</code>.
       */
     val MinValue: PosZFiniteDouble = Double.MinPositiveValue
+
+    /** The smallest positive value representable as a [[PosZFiniteDouble]], which is
+      * <code>PosZFiniteDouble(Double.MinPositiveValue)</code>.
+      */
+    val MinPositiveValue: PosZFiniteDouble = Double.MinPositiveValue
 
     extension (p: PosZFiniteDouble) {
       /** Applies the given <code>Double =&gt; Double</code> function to the underlying
