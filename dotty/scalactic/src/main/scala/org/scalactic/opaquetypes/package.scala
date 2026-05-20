@@ -15,4 +15,15 @@ package object opaquetypes {
   type NegZInt = NegInts.NegZInt
   /** Value alias for the [[org.scalactic.opaquetypes.NegInts.NegZInt]] companion. */
   val NegZInt: NegInts.NegZInt.type = NegInts.NegZInt
+
+  /** Type alias for [[org.scalactic.opaquetypes.NegLongs.NegLong]]. */
+  type NegLong = NegLongs.NegLong
+  /** Value alias for the [[org.scalactic.opaquetypes.NegLongs.NegLong]] companion. */
+  val NegLong: NegLongs.NegLong.type = NegLongs.NegLong
+  export NegLongs.NegLong.*
+
+  /** Type alias for [[org.scalactic.opaquetypes.NegLongs.NegZLong]]. */
+  type NegZLong = NegLongs.NegZLong
+  /** Value alias for the [[org.scalactic.opaquetypes.NegLongs.NegZLong]] companion. */
+  val NegZLong: NegLongs.NegZLong.type = NegLongs.NegZLong
 }
