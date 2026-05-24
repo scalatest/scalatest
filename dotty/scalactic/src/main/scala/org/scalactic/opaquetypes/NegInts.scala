@@ -129,7 +129,11 @@ object NegInts {
       }
     }
 
-    /** Widen [[NegInt]] to Int. */
+    /** Widen [[NegInt]] to `Int`.
+      *
+      * @param x the wrapped value
+      * @return the underlying `Int`
+      */
     given Conversion[NegInt, Int] with {
       def apply(x: NegInt): Int = x
     }
@@ -154,6 +158,7 @@ object NegInts {
     given Ordering[NegInt] with {
       def compare(x: NegInt, y: NegInt): Int = x.compareTo(y)
     }
+
   }
 
   /** Opaque type representing negative-or-zero Int values (<= 0). */
@@ -169,5 +174,14 @@ object NegInts {
       if (i > 0) 
         throw new AssertionError(Resources.invalidNegZInt)
       else i
+
+    /** Widen [[NegZInt]] to `Float`.
+      *
+      * @param x the wrapped value
+      * @return the underlying `Float`
+      */
+    given Conversion[NegZInt, Float] with {
+      def apply(x: NegZInt): Float = x.toFloat
+    }
   }
 }
