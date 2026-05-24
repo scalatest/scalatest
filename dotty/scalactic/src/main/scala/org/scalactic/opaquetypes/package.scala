@@ -27,6 +27,51 @@ package object opaquetypes {
   /** Value alias for the [[org.scalactic.opaquetypes.NegLongs.NegZLong]] companion. */
   val NegZLong: NegLongs.NegZLong.type = NegLongs.NegZLong
 
+  /** Type alias for [[org.scalactic.opaquetypes.NegDoubles.NegZDouble]]. */
+  type NegZDouble = NegDoubles.NegZDouble
+  /** Value alias for the [[org.scalactic.opaquetypes.NegDoubles.NegZDouble]] companion. */
+  val NegZDouble: NegDoubles.NegZDouble.type = NegDoubles.NegZDouble
+
+  /** Type alias for [[org.scalactic.opaquetypes.PosDoubles.PosZDouble]]. */
+  type PosZDouble = PosDoubles.PosZDouble
+  /** Value alias for the [[org.scalactic.opaquetypes.PosDoubles.PosZDouble]] companion. */
+  val PosZDouble: PosDoubles.PosZDouble.type = PosDoubles.PosZDouble
+
+  /** Type alias for [[org.scalactic.opaquetypes.PosDoubles.PosDouble]]. */
+  type PosDouble = PosDoubles.PosDouble
+  /** Value alias for the [[org.scalactic.opaquetypes.PosDoubles.PosDouble]] companion. */
+  val PosDouble: PosDoubles.PosDouble.type = PosDoubles.PosDouble
+
+  /** Type alias for [[org.scalactic.opaquetypes.PosDoubles.PosZFiniteDouble]]. */
+  type PosZFiniteDouble = PosDoubles.PosZFiniteDouble
+  /** Value alias for the [[org.scalactic.opaquetypes.PosDoubles.PosZFiniteDouble]] companion. */
+  val PosZFiniteDouble: PosDoubles.PosZFiniteDouble.type = PosDoubles.PosZFiniteDouble
+
+  /** Type alias for [[org.scalactic.opaquetypes.PosDoubles.PosFiniteDouble]]. */
+  type PosFiniteDouble = PosDoubles.PosFiniteDouble
+  /** Value alias for the [[org.scalactic.opaquetypes.PosDoubles.PosFiniteDouble]] companion. */
+  val PosFiniteDouble: PosDoubles.PosFiniteDouble.type = PosDoubles.PosFiniteDouble
+
+  /** Type alias for [[org.scalactic.opaquetypes.NonZeroDoubles.NonZeroDouble]]. */
+  type NonZeroDouble = NonZeroDoubles.NonZeroDouble
+  /** Value alias for the [[org.scalactic.opaquetypes.NonZeroDoubles.NonZeroDouble]] companion. */
+  val NonZeroDouble: NonZeroDoubles.NonZeroDouble.type = NonZeroDoubles.NonZeroDouble
+
+  /** Type alias for [[org.scalactic.opaquetypes.NegDoubles.NegDouble]]. */
+  type NegDouble = NegDoubles.NegDouble
+  /** Value alias for the [[org.scalactic.opaquetypes.NegDoubles.NegDouble]] companion. */
+  val NegDouble: NegDoubles.NegDouble.type = NegDoubles.NegDouble
+
+  /** Type alias for [[org.scalactic.opaquetypes.NegDoubles.NegZFiniteDouble]]. */
+  type NegZFiniteDouble = NegDoubles.NegZFiniteDouble
+  /** Value alias for the [[org.scalactic.opaquetypes.NegDoubles.NegZFiniteDouble]] companion. */
+  val NegZFiniteDouble: NegDoubles.NegZFiniteDouble.type = NegDoubles.NegZFiniteDouble
+
+  /** Type alias for [[org.scalactic.opaquetypes.NegDoubles.NegFiniteDouble]]. */
+  type NegFiniteDouble = NegDoubles.NegFiniteDouble
+  /** Value alias for the [[org.scalactic.opaquetypes.NegDoubles.NegFiniteDouble]] companion. */
+  val NegFiniteDouble: NegDoubles.NegFiniteDouble.type = NegDoubles.NegFiniteDouble
+
   /** Type alias for [[org.scalactic.opaquetypes.PosFloats.PosZFloat]]. */
   type PosZFloat = PosFloats.PosZFloat
   /** Value alias for the [[org.scalactic.opaquetypes.PosFloats.PosZFloat]] companion. */
