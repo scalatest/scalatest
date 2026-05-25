@@ -3986,6 +3986,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegZDouble] = negZDoubleGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegDoubles.NegZDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegZDoubleGenerator: Generator[org.scalactic.opaquetypes.NegDoubles.NegZDouble] =
+  //DOTTY-ONLY   negZDoubleGenerator.map(d => org.scalactic.opaquetypes.NegDoubles.NegZDouble.ensuringValid(d.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegZDouble: Generator[org.scalactic.opaquetypes.NegDoubles.NegZDouble] = opaquetypesNegZDoubleGenerator
+
   /**
     * A [[Generator]] that produces negative Doubles, including zero but excluding infinity.
     */
@@ -4067,6 +4072,11 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegZFiniteDouble]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegZFiniteDouble] = negZFiniteDoubleGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegDoubles.NegZFiniteDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegZFiniteDoubleGenerator: Generator[org.scalactic.opaquetypes.NegDoubles.NegZFiniteDouble] =
+  //DOTTY-ONLY   negZFiniteDoubleGenerator.map(d => org.scalactic.opaquetypes.NegDoubles.NegZFiniteDouble.ensuringValid(d.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegZFiniteDouble: Generator[org.scalactic.opaquetypes.NegDoubles.NegZFiniteDouble] = opaquetypesNegZFiniteDoubleGenerator
 
   /**
     * A [[Generator]] that produces negative Floats, including zero and infinity.

@@ -174,7 +174,7 @@ class NegDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
     it("should be sortable") {
       val xs = List(NegDouble(-2.2), NegDouble(-4.4), NegDouble(-1.1),
         NegDouble(-3.3))
-      xs.sorted shouldEqual List(NegDouble(-4.4), NegDouble(-3.3), NegDouble(-2.2),
+      xs.sorted(using summon[Ordering[NegZDouble]]) shouldEqual List(NegDouble(-4.4), NegDouble(-3.3), NegDouble(-2.2),
         NegDouble(-1.1))
     }
 

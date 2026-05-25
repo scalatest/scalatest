@@ -30,11 +30,43 @@ object NegDoubles {
       inline constValueOpt[D] match {
         case Some(v: Double) =>
           inline if v > 0.0 then
-            error("NegZDouble cannot be instantiated with a positive double literal")
+            error(Resources.notValidNegZDouble)
           else
             v.asInstanceOf[NegZDouble]
         case None =>
-          error("NegZDouble.apply requires a double literal")
+          error(Resources.notLiteralNegZDouble)
+      }
+    inline def apply[I <: Int & Singleton](inline d: I): NegZDouble =
+      inline constValueOpt[I] match {
+        case Some(v: Int) =>
+          inline if v > 0 then
+            error(Resources.notValidNegZDouble)
+          else
+            v.toDouble.asInstanceOf[NegZDouble]
+        case None =>
+          error(Resources.notLiteralNegZDouble)
+      }
+
+    inline def apply[L <: Long & Singleton](inline d: L): NegZDouble =
+      inline constValueOpt[L] match {
+        case Some(v: Long) =>
+          inline if v > 0L then
+            error(Resources.notValidNegZDouble)
+          else
+            v.toDouble.asInstanceOf[NegZDouble]
+        case None =>
+          error(Resources.notLiteralNegZDouble)
+      }
+
+    inline def apply[F <: Float & Singleton](inline d: F): NegZDouble =
+      inline constValueOpt[F] match {
+        case Some(v: Float) =>
+          inline if v > 0.0f then
+            error(Resources.notValidNegZDouble)
+          else
+            v.toDouble.asInstanceOf[NegZDouble]
+        case None =>
+          error(Resources.notLiteralNegZDouble)
       }
 
     def from(d: Double): Option[NegZDouble] =
@@ -100,14 +132,63 @@ object NegDoubles {
         inline constValueOpt[D] match {
           case Some(v: Double) =>
             inline if v > 0.0 then
-              error("NegZDouble cannot be instantiated with a positive double literal")
+              error(Resources.notValidNegZDouble)
             else
               v.asInstanceOf[NegZDouble]
           case None =>
-            error("NegZDouble conversion requires a double literal")
+            error(Resources.notLiteralNegZDouble)
         }
 
       def apply(x: Double): NegZDouble = NegZDouble.ensuringValid(x)
+    }
+
+    given Conversion[Int, NegZDouble] with {
+      inline def apply[I <: Int & Singleton](inline x: I): NegZDouble =
+        inline constValueOpt[I] match {
+          case Some(v: Int) =>
+            inline if v > 0 then
+              error(Resources.notValidNegZDouble)
+            else
+              v.toDouble.asInstanceOf[NegZDouble]
+          case None =>
+            error(Resources.notLiteralNegZDouble)
+        }
+
+      def apply(x: Int): NegZDouble = NegZDouble.ensuringValid(x.toDouble)
+    }
+
+    given Conversion[Long, NegZDouble] with {
+      inline def apply[L <: Long & Singleton](inline x: L): NegZDouble =
+        inline constValueOpt[L] match {
+          case Some(v: Long) =>
+            inline if v > 0L then
+              error(Resources.notValidNegZDouble)
+            else
+              v.toDouble.asInstanceOf[NegZDouble]
+          case None =>
+            error(Resources.notLiteralNegZDouble)
+        }
+
+      def apply(x: Long): NegZDouble = NegZDouble.ensuringValid(x.toDouble)
+    }
+
+    given Conversion[Float, NegZDouble] with {
+      inline def apply[F <: Float & Singleton](inline x: F): NegZDouble =
+        inline constValueOpt[F] match {
+          case Some(v: Float) =>
+            inline if v > 0.0f then
+              error(Resources.notValidNegZDouble)
+            else
+              v.toDouble.asInstanceOf[NegZDouble]
+          case None =>
+            error(Resources.notLiteralNegZDouble)
+        }
+
+      def apply(x: Float): NegZDouble = NegZDouble.ensuringValid(x.toDouble)
+    }
+
+    given Ordering[NegZDouble] with {
+      def compare(x: NegZDouble, y: NegZDouble): Int = java.lang.Double.compare(x.value, y.value)
     }
 
   }
