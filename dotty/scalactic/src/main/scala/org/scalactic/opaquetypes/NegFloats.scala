@@ -34,6 +34,42 @@ object NegFloats {
 
   /** Companion for [[NegZFloat]] with construction, validation, and math helpers. */
   object NegZFloat {
+    /** Compile-time factory for a negative integer literal.
+      *
+      * @tparam I the singleton Int literal type
+      * @param i the integer literal to validate
+      * @return a validated [[NegZFloat]]
+      * @throws scala.compiletime.error if the literal is non-negative
+      */
+    inline def apply[I <: Int & Singleton](inline i: I): NegZFloat =
+      inline constValueOpt[I] match {
+        case Some(v: Int) =>
+          inline if v >= 0 then
+            error(Resources.notValidNegZFloat)
+          else
+            v.toFloat.asInstanceOf[NegZFloat]
+        case None =>
+          error(Resources.notLiteralNegZFloat)
+      }
+
+    /** Compile-time factory for a negative long literal.
+      *
+      * @tparam L the singleton Long literal type
+      * @param l the long literal to validate
+      * @return a validated [[NegZFloat]]
+      * @throws scala.compiletime.error if the literal is non-negative
+      */
+    inline def apply[L <: Long & Singleton](inline l: L): NegZFloat =
+      inline constValueOpt[L] match {
+        case Some(v: Long) =>
+          inline if v >= 0L then
+            error(Resources.notValidNegZFloat)
+          else
+            v.toFloat.asInstanceOf[NegZFloat]
+        case None =>
+          error(Resources.notLiteralNegZFloat)
+      }
+
     /** Compile-time factory for a negative-or-zero float literal.
       *
       * @tparam F singleton float literal type
@@ -44,11 +80,11 @@ object NegFloats {
       inline constValueOpt[F] match {
         case Some(v: Float) =>
           inline if v > 0.0f then
-            error("NegZFloat cannot be instantiated with a positive float literal")
+            error(Resources.notValidNegZFloat)
           else
             v.asInstanceOf[NegZFloat]
         case None =>
-          error("NegZFloat.apply requires a float literal")
+          error(Resources.notLiteralNegZFloat)
       }
 
     /** Return `Some` when the passed value is a valid [[NegZFloat]], otherwise `None`.
@@ -157,6 +193,13 @@ object NegFloats {
         * @throws AssertionError if the sum is positive
         */
       def plus(x: NegZFloat): NegZFloat = NegZFloat.ensuringValid(value + x)
+      /** Add a negative integer and revalidate the result.
+        *
+        * @param x the addend
+        * @return the validated sum
+        * @throws AssertionError if the sum is positive
+        */
+      def plus(x: NegInts.NegInt): NegZFloat = NegZFloat.ensuringValid(value + x.value.toFloat)
       /** Return the greater of this and that value.
         *
         * @param that the comparison value
@@ -224,11 +267,11 @@ object NegFloats {
         inline constValueOpt[F] match {
           case Some(v: Float) =>
             inline if v > 0.0f then
-              error("NegZFloat cannot be instantiated with a positive float literal")
+              error(Resources.notValidNegZFloat)
             else
               v.asInstanceOf[NegZFloat]
           case None =>
-            error("NegZFloat conversion requires a float literal")
+            error(Resources.notLiteralNegZFloat)
         }
 
       def apply(x: Float): NegZFloat = NegZFloat.ensuringValid(x)
