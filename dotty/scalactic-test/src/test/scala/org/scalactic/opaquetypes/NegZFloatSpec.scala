@@ -16,7 +16,6 @@
 package org.scalactic.opaquetypes
 
 import org.scalatest.*
-import org.scalatest.prop.Generator
 import org.scalatest.prop.PropertyChecks
 import org.scalactic.TypeCheckedTripleEquals
 // SKIP-SCALATESTJS,NATIVE-START
@@ -31,12 +30,6 @@ import org.scalactic.{Good, Bad}
 import scala.util.{Try, Success, Failure}
 
 trait NegZFloatSpecSupport {
-
-  given Generator[NegZFloat] =
-    Generator.negZFloatGenerator.map((f: org.scalactic.anyvals.NegZFloat) => NegZFloat.ensuringValid(f.value))
-
-  given Generator[NegZFiniteFloat] =
-    Generator.negZFiniteFloatGenerator.map((f: org.scalactic.anyvals.NegZFiniteFloat) => NegZFiniteFloat.ensuringValid(f.value))
 
   implicit val doubleEquality: Equality[Double] =
     new Equality[Double] {
