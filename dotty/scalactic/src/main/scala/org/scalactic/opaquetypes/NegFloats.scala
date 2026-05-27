@@ -523,6 +523,14 @@ object NegFloats {
           error("NegZFiniteFloat.apply requires a float literal")
       }
 
+    extension (p: NegZFiniteFloat) {
+      def ensuringValid(f: Float => Float): NegZFiniteFloat = {
+        val candidateResult: Float = f(p)
+        if (NegZFiniteFloat.isValid(candidateResult)) NegZFiniteFloat.ensuringValid(candidateResult)
+        else throw new AssertionError(s"${candidateResult.toString()}, the result of applying the passed function to ${p.toString()}, was not a valid NegZFiniteFloat")
+      }
+    }
+
     /** Return `Some` when the passed value is a valid [[NegZFiniteFloat]], otherwise `None`.
       *
       * @param f the candidate value
@@ -585,20 +593,16 @@ object NegFloats {
       def apply(x: NegZFiniteFloat): Float = x.toFloat
     }
 
-    given Conversion[Float, NegZFiniteFloat] with {
-      inline def apply[F <: Float & Singleton](inline x: F): NegZFiniteFloat =
-        inline constValueOpt[F] match {
-          case Some(v: Float) =>
-            inline if v > 0.0f || v == Float.PositiveInfinity || v == Float.NegativeInfinity then
-              error("NegZFiniteFloat cannot be instantiated with a positive float literal or infinity")
-            else
-              v.asInstanceOf[NegZFiniteFloat]
-          case None =>
-            error("NegZFiniteFloat conversion requires a float literal")
-        }
-
-      def apply(x: Float): NegZFiniteFloat = NegZFiniteFloat.ensuringValid(x)
-    }
+    implicit inline def convertFloatToNegZFiniteFloat[F <: Float & Singleton](inline x: F): NegZFiniteFloat =
+      inline constValueOpt[F] match {
+        case Some(v: Float) =>
+          inline if v > 0.0f || v == Float.PositiveInfinity || v == Float.NegativeInfinity then
+            error("NegZFiniteFloat cannot be instantiated with a positive float literal or infinity")
+          else
+            v.asInstanceOf[NegZFiniteFloat]
+        case None =>
+          error("NegZFiniteFloat conversion requires a float literal")
+      }
 
     given Ordering[NegZFiniteFloat] with {
       def compare(x: NegZFiniteFloat, y: NegZFiniteFloat): Int = x.compareTo(y)
