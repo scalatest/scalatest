@@ -878,11 +878,11 @@ object PosFloats {
         inline constValueOpt[I] match {
           case Some(v: Int) =>
             inline if v < 0 then
-              error("PosZFiniteFloat cannot be instantiated with a negative integer literal")
+              error(Resources.notValidPosZFiniteFloat)
             else
               v.toFloat.asInstanceOf[PosZFloat]
           case None =>
-            error("PosZFloat conversion requires a integer literal")
+            error(Resources.notLiteralPosZFiniteFloat)
         }
       def apply(x: Int): PosZFiniteFloat = x.toFloat
     }
@@ -897,11 +897,11 @@ object PosFloats {
         inline constValueOpt[L] match {
           case Some(v: Long) =>
             inline if v < 0L then
-              error("PosZFiniteFloat cannot be instantiated with a negative long literal")
+              error(Resources.notValidPosZFiniteFloat)
             else
               v.toFloat.asInstanceOf[PosZFiniteFloat]
           case None =>
-            error("PosZFiniteFloat conversion requires a long literal")
+            error(Resources.notLiteralPosZFiniteFloat)
         }
       def apply(x: Long): PosZFiniteFloat = x.toFloat
     }
@@ -916,11 +916,11 @@ object PosFloats {
         inline constValueOpt[F] match {
           case Some(v: Float) =>
             inline if v < 0.0f then
-              error("PosZFiniteFloat cannot be instantiated with a negative float literal")
+              error(Resources.notValidPosZFiniteFloat)
             else
               v.toFloat.asInstanceOf[PosZFiniteFloat]
           case None =>
-            error("PosZFiniteFloat conversion requires a float literal")
+            error(Resources.notLiteralPosZFiniteFloat)
         }
       def apply(x: Float): PosZFiniteFloat = x.toFloat
     }
@@ -1240,28 +1240,36 @@ object PosFloats {
     }
 
     /** Convert a compile-time Float literal to a [[PosFiniteFloat]]. */
-    implicit inline def convertFloatToPosFiniteFloat[F <: Float & Singleton](inline x: F): PosFiniteFloat =
-      inline constValueOpt[F] match {
-        case Some(v: Float) =>
-          inline if v <= 0.0f || v == Float.PositiveInfinity || v == Float.NegativeInfinity then
-            error("PosFiniteFloat cannot be instantiated with a negative float literal or infinity")
-          else
-            v.asInstanceOf[PosFiniteFloat]
-        case None =>
-          error("PosFiniteFloat conversion requires a float literal")
-      }
+    given Conversion[Float, PosFiniteFloat] with {
+      inline def apply[F <: Float & Singleton](inline x: F): PosFiniteFloat =
+        inline constValueOpt[F] match {
+          case Some(v: Float) =>
+            inline if v <= 0.0f || v == Float.PositiveInfinity || v == Float.NegativeInfinity then
+              error(Resources.notValidPosFiniteFloat)
+            else
+              v.asInstanceOf[PosFiniteFloat]
+          case None =>
+            error(Resources.notLiteralPosFiniteFloat)
+        }
+
+      def apply(x: Float): PosFiniteFloat = PosFiniteFloat.ensuringValid(x)
+    }
 
     /** Convert a compile-time Double literal to a [[PosFiniteFloat]]. */
-    implicit inline def convertDoubleToPosFiniteFloat[D <: Double & Singleton](inline x: D): PosFiniteFloat =
-      inline constValueOpt[D] match {
-        case Some(v: Double) =>
-          inline if v <= 0.0 || v == Double.PositiveInfinity || v == Double.NegativeInfinity then
-            error("PosFiniteFloat cannot be instantiated with a negative double literal or infinity")
-          else
-            v.toFloat.asInstanceOf[PosFiniteFloat]
-        case None =>
-          error("PosFiniteFloat conversion requires a double literal")
-      }
+    given Conversion[Double, PosFiniteFloat] with {
+      inline def apply[D <: Double & Singleton](inline x: D): PosFiniteFloat =
+        inline constValueOpt[D] match {
+          case Some(v: Double) =>
+            inline if v <= 0.0 || v == Double.PositiveInfinity || v == Double.NegativeInfinity then
+              error(Resources.notValidPosFiniteFloat)
+            else
+              v.toFloat.asInstanceOf[PosFiniteFloat]
+          case None =>
+            error(Resources.notLiteralPosFiniteFloat)
+        }
+
+      def apply(x: Double): PosFiniteFloat = PosFiniteFloat.ensuringValid(x.toFloat)
+    }
 
     /** Compile-time factory for creating a [[PosFiniteFloat]] from a float literal.
       *

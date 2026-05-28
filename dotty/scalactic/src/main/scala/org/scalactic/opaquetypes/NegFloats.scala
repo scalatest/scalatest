@@ -593,16 +593,20 @@ object NegFloats {
       def apply(x: NegZFiniteFloat): Float = x.toFloat
     }
 
-    implicit inline def convertFloatToNegZFiniteFloat[F <: Float & Singleton](inline x: F): NegZFiniteFloat =
-      inline constValueOpt[F] match {
-        case Some(v: Float) =>
-          inline if v > 0.0f || v == Float.PositiveInfinity || v == Float.NegativeInfinity then
-            error("NegZFiniteFloat cannot be instantiated with a positive float literal or infinity")
-          else
-            v.asInstanceOf[NegZFiniteFloat]
-        case None =>
-          error("NegZFiniteFloat conversion requires a float literal")
-      }
+    given Conversion[Float, NegZFiniteFloat] with {
+      inline def apply[F <: Float & Singleton](inline x: F): NegZFiniteFloat =
+        inline constValueOpt[F] match {
+          case Some(v: Float) =>
+            inline if v > 0.0f || v == Float.PositiveInfinity || v == Float.NegativeInfinity then
+              error(Resources.notValidNegZFiniteFloat)
+            else
+              v.asInstanceOf[NegZFiniteFloat]
+          case None =>
+            error(Resources.notLiteralNegZFiniteFloat)
+        }
+
+      def apply(x: Float): NegZFiniteFloat = NegZFiniteFloat.ensuringValid(x)
+    }
 
     given Ordering[NegZFiniteFloat] with {
       def compare(x: NegZFiniteFloat, y: NegZFiniteFloat): Int = x.compareTo(y)
