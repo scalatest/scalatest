@@ -373,7 +373,7 @@ trait DottyBuild { this: BuildCommons =>
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
       libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.4.0",
-      libraryDependencies += ("org.scala-native" %%% "test-interface" % nativeVersion),
+      libraryDependencies += ("org.scala-native" %%% "test-interface-sbt-defs" % nativeVersion),
       packageManagedSources,
       Compile / sourceGenerators += Def.task {
         GenScalaTestDotty.genScalaNative((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
@@ -1180,7 +1180,7 @@ trait DottyBuild { this: BuildCommons =>
         organization := "org.scalatest",
         moduleName := "scalatest-app",
         //libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
-        libraryDependencies += ("org.scala-native" %%% "test-interface" % nativeVersion),
+        libraryDependencies += ("org.scala-native" %%% "test-interface-sbt-defs" % nativeVersion),
         // include the scalacticDottyNative classes and resources in the jar
         Compile / packageBin / mappings ++= (scalacticDottyNative / Compile / packageBin / mappings).value,
         // include the scalacticDottyNative sources in the source jar
