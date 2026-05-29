@@ -28,9 +28,6 @@ import scala.util.{Failure, Success, Try}
 
 trait NegZIntSpecSupport {
 
-  given Generator[NegZInt] =
-    Generator.negZIntGenerator.map((i: org.scalactic.anyvals.NegZInt) => NegZInt.ensuringValid(i.value))
-
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
       case Success(double: Double) if double.isNaN =>  // This is because in scala.js x/0 results to NaN not ArithmetricException like in jvm, and we need to make sure Success(NaN) == Success(NaN) is true to pass the test.

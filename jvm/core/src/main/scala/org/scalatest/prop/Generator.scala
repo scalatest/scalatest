@@ -4351,6 +4351,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegZInt] = negZIntGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegInts.NegZInt independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegZIntGenerator: Generator[org.scalactic.opaquetypes.NegInts.NegZInt] =
+  //DOTTY-ONLY   negZIntGenerator.map(i => org.scalactic.opaquetypes.NegInts.NegZInt.ensuringValid(i.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegZInt: Generator[org.scalactic.opaquetypes.NegInts.NegZInt] = opaquetypesNegZIntGenerator
+
   /**
     * A [[Generator]] that produces negative Longs, including zero.
     */
