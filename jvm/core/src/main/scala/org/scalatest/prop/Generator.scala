@@ -3930,6 +3930,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegLong] = negLongGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegLongs.NegLong independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegLongGenerator: Generator[org.scalactic.opaquetypes.NegLongs.NegLong] =
+  //DOTTY-ONLY   negLongGenerator.map(l => org.scalactic.opaquetypes.NegLongs.NegLong.ensuringValid(l.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegLong: Generator[org.scalactic.opaquetypes.NegLongs.NegLong] = opaquetypesNegLongGenerator
+
   /**
     * A [[Generator]] that produces negative Doubles, including zero and infinity.
     */

@@ -31,8 +31,6 @@ import scala.compiletime.error
 
 trait NegLongSpecSupport {
 
-  given Generator[NegLong] =
-    Generator.negLongGenerator.map((l: org.scalactic.anyvals.NegLong) => NegLong.ensuringValid(l.value))
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
