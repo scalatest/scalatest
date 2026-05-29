@@ -17,7 +17,7 @@ package org.scalactic.opaquetypes
 
 import org.scalactic.Resources
 import scala.compiletime.{constValueOpt, error}
-import scala.language.implicitConversions
+import scala.util.NotGiven
 import scala.util.{Failure, Success, Try}
 
 import org.scalactic.{Bad, Fail, Good, Or, Pass, Validation}
@@ -165,7 +165,7 @@ object NegFloats {
     /** Negative infinity as a [[NegZFloat]]. */
     val NegativeInfinity: NegZFloat = Float.NegativeInfinity
 
-    extension (p: NegZFloat) {
+    extension [A <: NegZFloat](p: A) {
       /** Return the underlying `Float` value.
         *
         * @return the wrapped `Float`
@@ -175,7 +175,7 @@ object NegFloats {
         *
         * @return `true` when `p == Float.NegativeInfinity`
         */
-      def isNegInfinity: Boolean = p == Float.NegativeInfinity
+      def isNegInfinity(using NotGiven[A <:< NegFiniteFloat]): Boolean = p == Float.NegativeInfinity
       /** Return `true` when this value is finite.
         *
         * @return `true` when the wrapped value is neither positive nor negative infinity
@@ -382,7 +382,7 @@ object NegFloats {
     /** Negative infinity as a [[NegFloat]]. */
     val NegativeInfinity: NegFloat = Float.NegativeInfinity
 
-    extension (p: NegFloat) {
+    extension [A <: NegFloat](p: A) {
       /** Return the underlying `Float` value.
         *
         * @return the wrapped `Float`
@@ -392,7 +392,7 @@ object NegFloats {
         *
         * @return `true` when `p == Float.NegativeInfinity`
         */
-      def isNegInfinity: Boolean = p == Float.NegativeInfinity
+      def isNegInfinity(using NotGiven[A <:< NegFiniteFloat]): Boolean = p == Float.NegativeInfinity
       /** Return `true` when this value is finite.
         *
         * @return `true` when the wrapped value is neither positive nor negative infinity
@@ -624,15 +624,43 @@ object NegFloats {
       * @param f the candidate float literal
       * @return a validated [[NegFiniteFloat]]
       */
+    inline def apply[I <: Int & Singleton](inline i: I): NegFiniteFloat =
+      inline constValueOpt[I] match {
+        case Some(v: Int) =>
+          inline if v >= 0 then
+            error(Resources.notValidNegFiniteFloat)
+          else
+            v.toFloat.asInstanceOf[NegFiniteFloat]
+        case None =>
+          error(Resources.notLiteralNegFiniteFloat)
+      }
+
+    /** Compile-time factory for a finite strictly negative long literal.
+      *
+      * @tparam L singleton long literal type
+      * @param l the candidate long literal
+      * @return a validated [[NegFiniteFloat]]
+      */
+    inline def apply[L <: Long & Singleton](inline l: L): NegFiniteFloat =
+      inline constValueOpt[L] match {
+        case Some(v: Long) =>
+          inline if v >= 0L then
+            error(Resources.notValidNegFiniteFloat)
+          else
+            v.toFloat.asInstanceOf[NegFiniteFloat]
+        case None =>
+          error(Resources.notLiteralNegFiniteFloat)
+      }
+
     inline def apply[F <: Float & Singleton](inline f: F): NegFiniteFloat =
       inline constValueOpt[F] match {
         case Some(v: Float) =>
           inline if v >= 0.0f || v == Float.PositiveInfinity || v == Float.NegativeInfinity then
-            error("NegFiniteFloat cannot be instantiated with a non-negative float literal or infinity")
+            error(Resources.notValidNegFiniteFloat)
           else
             v.asInstanceOf[NegFiniteFloat]
         case None =>
-          error("NegFiniteFloat.apply requires a float literal")
+          error(Resources.notLiteralNegFiniteFloat)
       }
 
     /** Return `Some` when the passed value is a valid [[NegFiniteFloat]], otherwise `None`.
@@ -682,6 +710,41 @@ object NegFloats {
     def fromOrElse(value: Float, default: => NegFiniteFloat): NegFiniteFloat =
       if (isValid(value)) value else default
 
+    extension (p: NegFiniteFloat) {
+      def value: Float = p
+
+      def unary_+ : NegFiniteFloat = p
+
+      def unary_- : PosFloats.PosFiniteFloat = PosFloats.PosFiniteFloat.ensuringValid(-p)
+
+      def plus(x: NegFiniteFloat): NegFiniteFloat = NegFiniteFloat.ensuringValid(value + x)
+
+      def max(that: NegFiniteFloat): NegFiniteFloat = if (p >= that) p else that
+
+      def min(that: NegFiniteFloat): NegFiniteFloat = if (p <= that) p else that
+
+      def isWhole: Boolean = {
+        val longValue = p.toLong
+        longValue.toFloat == p || longValue == Long.MaxValue && p < Float.PositiveInfinity || longValue == Long.MinValue && p > Float.NegativeInfinity
+      }
+
+      def round: NegZInt = NegZInt.ensuringValid(math.round(value))
+
+      def ceil: NegZFiniteFloat = NegZFiniteFloat.ensuringValid(math.ceil(value).toFloat)
+
+      def floor: NegFiniteFloat = NegFiniteFloat.ensuringValid(math.floor(value).toFloat)
+
+      def toRadians: Float = math.toRadians(value.toDouble).toFloat
+
+      def toDegrees: Float = math.toDegrees(value.toDouble).toFloat
+
+      def ensuringValid(f: Float => Float): NegFiniteFloat = {
+        val candidateResult: Float = f(p)
+        if (NegFiniteFloat.isValid(candidateResult)) NegFiniteFloat.ensuringValid(candidateResult)
+        else throw new AssertionError(s"${candidateResult.toString()}, the result of applying the passed function to ${p.toString()}, was not a valid NegFiniteFloat")
+      }
+    }
+
     /** Largest valid [[NegFiniteFloat]] value, equal to `-Float.MinPositiveValue`.
       *
       * @return the greatest valid value
@@ -697,23 +760,49 @@ object NegFloats {
       def apply(x: NegFiniteFloat): Float = x.toFloat
     }
 
+    given Conversion[Int, NegFiniteFloat] with {
+      inline def apply[I <: Int & Singleton](inline x: I): NegFiniteFloat =
+        inline constValueOpt[I] match {
+          case Some(v: Int) =>
+            inline if v >= 0 then
+              error(Resources.notValidNegFiniteFloat)
+            else
+              v.toFloat.asInstanceOf[NegFiniteFloat]
+          case None =>
+            error(Resources.notLiteralNegFiniteFloat)
+        }
+
+      def apply(x: Int): NegFiniteFloat = NegFiniteFloat.ensuringValid(x.toFloat)
+    }
+
+    given Conversion[Long, NegFiniteFloat] with {
+      inline def apply[L <: Long & Singleton](inline x: L): NegFiniteFloat =
+        inline constValueOpt[L] match {
+          case Some(v: Long) =>
+            inline if v >= 0L then
+              error(Resources.notValidNegFiniteFloat)
+            else
+              v.toFloat.asInstanceOf[NegFiniteFloat]
+          case None =>
+            error(Resources.notLiteralNegFiniteFloat)
+        }
+
+      def apply(x: Long): NegFiniteFloat = NegFiniteFloat.ensuringValid(x.toFloat)
+    }
+
     given Conversion[Float, NegFiniteFloat] with {
       inline def apply[F <: Float & Singleton](inline x: F): NegFiniteFloat =
         inline constValueOpt[F] match {
           case Some(v: Float) =>
             inline if v >= 0.0f || v == Float.PositiveInfinity || v == Float.NegativeInfinity then
-              error("NegFiniteFloat cannot be instantiated with a non-negative float literal or infinity")
+              error(Resources.notValidNegFiniteFloat)
             else
               v.asInstanceOf[NegFiniteFloat]
           case None =>
-            error("NegFiniteFloat conversion requires a float literal")
+            error(Resources.notLiteralNegFiniteFloat)
         }
 
       def apply(x: Float): NegFiniteFloat = NegFiniteFloat.ensuringValid(x)
-    }
-
-    given Ordering[NegFiniteFloat] with {
-      def compare(x: NegFiniteFloat, y: NegFiniteFloat): Int = x.compareTo(y)
     }
   }
 }
