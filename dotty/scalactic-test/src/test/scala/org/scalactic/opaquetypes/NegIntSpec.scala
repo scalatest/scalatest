@@ -18,7 +18,6 @@ package org.scalactic.opaquetypes
 import org.scalactic.Equality
 import org.scalatest.*
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
-import org.scalatest.prop.Generator
 import OptionValues.*
 
 import scala.util.{Failure, Success, Try}
@@ -26,9 +25,6 @@ import org.scalactic.{Validation, Pass, Fail}
 import org.scalactic.{Or, Good, Bad}
 
 trait NegIntSpecSupport {
-
-  given Generator[NegInt] =
-    Generator.negIntGenerator.map((i: org.scalactic.anyvals.NegInt) => NegInt.ensuringValid(i.value))
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
