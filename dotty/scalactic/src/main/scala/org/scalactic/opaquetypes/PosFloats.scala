@@ -1375,6 +1375,9 @@ object PosFloats {
       */
     val MinValue: PosFiniteFloat = Float.MinPositiveValue
 
+    /** The smallest positive finite `Float` value. */
+    val MinPositiveValue: PosFiniteFloat = Float.MinPositiveValue
+
     /** Ensure the runtime Float is positive and not positive infinity, return it as a [[PosFiniteFloat]].
       *
       * @param f runtime Float to check
@@ -1565,6 +1568,135 @@ object PosFloats {
       */
     def rightOrElse[L](value: Float)(f: Float => L): Either[L, PosFiniteFloat] =
       if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))            
+  }
+
+  opaque type FiniteFloat = Float
+
+  object FiniteFloat {
+
+    /** Convert a [[FiniteFloat]] to a plain Float (unwrap). */
+    given Conversion[FiniteFloat, Float] with {
+      def apply(x: FiniteFloat): Float = x.toFloat
+    }
+
+    /** Convert a compile-time Float literal to a [[FiniteFloat]]. */
+    given Conversion[Float, FiniteFloat] with {
+      inline def apply[F <: Float & Singleton](inline x: F): FiniteFloat =
+        inline constValueOpt[F] match {
+          case Some(v: Float) =>
+            inline if v == Float.PositiveInfinity || v == Float.NegativeInfinity || v != v then
+              error("FiniteFloat cannot be instantiated with infinity or NaN")
+            else
+              v.asInstanceOf[FiniteFloat]
+          case None =>
+            error("FiniteFloat.apply requires a float literal")
+        }
+
+      def apply(x: Float): FiniteFloat = FiniteFloat.ensuringValid(x)
+    }
+
+    /** Compile-time factory for creating a [[FiniteFloat]] from a float literal. */
+    inline def apply[F <: Float & Singleton](inline f: F): FiniteFloat =
+      inline constValueOpt[F] match {
+        case Some(v: Float) =>
+          inline if v == Float.PositiveInfinity || v == Float.NegativeInfinity || v != v then
+            error("FiniteFloat cannot be instantiated with infinity or NaN")
+          else
+            v.asInstanceOf[FiniteFloat]
+        case None =>
+          error("FiniteFloat.apply requires a float literal")
+      }
+
+    /** Return `Some` when the passed value is finite, otherwise `None`. */
+    def from(value: Float): Option[FiniteFloat] =
+      if (isValid(value)) Some(value) else None
+
+    /** Validate and return a [[FiniteFloat]], throwing when the value is not finite. */
+    def ensuringValid(value: Float): FiniteFloat =
+      if (isValid(value)) value
+      else throw new AssertionError(Resources.invalidPosFiniteFloat)
+
+    /** Return `Success` for a finite value or `Failure` with an assertion error otherwise. */
+    def tryingValid(value: Float): Try[FiniteFloat] =
+      if (isValid(value)) Success(ensuringValid(value))
+      else Failure(new AssertionError(Resources.invalidPosFiniteFloat))
+
+    /** Test whether a value is a valid [[FiniteFloat]]. */
+    def isValid(value: Float): Boolean = !(value.isInfinite || value.isNaN)
+
+    /** Return `Pass` for a finite value, or `Fail` with an error value otherwise. */
+    def passOrElse[E](value: Float)(f: Float => E): Validation[E] =
+      if (isValid(value)) Pass else Fail(f(value))
+
+    /** Return `Good` for a finite value, or `Bad` with an error value otherwise. */
+    def goodOrElse[B](value: Float)(f: Float => B): FiniteFloat Or B =
+      if (isValid(value)) Good(value) else Bad(f(value))
+
+    /** Return `Right` for a finite value, or `Left` with an error value otherwise. */
+    def rightOrElse[L](value: Float)(f: Float => L): Either[L, FiniteFloat] =
+      if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))
+
+    /** Return the validated value or a provided default when invalid. */
+    def fromOrElse(value: Float, default: => FiniteFloat): FiniteFloat =
+      if (isValid(value)) value else default
+
+    /** Largest valid [[FiniteFloat]] value. */
+    val MaxValue: FiniteFloat = Float.MaxValue
+
+    /** Smallest valid [[FiniteFloat]] value. */
+    val MinValue: FiniteFloat = Float.MinValue
+
+    /** Smallest positive valid [[FiniteFloat]] value. */
+    val MinPositiveValue: FiniteFloat = Float.MinPositiveValue
+
+    /** Ordering instance for FiniteFloat that orders by numeric value. */
+    given Ordering[FiniteFloat] with {
+      def compare(x: FiniteFloat, y: FiniteFloat): Int = java.lang.Float.compare(x, y)
+    }
+
+    extension (p: FiniteFloat) {
+      /** Return the underlying Float value. */
+      def value: Float = p
+
+      /** Indicates whether this FiniteFloat has no fraction part. */
+      def isWhole: Boolean = {
+        val longValue = p.toLong
+        longValue.toFloat == p || longValue == Long.MaxValue && p < Float.PositiveInfinity || longValue == Long.MinValue && p > Float.NegativeInfinity
+      }
+
+      /** Rounds this FiniteFloat to the nearest whole number. */
+      def round: Int = math.round(value)
+
+      /** Returns the smallest FiniteFloat that is >= this value and is a mathematical integer. */
+      def ceil: FiniteFloat = FiniteFloat.ensuringValid(math.ceil(value).toFloat)
+
+      /** Returns the greatest FiniteFloat that is <= this value and is a mathematical integer. */
+      def floor: FiniteFloat = FiniteFloat.ensuringValid(math.floor(value).toFloat)
+
+      /** Converts an angle measured in degrees to an approximately equivalent angle measured in radians. */
+      def toRadians: Float = math.toRadians(value.toDouble).toFloat
+
+      /** Converts an angle measured in radians to an approximately equivalent angle measured in degrees. */
+      def toDegrees: Float = math.toDegrees(value.toDouble).toFloat
+
+      /** Returns the larger of this value and `other`. */
+      def max(other: FiniteFloat): FiniteFloat =
+        if (p >= other) p else other
+
+      /** Returns the smaller of this value and `other`. */
+      def min(other: FiniteFloat): FiniteFloat =
+        if (p <= other) p else other
+
+      /** Returns the negated value as another [[FiniteFloat]]. */
+      def unary_- : FiniteFloat = FiniteFloat.ensuringValid(-p)
+
+      /** Applies the passed Float => Float function and ensures the result is a FiniteFloat. */
+      def ensuringValid(f: Float => Float): FiniteFloat = {
+        val candidateResult: Float = f(p)
+        if (FiniteFloat.isValid(candidateResult)) FiniteFloat.ensuringValid(candidateResult)
+        else throw new AssertionError(s"${candidateResult.toString()}, the result of applying the passed function to ${p.toString()}, was not a valid FiniteFloat")
+      }
+    }
   }
 
 }

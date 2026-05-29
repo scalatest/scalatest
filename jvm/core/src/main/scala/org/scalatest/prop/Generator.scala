@@ -1805,7 +1805,7 @@ object Generator {
   //DOTTY-ONLY given Generator[PosFiniteFloat] = posFiniteFloatGenerator
 
   /**
-    * A [[Generator]] that produces Floats, excluding infinity.
+    * A [[Generator]] that produces FiniteFloats, excluding infinity and NaN.
     */
   // SKIP-DOTTY-START
   implicit val finiteFloatGenerator: Generator[FiniteFloat] =
@@ -1884,7 +1884,13 @@ object Generator {
   //DOTTY-ONLY /**
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[FiniteFloat]] values.
   //DOTTY-ONLY   */
-  //DOTTY-ONLY given Generator[FiniteFloat] = finiteFloatGenerator  
+  //DOTTY-ONLY given Generator[FiniteFloat] = finiteFloatGenerator
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[org.scalactic.opaquetypes.FiniteFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given opaqueFiniteFloatGenerator: Generator[org.scalactic.opaquetypes.FiniteFloat] =
+  //DOTTY-ONLY   finiteFloatGenerator.map(f => org.scalactic.opaquetypes.FiniteFloat.ensuringValid(f.value))
 
   /**
     * A [[Generator]] that produces Doubles, excluding infinity.
