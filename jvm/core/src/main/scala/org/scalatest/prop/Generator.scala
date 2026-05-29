@@ -4416,6 +4416,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegZLong] = negZLongGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegLongs.NegZLong independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegZLongGenerator: Generator[org.scalactic.opaquetypes.NegLongs.NegZLong] =
+  //DOTTY-ONLY   negZLongGenerator.map(i => org.scalactic.opaquetypes.NegLongs.NegZLong.ensuringValid(i.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegZLong: Generator[org.scalactic.opaquetypes.NegLongs.NegZLong] = opaquetypesNegZLongGenerator
+
   /**
     * A [[Generator]] that produces Chars, but only the ones that represent digits.
     */
