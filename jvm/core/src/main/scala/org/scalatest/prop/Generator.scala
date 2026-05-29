@@ -561,7 +561,6 @@ object Generator {
   //
   // TBD: should canonicals also be listed here? It seems a bit asymmetrical that edges and canonicals are
   // handled differently.
-  //
 
   private[prop] val byteEdges = List(Byte.MinValue, -1.toByte, 0.toByte, 1.toByte, Byte.MaxValue)
   private[prop] val shortEdges = List(Short.MinValue, -1.toShort, 0.toShort, 1.toShort, Short.MaxValue)
@@ -3627,6 +3626,11 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegFiniteDouble]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegFiniteDouble] = negFiniteDoubleGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegDoubles.NegFiniteDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegFiniteDoubleGenerator: Generator[org.scalactic.opaquetypes.NegDoubles.NegFiniteDouble] =
+  //DOTTY-ONLY   negFiniteDoubleGenerator.map(f => org.scalactic.opaquetypes.NegDoubles.NegFiniteDouble.ensuringValid(f.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegFiniteDouble: Generator[org.scalactic.opaquetypes.NegDoubles.NegFiniteDouble] = opaquetypesNegFiniteDoubleGenerator
 
   /**
     * A [[Generator]] that produces negative Floats, excluding zero but including infinity.

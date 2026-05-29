@@ -17,6 +17,7 @@ package org.scalactic.opaquetypes
 
 import org.scalactic.Resources
 import scala.compiletime.{constValueOpt, error}
+import scala.util.NotGiven
 import scala.util.{Failure, Success, Try}
 
 import org.scalactic.{Bad, Fail, Good, Or, Pass, Validation}
@@ -98,9 +99,9 @@ object NegDoubles {
     val MinValue: NegZDouble = Double.MinValue
     val NegativeInfinity: NegZDouble = Double.NegativeInfinity
 
-    extension (p: NegZDouble) {
+    extension [A <: NegZDouble](p: A) {
       def value: Double = p
-      def isNegInfinity: Boolean = p == Double.NegativeInfinity
+      def isNegInfinity(using NotGiven[A <:< NegFiniteDouble]): Boolean = p == Double.NegativeInfinity
       def isFinite: Boolean = !p.isInfinite
       def unary_+ : NegZDouble = p
       def plus(x: NegZDouble): NegZDouble = NegZDouble.ensuringValid(value + x)
@@ -186,8 +187,8 @@ object NegDoubles {
       def apply(x: Float): NegZDouble = NegZDouble.ensuringValid(x.toDouble)
     }
 
-    given Ordering[NegZDouble] with {
-      def compare(x: NegZDouble, y: NegZDouble): Int = java.lang.Double.compare(x.value, y.value)
+    given [A <: NegZDouble](using NotGiven[A =:= NegDouble], NotGiven[A =:= NegZFiniteDouble], NotGiven[A =:= NegFiniteDouble]): Ordering[A] with {
+      def compare(x: A, y: A): Int = java.lang.Double.compare(x.value, y.value)
     }
 
   }
@@ -495,16 +496,24 @@ object NegDoubles {
       def apply(x: NegZFiniteDouble): Double = x.toDouble
     }
 
+    given Conversion[NegZFiniteDouble, NegZDouble] with {
+      def apply(x: NegZFiniteDouble): NegZDouble = x.toDouble
+    }
+
+    given Conversion[NegZFiniteDouble, NonZeroDoubles.NonZeroDouble] with {
+      def apply(x: NegZFiniteDouble): NonZeroDoubles.NonZeroDouble = NonZeroDoubles.NonZeroDouble.ensuringValid(x.toDouble)
+    }
+
     given Conversion[Int, NegZFiniteDouble] with {
       inline def apply[I <: Int & Singleton](inline x: I): NegZFiniteDouble =
         inline constValueOpt[I] match {
           case Some(v: Int) =>
             inline if v > 0 then
-              error("NegZFiniteDouble.apply can only be invoked on a finite non-positive integer literal, like NegZFiniteDouble(-42).")
+              error(Resources.notValidNegZFiniteDouble)
             else
               v.toDouble.asInstanceOf[NegZFiniteDouble]
           case None =>
-            error("NegZFiniteDouble.apply can only be invoked on an integer literal, like NegZFiniteDouble(-42). Please use NegZFiniteDouble.from instead.")
+            error(Resources.notLiteralNegZFiniteDouble)
         }
 
       def apply(x: Int): NegZFiniteDouble = NegZFiniteDouble.ensuringValid(x.toDouble)
@@ -514,12 +523,12 @@ object NegDoubles {
       inline def apply[F <: Float & Singleton](inline x: F): NegZFiniteDouble =
         inline constValueOpt[F] match {
           case Some(v: Float) =>
-            inline if v > 0.0f || v == Float.PositiveInfinity || v == Float.NegativeInfinity then
-              error("NegZFiniteDouble.apply can only be invoked on a finite non-positive floating point literal, like NegZFiniteDouble(-42.0).")
+            inline if v > 0.0f then
+              error(Resources.notValidNegZFiniteDouble)
             else
               v.toDouble.asInstanceOf[NegZFiniteDouble]
           case None =>
-            error("NegZFiniteDouble.apply can only be invoked on a floating point literal, like NegZFiniteDouble(-42.0). Please use NegZFiniteDouble.from instead.")
+            error(Resources.notLiteralNegZFiniteDouble)
         }
 
       def apply(x: Float): NegZFiniteDouble = NegZFiniteDouble.ensuringValid(x.toDouble)
@@ -530,18 +539,22 @@ object NegDoubles {
         inline constValueOpt[D] match {
           case Some(v: Double) =>
             inline if v > 0.0 || v == Double.PositiveInfinity || v == Double.NegativeInfinity then
-              error("NegZFiniteDouble.apply can only be invoked on a finite non-positive floating point literal, like NegZFiniteDouble(-42.0).")
+              error(Resources.notValidNegZFiniteDouble)
             else
               v.asInstanceOf[NegZFiniteDouble]
           case None =>
-            error("NegZFiniteDouble.apply can only be invoked on a floating point literal, like NegZFiniteDouble(-42.0). Please use NegZFiniteDouble.from instead.")
+            error(Resources.notLiteralNegZFiniteDouble)
         }
 
       def apply(x: Double): NegZFiniteDouble = NegZFiniteDouble.ensuringValid(x)
     }
+
+    given Ordering[NegZFiniteDouble] with {
+      def compare(x: NegZFiniteDouble, y: NegZFiniteDouble): Int = x.compareTo(y)
+    }
   }
 
-  opaque type NegFiniteDouble <: NegDouble = Double
+  opaque type NegFiniteDouble <: NegZFiniteDouble = Double
 
   object NegFiniteDouble {
     inline def apply[I <: Int & Singleton](inline d: I): NegFiniteDouble =
@@ -553,17 +566,6 @@ object NegDoubles {
             v.toDouble.asInstanceOf[NegFiniteDouble]
         case None =>
           error("NegFiniteDouble.apply requires an integer literal")
-      }
-
-    inline def apply[L <: Long & Singleton](inline d: L): NegFiniteDouble =
-      inline constValueOpt[L] match {
-        case Some(v: Long) =>
-          inline if v >= 0L then
-            error("NegFiniteDouble cannot be instantiated with a non-negative long literal")
-          else
-            v.toDouble.asInstanceOf[NegFiniteDouble]
-        case None =>
-          error("NegFiniteDouble.apply requires a long literal")
       }
 
     inline def apply[F <: Float & Singleton](inline d: F): NegFiniteDouble =
@@ -587,11 +589,6 @@ object NegDoubles {
         case None =>
           error("NegFiniteDouble.apply requires a double literal")
       }
-
-    def apply(d: Int): NegFiniteDouble = ensuringValid(d.toDouble)
-    def apply(d: Long): NegFiniteDouble = ensuringValid(d.toDouble)
-    def apply(d: Float): NegFiniteDouble = ensuringValid(d.toDouble)
-    def apply(d: Double): NegFiniteDouble = ensuringValid(d)
 
     def from(d: Double): Option[NegFiniteDouble] =
       if (isValid(d)) Some(d) else None
@@ -619,6 +616,15 @@ object NegDoubles {
     def fromOrElse(value: Double, default: => NegFiniteDouble): NegFiniteDouble =
       if (isValid(value)) value else default
 
+    extension (p: NegFiniteDouble) {
+      def ensuringValid(f: Double => Double): NegFiniteDouble = {
+        val candidateResult: Double = f(p)
+        if (NegFiniteDouble.isValid(candidateResult)) NegFiniteDouble.ensuringValid(candidateResult)
+        else throw new AssertionError(s"${candidateResult.toString()}, the result of applying the passed function to ${p.toString()}, was not a valid NegFiniteDouble")
+      }
+
+    }
+
     val MaxValue: NegFiniteDouble = -Double.MinPositiveValue
     val MinValue: NegFiniteDouble = Double.MinValue
 
@@ -626,8 +632,42 @@ object NegDoubles {
       def apply(x: NegFiniteDouble): Double = x.toDouble
     }
 
+    given Conversion[NegFiniteDouble, NegDouble] with {
+      def apply(x: NegFiniteDouble): NegDouble = x.toDouble
+    }
+
     given Conversion[NegFiniteDouble, NonZeroDoubles.NonZeroDouble] with {
       def apply(x: NegFiniteDouble): NonZeroDoubles.NonZeroDouble = NonZeroDoubles.NonZeroDouble.ensuringValid(x.toDouble)
+    }
+
+    given Conversion[Int, NegFiniteDouble] with {
+      inline def apply[I <: Int & Singleton](inline x: I): NegFiniteDouble =
+        inline constValueOpt[I] match {
+          case Some(v: Int) =>
+            inline if v >= 0 then
+              error(Resources.notValidNegFiniteDouble)
+            else
+              v.toDouble.asInstanceOf[NegFiniteDouble]
+          case None =>
+            error(Resources.notLiteralNegFiniteDouble)
+        }
+
+      def apply(x: Int): NegFiniteDouble = NegFiniteDouble.ensuringValid(x.toDouble)
+    }
+
+    given Conversion[Float, NegFiniteDouble] with {
+      inline def apply[F <: Float & Singleton](inline x: F): NegFiniteDouble =
+        inline constValueOpt[F] match {
+          case Some(v: Float) =>
+            inline if v >= 0.0f || v == Float.PositiveInfinity || v == Float.NegativeInfinity then
+              error(Resources.notValidNegFiniteDouble)
+            else
+              v.toDouble.asInstanceOf[NegFiniteDouble]
+          case None =>
+            error(Resources.notLiteralNegFiniteDouble)
+        }
+
+      def apply(x: Float): NegFiniteDouble = NegFiniteDouble.ensuringValid(x.toDouble)
     }
 
     given Conversion[Double, NegFiniteDouble] with {
@@ -635,18 +675,14 @@ object NegDoubles {
         inline constValueOpt[D] match {
           case Some(v: Double) =>
             inline if v >= 0.0 || v == Double.PositiveInfinity || v == Double.NegativeInfinity then
-              error("NegFiniteDouble cannot be instantiated with a non-negative double literal or infinity")
+              error(Resources.notValidNegFiniteDouble)
             else
               v.asInstanceOf[NegFiniteDouble]
           case None =>
-            error("NegFiniteDouble conversion requires a double literal")
+            error(Resources.notLiteralNegFiniteDouble)
         }
 
       def apply(x: Double): NegFiniteDouble = NegFiniteDouble.ensuringValid(x)
-    }
-
-    given Ordering[NegFiniteDouble] with {
-      def compare(x: NegFiniteDouble, y: NegFiniteDouble): Int = x.compareTo(y)
     }
   }
 }
