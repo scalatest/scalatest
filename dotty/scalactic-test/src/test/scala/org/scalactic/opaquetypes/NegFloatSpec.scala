@@ -16,7 +16,6 @@
 package org.scalactic.opaquetypes
 
 import org.scalatest.*
-import org.scalatest.prop.Generator
 import OptionValues.*
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
@@ -29,18 +28,6 @@ import org.scalactic.{Pass, Fail}
 import org.scalactic.Equality
 
 trait NegFloatSpecSupport {
-
-  given Generator[NegZFloat] =
-    Generator.negZFloatGenerator.map((f: org.scalactic.anyvals.NegZFloat) => NegZFloat.ensuringValid(f.value))
-
-  given Generator[NegFloat] =
-    Generator.negFloatGenerator.map((f: org.scalactic.anyvals.NegFloat) => NegFloat.ensuringValid(f.value))
-
-  given Generator[NegZFiniteFloat] =
-    Generator.negZFiniteFloatGenerator.map((f: org.scalactic.anyvals.NegZFiniteFloat) => NegZFiniteFloat.ensuringValid(f.value))
-
-  given Generator[NegFiniteFloat] =
-    Generator.negFiniteFloatGenerator.map((f: org.scalactic.anyvals.NegFiniteFloat) => NegFiniteFloat.ensuringValid(f.value))
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {

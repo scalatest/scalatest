@@ -3721,6 +3721,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegFloat] = negFloatGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegFloats.NegFloat independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegFloatGenerator: Generator[org.scalactic.opaquetypes.NegFloats.NegFloat] =
+  //DOTTY-ONLY   negFloatGenerator.map(f => org.scalactic.opaquetypes.NegFloats.NegFloat.ensuringValid(f.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegFloat: Generator[org.scalactic.opaquetypes.NegFloats.NegFloat] = opaquetypesNegFloatGenerator
+
   /**
     * A [[Generator]] that produces negative Floats, excluding zero and infinity.
     */
