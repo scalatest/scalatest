@@ -16,7 +16,6 @@
 package org.scalactic.opaquetypes
 
 import org.scalatest.*
-import org.scalatest.prop.Generator
 import org.scalactic.Equality
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
@@ -31,18 +30,6 @@ import org.scalactic.{Good, Bad}
 import org.scalactic.{Pass, Fail}
 
 trait NegDoubleSpecSupport {
-
-  given Generator[NegZDouble] =
-    Generator.negZDoubleGenerator.map((d: org.scalactic.anyvals.NegZDouble) => NegZDouble.ensuringValid(d.value))
-
-  given Generator[NegDouble] =
-    Generator.negDoubleGenerator.map((d: org.scalactic.anyvals.NegDouble) => NegDouble.ensuringValid(d.value))
-
-  given Generator[NegZFiniteDouble] =
-    Generator.negZFiniteDoubleGenerator.map((d: org.scalactic.anyvals.NegZFiniteDouble) => NegZFiniteDouble.ensuringValid(d.value))
-
-  given Generator[NegFiniteDouble] =
-    Generator.negFiniteDoubleGenerator.map((d: org.scalactic.anyvals.NegFiniteDouble) => NegFiniteDouble.ensuringValid(d.value))
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {

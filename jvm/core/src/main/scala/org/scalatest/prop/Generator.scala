@@ -3559,6 +3559,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegDouble] = negDoubleGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegDoubles.NegDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegDoubleGenerator: Generator[org.scalactic.opaquetypes.NegDoubles.NegDouble] =
+  //DOTTY-ONLY   negDoubleGenerator.map(f => org.scalactic.opaquetypes.NegDoubles.NegDouble.ensuringValid(f.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegDouble: Generator[org.scalactic.opaquetypes.NegDoubles.NegDouble] = opaquetypesNegDoubleGenerator
+
   /**
     * A [[Generator]] that produces negative Doubles, excluding zero and infinity.
     */
