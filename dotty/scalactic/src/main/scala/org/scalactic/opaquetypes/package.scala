@@ -97,6 +97,11 @@ package object opaquetypes {
   /** Value alias for the [[org.scalactic.opaquetypes.PosFloats.FiniteFloat]] companion. */
   val FiniteFloat: PosFloats.FiniteFloat.type = PosFloats.FiniteFloat
 
+  /** Type alias for [[org.scalactic.opaquetypes.PosDoubles.FiniteDouble]]. */
+  type FiniteDouble = PosDoubles.FiniteDouble
+  /** Value alias for the [[org.scalactic.opaquetypes.PosDoubles.FiniteDouble]] companion. */
+  val FiniteDouble: PosDoubles.FiniteDouble.type = PosDoubles.FiniteDouble
+
   /** Type alias for [[org.scalactic.opaquetypes.NegFloats.NegZFloat]]. */
   type NegZFloat = NegFloats.NegZFloat
   /** Value alias for the [[org.scalactic.opaquetypes.NegFloats.NegZFloat]] companion. */
