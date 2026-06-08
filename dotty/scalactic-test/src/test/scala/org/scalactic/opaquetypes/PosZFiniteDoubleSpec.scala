@@ -261,53 +261,53 @@ class PosZFiniteDoubleSpec extends funspec.AnyFunSpec with matchers.should.Match
 
     it("should offer a unary + method that is consistent with Double") {
       forAll { (p: PosZFiniteDouble) =>
-        (+p).toDouble shouldEqual (+(p.toDouble))
+        (+p).value shouldEqual (+(p.value))
       }
     }
 
     it("should offer 'min' and 'max' methods that are consistent with Double") {
       forAll { (p1: PosZFiniteDouble, p2: PosZFiniteDouble) =>
-        p1.max(p2).toDouble shouldEqual p1.toDouble.max(p2.toDouble)
-        p1.min(p2).toDouble shouldEqual p1.toDouble.min(p2.toDouble)
+        p1.max(p2).value shouldEqual p1.value.max(p2.value)
+        p1.min(p2).value shouldEqual p1.value.min(p2.value)
       }
     }
 
     it("should offer an 'isWhole' method that is consistent with Double") {
       forAll { (p: PosZFiniteDouble) =>
-        p.isWhole shouldEqual p.toDouble.isWhole
+        p.isWhole shouldEqual p.value.isWhole
       }
     }
 
     it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Double") {
       forAll { (p: PosZFiniteDouble) =>
-        p.round.toDouble shouldEqual p.toDouble.round
-        p.ceil.toDouble shouldEqual p.toDouble.ceil
-        p.floor.toDouble shouldEqual p.toDouble.floor
+        p.round.toDouble shouldEqual p.value.round
+        p.ceil.value shouldEqual p.value.ceil
+        p.floor.value shouldEqual p.value.floor
       }
     }
 
     it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Double") {
       forAll { (p: PosZFiniteDouble) =>
-        p.toRadians shouldEqual p.toDouble.toRadians
-        p.toDegrees shouldEqual p.toDouble.toDegrees
+        p.toRadians shouldEqual p.value.toRadians
+        p.toDegrees shouldEqual p.value.toDegrees
       }
     }
 
     it("should offer widening methods for basic types that are consistent with Double") {
       forAll { (p: PosZFiniteDouble) =>
         def widen(value: Double): Double = value
-        widen(p) shouldEqual widen(p.toDouble)
+        widen(p) shouldEqual widen(p.value)
       }
       forAll { (p: PosZFiniteDouble) =>
         def widen(value: PosZDouble): PosZDouble = value
-        widen(p) shouldEqual widen(PosZDouble.from(p.toDouble).get)
+        widen(p) shouldEqual widen(PosZDouble.from(p.value).get)
       }
     }
 
     it("should offer an ensuringValid method that takes a Double => Double, throwing AssertionError if the result is invalid") {
       PosZFiniteDouble(33.0).ensuringValid(_ + 1.0) shouldEqual PosZFiniteDouble(34.0)
       PosZFiniteDouble(33.0).ensuringValid(_ => 0.0) shouldEqual PosZFiniteDouble(0.0)
-      an [AssertionError] should be thrownBy { PosZFiniteDouble.MaxValue.ensuringValid(_ - PosZFiniteDouble.MaxValue - 1.0) }
+      an [AssertionError] should be thrownBy { PosZFiniteDouble.MaxValue.ensuringValid(_ - PosZFiniteDouble.MaxValue.value - 1.0) }
       an [AssertionError] should be thrownBy { PosZFiniteDouble.MaxValue.ensuringValid(_ => Double.PositiveInfinity) }
       an [AssertionError] should be thrownBy { PosZFiniteDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
     }

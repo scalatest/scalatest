@@ -13,158 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.scalactic.opaquetypes
 
 import org.scalactic.Resources
-import scala.compiletime.{constValueOpt, error}
+import scala.compiletime.{ constValueOpt, error }
 import scala.util.{Try, Success, Failure}
 import org.scalactic.{Validation, Pass, Fail}
 import org.scalactic.{Or, Good, Bad}
-
-import PosLongs.PosZLong
-import NonZeroDoubles.NonZeroDouble
+import PosLongs.{PosZLong, PosLong}
 
 object PosDoubles {
 
   opaque type PosZDouble = Double
 
   object PosZDouble {
-
-    /** Convert a [[PosZDouble]] to a plain Double (unwrap). */
-    given Conversion[PosZDouble, Double] with {
-      def apply(x: PosZDouble): Double = x.toDouble
-    }
-
-    /** Convert a compile-time Int literal or runtime Int to a [[PosZDouble]].
-      *
-      * The inline overload checks integer literals at compile time; the runtime
-      * overload validates and throws for negative values.
-      */
-    given Conversion[Int, PosZDouble] with {
-      inline def apply[I <: Int & Singleton](inline x: I): PosZDouble =
-        inline constValueOpt[I] match {
-          case Some(v: Int) =>
-            inline if v < 0 then
-              error("PosZDouble cannot be instantiated with a negative integer literal")
-            else
-              v.toDouble.asInstanceOf[PosZDouble]
-          case None =>
-            error("PosZDouble conversion requires a integer literal")
-        }
-      def apply(x: Int): PosZDouble = x.toDouble
-    }
-
-    /** Convert a compile-time Float literal or runtime Float to a [[PosZDouble]].
-      *
-      * The inline overload checks float literals at compile time; the runtime
-      * overload validates and throws for negative values.
-      */
-    given Conversion[Float, PosZDouble] with {
-      inline def apply[F <: Float & Singleton](inline x: F): PosZDouble =
-        inline constValueOpt[F] match {
-          case Some(v: Float) =>
-            inline if v < 0.0f then
-              error("PosZDouble cannot be instantiated with a negative float literal")
-            else
-              v.toDouble.asInstanceOf[PosZDouble]
-          case None =>
-            error("PosZDouble conversion requires a float literal")
-        }
-      def apply(x: Float): PosZDouble = x.toDouble
-    }
-
-    /** Convert a compile-time Double literal or runtime Double to a [[PosZDouble]].
-      *
-      * The inline overload checks double literals at compile time; the runtime
-      * overload validates and throws for negative values.
-      */
-    given Conversion[Double, PosZDouble] with {
-      inline def apply[D <: Double & Singleton](inline x: D): PosZDouble =
-        inline constValueOpt[D] match {
-          case Some(v: Double) =>
-            inline if v < 0.0 then
-              error("PosZDouble cannot be instantiated with a negative double literal")
-            else
-              v.toDouble.asInstanceOf[PosZDouble]
-          case None =>
-            error("PosZDouble conversion requires a double literal")
-        }
-      def apply(x: Double): PosZDouble = x
-    }
-
-    /** Compile-time factory for creating a [[PosZDouble]] from a double literal.
-      *
-      * This inline method inspects the provided double literal at compile time
-      * and rejects negative literals. Use it as: `PosZDouble(5.0)`. For non-literal
-      * values, use [[ensuringValid]] or [[from]].
-      *
-      * @tparam D the singleton Double literal type
-      * @param d the Double literal
-      * @return a [[PosZDouble]] representing the given non-negative literal
-      * @throws a compile-time error if the literal is negative or not a literal
-      */
-    inline def apply[D <: Double & Singleton](inline d: D): PosZDouble =
-      inline constValueOpt[D] match {
-        case Some(v: Double) =>
-          inline if v < 0.0 then
-            error("PosZDouble cannot be instantiated with a negative double literal")
-          else
-            v.asInstanceOf[PosZDouble]
-        case None =>
-          error("PosZDouble.apply requires a integer, long, float or double literal")
-      }
-
-    /** Compile-time factory for creating a [[PosZDouble]] from a float literal.
-      *
-      * This inline method inspects the provided float literal at compile time
-      * and rejects negative literals. Use it as: `PosZDouble(5.0f)`. For non-literal
-      * values, use [[ensuringValid]] or [[from]].
-      *
-      * @tparam F the singleton Float literal type
-      * @param f the Float literal
-      * @return a [[PosZDouble]] representing the given non-negative literal
-      * @throws a compile-time error if the literal is negative or not a literal
-      */
-    inline def apply[F <: Float & Singleton](inline f: F): PosZDouble =
-      inline constValueOpt[F] match {
-        case Some(v: Float) =>
-          inline if v < 0.0f then
-            error("PosZDouble cannot be instantiated with a negative float literal")
-          else
-            v.toDouble.asInstanceOf[PosZDouble]
-        case None =>
-          error("PosZDouble.apply requires a integer, long, float or double literal")
-      }
-
-    /** Compile-time factory for creating a [[PosZDouble]] from a integer literal.
-      *
-      * This inline method inspects the provided integer literal at compile time
-      * and rejects negative literals. Use it as: `PosZDouble(5)`. For non-literal
-      * values, use [[ensuringValid]] or [[from]].
-      *
-      * @tparam I the singleton Int literal type
-      * @param i the Int literal
-      * @return a [[PosZDouble]] representing the given non-negative literal
-      * @throws a compile-time error if the literal is negative or not a literal
-      */
-    inline def apply[I <: Int & Singleton](inline i: I): PosZDouble =
-      inline constValueOpt[I] match {
-        case Some(v: Int) =>
-          inline if v < 0 then
-            error("PosZDouble cannot be instantiated with a negative integer literal")
-          else
-            v.toDouble.asInstanceOf[PosZDouble]
-        case None =>
-          error("PosZDouble.apply requires a integer, long, float or double literal")
-      }      
-
-    /** 
-      * Return true when the provided Double is a valid [[PosZDouble]] value (>= 0). 
-      *
-      * @param value the Double to validate
-      * @return true if the specified Double is a non-negative double, else false
-      */
-    def isValid(value: Double): Boolean = value >= 0.0  
 
     /**
       * A factory/validation method that produces a <code>PosZDouble</code>, wrapped
@@ -300,6 +163,14 @@ object PosDoubles {
       if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))
 
     /**
+      * Return true when the provided <code>Double</code> is a valid [[PosZDouble]] value (>= 0.0).
+      *
+      * @param value the <code>Double</code> to validate
+      * @return true if the specified <code>Double</code> is non-negative, else false
+      */
+    def isValid(value: Double): Boolean = value >= 0.0
+
+    /**
       * A factory method that produces a <code>PosZDouble</code> given a
       * <code>Double</code> value and a default <code>PosZDouble</code>.
       *
@@ -330,10 +201,10 @@ object PosDoubles {
       if (isValid(value)) value else default          
     
     def from(d: Double): Option[PosZDouble] =
-      if (d >= 0.0) Some(d) else None
+      if (isValid(d)) Some(d) else None
 
     def ensuringValid(d: Double): PosZDouble = 
-      if (d < 0.0) 
+      if (!isValid(d)) 
         throw new AssertionError(Resources.invalidPosZDouble)
       else d
 
@@ -364,11 +235,101 @@ object PosDoubles {
       def compare(x: PosZDouble, y: PosZDouble): Int = x.compareTo(y)
     }
 
+    /** Compile-time factory for creating a [[PosZDouble]] from a double literal. */
+    inline def apply[D <: Double & Singleton](inline d: D): PosZDouble =
+      inline constValueOpt[D] match {
+        case Some(v: Double) =>
+          inline if v >= 0.0 then
+            v
+          else
+            error("PosZDouble cannot be instantiated with a negative double literal")
+        case None =>
+          error("PosZDouble.apply requires a double literal")
+      }
+
+    /** Compile-time factory for creating a [[PosZDouble]] from a float literal. */
+    inline def apply[F <: Float & Singleton](inline f: F): PosZDouble =
+      inline constValueOpt[F] match {
+        case Some(v: Float) =>
+          inline if v >= 0.0f then
+            v.toDouble
+          else
+            error("PosZDouble cannot be instantiated with a negative float literal")
+        case None =>
+          error("PosZDouble.apply requires a float literal")
+      }
+
+    /** Compile-time factory for creating a [[PosZDouble]] from an integer literal. */
+    inline def apply[I <: Int & Singleton](inline i: I): PosZDouble =
+      inline constValueOpt[I] match {
+        case Some(v: Int) =>
+          inline if v >= 0 then
+            v.toDouble
+          else
+            error("PosZDouble cannot be instantiated with a negative integer literal")
+        case None =>
+          error("PosZDouble.apply requires an integer literal")
+      }
+
+    /** Convert a compile-time Int literal or runtime Int to a [[PosZDouble]]. */
+    given Conversion[Int, PosZDouble] with {
+      inline def apply[I <: Int & Singleton](inline x: I): PosZDouble =
+        inline constValueOpt[I] match {
+          case Some(v: Int) =>
+            inline if v < 0 then
+              error("PosZDouble cannot be instantiated with a negative integer literal")
+            else
+              v.toDouble
+          case None =>
+            error("PosZDouble conversion requires an integer literal")
+        }
+
+      def apply(x: Int): PosZDouble = PosZDouble.ensuringValid(x.toDouble)
+    }
+
+    /** Convert a compile-time Float literal or runtime Float to a [[PosZDouble]]. */
+    given Conversion[Float, PosZDouble] with {
+      inline def apply[F <: Float & Singleton](inline x: F): PosZDouble =
+        inline constValueOpt[F] match {
+          case Some(v: Float) =>
+            inline if v < 0.0f then
+              error("PosZDouble cannot be instantiated with a negative float literal")
+            else
+              v.toDouble
+          case None =>
+            error("PosZDouble conversion requires a float literal")
+        }
+
+      def apply(x: Float): PosZDouble = PosZDouble.ensuringValid(x.toDouble)
+    }
+
+    /** Convert a compile-time Double literal or runtime Double to a [[PosZDouble]]. */
+    given Conversion[Double, PosZDouble] with {
+      inline def apply[D <: Double & Singleton](inline x: D): PosZDouble =
+        inline constValueOpt[D] match {
+          case Some(v: Double) =>
+            inline if v < 0.0 then
+              error("PosZDouble cannot be instantiated with a negative double literal")
+            else
+              v
+          case None =>
+            error("PosZDouble conversion requires a double literal")
+        }
+
+      def apply(x: Double): PosZDouble = PosZDouble.ensuringValid(x)
+    }
+
     extension (p: PosZDouble) {
       /** Return the underlying Double value. */
       def value: Double = p
+      /** Return the underlying Double value. */
+      def toDouble: Double = p
       /** Return true if this PosZDouble is positive infinity. */
       def isPosInfinity: Boolean = p == Double.PositiveInfinity
+      /** Unary plus returns this value unchanged. */
+      def unary_+ : PosZDouble = p
+      /** Unary minus returns the additive inverse as a NegZDouble. */
+      def unary_- : NegDoubles.NegZDouble = NegDoubles.NegZDouble.ensuringValid(-p)
       /**
         * Returns the <code>PosZFloat</code> sum of this value and `x`.
         *
@@ -468,14 +429,19 @@ object PosDoubles {
 
   object PosDouble {
 
+    /** Implicitly widens a [[PosZDouble]] to a plain <code>Double</code>. */
+    given Conversion[PosZDouble, Double] with {
+      def apply(x: PosZDouble): Double = x
+    }
+
     /** Convert a [[PosDouble]] to a plain Double (unwrap). */
     given Conversion[PosDouble, Double] with {
-      def apply(x: PosDouble): Double = x.toDouble
+      def apply(x: PosDouble): Double = x
     }
 
     /** Convert a [[PosDouble]] to a plain NonZeroDouble (unwrap). */
     given Conversion[PosDouble, NonZeroDouble] with {
-      def apply(x: PosDouble): NonZeroDouble = NonZeroDouble.ensuringValid(x.toDouble)
+      def apply(x: PosDouble): NonZeroDouble = NonZeroDouble.ensuringValid(x)
     }
 
     /** Convert a compile-time Int literal or runtime Int to a [[PosDouble]].
@@ -490,7 +456,7 @@ object PosDoubles {
             inline if v <= 0 then
               error("PosZDouble cannot be instantiated with a zero or negative integer literal")
             else
-              v.toDouble.asInstanceOf[PosDouble]
+              v.toDouble
           case None =>
             error("PosDouble conversion requires a integer literal")
         }
@@ -509,7 +475,7 @@ object PosDoubles {
             inline if v <= 0L then
               error("PosZDouble cannot be instantiated with a zero or negative long literal")
             else
-              v.toDouble.asInstanceOf[PosDouble]
+              v.toDouble
           case None =>
             error("PosDouble conversion requires a long literal")
         }
@@ -528,7 +494,7 @@ object PosDoubles {
             inline if v <= 0.0f then
               error("PosZDouble cannot be instantiated with a zero or negative float literal")
             else
-              v.toDouble.asInstanceOf[PosDouble]
+              v.toDouble
           case None =>
             error("PosDouble conversion requires a float literal")
         }
@@ -547,7 +513,7 @@ object PosDoubles {
             inline if v <= 0.0 then
               error("PosZDouble cannot be instantiated with a zero or negative double literal")
             else
-              v.asInstanceOf[PosDouble]
+              v
           case None =>
             error("PosDouble conversion requires a double literal")
         }
@@ -571,7 +537,7 @@ object PosDoubles {
           inline if v <= 0.0 then
             error("PosDouble cannot be instantiated with a non-positive double literal")
           else
-            v.asInstanceOf[PosDouble]
+            v
         case None =>
           error("PosDouble.apply requires a integer, long, float or double literal")
       }
@@ -593,7 +559,7 @@ object PosDoubles {
           inline if v <= 0.0f then
             error("PosDouble cannot be instantiated with a non-positive float literal")
           else
-            v.toDouble.asInstanceOf[PosDouble]
+            v.toDouble
         case None =>
           error("PosDouble.apply requires a integer, long, float or double literal")
       }
@@ -615,7 +581,7 @@ object PosDoubles {
           inline if v <= 0L then
             error("PosDouble cannot be instantiated with a non-positive long literal")
           else
-            v.toDouble.asInstanceOf[PosDouble]
+            v.toDouble
         case None =>
           error("PosDouble.apply requires a integer, long, float or double literal")
       }
@@ -637,7 +603,7 @@ object PosDoubles {
           inline if v <= 0 then
             error("PosDouble cannot be instantiated with a non-positive integer literal")
           else
-            v.toDouble.asInstanceOf[PosDouble]
+            v.toDouble
         case None =>
           error("PosDouble.apply requires a integer, long, float or double literal")
       }      
@@ -651,7 +617,6 @@ object PosDoubles {
       * @param value the Double to validate
       * @return true if the specified Double is a non-negative double, else false
       */
-    def isValid(value: Double): Boolean = value > 0.0    
 
     def ensuringValid(d: Double): PosDouble = 
       if (isValid(d))
@@ -792,6 +757,8 @@ object PosDoubles {
     def rightOrElse[L](value: Double)(f: Double => L): Either[L, PosDouble] =
       if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))
 
+    def isValid(value: Double): Boolean = value > 0.0
+
     /**
       * A factory method that produces a <code>PosDouble</code> given a
       * <code>Double</code> value and a default <code>PosDouble</code>.
@@ -877,7 +844,7 @@ object PosDoubles {
         */
       def ensuringValid(f: Double => Double): PosDouble = {
         val candidateResult: Double = f(p)
-        if (PosDouble.isValid(candidateResult)) PosDouble.ensuringValid(candidateResult)
+        if (PosDouble.isValid(candidateResult) && candidateResult.isFinite) PosDouble.ensuringValid(candidateResult)
         else throw new AssertionError(s"${candidateResult.toString()}, the result of applying the passed function to ${p.toString()}, was not a valid PosDouble")
       }
     }
@@ -917,7 +884,7 @@ object PosDoubles {
 
     /** Implicitly widens a [[PosZFiniteDouble]] to a plain <code>Double</code>. */
     given Conversion[PosZFiniteDouble, Double] with {
-      def apply(x: PosZFiniteDouble): Double = x.toDouble
+      def apply(x: PosZFiniteDouble): Double = x
     }
 
     /** Converts a compile-time non-negative <code>Int</code> literal to a [[PosZFiniteDouble]].
@@ -935,7 +902,7 @@ object PosDoubles {
             inline if v < 0 then
               error("PosZFiniteDouble cannot be instantiated with a negative integer literal")
             else
-              v.toDouble.asInstanceOf[PosZFiniteDouble]
+              v.toDouble
           case None =>
             error("PosZFiniteDouble conversion requires an integer literal")
         }
@@ -957,7 +924,7 @@ object PosDoubles {
             inline if v < 0L then
               error("PosZFiniteDouble cannot be instantiated with a negative long literal")
             else
-              v.toDouble.asInstanceOf[PosZFiniteDouble]
+              v.toDouble
           case None =>
             error("PosZFiniteDouble conversion requires a long literal")
         }
@@ -979,7 +946,7 @@ object PosDoubles {
             inline if v < 0.0f then
               error("PosZFiniteDouble cannot be instantiated with a negative float literal")
             else
-              v.toDouble.asInstanceOf[PosZFiniteDouble]
+              v.toDouble
           case None =>
             error("PosZFiniteDouble conversion requires a float literal")
         }
@@ -1001,7 +968,7 @@ object PosDoubles {
             inline if v < 0.0 || v == Double.PositiveInfinity then
               error("PosZFiniteDouble cannot be instantiated with a negative double literal or positive infinity")
             else
-              v.asInstanceOf[PosZFiniteDouble]
+              v
           case None =>
             error("PosZFiniteDouble conversion requires a double literal")
         }
@@ -1026,7 +993,7 @@ object PosDoubles {
           inline if v < 0.0 || v == Double.PositiveInfinity || v == Double.NegativeInfinity then
             error("PosZFiniteDouble cannot be instantiated with a negative double literal or positive infinity")
           else
-            v.asInstanceOf[PosZFiniteDouble]
+            v
         case None =>
           error("PosZFiniteDouble.apply requires an integer, long, float or double literal")
       }
@@ -1048,7 +1015,7 @@ object PosDoubles {
           inline if v < 0.0f then
             error("PosZFiniteDouble cannot be instantiated with a negative float literal")
           else
-            v.toDouble.asInstanceOf[PosZFiniteDouble]
+            v.toDouble
         case None =>
           error("PosZFiniteDouble.apply requires an integer, long, float or double literal")
       }
@@ -1070,7 +1037,7 @@ object PosDoubles {
           inline if v < 0L then
             error("PosZFiniteDouble cannot be instantiated with a negative long literal")
           else
-            v.toDouble.asInstanceOf[PosZFiniteDouble]
+            v.toDouble
         case None =>
           error("PosZFiniteDouble.apply requires an integer, long, float or double literal")
       }
@@ -1092,7 +1059,7 @@ object PosDoubles {
           inline if v < 0 then
             error("PosZFiniteDouble cannot be instantiated with a negative integer literal")
           else
-            v.toDouble.asInstanceOf[PosZFiniteDouble]
+            v.toDouble
         case None =>
           error("PosZFiniteDouble.apply requires an integer, long, float or double literal")
       }
@@ -1240,6 +1207,9 @@ object PosDoubles {
     val MinPositiveValue: PosZFiniteDouble = Double.MinPositiveValue
 
     extension (p: PosZFiniteDouble) {
+      /** Return the underlying Double value. */
+      def toDouble: Double = p
+
       /** Applies the given <code>Double =&gt; Double</code> function to the underlying
         * <code>Double</code> value, and returns the result as a [[PosZFiniteDouble]] if
         * it is valid, or throws <code>AssertionError</code> if it is not.
@@ -1312,7 +1282,7 @@ object PosDoubles {
             inline if v <= 0 then
               error("PosFiniteDouble cannot be instantiated with a non-positive integer literal")
             else
-              v.toDouble.asInstanceOf[PosFiniteDouble]
+              v.toDouble
           case None =>
             error("PosFiniteDouble conversion requires an integer literal")
         }
@@ -1333,7 +1303,7 @@ object PosDoubles {
             inline if v <= 0L then
               error("PosFiniteDouble cannot be instantiated with a non-positive long literal")
             else
-              v.toDouble.asInstanceOf[PosFiniteDouble]
+              v.toDouble
           case None =>
             error("PosFiniteDouble conversion requires a long literal")
         }
@@ -1354,7 +1324,7 @@ object PosDoubles {
             inline if v <= 0.0f || v == Float.PositiveInfinity then
               error("PosFiniteDouble cannot be instantiated with a non-positive float literal or infinity")
             else
-              v.toDouble.asInstanceOf[PosFiniteDouble]
+              v.toDouble
           case None =>
             error("PosFiniteDouble conversion requires a float literal")
         }
@@ -1375,7 +1345,7 @@ object PosDoubles {
             inline if v <= 0.0 || v == Double.PositiveInfinity || v == Double.NegativeInfinity then
               error("PosFiniteDouble cannot be instantiated with a non-positive double literal or infinity")
             else
-              v.asInstanceOf[PosFiniteDouble]
+              v
           case None =>
             error("PosFiniteDouble conversion requires a double literal")
         }
@@ -1400,7 +1370,7 @@ object PosDoubles {
           inline if v <= 0.0 || v == Double.PositiveInfinity || v == Double.NegativeInfinity then
             error("PosFiniteDouble cannot be instantiated with a non-positive double literal or infinity")
           else
-            v.asInstanceOf[PosFiniteDouble]
+            v
         case None =>
           error("PosFiniteDouble.apply requires an integer, long, float or double literal")
       }
@@ -1423,7 +1393,7 @@ object PosDoubles {
           inline if v <= 0.0f || v == Float.PositiveInfinity then
             error("PosFiniteDouble cannot be instantiated with a non-positive float literal or infinity")
           else
-            v.toDouble.asInstanceOf[PosFiniteDouble]
+            v.toDouble
         case None =>
           error("PosFiniteDouble.apply requires an integer, long, float or double literal")
       }
@@ -1446,7 +1416,7 @@ object PosDoubles {
           inline if v <= 0L then
             error("PosFiniteDouble cannot be instantiated with a non-positive long literal")
           else
-            v.toDouble.asInstanceOf[PosFiniteDouble]
+            v.toDouble
         case None =>
           error("PosFiniteDouble.apply requires an integer, long, float or double literal")
       }
@@ -1469,7 +1439,7 @@ object PosDoubles {
           inline if v <= 0 then
             error("PosFiniteDouble cannot be instantiated with a non-positive integer literal")
           else
-            v.toDouble.asInstanceOf[PosFiniteDouble]
+            v.toDouble
         case None =>
           error("PosFiniteDouble.apply requires an integer, long, float or double literal")
       }
@@ -1630,192 +1600,6 @@ object PosDoubles {
         val candidateResult: Double = f(p)
         if (PosFiniteDouble.isValid(candidateResult)) PosFiniteDouble.ensuringValid(candidateResult)
         else throw new AssertionError(s"${candidateResult.toString()}, the result of applying the passed function to ${p.toString()}, was not a valid PosFiniteDouble")
-      }
-    }
-  }
-
-  /** Opaque type representing any finite <code>Double</code> value.
-    *
-    * <p>
-    * Instances of this type are guaranteed to satisfy <code>isFinite</code>, meaning
-    * they are neither positive infinity, negative infinity, nor NaN.
-    * </p>
-    *
-    * <p>
-    * Use the compile-time <code>apply</code> overloads to construct instances from
-    * literals, or the runtime factory methods [[FiniteDouble.from]],
-    * [[FiniteDouble.ensuringValid]], and [[FiniteDouble.fromOrElse]] for values
-    * known only at runtime.
-    * </p>
-    */
-  opaque type FiniteDouble = Double
-
-  /** Companion object for the [[FiniteDouble]] opaque type. */
-  object FiniteDouble {
-    /** Implicitly widens a [[FiniteDouble]] to a plain <code>Double</code>. */
-    given Conversion[FiniteDouble, Double] with {
-      def apply(x: FiniteDouble): Double = x.asInstanceOf[Double]
-    }
-
-    /** Converts a compile-time <code>Int</code> literal to a [[FiniteDouble]]. */
-    given Conversion[Int, FiniteDouble] with {
-      inline def apply[I <: Int & Singleton](inline x: I): FiniteDouble =
-        inline constValueOpt[I] match {
-          case Some(v: Int) => v.toDouble.asInstanceOf[FiniteDouble]
-          case None => error("FiniteDouble conversion requires an integer literal")
-        }
-      def apply(x: Int): FiniteDouble = x.toDouble
-    }
-
-    /** Converts a compile-time <code>Float</code> literal to a [[FiniteDouble]]. */
-    given Conversion[Float, FiniteDouble] with {
-      inline def apply[F <: Float & Singleton](inline x: F): FiniteDouble =
-        inline constValueOpt[F] match {
-          case Some(v: Float) =>
-            inline if v == v && v != Float.PositiveInfinity && v != Float.NegativeInfinity then
-              v.toDouble.asInstanceOf[FiniteDouble]
-            else
-              error("FiniteDouble cannot be instantiated with infinity or NaN")
-          case Some(_) => error("FiniteDouble cannot be instantiated with infinity or NaN")
-          case None => error("FiniteDouble conversion requires a float literal")
-        }
-      def apply(x: Float): FiniteDouble = x.toDouble
-    }
-
-    /** Converts a compile-time <code>Double</code> literal to a [[FiniteDouble]]. */
-    given Conversion[Double, FiniteDouble] with {
-      inline def apply[D <: Double & Singleton](inline x: D): FiniteDouble =
-        inline constValueOpt[D] match {
-          case Some(v: Double) =>
-            inline if v == v && v != Double.PositiveInfinity && v != Double.NegativeInfinity then
-              v.asInstanceOf[FiniteDouble]
-            else
-              error("FiniteDouble cannot be instantiated with infinity or NaN")
-          case Some(_) => error("FiniteDouble cannot be instantiated with infinity or NaN")
-          case None => error("FiniteDouble conversion requires a double literal")
-        }
-      def apply(x: Double): FiniteDouble = x
-    }
-
-    /** Compile-time factory for creating a [[FiniteDouble]] from an <code>Int</code> literal. */
-    inline def apply[I <: Int & Singleton](inline i: I): FiniteDouble =
-      inline constValueOpt[I] match {
-        case Some(v: Int) => v.toDouble.asInstanceOf[FiniteDouble]
-        case None => error("FiniteDouble.apply requires an integer literal")
-      }
-
-    /** Compile-time factory for creating a [[FiniteDouble]] from a <code>Float</code> literal. */
-    inline def apply[F <: Float & Singleton](inline f: F): FiniteDouble =
-      inline constValueOpt[F] match {
-        case Some(v: Float) =>
-          inline if v == v && v != Float.PositiveInfinity && v != Float.NegativeInfinity then
-            v.toDouble.asInstanceOf[FiniteDouble]
-          else
-            error("FiniteDouble cannot be instantiated with infinity or NaN")
-        case Some(_) => error("FiniteDouble cannot be instantiated with infinity or NaN")
-        case None => error("FiniteDouble.apply requires a float literal")
-      }
-
-    /** Compile-time factory for creating a [[FiniteDouble]] from a <code>Double</code> literal. */
-    inline def apply[D <: Double & Singleton](inline d: D): FiniteDouble =
-      inline constValueOpt[D] match {
-        case Some(v: Double) =>
-          inline if v == v && v != Double.PositiveInfinity && v != Double.NegativeInfinity then
-            v.asInstanceOf[FiniteDouble]
-          else
-            error("FiniteDouble cannot be instantiated with infinity or NaN")
-        case Some(_) => error("FiniteDouble cannot be instantiated with infinity or NaN")
-        case None => error("FiniteDouble.apply requires a double literal")
-      }
-
-    /** Return `Some` when the passed value is finite, otherwise `None`. */
-    def from(value: Double): Option[FiniteDouble] =
-      if (isValid(value)) Some(value) else None
-
-    /** Validate and return a [[FiniteDouble]], throwing when the value is not finite. */
-    def ensuringValid(value: Double): FiniteDouble =
-      if (isValid(value)) value
-      else throw new AssertionError("FiniteDouble must be finite.")
-
-    /** Return `Success` for a finite value or `Failure` with an assertion error otherwise. */
-    def tryingValid(value: Double): Try[FiniteDouble] =
-      if (isValid(value)) Success(ensuringValid(value))
-      else Failure(new AssertionError("FiniteDouble must be finite."))
-
-    /** Test whether a value is a valid [[FiniteDouble]]. */
-    def isValid(value: Double): Boolean = !value.isNaN && !value.isInfinite
-
-    /** Return `Pass` for a finite value, or `Fail` with an error value otherwise. */
-    def passOrElse[E](value: Double)(f: Double => E): Validation[E] =
-      if (isValid(value)) Pass else Fail(f(value))
-
-    /** Return `Good` for a finite value, or `Bad` with an error value otherwise. */
-    def goodOrElse[B](value: Double)(f: Double => B): FiniteDouble Or B =
-      if (isValid(value)) Good(value) else Bad(f(value))
-
-    /** Return `Right` for a finite value, or `Left` with an error value otherwise. */
-    def rightOrElse[L](value: Double)(f: Double => L): Either[L, FiniteDouble] =
-      if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))
-
-    /** Return the validated value or a provided default when invalid. */
-    def fromOrElse(value: Double, default: => FiniteDouble): FiniteDouble =
-      if (isValid(value)) value else default
-
-    /** Largest valid [[FiniteDouble]] value. */
-    val MaxValue: FiniteDouble = Double.MaxValue
-
-    /** Smallest valid [[FiniteDouble]] value. */
-    val MinValue: FiniteDouble = Double.MinValue
-
-    /** Smallest positive valid [[FiniteDouble]] value. */
-    val MinPositiveValue: FiniteDouble = Double.MinPositiveValue
-
-    /** Ordering instance for FiniteDouble that orders by numeric value. */
-    given Ordering[FiniteDouble] with {
-      def compare(x: FiniteDouble, y: FiniteDouble): Int = java.lang.Double.compare(x, y)
-    }
-
-    extension (p: FiniteDouble) {
-      /** Return the underlying Double value. */
-      def value: Double = p.asInstanceOf[Double]
-
-      /** Indicates whether this FiniteDouble has no fraction part. */
-      def isWhole: Boolean = {
-        val underlying = p.asInstanceOf[Double]
-        !underlying.isNaN && !underlying.isInfinite && underlying == math.rint(underlying)
-      }
-
-      /** Rounds this FiniteDouble to the nearest whole number. */
-      def round: Long = math.round(value)
-
-      /** Returns the smallest FiniteDouble that is >= this value and is a mathematical integer. */
-      def ceil: FiniteDouble = FiniteDouble.ensuringValid(math.ceil(value))
-
-      /** Returns the greatest FiniteDouble that is <= this value and is a mathematical integer. */
-      def floor: FiniteDouble = FiniteDouble.ensuringValid(math.floor(value))
-
-      /** Converts an angle measured in degrees to an approximately equivalent angle measured in radians. */
-      def toRadians: Double = math.toRadians(value)
-
-      /** Converts an angle measured in radians to an approximately equivalent angle measured in degrees. */
-      def toDegrees: Double = math.toDegrees(value)
-
-      /** Returns the larger of this value and `other`. */
-      def max(other: FiniteDouble): FiniteDouble =
-        if (p >= other) p else other
-
-      /** Returns the smaller of this value and `other`. */
-      def min(other: FiniteDouble): FiniteDouble =
-        if (p <= other) p else other
-
-      /** Returns the negated value as another [[FiniteDouble]]. */
-      def unary_- : FiniteDouble = FiniteDouble.ensuringValid(-p)
-
-      /** Applies the passed Double => Double function and ensures the result is a FiniteDouble. */
-      def ensuringValid(f: Double => Double): FiniteDouble = {
-        val candidateResult: Double = f(p)
-        if (FiniteDouble.isValid(candidateResult)) FiniteDouble.ensuringValid(candidateResult)
-        else throw new AssertionError(s"${candidateResult.toString()}, the result of applying the passed function to ${p.toString()}, was not a valid FiniteDouble")
       }
     }
   }

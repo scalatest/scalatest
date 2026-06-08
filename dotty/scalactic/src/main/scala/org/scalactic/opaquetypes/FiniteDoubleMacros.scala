@@ -19,22 +19,22 @@ import scala.quoted.*
 
 object FiniteDoubleMacros {
 
-  def intLiteralToFiniteDouble(x: Expr[Int])(using Quotes): Expr[PosDoubles.FiniteDouble] =
+  def intLiteralToFiniteDouble(x: Expr[Int])(using Quotes): Expr[Finites.FiniteDouble] =
     x.value match {
-      case Some(value) => '{ ${Expr(value.toDouble)}.asInstanceOf[PosDoubles.FiniteDouble] }
+      case Some(value) => '{ ${Expr(value.toDouble)}.asInstanceOf[Finites.FiniteDouble] }
       case None => quotes.reflect.report.errorAndAbort("FiniteDouble.apply requires an integer literal")
     }
 
-  def floatLiteralToFiniteDouble(x: Expr[Float])(using Quotes): Expr[PosDoubles.FiniteDouble] =
+  def floatLiteralToFiniteDouble(x: Expr[Float])(using Quotes): Expr[Finites.FiniteDouble] =
     x.value match {
-      case Some(value) if java.lang.Float.isFinite(value) => '{ ${Expr(value.toDouble)}.asInstanceOf[PosDoubles.FiniteDouble] }
+      case Some(value) if java.lang.Float.isFinite(value) => '{ ${Expr(value.toDouble)}.asInstanceOf[Finites.FiniteDouble] }
       case Some(_) => quotes.reflect.report.errorAndAbort("FiniteDouble cannot be instantiated with infinity or NaN")
       case None => quotes.reflect.report.errorAndAbort("FiniteDouble.apply requires a float literal")
     }
 
-  def doubleLiteralToFiniteDouble(x: Expr[Double])(using Quotes): Expr[PosDoubles.FiniteDouble] =
+  def doubleLiteralToFiniteDouble(x: Expr[Double])(using Quotes): Expr[Finites.FiniteDouble] =
     x.value match {
-      case Some(value) if java.lang.Double.isFinite(value) => '{ ${Expr(value)}.asInstanceOf[PosDoubles.FiniteDouble] }
+      case Some(value) if java.lang.Double.isFinite(value) => '{ ${Expr(value)}.asInstanceOf[Finites.FiniteDouble] }
       case Some(_) => quotes.reflect.report.errorAndAbort("FiniteDouble cannot be instantiated with infinity or NaN")
       case None => quotes.reflect.report.errorAndAbort("FiniteDouble.apply requires a double literal")
     }

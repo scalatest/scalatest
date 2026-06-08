@@ -124,7 +124,7 @@ object NegDoubles {
     }
 
     given Conversion[NegZDouble, Double] with {
-      def apply(x: NegZDouble): Double = x.toDouble
+      def apply(x: NegZDouble): Double = x.value
     }
 
     given Conversion[Double, NegZDouble] with {
@@ -302,7 +302,7 @@ object NegDoubles {
     }
 
     given Conversion[NegDouble, Double] with {
-      def apply(x: NegDouble): Double = x.toDouble
+      def apply(x: NegDouble): Double = x.value
     }
 
     given Conversion[NegDouble, NonZeroDoubles.NonZeroDouble] with {
@@ -482,6 +482,7 @@ object NegDoubles {
       if (isValid(value)) value else default
 
     extension (p: NegZFiniteDouble) {
+      def value: Double = p
       def ensuringValid(f: Double => Double): NegZFiniteDouble = {
         val candidateResult: Double = f(p)
         if (NegZFiniteDouble.isValid(candidateResult)) NegZFiniteDouble.ensuringValid(candidateResult)
@@ -493,7 +494,7 @@ object NegDoubles {
     val MinValue: NegZFiniteDouble = Double.MinValue
 
     given Conversion[NegZFiniteDouble, Double] with {
-      def apply(x: NegZFiniteDouble): Double = x.toDouble
+      def apply(x: NegZFiniteDouble): Double = x.value
     }
 
     given Conversion[NegZFiniteDouble, NegZDouble] with {
@@ -617,6 +618,7 @@ object NegDoubles {
       if (isValid(value)) value else default
 
     extension (p: NegFiniteDouble) {
+      def value: Double = p
       def ensuringValid(f: Double => Double): NegFiniteDouble = {
         val candidateResult: Double = f(p)
         if (NegFiniteDouble.isValid(candidateResult)) NegFiniteDouble.ensuringValid(candidateResult)
@@ -629,7 +631,7 @@ object NegDoubles {
     val MinValue: NegFiniteDouble = Double.MinValue
 
     given Conversion[NegFiniteDouble, Double] with {
-      def apply(x: NegFiniteDouble): Double = x.toDouble
+      def apply(x: NegFiniteDouble): Double = x.value
     }
 
     given Conversion[NegFiniteDouble, NegDouble] with {

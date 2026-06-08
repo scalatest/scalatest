@@ -92,15 +92,15 @@ package object opaquetypes {
   /** Value alias for the [[org.scalactic.opaquetypes.PosFloats.PosFiniteFloat]] companion. */
   val PosFiniteFloat: PosFloats.PosFiniteFloat.type = PosFloats.PosFiniteFloat
 
-  /** Type alias for [[org.scalactic.opaquetypes.PosFloats.FiniteFloat]]. */
-  type FiniteFloat = PosFloats.FiniteFloat
-  /** Value alias for the [[org.scalactic.opaquetypes.PosFloats.FiniteFloat]] companion. */
-  val FiniteFloat: PosFloats.FiniteFloat.type = PosFloats.FiniteFloat
+  /** Type alias for [[org.scalactic.opaquetypes.Finites.FiniteFloat]]. */
+  type FiniteFloat = Finites.FiniteFloat
+  /** Value alias for the [[org.scalactic.opaquetypes.Finites.FiniteFloat]] companion. */
+  val FiniteFloat: Finites.FiniteFloat.type = Finites.FiniteFloat
 
-  /** Type alias for [[org.scalactic.opaquetypes.PosDoubles.FiniteDouble]]. */
-  type FiniteDouble = PosDoubles.FiniteDouble
-  /** Value alias for the [[org.scalactic.opaquetypes.PosDoubles.FiniteDouble]] companion. */
-  val FiniteDouble: PosDoubles.FiniteDouble.type = PosDoubles.FiniteDouble
+  /** Type alias for [[org.scalactic.opaquetypes.Finites.FiniteDouble]]. */
+  type FiniteDouble = Finites.FiniteDouble
+  /** Value alias for the [[org.scalactic.opaquetypes.Finites.FiniteDouble]] companion. */
+  val FiniteDouble: Finites.FiniteDouble.type = Finites.FiniteDouble
 
   /** Type alias for [[org.scalactic.opaquetypes.NegFloats.NegZFloat]]. */
   type NegZFloat = NegFloats.NegZFloat

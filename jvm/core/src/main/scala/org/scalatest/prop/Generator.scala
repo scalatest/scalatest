@@ -1974,10 +1974,10 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[FiniteDouble] = finiteDoubleGenerator
 
-  //DOTTY-ONLY /* Generator that produces opaquetypes.PosDoubles.FiniteDouble independently of anyvals. */
-  //DOTTY-ONLY val opaquetypesFiniteDoubleGenerator: Generator[org.scalactic.opaquetypes.PosDoubles.FiniteDouble] =
-  //DOTTY-ONLY   finiteDoubleGenerator.map(d => org.scalactic.opaquetypes.PosDoubles.FiniteDouble.ensuringValid(d.value))
-  //DOTTY-ONLY given given_Generator_opaquetypes_FiniteDouble: Generator[org.scalactic.opaquetypes.PosDoubles.FiniteDouble] = opaquetypesFiniteDoubleGenerator
+  //DOTTY-ONLY /* Generator that produces opaquetypes.FiniteDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesFiniteDoubleGenerator: Generator[org.scalactic.opaquetypes.FiniteDouble] =
+  //DOTTY-ONLY   finiteDoubleGenerator.map(d => org.scalactic.opaquetypes.FiniteDouble.ensuringValid(d.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_FiniteDouble: Generator[org.scalactic.opaquetypes.FiniteDouble] = opaquetypesFiniteDoubleGenerator
 
   /**
     * A [[Generator]] that produces positive Floats, including zero and infinity.
