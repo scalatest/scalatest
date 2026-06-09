@@ -23,7 +23,7 @@ object NonZeroFloats {
   object NonZeroFloat {
     def ensuringValid(f: Float): NonZeroFloat = 
       if (f == 0.0f) 
-        throw new AssertionError(Resources.invalidNonZeroLong)
+        throw new AssertionError(Resources.invalidNonZeroFloat)
       else f
     def from(f: Float): Option[NonZeroFloat] =
       if (f == 0.0f) None else Some(f)  

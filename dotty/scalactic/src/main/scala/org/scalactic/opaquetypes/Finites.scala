@@ -271,12 +271,12 @@ object Finites {
     /** Validate and return a [[FiniteDouble]], throwing when the value is not finite. */
     def ensuringValid(value: Double): FiniteDouble =
       if (isValid(value)) value
-      else throw new AssertionError("FiniteDouble must be finite.")
+      else throw new AssertionError(Resources.invalidPosFiniteDouble)
 
     /** Return `Success` for a finite value or `Failure` with an assertion error otherwise. */
     def tryingValid(value: Double): Try[FiniteDouble] =
       if (isValid(value)) Success(value)
-      else Failure(new AssertionError("FiniteDouble must be finite."))
+      else Failure(new AssertionError(Resources.invalidPosFiniteDouble))
 
     /** Return `Pass` for a finite value, or `Fail` with an error value otherwise. */
     def passOrElse[E](value: Double)(f: Double => E): Validation[E] =
