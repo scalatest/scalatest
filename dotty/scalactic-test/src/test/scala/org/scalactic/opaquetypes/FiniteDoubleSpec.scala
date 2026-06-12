@@ -311,6 +311,21 @@ class FiniteDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers 
         takesFiniteDouble(-8.0) shouldEqual -8.0
       }
 
+      it("should not compile when positive or negative infinity is passed in") {
+        "takesFiniteDouble(Double.NegativeInfinity)" shouldNot compile
+        "takesFiniteDouble(Double.PositiveInfinity)" shouldNot compile
+      }
+
+      it("should not compile when x is passed in") {
+        val x: Int = -8
+        "takesFiniteDouble(x)" shouldNot compile
+        val b: Long = -8L
+        "takesFiniteDouble(b)" shouldNot compile
+        val c: Float = -8.0F
+        "takesFiniteDouble(c)" shouldNot compile
+        val d: Double = -8.0
+        "takesFiniteDouble(d)" shouldNot compile
+      }
     }
 
     it("should offer 'min' and 'max' methods that are consistent with Double") {
