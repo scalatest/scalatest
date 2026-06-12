@@ -3428,6 +3428,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NonZeroInt] = nonZeroIntGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NonZeroInts.NonZeroInt independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNonZeroIntGenerator: Generator[org.scalactic.opaquetypes.NonZeroInts.NonZeroInt] =
+  //DOTTY-ONLY   nonZeroIntGenerator.map(i => org.scalactic.opaquetypes.NonZeroInts.NonZeroInt.ensuringValid(i.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NonZeroInt: Generator[org.scalactic.opaquetypes.NonZeroInts.NonZeroInt] = opaquetypesNonZeroIntGenerator
+
   /**
     * A [[Generator]] that produces Longs, excluding zero.
     */
