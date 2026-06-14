@@ -57,6 +57,51 @@ package object opaquetypes {
   /** Value alias for the [[org.scalactic.opaquetypes.NonZeroDoubles.NonZeroDouble]] companion. */
   val NonZeroDouble: NonZeroDoubles.NonZeroDouble.type = NonZeroDoubles.NonZeroDouble
 
+  /** Type alias for [[org.scalactic.opaquetypes.NonZeroLongs.NonZeroLong]]. */
+  type NonZeroLong = NonZeroLongs.NonZeroLong
+  /** Value alias for the [[org.scalactic.opaquetypes.NonZeroLongs.NonZeroLong]] companion. */
+  val NonZeroLong: NonZeroLongs.NonZeroLong.type = NonZeroLongs.NonZeroLong
+
+  /** Type alias for [[org.scalactic.opaquetypes.NonZeroFloats.NonZeroFloat]]. */
+  type NonZeroFloat = NonZeroFloats.NonZeroFloat
+  /** Value alias for the [[org.scalactic.opaquetypes.NonZeroFloats.NonZeroFloat]] companion. */
+  val NonZeroFloat: NonZeroFloats.NonZeroFloat.type = NonZeroFloats.NonZeroFloat
+
+  /** Type alias for [[org.scalactic.opaquetypes.NonZeroFloats.NonZeroFiniteFloat]]. */
+  type NonZeroFiniteFloat = NonZeroFloats.NonZeroFiniteFloat
+  /** Value alias for the [[org.scalactic.opaquetypes.NonZeroFloats.NonZeroFiniteFloat]] companion. */
+  val NonZeroFiniteFloat: NonZeroFloats.NonZeroFiniteFloat.type = NonZeroFloats.NonZeroFiniteFloat
+
+  /** Type alias for [[org.scalactic.opaquetypes.NonZeroDoubles.NonZeroFiniteDouble]]. */
+  type NonZeroFiniteDouble = NonZeroDoubles.NonZeroFiniteDouble
+  /** Value alias for the [[org.scalactic.opaquetypes.NonZeroDoubles.NonZeroFiniteDouble]] companion. */
+  val NonZeroFiniteDouble: NonZeroDoubles.NonZeroFiniteDouble.type = NonZeroDoubles.NonZeroFiniteDouble
+
+  /** Type alias for [[org.scalactic.opaquetypes.PosInts.PosInt]]. */
+  type PosInt = PosInts.PosInt
+  /** Value alias for the [[org.scalactic.opaquetypes.PosInts.PosInt]] companion. */
+  val PosInt: PosInts.PosInt.type = PosInts.PosInt
+
+  /** Type alias for [[org.scalactic.opaquetypes.PosLongs.PosLong]]. */
+  type PosLong = PosLongs.PosLong
+  /** Value alias for the [[org.scalactic.opaquetypes.PosLongs.PosLong]] companion. */
+  val PosLong: PosLongs.PosLong.type = PosLongs.PosLong
+
+  /** Type alias for [[org.scalactic.opaquetypes.PosInts.PosZInt]]. */
+  type PosZInt = PosInts.PosZInt
+  /** Value alias for the [[org.scalactic.opaquetypes.PosInts.PosZInt]] companion. */
+  val PosZInt: PosInts.PosZInt.type = PosInts.PosZInt
+
+  /** Type alias for [[org.scalactic.opaquetypes.PosLongs.PosZLong]]. */
+  type PosZLong = PosLongs.PosZLong
+  /** Value alias for the [[org.scalactic.opaquetypes.PosLongs.PosZLong]] companion. */
+  val PosZLong: PosLongs.PosZLong.type = PosLongs.PosZLong
+
+  /** Type alias for [[org.scalactic.opaquetypes.NonZeroInts.NonZeroInt]]. */
+  type NonZeroInt = NonZeroInts.NonZeroInt
+  /** Value alias for the [[org.scalactic.opaquetypes.NonZeroInts.NonZeroInt]] companion. */
+  val NonZeroInt: NonZeroInts.NonZeroInt.type = NonZeroInts.NonZeroInt
+
   /** Type alias for [[org.scalactic.opaquetypes.NegDoubles.NegDouble]]. */
   type NegDouble = NegDoubles.NegDouble
   /** Value alias for the [[org.scalactic.opaquetypes.NegDoubles.NegDouble]] companion. */
