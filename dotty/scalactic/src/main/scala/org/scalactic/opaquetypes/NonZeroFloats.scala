@@ -650,7 +650,7 @@ object NonZeroFloats {
     inline def apply[F <: Float & Singleton](inline f: F): NonZeroFiniteFloat =
       inline constValueOpt[F] match {
         case Some(v: Float) =>
-          inline if v != 0.0f && v.isFinite then
+          inline if v != 0.0f && v != Float.PositiveInfinity && v != Float.NegativeInfinity && v != Float.NaN then
             v
           else
             error("NonZeroFiniteFloat cannot be instantiated with zero, infinity, or NaN")
@@ -661,7 +661,7 @@ object NonZeroFloats {
     /** Returns <code>true</code> if the provided <code>Float</code> is a valid [[NonZeroFiniteFloat]]
       * value — that is, if it is both <code>!= 0.0f</code> and finite (<code>isFinite</code>).
       */
-    def isValid(value: Float): Boolean = value != 0.0f && value.isFinite
+    def isValid(value: Float): Boolean = value != 0.0f && value != Float.PositiveInfinity && value != Float.NegativeInfinity && value != Float.NaN
 
     /** Returns <code>Some(NonZeroFiniteFloat)</code> if the given <code>Float</code> is a valid
       * [[NonZeroFiniteFloat]] (non-zero and finite), or <code>None</code> otherwise.
@@ -733,9 +733,6 @@ object NonZeroFloats {
     val MinPositiveValue: NonZeroFiniteFloat = Float.MinPositiveValue
 
     extension (p: NonZeroFiniteFloat) {
-      /** Return the underlying Float value. */
-      def toFloat: Float = p
-
       /** Applies the given <code>Float =&gt; Float</code> function to the underlying
         * <code>Float</code> value, and returns the result as a [[NonZeroFiniteFloat]] if
         * it is valid, or throws <code>AssertionError</code> if it is not.
