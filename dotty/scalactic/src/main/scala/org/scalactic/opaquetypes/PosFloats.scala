@@ -1255,21 +1255,6 @@ object PosFloats {
       def apply(x: Float): PosFiniteFloat = PosFiniteFloat.ensuringValid(x)
     }
 
-    /** Convert a compile-time Double literal to a [[PosFiniteFloat]]. */
-    given Conversion[Double, PosFiniteFloat] with {
-      inline def apply[D <: Double & Singleton](inline x: D): PosFiniteFloat =
-        inline constValueOpt[D] match {
-          case Some(v: Double) =>
-            inline if v <= 0.0 || v == Double.PositiveInfinity || v == Double.NegativeInfinity then
-              error(Resources.notValidPosFiniteFloat)
-            else
-              v.toFloat.asInstanceOf[PosFiniteFloat]
-          case None =>
-            error(Resources.notLiteralPosFiniteFloat)
-        }
-
-      def apply(x: Double): PosFiniteFloat = PosFiniteFloat.ensuringValid(x.toFloat)
-    }
 
     /** Compile-time factory for creating a [[PosFiniteFloat]] from a float literal.
       *
