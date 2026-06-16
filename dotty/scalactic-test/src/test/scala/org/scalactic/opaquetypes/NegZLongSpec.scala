@@ -359,6 +359,16 @@ class NegZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
       NegZLong(-33L).ensuringValid(_ + 1L) shouldEqual NegZLong(-32L)
       an [AssertionError] should be thrownBy { NegZLong.MaxValue.ensuringValid(_ + 1L) }
     }
+
+    it("should NOT have implicit conversion to Double to prevent precision loss") {
+      // NegZLong uses Long as underlying type. Long to Double conversion causes precision loss
+      // for values outside the range of 2^53. This test verifies the implicit conversion is NOT available.
+      def takesDouble(d: Double): Double = d
+
+      // After removal of the implicit conversion, this should NOT compile:
+      "takesDouble(NegZLong(-1L))" shouldNot compile
+      "takesDouble(NegZLong(0L))" shouldNot compile
+    }
   }
 }
 

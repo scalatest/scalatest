@@ -97,16 +97,6 @@ object NegLongs {
       def apply(x: NegZLong): Long = x
     }
 
-    /** Convert a [[NegZLong]] to a plain Double (unwrap). */
-    given Conversion[NegZLong, Double] with {
-      def apply(x: NegZLong): Double = x.toDouble
-    }
-
-    extension (x: NegZLong) {
-      /** Return this value as a Double. */
-      def toDouble: Double = x.toLong.toDouble
-    }
-
     extension (x: NegLong) {
       /** Return the underlying Long value. */
       def value: Long = x
