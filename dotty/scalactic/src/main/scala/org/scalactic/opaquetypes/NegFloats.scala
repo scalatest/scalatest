@@ -618,10 +618,10 @@ object NegFloats {
 
   /** Companion for [[NegFiniteFloat]] with validation helpers. */
   object NegFiniteFloat {
-    /** Compile-time factory for a finite strictly negative float literal.
+    /** Compile-time factory for a finite strictly negative Int literal.
       *
-      * @tparam F singleton float literal type
-      * @param f the candidate float literal
+      * @tparam I singleton Int literal type
+      * @param i the candidate Int literal
       * @return a validated [[NegFiniteFloat]]
       */
     inline def apply[I <: Int & Singleton](inline i: I): NegFiniteFloat =
@@ -635,23 +635,12 @@ object NegFloats {
           error(Resources.notLiteralNegFiniteFloat)
       }
 
-    /** Compile-time factory for a finite strictly negative long literal.
+    /** Compile-time factory for a finite strictly negative float literal.
       *
-      * @tparam L singleton long literal type
-      * @param l the candidate long literal
+      * @tparam F singleton float literal type
+      * @param f the candidate float literal
       * @return a validated [[NegFiniteFloat]]
       */
-    inline def apply[L <: Long & Singleton](inline l: L): NegFiniteFloat =
-      inline constValueOpt[L] match {
-        case Some(v: Long) =>
-          inline if v >= 0L then
-            error(Resources.notValidNegFiniteFloat)
-          else
-            v.toFloat.asInstanceOf[NegFiniteFloat]
-        case None =>
-          error(Resources.notLiteralNegFiniteFloat)
-      }
-
     inline def apply[F <: Float & Singleton](inline f: F): NegFiniteFloat =
       inline constValueOpt[F] match {
         case Some(v: Float) =>
@@ -773,21 +762,6 @@ object NegFloats {
         }
 
       def apply(x: Int): NegFiniteFloat = NegFiniteFloat.ensuringValid(x.toFloat)
-    }
-
-    given Conversion[Long, NegFiniteFloat] with {
-      inline def apply[L <: Long & Singleton](inline x: L): NegFiniteFloat =
-        inline constValueOpt[L] match {
-          case Some(v: Long) =>
-            inline if v >= 0L then
-              error(Resources.notValidNegFiniteFloat)
-            else
-              v.toFloat.asInstanceOf[NegFiniteFloat]
-          case None =>
-            error(Resources.notLiteralNegFiniteFloat)
-        }
-
-      def apply(x: Long): NegFiniteFloat = NegFiniteFloat.ensuringValid(x.toFloat)
     }
 
     given Conversion[Float, NegFiniteFloat] with {

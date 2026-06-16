@@ -173,13 +173,10 @@ class NegFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
 
     describe("when created with apply method") {
 
-      it("should compile when -8 is passed in") {
-        "NegFiniteFloat(-8)" should compile
-        NegFiniteFloat(-8).value shouldEqual -8.0F
-        "NegFiniteFloat(-8L)" should compile
-        NegFiniteFloat(-8L).value shouldEqual -8.0F
+      it("should compile when -8.0F is passed in") {
         "NegFiniteFloat(-8.0F)" should compile
         NegFiniteFloat(-8.0F).value shouldEqual -8.0F
+        "NegFiniteFloat(-8L)" shouldNot compile
       }
 
       it("should not compile when 0 is passed in") {
@@ -190,9 +187,10 @@ class NegFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
 
       it("should not compile when 8 is passed in") {
         "NegFiniteFloat(8)" shouldNot compile
-        "NegFiniteFloat(8L)" shouldNot compile
         "NegFiniteFloat(8.0F)" shouldNot compile
+        "NegFiniteFloat(8L)" shouldNot compile
       }
+
       it("should not compile when x is passed in") {
         val a: Int = -8
         "NegFiniteFloat(a)" shouldNot compile
@@ -206,13 +204,12 @@ class NegFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
 
       def takesNegFiniteFloat(pos: NegFiniteFloat): Float = pos.value
 
-      it("should compile when -8 is passed in") {
-        "takesNegFiniteFloat(-8)" should compile
-        takesNegFiniteFloat(-8) shouldEqual -8.0F
-        "takesNegFiniteFloat(-8L)" should compile
-        takesNegFiniteFloat(-8L) shouldEqual -8.0F
+      it("should compile when -8 as Float is passed in") {
         "takesNegFiniteFloat(-8.0F)" should compile
         takesNegFiniteFloat(-8.0F) shouldEqual -8.0F
+        "takesNegFiniteFloat(-8.0f)" should compile
+        takesNegFiniteFloat(-8.0f) shouldEqual -8.0F
+        "takesNegFiniteFloat(-8L)" shouldNot compile
       }
 
       it("should not compile when 0 is passed in") {
