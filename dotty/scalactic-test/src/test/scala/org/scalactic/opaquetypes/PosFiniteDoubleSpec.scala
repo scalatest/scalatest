@@ -183,17 +183,17 @@ class PosFiniteDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matche
       xs.sorted shouldEqual List(PosFiniteDouble(1.1), PosFiniteDouble(2.2), PosFiniteDouble(3.3),
                                  PosFiniteDouble(4.4))
     }
-
     describe("when created with apply method") {
       it("should compile when 8 is passed in") {
         "PosFiniteDouble(8)" should compile
         PosFiniteDouble(8).value shouldEqual 8.0
-        "PosFiniteDouble(8L)" should compile
-        PosFiniteDouble(8L).value shouldEqual 8.0
         "PosFiniteDouble(8.0F)" should compile
         PosFiniteDouble(8.0F).value shouldEqual 8.0
         "PosFiniteDouble(8.0)" should compile
         PosFiniteDouble(8.0).value shouldEqual 8.0
+      }
+      it("should not compile when 8L is passed in (precision loss prevention)") {
+        "PosFiniteDouble(8L)" shouldNot compile
       }
       it("should not compile when 0 is passed in") {
         "PosFiniteDouble(0)" shouldNot compile
@@ -225,12 +225,13 @@ class PosFiniteDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matche
       it("should compile when 8 is passed in") {
         "takesPosFiniteDouble(8)" should compile
         takesPosFiniteDouble(8) shouldEqual 8.0
-        "takesPosFiniteDouble(8L)" should compile
-        takesPosFiniteDouble(8L) shouldEqual 8.0
         "takesPosFiniteDouble(8.0F)" should compile
         takesPosFiniteDouble(8.0F) shouldEqual 8.0
         "takesPosFiniteDouble(8.0)" should compile
         takesPosFiniteDouble(8.0) shouldEqual 8.0
+      }
+      it("should not compile when 8L is passed in (precision loss prevention)") {
+        "takesPosFiniteDouble(8L)" shouldNot compile
       }
       it("should not compile when 0 is passed in") {
         "takesPosFiniteDouble(0)" shouldNot compile

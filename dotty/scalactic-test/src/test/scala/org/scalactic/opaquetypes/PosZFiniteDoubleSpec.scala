@@ -183,22 +183,24 @@ class PosZFiniteDoubleSpec extends funspec.AnyFunSpec with matchers.should.Match
       it("should compile when 8 is passed in") {
         "PosZFiniteDouble(8)" should compile
         PosZFiniteDouble(8).value shouldEqual 8.0
-        "PosZFiniteDouble(8L)" should compile
-        PosZFiniteDouble(8L).value shouldEqual 8.0
         "PosZFiniteDouble(8.0F)" should compile
         PosZFiniteDouble(8.0F).value shouldEqual 8.0
         "PosZFiniteDouble(8.0)" should compile
         PosZFiniteDouble(8.0).value shouldEqual 8.0
       }
+      it("should not compile when 8L is passed in (precision loss prevention)") {
+        "PosZFiniteDouble(8L)" shouldNot compile
+      }
       it("should compile when 0 is passed in") {
         "PosZFiniteDouble(0)" should compile
         PosZFiniteDouble(0).value shouldEqual 0.0
-        "PosZFiniteDouble(0L)" should compile
-        PosZFiniteDouble(0L).value shouldEqual 0.0
         "PosZFiniteDouble(0.0F)" should compile
         PosZFiniteDouble(0.0F).value shouldEqual 0.0
         "PosZFiniteDouble(0.0)" should compile
         PosZFiniteDouble(0.0).value shouldEqual 0.0
+      }
+      it("should not compile when 0L is passed in (precision loss prevention)") {
+        "PosZFiniteDouble(0L)" shouldNot compile
       }
       it("should not compile when -8 is passed in") {
         "PosZFiniteDouble(-8)" shouldNot compile
@@ -224,22 +226,24 @@ class PosZFiniteDoubleSpec extends funspec.AnyFunSpec with matchers.should.Match
       it("should compile when 8 is passed in") {
         "takesPosZFiniteDouble(8)" should compile
         takesPosZFiniteDouble(8) shouldEqual 8.0
-        "takesPosZFiniteDouble(8L)" should compile
-        takesPosZFiniteDouble(8L) shouldEqual 8.0
         "takesPosZFiniteDouble(8.0F)" should compile
         takesPosZFiniteDouble(8.0F) shouldEqual 8.0
         "takesPosZFiniteDouble(8.0)" should compile
         takesPosZFiniteDouble(8.0) shouldEqual 8.0
       }
+      it("should not compile when 8L is passed in (precision loss prevention)") {
+        "takesPosZFiniteDouble(8L)" shouldNot compile
+      }
       it("should compile when 0 is passed in") {
         "takesPosZFiniteDouble(0)" should compile
         takesPosZFiniteDouble(0) shouldEqual 0.0
-        "takesPosZFiniteDouble(0L)" should compile
-        takesPosZFiniteDouble(0L) shouldEqual 0.0
         "takesPosZFiniteDouble(0.0F)" should compile
         takesPosZFiniteDouble(0.0F) shouldEqual 0.0
         "takesPosZFiniteDouble(0.0)" should compile
         takesPosZFiniteDouble(0.0) shouldEqual 0.0
+      }
+      it("should not compile when 0L is passed in (precision loss prevention)") {
+        "takesPosZFiniteDouble(0L)" shouldNot compile
       }
       it("should not compile when -8 is passed in") {
         "takesPosZFiniteDouble(-8)" shouldNot compile

@@ -189,11 +189,9 @@ class NegZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
 
     describe("when created with apply method") {
 
-      it("should compile when -8 is passed in") {
+      it("should compile when -8 is passed in as Int or Double") {
         "NegZDouble(-8)" should compile
         NegZDouble(-8).value shouldEqual -8.0
-        "NegZDouble(-8L)" should compile
-        NegZDouble(-8L).value shouldEqual -8.0
         "NegZDouble(-8.0F)" should compile
         NegZDouble(-8.0F).value shouldEqual -8.0
         "NegZDouble(-8.0)" should compile
@@ -203,8 +201,6 @@ class NegZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       it("should compile when 0 is passed in") {
         "NegZDouble(0)" should compile
         NegZDouble(0).value shouldEqual 0.0
-        "NegZDouble(0L)" should compile
-        NegZDouble(0L).value shouldEqual 0.0
         "NegZDouble(0.0F)" should compile
         NegZDouble(0.0F).value shouldEqual 0.0
         "NegZDouble(0.0)" should compile
@@ -232,11 +228,9 @@ class NegZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
 
       def takesNegZDouble(poz: NegZDouble): Double = poz.value
 
-      it("should compile when -8 is passed in") {
+      it("should compile when -8 is passed in as Int, Float or Double") {
         "takesNegZDouble(-8)" should compile
         takesNegZDouble(-8) shouldEqual -8.0
-        "takesNegZDouble(-8L)" should compile
-        takesNegZDouble(-8L) shouldEqual -8.0
         "takesNegZDouble(-8.0F)" should compile
         takesNegZDouble(-8.0F) shouldEqual -8.0
         "takesNegZDouble(-8.0)" should compile
@@ -246,8 +240,6 @@ class NegZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       it("should compile when 0 is passed in") {
         "takesNegZDouble(0)" should compile
         takesNegZDouble(0) shouldEqual 0.0
-        "takesNegZDouble(0L)" should compile
-        takesNegZDouble(0L) shouldEqual 0.0
         "takesNegZDouble(0.0F)" should compile
         takesNegZDouble(0.0F) shouldEqual 0.0
         "takesNegZDouble(0.0)" should compile

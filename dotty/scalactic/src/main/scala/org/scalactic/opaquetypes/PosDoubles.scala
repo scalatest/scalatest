@@ -463,23 +463,13 @@ object PosDoubles {
       def apply(x: Int): PosDouble = x.toDouble
     }
 
-    /** Convert a compile-time Long literal or runtime Long to a [[PosDouble]].
-      *
-      * The inline overload checks long literals at compile time; the runtime
-      * overload validates and throws for negative values.
-      */
+    /** Blocking Long conversion to prevent precision loss. Long to Double can lose precision for values > 2^53. */
     given Conversion[Long, PosDouble] with {
       inline def apply[L <: Long & Singleton](inline x: L): PosDouble =
-        inline constValueOpt[L] match {
-          case Some(v: Long) =>
-            inline if v <= 0L then
-              error("PosZDouble cannot be instantiated with a zero or negative long literal")
-            else
-              v.toDouble
-          case None =>
-            error("PosDouble conversion requires a long literal")
-        }
-      def apply(x: Long): PosDouble = x.toDouble
+        error("PosDouble conversion from Long is not supported due to potential precision loss. Use explicit toDouble: PosDouble(x.toDouble)")
+
+      def apply(x: Long): PosDouble =
+        throw new AssertionError("PosDouble conversion from Long is not supported due to potential precision loss. Use explicit toDouble: PosDouble(x.toDouble)")
     }
 
     /** Convert a compile-time Float literal or runtime Float to a [[PosDouble]].
@@ -919,16 +909,10 @@ object PosDoubles {
       */
     given Conversion[Long, PosZFiniteDouble] with {
       inline def apply[L <: Long & Singleton](inline x: L): PosZFiniteDouble =
-        inline constValueOpt[L] match {
-          case Some(v: Long) =>
-            inline if v < 0L then
-              error("PosZFiniteDouble cannot be instantiated with a negative long literal")
-            else
-              v.toDouble
-          case None =>
-            error("PosZFiniteDouble conversion requires a long literal")
-        }
-      def apply(x: Long): PosZFiniteDouble = x.toDouble
+        error("PosZFiniteDouble conversion from Long is not supported due to potential precision loss. Use explicit toDouble: PosZFiniteDouble(x.toDouble)")
+
+      def apply(x: Long): PosZFiniteDouble =
+        throw new AssertionError("PosZFiniteDouble conversion from Long is not supported due to potential precision loss. Use explicit toDouble: PosZFiniteDouble(x.toDouble)")
     }
 
     /** Converts a compile-time non-negative, finite <code>Float</code> literal to a [[PosZFiniteDouble]].
@@ -1032,15 +1016,7 @@ object PosDoubles {
       * @throws compile-time error if the literal is negative or not a literal
       */
     inline def apply[L <: Long & Singleton](inline l: L): PosZFiniteDouble =
-      inline constValueOpt[L] match {
-        case Some(v: Long) =>
-          inline if v < 0L then
-            error("PosZFiniteDouble cannot be instantiated with a negative long literal")
-          else
-            v.toDouble
-        case None =>
-          error("PosZFiniteDouble.apply requires an integer, long, float or double literal")
-      }
+      error("PosZFiniteDouble.apply from Long is not supported due to potential precision loss. Use explicit toDouble: PosZFiniteDouble(l.toDouble)")
 
     /** Compile-time factory for creating a [[PosZFiniteDouble]] from an <code>Int</code> literal.
       *
@@ -1298,16 +1274,10 @@ object PosDoubles {
       */
     given Conversion[Long, PosFiniteDouble] with {
       inline def apply[L <: Long & Singleton](inline x: L): PosFiniteDouble =
-        inline constValueOpt[L] match {
-          case Some(v: Long) =>
-            inline if v <= 0L then
-              error("PosFiniteDouble cannot be instantiated with a non-positive long literal")
-            else
-              v.toDouble
-          case None =>
-            error("PosFiniteDouble conversion requires a long literal")
-        }
-      def apply(x: Long): PosFiniteDouble = x.toDouble
+        error("PosFiniteDouble conversion from Long is not supported due to potential precision loss. Use explicit toDouble: PosFiniteDouble(x.toDouble)")
+
+      def apply(x: Long): PosFiniteDouble =
+        throw new AssertionError("PosFiniteDouble conversion from Long is not supported due to potential precision loss. Use explicit toDouble: PosFiniteDouble(x.toDouble)")
     }
 
     /** Converts a compile-time positive, finite <code>Float</code> literal to a [[PosFiniteDouble]].
@@ -1411,15 +1381,7 @@ object PosDoubles {
       * @throws compile-time error if the literal is non-positive or not a literal
       */
     inline def apply[L <: Long & Singleton](inline l: L): PosFiniteDouble =
-      inline constValueOpt[L] match {
-        case Some(v: Long) =>
-          inline if v <= 0L then
-            error("PosFiniteDouble cannot be instantiated with a non-positive long literal")
-          else
-            v.toDouble
-        case None =>
-          error("PosFiniteDouble.apply requires an integer, long, float or double literal")
-      }
+      error("PosFiniteDouble.apply from Long is not supported due to potential precision loss. Use explicit toDouble: PosFiniteDouble(l.toDouble)")
 
     /** Compile-time factory for creating a [[PosFiniteDouble]] from an <code>Int</code> literal.
       *

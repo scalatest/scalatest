@@ -48,15 +48,7 @@ object NegDoubles {
       }
 
     inline def apply[L <: Long & Singleton](inline d: L): NegZDouble =
-      inline constValueOpt[L] match {
-        case Some(v: Long) =>
-          inline if v > 0L then
-            error(Resources.notValidNegZDouble)
-          else
-            v.toDouble.asInstanceOf[NegZDouble]
-        case None =>
-          error(Resources.notLiteralNegZDouble)
-      }
+      error("NegZDouble.apply from Long is not supported due to potential precision loss. Use explicit toDouble: NegZDouble(x.toDouble)")
 
     inline def apply[F <: Float & Singleton](inline d: F): NegZDouble =
       inline constValueOpt[F] match {
@@ -157,19 +149,13 @@ object NegDoubles {
       def apply(x: Int): NegZDouble = NegZDouble.ensuringValid(x.toDouble)
     }
 
+    /** Blocking Long conversion to prevent precision loss. Long to Double can lose precision for values > 2^53. */
     given Conversion[Long, NegZDouble] with {
       inline def apply[L <: Long & Singleton](inline x: L): NegZDouble =
-        inline constValueOpt[L] match {
-          case Some(v: Long) =>
-            inline if v > 0L then
-              error(Resources.notValidNegZDouble)
-            else
-              v.toDouble.asInstanceOf[NegZDouble]
-          case None =>
-            error(Resources.notLiteralNegZDouble)
-        }
+        error("NegZDouble conversion from Long is not supported due to potential precision loss. Use explicit toDouble: NegZDouble(8L.toDouble)")
 
-      def apply(x: Long): NegZDouble = NegZDouble.ensuringValid(x.toDouble)
+      def apply(x: Long): NegZDouble =
+        throw new AssertionError("NegZDouble conversion from Long is not supported due to potential precision loss. Use explicit toDouble: NegZDouble(x.toDouble)")
     }
 
     given Conversion[Float, NegZDouble] with {
@@ -207,16 +193,9 @@ object NegDoubles {
           error("NegDouble.apply requires an integer literal")
       }
 
+    /** Blocking Long literal apply to prevent precision loss. Long to Double can lose precision for values > 2^53. */
     inline def apply[L <: Long & Singleton](inline d: L): NegDouble =
-      inline constValueOpt[L] match {
-        case Some(v: Long) =>
-          inline if v >= 0L then
-            error("NegDouble cannot be instantiated with a non-negative long literal")
-          else
-            v.toDouble.asInstanceOf[NegDouble]
-        case None =>
-          error("NegDouble.apply requires a long literal")
-      }
+      error("NegDouble.apply from Long is not supported due to potential precision loss. Use explicit toDouble: NegDouble(x.toDouble)")
 
     inline def apply[F <: Float & Singleton](inline d: F): NegDouble =
       inline constValueOpt[F] match {
@@ -241,7 +220,9 @@ object NegDoubles {
       }
 
     def apply(d: Int): NegDouble = ensuringValid(d.toDouble)
-    def apply(d: Long): NegDouble = ensuringValid(d.toDouble)
+    /** Blocking Long apply to prevent precision loss. Long to Double can lose precision for values > 2^53. */
+    def apply(d: Long): NegDouble =
+      throw new AssertionError("NegDouble.apply from Long is not supported due to potential precision loss. Use explicit toDouble: NegDouble(x.toDouble)")
     def apply(d: Float): NegDouble = ensuringValid(d.toDouble)
     def apply(d: Double): NegDouble = ensuringValid(d)
 
@@ -384,19 +365,13 @@ object NegDoubles {
       def apply(x: Int): NegDouble = NegDouble.ensuringValid(x.toDouble)
     }
 
+    /** Blocking Long conversion to prevent precision loss. Long to Double can lose precision for values > 2^53. */
     given Conversion[Long, NegDouble] with {
       inline def apply[L <: Long & Singleton](inline x: L): NegDouble =
-        inline constValueOpt[L] match {
-          case Some(v: Long) =>
-            inline if v >= 0L then
-              error("NegDouble cannot be instantiated with a non-negative long literal")
-            else
-              v.toDouble.asInstanceOf[NegDouble]
-          case None =>
-            error("NegDouble conversion requires a long literal")
-        }
+        error("NegDouble conversion from Long is not supported due to potential precision loss. Use explicit toDouble: NegDouble(x.toDouble)")
 
-      def apply(x: Long): NegDouble = NegDouble.ensuringValid(x.toDouble)
+      def apply(x: Long): NegDouble =
+        throw new AssertionError("NegDouble conversion from Long is not supported due to potential precision loss. Use explicit toDouble: NegDouble(x.toDouble)")
     }
 
     given Conversion[Float, NegDouble] with {

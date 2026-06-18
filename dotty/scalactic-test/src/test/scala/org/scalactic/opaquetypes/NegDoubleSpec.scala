@@ -170,8 +170,6 @@ class NegDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       it("should compile when -8 is passed in") {
         "NegDouble(-8)" should compile
         NegDouble(-8).value shouldEqual -8.0
-        "NegDouble(-8L)" should compile
-        NegDouble(-8L).value shouldEqual -8.0
         "NegDouble(-8.0F)" should compile
         NegDouble(-8.0F).value shouldEqual -8.0
         "NegDouble(-8.0)" should compile
@@ -209,8 +207,6 @@ class NegDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       it("should compile when -8 is passed in") {
         "takesNegDouble(-8)" should compile
         takesNegDouble(-8) shouldEqual -8.0
-        "takesNegDouble(-8L)" should compile
-        takesNegDouble(-8L) shouldEqual -8.0
         "takesNegDouble(-8.0F)" should compile
         takesNegDouble(-8.0F) shouldEqual -8.0
         "takesNegDouble(-8.0)" should compile

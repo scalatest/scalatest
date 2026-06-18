@@ -178,8 +178,6 @@ class PosDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       it("should compile when 8 is passed in") {
         "PosDouble(8)" should compile
         PosDouble(8).value shouldEqual 8.0
-        "PosDouble(8L)" should compile
-        PosDouble(8L).value shouldEqual 8.0
         "PosDouble(8.0F)" should compile
         PosDouble(8.0F).value shouldEqual 8.0
         "PosDouble(8.0)" should compile
@@ -217,8 +215,6 @@ class PosDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       it("should compile when 8 is passed in") {
         "takesPosDouble(8)" should compile
         takesPosDouble(8) shouldEqual 8.0
-        "takesPosDouble(8L)" should compile
-        takesPosDouble(8L) shouldEqual 8.0
         "takesPosDouble(8.0F)" should compile
         takesPosDouble(8.0F) shouldEqual 8.0
         "takesPosDouble(8.0)" should compile
