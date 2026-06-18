@@ -519,25 +519,6 @@ object PosFloats {
       def apply(x: Int): PosFloat = x.toFloat
     }
 
-    /** Convert a compile-time Long literal or runtime Long to a [[PosFloat]].
-      *
-      * The inline overload checks long literals at compile time; the runtime
-      * overload validates and throws for negative values.
-      */
-    given Conversion[Long, PosFloat] with {
-      inline def apply[L <: Long & Singleton](inline x: L): PosFloat =
-        inline constValueOpt[L] match {
-          case Some(v: Long) =>
-            inline if v <= 0L then
-              error("PosFloat cannot be instantiated with a negative or zero long literal")
-            else
-              v.toFloat.asInstanceOf[PosFloat]
-          case None =>
-            error("PosFloat conversion requires a long literal")
-        }
-      def apply(x: Long): PosFloat = x.toFloat
-    }
-
     /** Convert a compile-time Float literal or runtime Float to a [[PosFloat]].
       *
       * The inline overload checks float literals at compile time; the runtime
@@ -576,7 +557,7 @@ object PosFloats {
           else
             v.asInstanceOf[PosFloat]
         case None =>
-          error("PosFloat.apply requires a integer, long or float literal")
+          error("PosFloat.apply requires a integer or float literal")
       }
 
     /** Compile-time factory for creating a [[PosFloat]] from a integer literal.
@@ -598,30 +579,8 @@ object PosFloats {
           else
             v.toFloat.asInstanceOf[PosFloat]
         case None =>
-          error("PosFloat.apply requires a integer, long or float literal")
+          error("PosFloat.apply requires a integer or float literal")
       }
-
-    /** Compile-time factory for creating a [[PosFloat]] from a long literal.
-      *
-      * This inline method inspects the provided long literal at compile time
-      * and rejects non-positive literals. Use it as: `PosFloat(5L)`. For non-literal
-      * values, use [[ensuringValid]] or [[from]].
-      *
-      * @tparam L the singleton Long literal type
-      * @param l the long literal
-      * @return a [[PosLong]] representing the given positive literal
-      * @throws a compile-time error if the literal is non-positive or not a literal
-      */
-    inline def apply[L <: Long & Singleton](inline l: L): PosFloat =
-      inline constValueOpt[L] match {
-        case Some(v: Long) =>
-          inline if v <= 0L then
-            error("PosFloat cannot be instantiated with a negative or zero long literal")
-          else
-            v.toFloat.asInstanceOf[PosFloat]
-        case None =>
-          error("PosFloat.apply requires a integer, long or float literal")
-      }    
 
     /** 
       * Return true when the provided Float is a valid [[PosFloat]] value (> 0). 
@@ -887,25 +846,6 @@ object PosFloats {
       def apply(x: Int): PosZFiniteFloat = x.toFloat
     }
 
-    /** Convert a compile-time Long literal or runtime Long to a [[PosZFiniteFloat]].
-      *
-      * The inline overload checks long literals at compile time; the runtime
-      * overload validates and throws for negative values.
-      */
-    given Conversion[Long, PosZFiniteFloat] with {
-      inline def apply[L <: Long & Singleton](inline x: L): PosZFiniteFloat =
-        inline constValueOpt[L] match {
-          case Some(v: Long) =>
-            inline if v < 0L then
-              error(Resources.notValidPosZFiniteFloat)
-            else
-              v.toFloat.asInstanceOf[PosZFiniteFloat]
-          case None =>
-            error(Resources.notLiteralPosZFiniteFloat)
-        }
-      def apply(x: Long): PosZFiniteFloat = x.toFloat
-    }
-
     /** Convert a compile-time Float literal or runtime Long to a [[PosZFiniteFloat]].
       *
       * The inline overload checks float literals at compile time; the runtime
@@ -966,30 +906,8 @@ object PosFloats {
           else
             v.asInstanceOf[PosZFiniteFloat]
         case None =>
-          error("PosZFiniteFloat.apply requires a integer, long or float literal")
+          error("PosZFiniteFloat.apply requires a integer or float literal")
       }
-
-    /** Compile-time factory for creating a [[PosZFiniteFloat]] from a long literal.
-      *
-      * This inline method inspects the provided long literal at compile time
-      * and rejects negative literals. Use it as: `PosZFiniteFloat(5.0f)`. For non-literal
-      * values, use [[ensuringValid]] or [[from]].
-      *
-      * @tparam L the singleton Long literal type
-      * @param l the Long literal
-      * @return a [[PosZFiniteFloat]] representing the given non-negative literal
-      * @throws a compile-time error if the literal is negative or not a literal
-      */
-    inline def apply[L <: Long & Singleton](inline l: L): PosZFiniteFloat =
-      inline constValueOpt[L] match {
-        case Some(v: Long) =>
-          inline if v < 0L then
-            error("PosZFiniteFloat cannot be instantiated with a negative long literal")
-          else
-            v.asInstanceOf[PosZFiniteFloat]
-        case None =>
-          error("PosZFiniteFloat.apply requires a integer, long or float literal")
-      }  
 
     /** 
       * Return true when the provided Float is a valid [[PosZFiniteFloat]] value (>= 0 and != Float.PositiveInfinity). 

@@ -196,30 +196,29 @@ class PosZFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matche
 
     describe("when created with apply method") {
 
-      it("should compile when 8 is passed in") {
+      it("should compile when 8 is passed in as Int or Float") {
         "PosZFiniteFloat(8)" should compile
         PosZFiniteFloat(8).value shouldEqual 8.0F
-        "PosZFiniteFloat(8L)" should compile
-        PosZFiniteFloat(8L).value shouldEqual 8.0F
         "PosZFiniteFloat(8.0F)" should compile
         PosZFiniteFloat(8.0F).value shouldEqual 8.0F
       }
 
-      it("should compile when 0 is passed in") {
+      it("should compile when 0 is passed in as Int or Float") {
         "PosZFiniteFloat(0)" should compile
         PosZFiniteFloat(0).value shouldEqual 0.0F
-        "PosZFiniteFloat(0L)" should compile
-        PosZFiniteFloat(0L).value shouldEqual 0.0F
         "PosZFiniteFloat(0.0F)" should compile
         PosZFiniteFloat(0.0F).value shouldEqual 0.0F
       }
 
       it("should not compile when -8 is passed in") {
         "PosZFiniteFloat(-8)" shouldNot compile
-        "PosZFiniteFloat(-8L)" shouldNot compile
         "PosZFiniteFloat(-8.0F)" shouldNot compile
       }
 
+      it("should not compile when Long 8 is passed in (precision loss prevention)") {
+        "PosZFiniteFloat(8L)" shouldNot compile
+        // Note: Long to Float causes precision loss for large values, so this conversion is removed
+      }
       it("should not compile when x is passed in") {
         val a: Int = -8
         "PosZFiniteFloat(a)" shouldNot compile
@@ -233,27 +232,22 @@ class PosZFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matche
 
       def takesPosZFiniteFloat(pos: PosZFiniteFloat): Float = pos.value
 
-      it("should compile when 8 is passed in") {
+      it("should compile when 8 is passed in as Int or Float") {
         "takesPosZFiniteFloat(8)" should compile
         takesPosZFiniteFloat(8) shouldEqual 8.0F
-        "takesPosZFiniteFloat(8L)" should compile
-        takesPosZFiniteFloat(8L) shouldEqual 8.0F
         "takesPosZFiniteFloat(8.0F)" should compile
         takesPosZFiniteFloat(8.0F) shouldEqual 8.0F
       }
 
-      it("should compile when 0 is passed in") {
+      it("should compile when 0 is passed in as Int or Float") {
         "takesPosZFiniteFloat(0)" should compile
         takesPosZFiniteFloat(0) shouldEqual 0.0F
-        "takesPosZFiniteFloat(0L)" should compile
-        takesPosZFiniteFloat(0L) shouldEqual 0.0F
         "takesPosZFiniteFloat(0.0F)" should compile
         takesPosZFiniteFloat(0.0F) shouldEqual 0.0F
       }
 
       it("should not compile when -8 is passed in") {
         "takesPosZFiniteFloat(-8)" shouldNot compile
-        "takesPosZFiniteFloat(-8L)" shouldNot compile
         "takesPosZFiniteFloat(-8.0F)" shouldNot compile
       }
 
