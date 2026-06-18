@@ -185,11 +185,13 @@ class PosFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
 
     describe("when created with apply method") {
 
-      it("should compile when 8 is passed in as Int or Float") {
-        "PosFloat(8)" should compile
-        PosFloat(8).value shouldEqual 8.0F
+      it("should compile when 8.0F is passed in") {
         "PosFloat(8.0F)" should compile
         PosFloat(8.0F).value shouldEqual 8.0F
+      }
+
+      it("should not compile when 8 is passed in (precision loss prevention)") {
+        "PosFloat(8)" shouldNot compile
       }
 
       it("should not compile when 0 is passed in") {
@@ -204,7 +206,6 @@ class PosFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
 
       it("should not compile when Long 8 is passed in (precision loss prevention)") {
         "PosFloat(8L)" shouldNot compile
-        // Note: Long to Float causes precision loss for large values, so this conversion is removed
       }
       it("should not compile when x is passed in") {
         val a: Int = -8
@@ -219,11 +220,13 @@ class PosFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
 
       def takesPosFloat(pos: PosFloat): Float = pos.value
 
-      it("should compile when 8 is passed in as Int or Float") {
-        "takesPosFloat(8)" should compile
-        takesPosFloat(8) shouldEqual 8.0F
+      it("should compile when 8.0F is passed in") {
         "takesPosFloat(8.0F)" should compile
         takesPosFloat(8.0F) shouldEqual 8.0F
+      }
+
+      it("should not compile when 8 is passed in (precision loss prevention)") {
+        "takesPosFloat(8)" shouldNot compile
       }
 
       it("should not compile when 0 is passed in") {

@@ -36,21 +36,11 @@ object NegFloats {
   object NegZFloat {
     /** Compile-time factory for a negative integer literal.
       *
-      * @tparam I the singleton Int literal type
-      * @param i the integer literal to validate
-      * @return a validated [[NegZFloat]]
-      * @throws scala.compiletime.error if the literal is non-negative
+      * Int to Float may lose precision for values < -16,777,216. Use explicit toFloat instead.
+      * For runtime values use [[ensuringValid]] or [[from]].
       */
     inline def apply[I <: Int & Singleton](inline i: I): NegZFloat =
-      inline constValueOpt[I] match {
-        case Some(v: Int) =>
-          inline if v >= 0 then
-            error(Resources.notValidNegZFloat)
-          else
-            v.toFloat.asInstanceOf[NegZFloat]
-        case None =>
-          error(Resources.notLiteralNegZFloat)
-      }
+      error("NegZFloat.apply from Int is not supported due to potential precision loss. Use explicit toFloat: NegZFloat(i.toFloat)")
 
     /** Compile-time factory for a negative long literal.
       *
@@ -625,15 +615,7 @@ object NegFloats {
       * @return a validated [[NegFiniteFloat]]
       */
     inline def apply[I <: Int & Singleton](inline i: I): NegFiniteFloat =
-      inline constValueOpt[I] match {
-        case Some(v: Int) =>
-          inline if v >= 0 then
-            error(Resources.notValidNegFiniteFloat)
-          else
-            v.toFloat.asInstanceOf[NegFiniteFloat]
-        case None =>
-          error(Resources.notLiteralNegFiniteFloat)
-      }
+      error("NegFiniteFloat.apply from Int is not supported due to potential precision loss. Use explicit toFloat: NegFiniteFloat(i.toFloat)")
 
     /** Compile-time factory for a finite strictly negative float literal.
       *
@@ -749,19 +731,13 @@ object NegFloats {
       def apply(x: NegFiniteFloat): Float = x.toFloat
     }
 
+    /** Blocking Int conversion to prevent precision loss. Int to Float may lose precision for values > 2^24. */
     given Conversion[Int, NegFiniteFloat] with {
       inline def apply[I <: Int & Singleton](inline x: I): NegFiniteFloat =
-        inline constValueOpt[I] match {
-          case Some(v: Int) =>
-            inline if v >= 0 then
-              error(Resources.notValidNegFiniteFloat)
-            else
-              v.toFloat.asInstanceOf[NegFiniteFloat]
-          case None =>
-            error(Resources.notLiteralNegFiniteFloat)
-        }
+        error("NegFiniteFloat conversion from Int is not supported due to potential precision loss. Use explicit toFloat: NegFiniteFloat(x.toFloat)")
 
-      def apply(x: Int): NegFiniteFloat = NegFiniteFloat.ensuringValid(x.toFloat)
+      def apply(x: Int): NegFiniteFloat =
+        throw new AssertionError("NegFiniteFloat conversion from Int is not supported due to potential precision loss. Use explicit toFloat: NegFiniteFloat(x.toFloat)")
     }
 
     given Conversion[Float, NegFiniteFloat] with {

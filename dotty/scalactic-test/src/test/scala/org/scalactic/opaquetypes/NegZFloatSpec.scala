@@ -196,18 +196,16 @@ class NegZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
 
     describe("when created with apply method") {
 
-      it("should compile when -8 is passed in") {
-        "NegZFloat(-8)" should compile
-        NegZFloat(-8).value shouldEqual -8.0F
-        "NegZFloat(-8L)" should compile
-        NegZFloat(-8L).value shouldEqual -8.0F
+      it("should compile when -8.0F is passed in") {
         "NegZFloat(-8.0F)" should compile
         NegZFloat(-8.0F).value shouldEqual -8.0F
       }
 
-      it("should compile when 0.0f is passed in") {
-        "NegZFloat(0)" shouldNot compile
-        "NegZFloat(0L)" shouldNot compile
+      it("should not compile when -8 is passed in (precision loss prevention)") {
+        "NegZFloat(-8)" shouldNot compile
+      }
+
+      it("should compile when 0.0F is passed in") {
         "NegZFloat(0.0F)" should compile
         NegZFloat(0.0F).value shouldEqual 0.0F
         "NegZFloat(0.0)" shouldNot compile
@@ -235,17 +233,17 @@ class NegZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
 
       def takesNegZFloat(pos: NegZFloat): Float = pos.value
 
-      it("should compile when -8 is passed in") {
-        "takesNegZFloat(-8)" shouldNot compile
-        "takesNegZFloat(-8L)" shouldNot compile
+      it("should compile when -8.0F is passed in") {
         "takesNegZFloat(-8.0F)" should compile
         takesNegZFloat(-8.0F) shouldEqual -8.0F
         "takesNegZFloat(-8.0)" shouldNot compile
       }
 
+      it("should not compile when -8 is passed in (precision loss prevention)") {
+        "takesNegZFloat(-8)" shouldNot compile
+      }
+
       it("should compile when 0 is passed in") {
-        "takesNegZFloat(0)" shouldNot compile
-        "takesNegZFloat(0L)" shouldNot compile
         "takesNegZFloat(0.0F)" should compile
         takesNegZFloat(0.0F) shouldEqual 0.0F
         "takesNegZFloat(0.0)" shouldNot compile

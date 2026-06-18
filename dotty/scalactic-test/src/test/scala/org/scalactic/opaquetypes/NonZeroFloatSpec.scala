@@ -59,8 +59,8 @@ class NonZeroFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers 
   describe("NonZeroFloat") {
 
     it("should be automatically widened to compatible AnyVal targets") {
-      (NonZeroFloat(3): Float) shouldEqual 3.0f
-      (NonZeroFloat(3).toDouble: Double) shouldEqual 3.0
+      (NonZeroFloat(3.0f): Float) shouldEqual 3.0f
+      (NonZeroFloat(3.0f).toDouble: Double) shouldEqual 3.0
       (NonZeroFloat(3.0f): NonZeroDouble) shouldEqual NonZeroDouble(3.0)
       "(NonZeroFloat(3): Int)" shouldNot compile
       "(NonZeroFloat(3): Long)" shouldNot compile

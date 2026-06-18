@@ -56,15 +56,7 @@ object NonZeroFloats {
 
     /** Compile-time factory for creating a [[NonZeroFloat]] from an integer literal. */
     inline def apply[I <: Int & Singleton](inline i: I): NonZeroFloat =
-      inline constValueOpt[I] match {
-        case Some(v: Int) =>
-          inline if v != 0 then
-            v.toFloat.asInstanceOf[NonZeroFloat]
-          else
-            error("NonZeroFloat cannot be instantiated with zero")
-        case None =>
-          error("NonZeroFloat.apply requires an integer or float literal")
-      }
+      error("NonZeroFloat.apply from Int is not supported due to potential precision loss. Use explicit toFloat: NonZeroFloat(i.toFloat)")
 
     def ensuringValid(f: Float): NonZeroFloat =
       if (f == 0.0f)
