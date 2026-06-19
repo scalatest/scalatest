@@ -166,4 +166,9 @@ package object opaquetypes {
   type NegFiniteFloat = NegFloats.NegFiniteFloat
   /** Value alias for the [[org.scalactic.opaquetypes.NegFloats.NegFiniteFloat]] companion. */
   val NegFiniteFloat: NegFloats.NegFiniteFloat.type = NegFloats.NegFiniteFloat
+
+  /** Type alias for [[org.scalactic.opaquetypes.Numerics.NumericChar]]. */
+  type NumericChar = Numerics.NumericChar
+  /** Value alias for the [[org.scalactic.opaquetypes.Numerics.NumericChar]] companion. */
+  val NumericChar: Numerics.NumericChar.type = Numerics.NumericChar
 }

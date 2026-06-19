@@ -4506,6 +4506,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NumericChar] = numericCharGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.Numerics.NumericChar independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNumericCharGenerator: Generator[org.scalactic.opaquetypes.Numerics.NumericChar] =
+  //DOTTY-ONLY   numericCharGenerator.map(c => org.scalactic.opaquetypes.Numerics.NumericChar.ensuringValid(c.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NumericChar: Generator[org.scalactic.opaquetypes.Numerics.NumericChar] = opaquetypesNumericCharGenerator
+
   // Should throw IAE on negative size in all generators, even the ones that ignore size.
   /**
     * A [[Generator]] that produces arbitrary [[String]]s.
