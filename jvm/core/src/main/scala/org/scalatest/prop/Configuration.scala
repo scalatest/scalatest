@@ -16,6 +16,8 @@
 package org.scalatest.prop
 
 import org.scalactic.anyvals.{PosInt, PosZDouble, PosZInt}
+import org.scalatest.prop.Configuration.InitialSeed
+
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -74,6 +76,12 @@ trait Configuration {
   def workers(value: PosInt): Workers = new Workers(value)
 
   /**
+   * Returns a <code>InitialSeed</code> property check configuration parameter containing the passed value, which
+   * specifies the initial seed to used when evaluating a property
+   */
+  def initialSeed(value: Long): InitialSeed = new InitialSeed(value)
+
+  /**
     * Given some optional [[PropertyCheckConfigParam]]s and a [[PropertyCheckConfiguration]], compute the resulting
     * [[Configuration.Parameter]].
     *
@@ -95,6 +103,7 @@ trait Configuration {
     var pminSize: Option[Int] = None
     var psizeRange: Option[Int] = None
     var pworkers: Option[Int] = None
+    var pinitialSeed: Option[Long] = None
 
     var minSuccessfulTotalFound = 0
     var maxDiscardedTotalFound = 0
@@ -102,6 +111,7 @@ trait Configuration {
     var minSizeTotalFound = 0
     var sizeRangeTotalFound = 0
     var workersTotalFound = 0
+    var initialSeedTotalFound = 0
 
     for (configParam <- configParams) {
       configParam match {
@@ -120,6 +130,9 @@ trait Configuration {
         case Workers(value) =>
           pworkers = Some(value)
           workersTotalFound += 1
+        case InitialSeed(value) =>
+          pinitialSeed = Some(value)
+          initialSeedTotalFound += 1
       }
     }
 
@@ -134,6 +147,8 @@ trait Configuration {
       throw new IllegalArgumentException("can pass at most one SizeRange config parameters, but " + sizeRangeTotalFound + " were passed")
     if (workersTotalFound > 1)
       throw new IllegalArgumentException("can pass at most one Workers config parameters, but " + workersTotalFound + " were passed")
+    if (initialSeedTotalFound > 1)
+      throw new IllegalArgumentException("can pass at most one InitialSeed config parameters, but " + initialSeedTotalFound + " were passed")
 
     val minSuccessfulTests: Int = minSuccessful.getOrElse(config.minSuccessful)
 
@@ -143,13 +158,16 @@ trait Configuration {
 
     val maxDiscardRatio: Float = maxDiscardedFactor.getOrElse(config.maxDiscardedFactor.value).toFloat
 
+    val initialSeed: Seed = pinitialSeed.map(Seed(_)).orElse(Seed.configured).getOrElse(Seed.default)
+
     val param =
       Configuration.Parameter(
         PosInt.from(minSuccessfulTests).getOrElse(config.minSuccessful),
         PosZDouble.from(maxDiscardRatio).getOrElse(config.maxDiscardedFactor),
         PosZInt.from(minSize).getOrElse(config.minSize),
         PosZInt.from(maxSize - minSize).getOrElse(config.sizeRange),
-        PosInt.from(pworkers.getOrElse(config.workers)).getOrElse(config.workers)
+        PosInt.from(pworkers.getOrElse(config.workers)).getOrElse(config.workers),
+        initialSeed
       )
 
     if(
@@ -228,12 +246,15 @@ object Configuration extends Configuration {
     * @param sizeRange    the maximum size parameter to provide to ScalaCheck, which it will use when
     *                     generating objects for which size matters (such as strings or lists); see [[SizeRange]]
     * @param workers      number of worker threads to use when evaluating a property; see [[Workers]]
+    * @param initialSeed  the initial seed parameter to provide to ScalaCheck. if absent, will use the global
+    *                     seed [[org.scalatest.prop.Seed]]
     */
   case class PropertyCheckConfiguration(minSuccessful: PosInt = PosInt(10),
                                         maxDiscardedFactor: PosZDouble = PosZDouble(5.0),
                                         minSize: PosZInt = PosZInt(0),
                                         sizeRange: PosZInt = PosZInt(100),
-                                        workers: PosInt = PosInt(1))
+                                        workers: PosInt = PosInt(1),
+                                        initialSeed: Option[Long] = None)
 
   /**
    * Abstract class defining a family of configuration parameters for property checks.
@@ -345,7 +366,13 @@ object Configuration extends Configuration {
    *
    * @author Bill Venners
    */
-  case class Workers(value: PosInt) extends PropertyCheckConfigParam                                      
+  case class Workers(value: PosInt) extends PropertyCheckConfigParam
+
+  /**
+   * A <code>PropertyCheckConfigParam</code> that overrides the global seed to provide a specific initial seed to
+   * ScalaCheck
+   */
+  case class InitialSeed(value: Long) extends PropertyCheckConfigParam
 
   /**
     * The parameters that define how a property evaluation should be executed.
@@ -364,12 +391,14 @@ object Configuration extends Configuration {
     * @param sizeRange    the maximum size parameter to provide to ScalaCheck, which it will use when
     *                     generating objects for which size matters (such as strings or lists); see [[SizeRange]]
     * @param workers      number of worker threads to use when evaluating a property; see [[Workers]]
+    * @param initialSeed  the initial seed provided to ScalaCheck; see [[InitialSeed]]
     */
   case class Parameter(minSuccessful: PosInt = PosInt(10),
                        maxDiscardedFactor: PosZDouble = PosZDouble(5.0),
                        minSize: PosZInt = PosZInt(0),
                        sizeRange: PosZInt = PosZInt(100),
-                       workers: PosInt = PosInt(1)) {
+                       workers: PosInt = PosInt(1),
+                       initialSeed: Seed) {
 
     import org.scalactic.Requirements._
 

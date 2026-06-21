@@ -87,4 +87,13 @@ class PropertyCheckConfigParamSuite extends AnyFunSuite with Matchers {
     Workers(2).value.value should be (2)
     Workers(5678).value.value should be (5678)
   }
+
+  test("initialSeed value is passed value, if valid") {
+    InitialSeed(-2).value should be (-2)
+    InitialSeed(-1).value should be (-1)
+    InitialSeed(0).value should be (0)
+    InitialSeed(1).value should be (1)
+    InitialSeed(2).value should be (2)
+    InitialSeed(5678).value should be (5678)
+  }
 }
