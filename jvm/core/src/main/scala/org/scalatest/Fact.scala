@@ -591,6 +591,7 @@ import org.scalatest.exceptions._
  *   test("addition") {
  *     val fact = expect(2 + 2 == 4)
  *     // Implicit conversion to Assertion happens here
+ *     fact
  *   }
  * }
  * </pre>
