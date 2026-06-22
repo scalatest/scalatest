@@ -24,7 +24,7 @@ import org.scalactic.UnitSpec
 import org.scalactic.NormalizingEquality
 import org.scalactic.Resources
 
-import org.scalactic.opaquetypes.NonEmptyStrings.NonEmptyString
+//import org.scalactic.opaquetypes.NonEmpties.NonEmptyString
 
 class NonEmptyStringSpec extends UnitSpec {
   "A NonEmptyString" can "be constructed with one character" in {

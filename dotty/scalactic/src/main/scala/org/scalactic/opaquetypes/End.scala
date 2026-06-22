@@ -57,7 +57,7 @@ object End {
     * res0: org.scalactic.NonEmptyList[Int] = NonEmptyList(1)
     * </pre>
     */
-  def ::[T](element: T): NonEmptyList[T] = NonEmptyList(element)
+  def ::[T](element: T): NonEmpties.NonEmptyList[T] = NonEmpties.NonEmptyList(element)
 
   /**
     * Returns <code>"End"</code>.

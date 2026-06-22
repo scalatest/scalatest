@@ -186,4 +186,36 @@ package object opaquetypes {
   type NumericChar = Numerics.NumericChar
   /** Value alias for the [[org.scalactic.opaquetypes.Numerics.NumericChar]] companion. */
   val NumericChar: Numerics.NumericChar.type = Numerics.NumericChar
+
+  // NonEmpty types
+
+  /** Type alias for [[org.scalactic.opaquetypes.NonEmpties.NonEmptyArray]]. */
+  type NonEmptyArray[T] = NonEmpties.NonEmptyArray[T]
+  /** Value alias for the [[org.scalactic.opaquetypes.NonEmpties.NonEmptyArray]] companion. */
+  val NonEmptyArray: NonEmpties.NonEmptyArray.type = NonEmpties.NonEmptyArray
+
+  /** Type alias for [[org.scalactic.opaquetypes.NonEmpties.NonEmptyList]]. */
+  type NonEmptyList[T] = NonEmpties.NonEmptyList[T]
+  /** Value alias for the [[org.scalactic.opaquetypes.NonEmpties.NonEmptyList]] companion. */
+  val NonEmptyList: NonEmpties.NonEmptyList.type = NonEmpties.NonEmptyList
+
+  /** Type alias for [[org.scalactic.opaquetypes.NonEmpties.NonEmptyVector]]. */
+  type NonEmptyVector[T] = NonEmpties.NonEmptyVector[T]
+  /** Value alias for the [[org.scalactic.opaquetypes.NonEmpties.NonEmptyVector]] companion. */
+  val NonEmptyVector: NonEmpties.NonEmptyVector.type = NonEmpties.NonEmptyVector
+
+  /** Type alias for [[org.scalactic.opaquetypes.NonEmpties.NonEmptySet]]. */
+  type NonEmptySet[T] = NonEmpties.NonEmptySet[T]
+  /** Value alias for the [[org.scalactic.opaquetypes.NonEmpties.NonEmptySet]] companion. */
+  val NonEmptySet: NonEmpties.NonEmptySet.type = NonEmpties.NonEmptySet
+
+  /** Type alias for [[org.scalactic.opaquetypes.NonEmpties.NonEmptyMap]]. */
+  type NonEmptyMap[K, +V] = NonEmpties.NonEmptyMap[K, V]
+  /** Value alias for the [[org.scalactic.opaquetypes.NonEmpties.NonEmptyMap]] companion. */
+  val NonEmptyMap: NonEmpties.NonEmptyMap.type = NonEmpties.NonEmptyMap
+
+  /** Type alias for [[org.scalactic.opaquetypes.NonEmpties.NonEmptyString]]. */
+  type NonEmptyString = NonEmpties.NonEmptyString
+  /** Value alias for the [[org.scalactic.opaquetypes.NonEmpties.NonEmptyString]] companion. */
+  val NonEmptyString: NonEmpties.NonEmptyString.type = NonEmpties.NonEmptyString
 }
