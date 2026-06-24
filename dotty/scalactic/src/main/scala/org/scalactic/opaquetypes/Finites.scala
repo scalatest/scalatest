@@ -38,7 +38,11 @@ object Finites {
     */
   opaque type FiniteFloat = Float
 
-  /** Companion object for the [[FiniteFloat]] opaque type. */
+  /** Companion object for the [[FiniteFloat]] opaque type.
+    *
+    * Provides compile-time and runtime factories, validation utilities,
+    * implicit conversions, and extension methods for [[FiniteFloat]].
+    */
   object FiniteFloat {
 
     /** Implicitly widens a [[FiniteFloat]] to a plain <code>Float</code>. */
@@ -46,7 +50,11 @@ object Finites {
       def apply(x: FiniteFloat): Float = x.toFloat
   }
 
-    /** Converts a compile-time <code>Float</code> literal to a [[FiniteFloat]]. */
+    /** Converts a compile-time <code>Float</code> literal to a [[FiniteFloat]].
+      *
+      * Rejects infinity and NaN literals at compile time.
+      * For runtime values, use [[ensuringValid]] or [[from]].
+      */
     given Conversion[Float, FiniteFloat] with {
       inline def apply[F <: Float & Singleton](inline x: F): FiniteFloat =
         inline constValueOpt[F] match {
@@ -62,7 +70,15 @@ object Finites {
       def apply(x: Float): FiniteFloat = FiniteFloat.ensuringValid(x)
     }
 
-    /** Compile-time factory for creating a [[FiniteFloat]] from a float literal. */
+    /** Compile-time factory for creating a [[FiniteFloat]] from a float literal.
+      *
+      * Rejects infinity and NaN literals at compile time.
+      *
+      * @tparam F the singleton float literal type
+      * @param f the candidate float literal
+      * @return the validated literal as a [[FiniteFloat]]
+      * @throws scala.compiletime.error if the literal is infinity or NaN
+      */
     inline def apply[F <: Float & Singleton](inline f: F): FiniteFloat =
       inline constValueOpt[F] match {
         case Some(v: Float) =>

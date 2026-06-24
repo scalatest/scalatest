@@ -29,6 +29,7 @@ import NegFloats.NegFiniteFloat
 
 object PosFloats {
 
+  /** Opaque type representing any non-negative Float value (>= 0.0). */
   opaque type PosZFloat = Float
 
   /** Lower-priority given conversions for PosZFloat.
@@ -47,6 +48,7 @@ object PosFloats {
     }
   }
 
+  /** Companion object for [[PosZFloat]]. */
   object PosZFloat extends PosZFloatConversionsLowPriority {
 
     /** Convert a [[PosZFloat]] to a plain Float (unwrap). */
@@ -130,8 +132,8 @@ object PosFloats {
       * @param value the Float to validate
       * @return true if the specified Float is a non-negative float, else false
       */
-    def isValid(value: Float): Boolean = value >= 0.0f  
-    
+    def isValid(value: Float): Boolean = value >= 0.0f
+
     /** Construct a [[PosZFloat]] from a runtime Float if it is non-negative.
       *
       * @param f runtime Float to validate
@@ -146,10 +148,10 @@ object PosFloats {
       * @return the given float as a [[PosZFloat]] if valid
       * @throws AssertionError if the given Float is negative
       */
-    def ensuringValid(f: Float): PosZFloat = 
-      if (isValid(f)) 
+    def ensuringValid(f: Float): PosZFloat =
+      if (isValid(f))
         f
-      else   
+      else
         throw new AssertionError(Resources.invalidPosZFloat)
 
     /**
@@ -448,6 +450,7 @@ object PosFloats {
 
   }
 
+  /** Opaque type representing any strictly positive Float value (> 0.0). */
   opaque type PosFloat <: PosZFloat = Float
 
   /** Lower-priority given conversions for PosFloat.
@@ -478,6 +481,7 @@ object PosFloats {
     }
   }
 
+  /** Companion object for [[PosFloat]]. */
   object PosFloat extends PosFloatConversionsLowPriority {
 
     /** Convert a [[PosFloat]] to a plain Float (unwrap). */
@@ -551,13 +555,24 @@ object PosFloats {
       */
     def isValid(value: Float): Boolean = value > 0.0f  
     
+    /** Construct a [[PosFloat]] from a runtime Float if it is positive.
+      *
+      * @param f runtime Float to validate
+      * @return Some(PosFloat) if f > 0, otherwise None
+      */
     def from(f: Float): Option[PosFloat] =
       if (isValid(f)) Some(f) else None
 
-    def ensuringValid(f: Float): PosFloat = 
+    /** Ensure the runtime Float is positive and return it as a [[PosFloat]].
+      *
+      * @param f runtime Float to check
+      * @return the given float as a [[PosFloat]] if valid
+      * @throws AssertionError if the given Float is non-positive
+      */
+    def ensuringValid(f: Float): PosFloat =
       if (isValid(f))
         f
-      else 
+      else
         throw new AssertionError(Resources.invalidPosFloat)
 
     /**
@@ -779,8 +794,10 @@ object PosFloats {
 
   }
 
+  /** Opaque type representing any non-negative finite Float value (>= 0.0, excludes infinities and NaN). */
   opaque type PosZFiniteFloat <: PosZFloat = Float
 
+  /** Companion object for [[PosZFiniteFloat]]. */
   object PosZFiniteFloat {
 
     /** Convert a [[PosZFiniteFloat]] to a plain Float (unwrap). */
@@ -1085,8 +1102,10 @@ object PosFloats {
     }              
   }
 
+  /** Opaque type representing any strictly positive, finite Float value (> 0.0, excludes infinities and NaN). */
   opaque type PosFiniteFloat = Float
 
+  /** Companion object for [[PosFiniteFloat]]. */
   object PosFiniteFloat {
 
     /** Convert a [[PosFiniteFloat]] to a plain Float (unwrap). */
@@ -1185,10 +1204,10 @@ object PosFloats {
       */
     def isValid(value: Float): Boolean = value > 0.0f && value != Float.PositiveInfinity && value != Float.NegativeInfinity
     
-    /** Construct a [[PosZFiniteFloat]] from a runtime Float if it is positive and finite.
+    /** Construct a [[PosFiniteFloat]] from a runtime Float if it is positive and finite.
       *
       * @param f runtime Float to validate
-      * @return Some(PosZFiniteFloat) if f >= 0 and finite, otherwise None
+      * @return Some(PosFiniteFloat) if f is positive and finite, otherwise None
       */
     def from(f: Float): Option[PosFiniteFloat] =
       if (isValid(f)) Some(f) else None    

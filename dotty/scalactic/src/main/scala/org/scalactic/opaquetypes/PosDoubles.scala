@@ -25,8 +25,13 @@ import PosLongs.{PosZLong, PosLong}
 
 object PosDoubles {
 
+  /** Opaque type representing a non-negative <code>Double</code> value (&gt;= 0.0). */
   opaque type PosZDouble = Double
 
+  /**
+    * Companion object for [[PosZDouble]] with factory methods, validation,
+    * conversions, and extension methods.
+    */
   object PosZDouble {
 
     /**
@@ -200,10 +205,26 @@ object PosDoubles {
     def fromOrElse(value: Double, default: => PosZDouble): PosZDouble =
       if (isValid(value)) value else default          
     
+    /**
+      * Constructs a <code>PosZDouble</code> from the given <code>Double</code>
+      * if the value is non-negative (&gt;= 0.0), returning <code>Some</code>,
+      * or <code>None</code> otherwise.
+      *
+      * @param d the <code>Double</code> to construct from
+      * @return <code>Some(PosZDouble)</code> if <code>d &gt;= 0.0</code>, else <code>None</code>
+      */
     def from(d: Double): Option[PosZDouble] =
       if (isValid(d)) Some(d) else None
 
-    def ensuringValid(d: Double): PosZDouble = 
+    /**
+      * Validates the given <code>Double</code> and returns it as a <code>PosZDouble</code>,
+      * or throws <code>AssertionError</code> if the value is negative.
+      *
+      * @param d the <code>Double</code> to validate
+      * @return <code>d</code> as a <code>PosZDouble</code> if <code>d &gt;= 0.0</code>
+      * @throws AssertionError if <code>d</code> is negative
+      */
+    def ensuringValid(d: Double): PosZDouble =
       if (!isValid(d)) 
         throw new AssertionError(Resources.invalidPosZDouble)
       else d
@@ -425,8 +446,13 @@ object PosDoubles {
 
   // ...existing code...
 
+  /** Opaque type representing any strictly positive <code>Double</code> value (&gt; 0.0). */
   opaque type PosDouble <: PosZDouble = Double
 
+  /**
+    * Companion object for [[PosDouble]] with factory methods, validation,
+    * conversions, and extension methods.
+    */
   object PosDouble {
 
     /** Implicitly widens a [[PosZDouble]] to a plain <code>Double</code>. */
@@ -598,16 +624,33 @@ object PosDoubles {
           error("PosDouble.apply requires a integer, long, float or double literal")
       }      
     
+    /**
+      * Constructs a <code>PosDouble</code> from the given <code>Double</code>
+      * if the value is strictly positive (&gt; 0.0), returning <code>Some</code>,
+      * or <code>None</code> otherwise.
+      *
+      * @param d the <code>Double</code> to construct from
+      * @return <code>Some(PosDouble)</code> if <code>d &gt; 0.0</code>, else <code>None</code>
+      */
     def from(d: Double): Option[PosDouble] =
       if (isValid(d)) Some(d) else None
 
-    /** 
-      * Return true when the provided Double is a valid [[PosDouble]] value (> 0.0). 
+    /**
+      * Return true when the provided Double is a valid [[PosDouble]] value (> 0.0).
       *
       * @param value the Double to validate
-      * @return true if the specified Double is a non-negative double, else false
+      * @return true if the specified Double is strictly positive, else false
       */
+    def isValid(value: Double): Boolean = value > 0.0
 
+    /**
+      * Validates the given <code>Double</code> and returns it as a <code>PosDouble</code>,
+      * or throws <code>AssertionError</code> if the value is zero or negative.
+      *
+      * @param d the <code>Double</code> to validate
+      * @return <code>d</code> as a <code>PosDouble</code> if <code>d &gt; 0.0</code>
+      * @throws AssertionError if <code>d</code> is zero or negative
+      */
     def ensuringValid(d: Double): PosDouble = 
       if (isValid(d))
         d
@@ -746,8 +789,6 @@ object PosDoubles {
       */
     def rightOrElse[L](value: Double)(f: Double => L): Either[L, PosDouble] =
       if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))
-
-    def isValid(value: Double): Boolean = value > 0.0
 
     /**
       * A factory method that produces a <code>PosDouble</code> given a

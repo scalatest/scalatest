@@ -23,8 +23,29 @@ import org.scalactic.{Or, Good, Bad}
 
 object NonZeroDoubles {
 
+  /** Opaque type representing a non-zero <code>Double</code> value.
+    *
+    * <p>
+    * Instances of this type are guaranteed to satisfy <code>!= 0.0</code>, but may
+    * be <code>Double.PositiveInfinity</code>, <code>Double.NegativeInfinity</code>,
+    * or <code>Double.NaN</code>.
+    * </p>
+    *
+    * <p>
+    * Use the compile-time <code>apply</code> overloads to construct instances from
+    * literals, or the runtime factory methods [[NonZeroDouble.from]],
+    * [[NonZeroDouble.ensuringValid]], and [[NonZeroDouble.fromOrElse]] for
+    * values known only at runtime.
+    * </p>
+    */
   opaque type NonZeroDouble = Double
 
+  /** Companion object for the [[NonZeroDouble]] opaque type.
+    *
+    * Provides compile-time <code>apply</code> overloads, runtime factory and
+    * validation methods, implicit widening conversions, and an extension method
+    * for post-computation validation.
+    */
   object NonZeroDouble {
     /** Compile-time factory for creating a [[NonZeroDouble]] from a double literal.
       *
@@ -77,10 +98,34 @@ object NonZeroDoubles {
           error("NonZeroDouble.apply requires a float or double literal")
       }
 
+    /** Returns the given <code>Double</code> as a [[NonZeroDouble]] if it is non-zero,
+      * or throws <code>AssertionError</code> if it is zero.
+      *
+      * <p>
+      * This method is appropriate when you are certain the value is non-zero; use
+      * [[from]] when you want to handle the invalid case gracefully.
+      * </p>
+      *
+      * @param d the <code>Double</code> to return as a [[NonZeroDouble]]
+      * @return <code>d</code> as a [[NonZeroDouble]] if non-zero
+      * @throws AssertionError if <code>d</code> is zero
+      */
     def ensuringValid(d: Double): NonZeroDouble =
       if (d == 0.0)
         throw new AssertionError(Resources.invalidNonZeroDouble)
       else d
+
+    /** Returns <code>Some(NonZeroDouble)</code> if the given <code>Double</code> is non-zero,
+      * or <code>None</code> otherwise.
+      *
+      * <p>
+      * This factory method inspects the value at runtime.  Use the compile-time
+      * <code>apply</code> overloads when constructing from literals.
+      * </p>
+      *
+      * @param d the <code>Double</code> to inspect
+      * @return <code>Some(NonZeroDouble)</code> if <code>d != 0.0</code>, else <code>None</code>
+      */
     def from(d: Double): Option[NonZeroDouble] =
       if (d == 0.0) None else Some(d)
 
@@ -194,14 +239,23 @@ object NonZeroDoubles {
       longValue.toDouble == x || longValue == Long.MaxValue && x < Double.PositiveInfinity || longValue == Long.MinValue && x > Double.NegativeInfinity
     }
 
+    /** Rounds this `NonZeroDouble` value to the nearest whole number, returning the result as a [[NonZeroLong]]. */
     def round: NonZeroLong = NonZeroLong.ensuringValid(math.round(x))
 
+    /** Returns the smallest (closest to negative infinity) <code>NonZeroDouble</code> that is greater than or equal to this value
+      * and represents a mathematical integer.
+      */
     def ceil: NonZeroDouble = NonZeroDouble.ensuringValid(math.ceil(x))
 
+    /** Returns the greatest (closest to positive infinity) <code>NonZeroDouble</code> that is less than or equal to this value
+      * and represents a mathematical integer.
+      */
     def floor: NonZeroDouble = NonZeroDouble.ensuringValid(math.floor(x))
 
+    /** Converts an angle measured in degrees to an approximately equivalent angle measured in radians. */
     def toRadians: Double = math.toRadians(x)
 
+    /** Converts an angle measured in radians to an approximately equivalent angle measured in degrees. */
     def toDegrees: Double = math.toDegrees(x)
 
     /** True if this <code>NonZeroDouble</code> value represents positive infinity, else false. */

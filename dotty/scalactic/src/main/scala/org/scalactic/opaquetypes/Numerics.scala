@@ -35,6 +35,12 @@ import NonZeroDoubles.{NonZeroDouble, NonZeroFiniteDouble}
 import NonZeroInts.NonZeroInt
 import Finites.{FiniteFloat, FiniteDouble}
 
+/** Factory object for numeric opaque types that enforce value constraints at
+  * compile time or runtime.
+  *
+  * Currently provides the [[NumericChar]] opaque type, which restricts `Char`
+  * values to the digit characters `'0'` through `'9'`.
+  */
 object Numerics {
 
   /** Opaque type representing numeric Char values ('0' to '9').
@@ -45,7 +51,12 @@ object Numerics {
     */
   opaque type NumericChar = Char
 
-  /** Companion object for [[NumericChar]] with construction and validation helpers. */
+  /** Companion object for [[NumericChar]] with construction and validation helpers.
+    *
+    * Provides factory methods for compile-time-checked construction from Char
+    * literals, runtime validation helpers, given conversions, and extension
+    * methods for common operations.
+    */
   object NumericChar {
     /** Compile-time factory for creating a [[NumericChar]] from a Char literal.
       *
@@ -64,6 +75,7 @@ object Numerics {
 
     /** Construct a [[NumericChar]] from a runtime Char if it is numeric.
       *
+      * @param c the Char to validate
       * @return Some(NumericChar) if c is between '0' and '9', else None
       */
     def from(c: Char): Option[NumericChar] =
@@ -79,29 +91,58 @@ object Numerics {
       else
         throw new AssertionError(Resources.invalidNumericChar)
 
-    /** Runtime factory that returns Success for valid input, Failure otherwise. */
+    /** Runtime factory that returns Success for valid input, Failure otherwise.
+      *
+      * @param value the Char to validate
+      * @return Success(NumericChar) if value is between '0' and '9',
+      *   else Failure(AssertionError)
+      */
     def tryingValid(value: Char): Try[NumericChar] =
       if (value >= '0' && value <= '9')
         Success(value.asInstanceOf[NumericChar])
       else
         Failure(new AssertionError(Resources.invalidNumericChar))
 
-    /** Predicate indicating whether the given Char is valid for [[NumericChar]]. */
+    /** Predicate indicating whether the given Char is valid for [[NumericChar]].
+      *
+      * @param value the Char to validate
+      * @return true if value is between '0' and '9', else false
+      */
     def isValid(value: Char): Boolean = value >= '0' && value <= '9'
 
-    /** Validate a value and return Pass, else Fail(f(value)). */
+    /** Validate a value and return Pass, else Fail(f(value)).
+      *
+      * @param value the Char to validate
+      * @param f function to produce an error value when validation fails
+      * @return Pass if value is a valid NumericChar, else Fail(f(value))
+      */
     def passOrElse[E](value: Char)(f: Char => E): Validation[E] =
       if (isValid(value)) Pass else Fail(f(value))
 
-    /** Validate a value and return Good(NumericChar), else Bad(f(value)). */
+    /** Validate a value and return Good(NumericChar), else Bad(f(value)).
+      *
+      * @param value the Char to validate
+      * @param f function to produce an error value when validation fails
+      * @return Good(NumericChar) if value is valid, else Bad(f(value))
+      */
     def goodOrElse[B](value: Char)(f: Char => B): NumericChar Or B =
       if (isValid(value)) Good(value.asInstanceOf[NumericChar]) else Bad(f(value))
 
-    /** Validate a value and return Right(NumericChar), else Left(f(value)). */
+    /** Validate a value and return Right(NumericChar), else Left(f(value)).
+      *
+      * @param value the Char to validate
+      * @param f function to produce an error value when validation fails
+      * @return Right(NumericChar) if value is valid, else Left(f(value))
+      */
     def rightOrElse[L](value: Char)(f: Char => L): Either[L, NumericChar] =
       if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))
 
-    /** Return a validated value or the provided default if invalid. */
+    /** Return a validated value or the provided default if invalid.
+      *
+      * @param value the Char to validate
+      * @param default the NumericChar to return if value is not valid
+      * @return value as NumericChar if valid, else default
+      */
     def fromOrElse(value: Char, default: => NumericChar): NumericChar =
       if (isValid(value)) value.asInstanceOf[NumericChar] else default
 
@@ -142,7 +183,7 @@ object Numerics {
       /** Unary minus returns the negation as NegZInt. */
       def unary_- : NegZInt = NegZInt.ensuringValid(-x.toInt)
 
-      /** Returns this value, unmodified. */
+      /** Bitwise complement returns the negation as an Int. */
       def unary_~ : Int = ~x.toInt
 
       /** The numeric digit this character represents (0-9). */
@@ -152,11 +193,11 @@ object Numerics {
       def asDigitPosZInt: PosZInt = PosZInt.ensuringValid(asDigit)
 
       /** Greater of this and that value. */
-      def max(that: NumericChar): NumericChar = 
+      def max(that: NumericChar): NumericChar =
         if (x > that) x else that
 
       /** Lesser of this and that value. */
-      def min(that: NumericChar): NumericChar = 
+      def min(that: NumericChar): NumericChar =
         if (x < that) x else that
 
       // Bit shift operations - return Int
@@ -220,7 +261,11 @@ object Numerics {
       def >=(y: Double): Boolean = x.toDouble >= y
     }
 
-    /** Convert Char to [[NumericChar]] via compile-time or runtime validation. */
+    /** Convert Char to [[NumericChar]] via compile-time or runtime validation.
+      *
+      * The inline overload checks Char literals at compile time; the runtime
+      * overload validates and throws for non-numeric characters.
+      */
     given Conversion[Char, NumericChar] with {
       inline def apply[C <: Char & Singleton](inline x: C): NumericChar =
         inline constValueOpt[C] match {
@@ -831,47 +876,51 @@ object Numerics {
   // from PosFloat to PosZFloat, PosZFiniteFloat to PosZFloat, etc. are defined
   // in PosFloats.scala and PosDoubles.scala.
 
-  /** Convert NumericChar to PosInt. */
+  /** Convert [[NumericChar]] to [[PosInt]]. */
   given posIntConversion: Conversion[NumericChar, PosInt] = 
     (x: NumericChar) => PosInt.ensuringValid(x.toInt)
 
-  /** Convert NumericChar to PosLong. */
+  /** Convert [[NumericChar]] to [[PosLong]]. */
   given posLongConversion: Conversion[NumericChar, PosLong] = 
     (x: NumericChar) => PosLong.ensuringValid(x.toLong)
 
-  /** Convert NumericChar to PosZInt. */
+  /** Convert [[NumericChar]] to [[PosZInt]]. */
   given posZIntConversion: Conversion[NumericChar, PosZInt] = 
     (x: NumericChar) => PosZInt.ensuringValid(x.toInt)
 
-  /** Convert NumericChar to PosZLong. */
+  /** Convert [[NumericChar]] to [[PosZLong]]. */
   given posZLongConversion: Conversion[NumericChar, PosZLong] = 
     (x: NumericChar) => PosZLong.ensuringValid(x.toLong)
 
-  /** Convert NumericChar to PosFloat. */
+  /** Convert [[NumericChar]] to [[PosFloat]]. */
   given posFloatConversion: Conversion[NumericChar, PosFloat] = 
     (x: NumericChar) => PosFloat.ensuringValid(x.toFloat)
 
-  /** Convert NumericChar to PosFiniteFloat. */
+  /** Convert [[NumericChar]] to [[PosFiniteFloat]]. */
   given posFiniteFloatConversion: Conversion[NumericChar, PosFiniteFloat] = 
     (x: NumericChar) => PosFiniteFloat.ensuringValid(x.toFloat)
 
-  /** Convert NumericChar to PosDouble. */
+  /** Convert [[NumericChar]] to [[PosDouble]]. */
   given posDoubleConversion: Conversion[NumericChar, PosDouble] = 
     (x: NumericChar) => PosDouble.ensuringValid(x.toDouble)
 
-  /** Convert NumericChar to PosFiniteDouble. */
+  /** Convert [[NumericChar]] to [[PosFiniteDouble]]. */
   given posFiniteDoubleConversion: Conversion[NumericChar, PosFiniteDouble] = 
     (x: NumericChar) => PosFiniteDouble.ensuringValid(x.toDouble)
 
-  /** Convert NumericChar to FiniteFloat. */
+  /** Convert [[NumericChar]] to [[FiniteFloat]]. */
   given finiteFloatConversion: Conversion[NumericChar, FiniteFloat] = 
     (x: NumericChar) => FiniteFloat.ensuringValid(x.toFloat)
 
-  /** Convert NumericChar to FiniteDouble. */
+  /** Convert [[NumericChar]] to [[FiniteDouble]]. */
   given finiteDoubleConversion: Conversion[NumericChar, FiniteDouble] = 
     (x: NumericChar) => FiniteDouble.ensuringValid(x.toDouble)
 
-  /** Convert Char to [[NumericChar]] via compile-time or runtime validation. */
+  /** Convert Char to [[NumericChar]] via compile-time or runtime validation.
+    *
+    * The inline overload checks Char literals at compile time; the runtime
+    * overload validates and throws for non-numeric characters.
+    */
   given Conversion[Char, NumericChar] with {
     inline def apply[C <: Char & Singleton](inline x: C): NumericChar =
       inline constValueOpt[C] match {

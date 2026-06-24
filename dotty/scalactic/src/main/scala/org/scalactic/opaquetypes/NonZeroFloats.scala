@@ -36,8 +36,27 @@ object NonZeroFloats {
   import NegDoubles.{NegDouble, NegZDouble, NegZFiniteDouble, NegFiniteDouble}
   import Finites.{FiniteFloat, FiniteDouble}
 
+  /** Opaque type alias for <code>Float</code> that represents any non-zero <code>Float</code> value.
+    *
+    *  <p>
+    *  Instances of this type are guaranteed to satisfy <code>!= 0.0f</code>.
+    *  Unlike [[NonZeroFiniteFloat]], this type permits infinite values
+    *  (<code>Float.PositiveInfinity</code> and <code>Float.NegativeInfinity</code>)
+    *  as well as <code>Float.NaN</code>.
+    *  </p>
+    *
+    *  @see [[NonZeroFloat]] companion object for factory methods and conversions.
+    */
   opaque type NonZeroFloat = Float
 
+  /** Companion object for [[NonZeroFloat]].
+    *
+    *  Provides factory methods, validation utilities, and conversions
+    *  for the [[NonZeroFloat]] opaque type, which wraps a <code>Float</code>
+    *  value guaranteed to be non-zero.
+    *
+    *  @see [[NonZeroFloat]] opaque type definition.
+    */
   object NonZeroFloat {
     /** Compile-time factory for creating a [[NonZeroFloat]] from a float literal.
       *
@@ -58,10 +77,28 @@ object NonZeroFloats {
     inline def apply[I <: Int & Singleton](inline i: I): NonZeroFloat =
       error("NonZeroFloat.apply from Int is not supported due to potential precision loss. Use explicit toFloat: NonZeroFloat(i.toFloat)")
 
+    /** Ensure the given <code>Float</code> is non-zero and return it as a [[NonZeroFloat]].
+      *
+      * @param f the <code>Float</code> to validate
+      * @return the given float as a [[NonZeroFloat]] if it is non-zero
+      * @throws AssertionError if the given Float is zero
+      */
+    /** Validate and return the given `Float` as [[NonZeroFloat]].
+      *
+      * @param f the `Float` to validate
+      * @return the validated value as a [[NonZeroFloat]]
+      * @throws AssertionError if `f` is zero
+      */
     def ensuringValid(f: Float): NonZeroFloat =
       if (f == 0.0f)
         throw new AssertionError(Resources.invalidNonZeroFloat)
       else f
+
+    /** Construct a [[NonZeroFloat]] from a runtime `Float` if it is non-zero.
+      *
+      * @param f the `Float` to validate
+      * @return `Some(NonZeroFloat)` when `f != 0.0f`, else `None`
+      */
     def from(f: Float): Option[NonZeroFloat] =
       if (f == 0.0f) None else Some(f)
 
@@ -632,13 +669,32 @@ object NonZeroFloats {
     */
   opaque type NonZeroFiniteFloat <: NonZeroFloat = Float
 
+  /** Companion object for [[NonZeroFiniteFloat]].
+    *
+    * Provides factory methods, validation utilities, conversions, and constants
+    * for the [[NonZeroFiniteFloat]] opaque type, which wraps a <code>Float</code>
+    * value guaranteed to be both non-zero and finite.
+    *
+    * @see [[NonZeroFiniteFloat]] opaque type definition.
+    */
   object NonZeroFiniteFloat {
     /** Implicitly widens a [[NonZeroFiniteFloat]] to a plain <code>Float</code>. */
     given Conversion[NonZeroFiniteFloat, Float] with {
       def apply(x: NonZeroFiniteFloat): Float = x
     }
 
-    /** Compile-time factory for creating a [[NonZeroFiniteFloat]] from a float literal. */
+    /** Compile-time factory for creating a [[NonZeroFiniteFloat]] from a float literal.
+      *
+      * This inline method inspects the provided float literal at compile time
+      * and rejects zero, infinity, and NaN literals. Use it as:
+      * <code>NonZeroFiniteFloat(5.0f)</code>. For non-literal values, use
+      * [[ensuringValid]] or [[from]].
+      *
+      * @tparam F the singleton Float literal type
+      * @param f the Float literal
+      * @return a [[NonZeroFiniteFloat]] representing the given valid literal
+      * @throws a compile-time error if the literal is zero, infinite, NaN, or not a literal
+      */
     inline def apply[F <: Float & Singleton](inline f: F): NonZeroFiniteFloat =
       inline constValueOpt[F] match {
         case Some(v: Float) =>
@@ -650,19 +706,30 @@ object NonZeroFloats {
           error("NonZeroFiniteFloat.apply requires a float literal")
       }
 
-    /** Returns <code>true</code> if the provided <code>Float</code> is a valid [[NonZeroFiniteFloat]]
-      * value — that is, if it is both <code>!= 0.0f</code> and finite (<code>isFinite</code>).
+    /** Check whether the provided <code>Float</code> is a valid [[NonZeroFiniteFloat]].
+      *
+      * A valid value is both non-zero (<code>!= 0.0f</code>) and finite
+      * (neither <code>Float.PositiveInfinity</code>, <code>Float.NegativeInfinity</code>,
+      * nor <code>Float.NaN</code>).
+      *
+      * @param value the Float to validate
+      * @return <code>true</code> if the specified Float is a valid NonZeroFiniteFloat
       */
     def isValid(value: Float): Boolean = value != 0.0f && value != Float.PositiveInfinity && value != Float.NegativeInfinity && value != Float.NaN
 
-    /** Returns <code>Some(NonZeroFiniteFloat)</code> if the given <code>Float</code> is a valid
-      * [[NonZeroFiniteFloat]] (non-zero and finite), or <code>None</code> otherwise.
+    /** Construct a [[NonZeroFiniteFloat]] from a runtime <code>Float</code> if valid.
+      *
+      * @param f runtime Float to validate
+      * @return <code>Some(NonZeroFiniteFloat)</code> if <code>f</code> is non-zero and finite, otherwise <code>None</code>
       */
     def from(f: Float): Option[NonZeroFiniteFloat] =
       if (isValid(f)) Some(f) else None
 
-    /** Returns the given <code>Float</code> as a [[NonZeroFiniteFloat]] if it is valid,
-      * or throws <code>AssertionError</code> if it is not.
+    /** Ensure the runtime <code>Float</code> is a valid [[NonZeroFiniteFloat]] and return it.
+      *
+      * @param f runtime Float to check
+      * @return the given float as a [[NonZeroFiniteFloat]] if valid
+      * @throws AssertionError if the given Float is zero, infinite, or NaN
       */
     def ensuringValid(f: Float): NonZeroFiniteFloat =
       if (isValid(f))
@@ -670,15 +737,31 @@ object NonZeroFloats {
       else
         throw new AssertionError(Resources.notValidNonZeroFiniteFloat)
 
-    /** Returns the given <code>Float</code> as a [[NonZeroFiniteFloat]] if it is valid,
-      * or the given <code>default</code> value otherwise.
-      */
-    def fromOrElse(value: Float, default: => NonZeroFiniteFloat): NonZeroFiniteFloat =
-      if (isValid(value)) value else default
-
-    /** A factory/validation method that produces a <code>NonZeroFiniteFloat</code> wrapped
-      * in a <code>Success</code> if the given <code>Float</code> is valid, or an
-      * <code>AssertionError</code> wrapped in a <code>Failure</code> if it is not.
+    /** A factory/validation method that produces a <code>NonZeroFiniteFloat</code>, wrapped
+      * in a <code>Success</code>, given a valid <code>Float</code> value, or if the
+      * given <code>Float</code> is invalid, an <code>AssertionError</code>, wrapped
+      * in a <code>Failure</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Float</code> value and if
+      * it is a [[NonZeroFiniteFloat]] <code>Float</code>, it will return a
+      * <code>NonZeroFiniteFloat</code> representing that value, wrapped in a
+      * <code>Success</code>. Otherwise, if the passed <code>Float</code> value is not
+      * a [[NonZeroFiniteFloat]], this method will return an <code>AssertionError</code>,
+      * wrapped in a <code>Failure</code>.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code> factory method
+      * in that <code>apply</code> is implemented via a macro that inspects
+      * <code>Float</code> literals at compile time, whereas this method inspects
+      * <code>Float</code> values at run time.
+      * </p>
+      *
+      * @param value the <code>Float</code> to inspect, and if a valid NonZeroFiniteFloat, return
+      *     wrapped in a <code>Success(NonZeroFiniteFloat)</code>.
+      * @return the specified <code>Float</code> value wrapped
+      *     in a <code>Success(NonZeroFiniteFloat)</code>, if it is valid, else a <code>Failure(AssertionError)</code>.
       */
     def tryingValid(value: Float): Try[NonZeroFiniteFloat] =
       if (isValid(value))
@@ -686,28 +769,131 @@ object NonZeroFloats {
       else
         Failure(new AssertionError(Resources.notValidNonZeroFiniteFloat))
 
-    /** A validation method that produces a <code>Pass</code> given a valid <code>Float</code>
-      * value, or a <code>Fail</code> containing an error value produced by passing the
-      * invalid <code>Float</code> to the function <code>f</code>.
+    /** A validation method that produces a <code>Pass</code>
+      * given a valid <code>Float</code> value, or
+      * an error value of type <code>E</code> produced by passing the
+      * given <em>invalid</em> <code>Float</code> value
+      * to the given function <code>f</code>, wrapped in a <code>Fail</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Float</code> value and if
+      * it is a [[NonZeroFiniteFloat]] <code>Float</code>, it will return a <code>Pass</code>.
+      * Otherwise, the passed <code>Float</code> value is not a [[NonZeroFiniteFloat]], so this
+      * method will return a result of type <code>E</code> obtained by passing
+      * the invalid <code>Float</code> value to the given function <code>f</code>,
+      * wrapped in a `Fail`.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code> factory method
+      * in that <code>apply</code> is implemented via a macro that inspects
+      * <code>Float</code> literals at compile time, whereas this method inspects
+      * <code>Float</code> values at run time.
+      * </p>
+      *
+      * @tparam E error type produced by f
+      * @param value the `Float` to validate that it is a [[NonZeroFiniteFloat]].
+      * @param f function to produce an error when value is invalid
+      * @return a `Pass` if the specified `Float` value is a [[NonZeroFiniteFloat]],
+      *   else a `Fail` containing an error value produced by passing the
+      *   specified `Float` to the given function `f`.
       */
     def passOrElse[E](value: Float)(f: Float => E): Validation[E] =
       if (isValid(value)) Pass else Fail(f(value))
 
-    /** A factory/validation method that produces a <code>NonZeroFiniteFloat</code> wrapped
-      * in a <code>Good</code> if the given <code>Float</code> is valid, or an error
-      * value produced by passing the invalid <code>Float</code> to <code>f</code>
-      * wrapped in a <code>Bad</code>.
+    /** A factory/validation method that produces a <code>NonZeroFiniteFloat</code>, wrapped
+      * in a <code>Good</code>, given a valid <code>Float</code> value, or if the
+      * given <code>Float</code> is invalid, an error value of type <code>B</code>
+      * produced by passing the given <em>invalid</em> <code>Float</code> value
+      * to the given function <code>f</code>, wrapped in a <code>Bad</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Float</code> value and if
+      * it is a [[NonZeroFiniteFloat]] <code>Float</code>, it will return a
+      * <code>NonZeroFiniteFloat</code> representing that value, wrapped in a
+      * <code>Good</code>. Otherwise, the passed <code>Float</code> value is not
+      * a [[NonZeroFiniteFloat]], so this method will return a result of type
+      * <code>B</code> obtained by passing the invalid <code>Float</code> value
+      * to the given function <code>f</code>, wrapped in a `Bad`.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code> factory method
+      * in that <code>apply</code> is implemented via a macro that inspects
+      * <code>Float</code> literals at compile time, whereas this method inspects
+      * <code>Float</code> values at run time.
+      * </p>
+      *
+      * @tparam B error type produced by f
+      * @param value the <code>Float</code> to inspect, and if [[NonZeroFiniteFloat]], return
+      *     wrapped in a <code>Good(NonZeroFiniteFloat)</code>.
+      * @param f function to produce an error when value is invalid
+      * @return the specified <code>Float</code> value wrapped
+      *     in a <code>Good(NonZeroFiniteFloat)</code>, if it is [[NonZeroFiniteFloat]], else a <code>Bad(f(value))</code>.
       */
     def goodOrElse[B](value: Float)(f: Float => B): NonZeroFiniteFloat Or B =
       if (isValid(value)) Good(value) else Bad(f(value))
 
-    /** A factory/validation method that produces a <code>NonZeroFiniteFloat</code> wrapped
-      * in a <code>Right</code> if the given <code>Float</code> is valid, or an error
-      * value produced by passing the invalid <code>Float</code> to <code>f</code>
-      * wrapped in a <code>Left</code>.
+    /** A factory/validation method that produces a <code>NonZeroFiniteFloat</code>, wrapped
+      * in a <code>Right</code>, given a valid <code>Float</code> value, or if the
+      * given <code>Float</code> is invalid, an error value of type <code>L</code>
+      * produced by passing the given <em>invalid</em> <code>Float</code> value
+      * to the given function <code>f</code>, wrapped in a <code>Left</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Float</code> value and if
+      * it is a [[NonZeroFiniteFloat]] <code>Float</code>, it will return a
+      * <code>NonZeroFiniteFloat</code> representing that value, wrapped in a
+      * <code>Right</code>. Otherwise, the passed <code>Float</code> value is not
+      * a [[NonZeroFiniteFloat]], so this method will return a result of type
+      * <code>L</code> obtained by passing the invalid <code>Float</code> value
+      * to the given function <code>f</code>, wrapped in a `Left`.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code> factory method
+      * in that <code>apply</code> is implemented via a macro that inspects
+      * <code>Float</code> literals at compile time, whereas this method inspects
+      * <code>Float</code> values at run time.
+      * </p>
+      *
+      * @tparam L error type produced by f
+      * @param value the <code>Float</code> to inspect, and if [[NonZeroFiniteFloat]], return
+      *     wrapped in a <code>Right(NonZeroFiniteFloat)</code>.
+      * @param f function to produce an error when value is invalid
+      * @return the specified <code>Float</code> value wrapped
+      *     in a <code>Right(NonZeroFiniteFloat)</code>, if it is [[NonZeroFiniteFloat]], else a <code>Left(f(value))</code>.
       */
     def rightOrElse[L](value: Float)(f: Float => L): Either[L, NonZeroFiniteFloat] =
       if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))
+
+    /** A factory method that produces a <code>NonZeroFiniteFloat</code> given a
+      * <code>Float</code> value and a default <code>NonZeroFiniteFloat</code>.
+      *
+      * <p>
+      * This method will inspect the passed <code>Float</code> value and if
+      * it is a valid [[NonZeroFiniteFloat]] <code>Float</code> (non-zero and finite),
+      * it will return a <code>NonZeroFiniteFloat</code> representing that value.
+      * Otherwise, the passed <code>Float</code> value is zero, infinite, or NaN, so this
+      * method will return the passed <code>default</code> value.
+      * </p>
+      *
+      * <p>
+      * This factory method differs from the <code>apply</code> factory method
+      * in that <code>apply</code> is implemented via a macro that inspects
+      * <code>Float</code> literals at compile time, whereas <code>fromOrElse</code>
+      * inspects <code>Float</code> values at run time.
+      * </p>
+      *
+      * @param value the <code>Float</code> to inspect, and if valid, return.
+      * @param default the <code>NonZeroFiniteFloat</code> to return if the passed
+      *     <code>Float</code> value is not valid.
+      * @return the specified <code>Float</code> value wrapped in a
+      *     <code>NonZeroFiniteFloat</code>, if it is valid, else the
+      *     <code>default</code> <code>NonZeroFiniteFloat</code> value.
+      */
+    def fromOrElse(value: Float, default: => NonZeroFiniteFloat): NonZeroFiniteFloat =
+      if (isValid(value)) value else default
 
     /** The largest value representable as a [[NonZeroFiniteFloat]], which is
       * <code>NonZeroFiniteFloat(Float.MaxValue)</code>.

@@ -33,6 +33,9 @@ import scala.reflect.ClassTag
 
 object NonEmpties {
 
+  /**
+    * Opaque type representing a non-empty <code>Array[T]</code>.
+    */
   opaque type NonEmptyArray[T] = Array[T]
 
   /**
@@ -1233,6 +1236,9 @@ object NonEmpties {
     }
   }
 
+  /**
+    * Opaque type representing a non-empty <code>List[T]</code>.
+    */
   opaque type NonEmptyList[T] = List[T]
 
   /**
@@ -2518,6 +2524,9 @@ object NonEmpties {
     }
 
   }
+  /**
+    * Opaque type representing a non-empty <code>Vector[T]</code>.
+    */
   opaque type NonEmptyVector[T] = Vector[T]
 
   /**
@@ -3695,10 +3704,13 @@ object NonEmpties {
     }
 
   }
+  /**
+    * Opaque type representing a non-empty <code>Set[T]</code>.
+    */
   opaque type NonEmptySet[T] = Set[T]
 
   /**
-    * Companion object for class <code>NonEmptyList</code>.
+    * Companion object for class <code>NonEmptySet</code>.
     */
   object NonEmptySet {
 
@@ -4534,6 +4546,9 @@ object NonEmpties {
     }
 
   }
+    /**
+      * Opaque type representing a non-empty <code>Map[K, V]</code>.
+      */
     opaque type NonEmptyMap[K, +V] = Map[K, V] & { def size: Int & (1 | Int) }
 
     /**
@@ -4600,6 +4615,15 @@ object NonEmpties {
         case Some(first) => Some(scala.collection.immutable.Map.empty[K, V] ++ seq.tail.toMap + first)
       }
 
+    /**
+      * Optionally construct a <code>NonEmptyMap</code> containing the elements, if any, of a given <code>GenMap</code>.
+      *
+      * @tparam K the type of the key contained in the new <code>NonEmptyMap</code>
+      * @tparam V the type of the value contained in the new <code>NonEmptyMap</code>
+      * @param map the <code>GenMap</code> with which to construct a <code>NonEmptyMap</code>
+      * @return a <code>NonEmptyMap</code> containing the elements of the given <code>GenMap</code>, if non-empty, wrapped in
+      *     a <code>Some</code>; else <code>None</code> if the <code>GenMap</code> is empty
+      */
     def from[K, V](map: scala.collection.GenMap[K, V]): Option[NonEmptyMap[K, V]] =
       map.headOption match {
         case None => None
@@ -5317,6 +5341,9 @@ object NonEmpties {
     }
 
   }
+  /**
+    * Opaque type representing a non-empty <code>String</code>.
+    */
   opaque type NonEmptyString = String
 
   /**
