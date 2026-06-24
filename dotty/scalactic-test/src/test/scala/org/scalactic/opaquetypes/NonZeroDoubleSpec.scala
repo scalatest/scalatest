@@ -362,6 +362,16 @@ class NonZeroDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers
       }
     }
 
+    it("should handle NaN results from + with Infinity consistently (regression test)") {
+      // When p is Infinity and float/double is NaN, both p + NaN and p.toDouble + NaN produce NaN.
+      // Since NaN != NaN in IEEE 754, plain shouldEqual fails. Use areEqualForgivingNaNs.
+      val p: NonZeroDouble = NonZeroDouble.PositiveInfinity
+      val nanF: Float = Float.NaN
+      val nanD: Double = Double.NaN
+      areEqualForgivingNaNs(p + nanF, p.toDouble + nanF)
+      areEqualForgivingNaNs(p + nanD, p.toDouble + nanD)
+    }
+
     it("should offer a '+' method that is consistent with Double") {
       forAll { (p: NonZeroDouble, byte: Byte) =>
         (p + byte) shouldEqual (p.toDouble + byte)
@@ -379,10 +389,14 @@ class NonZeroDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers
         (p + long) shouldEqual (p.toDouble + long)
       }
       forAll { (p: NonZeroDouble, float: Float) =>
-        (p + float) shouldEqual (p.toDouble + float)
+        val x = p + float
+        val y = p.toDouble + float
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (p: NonZeroDouble, double: Double) =>
-        (p + double) shouldEqual (p.toDouble + double)
+        val x = p + double
+        val y = p.toDouble + double
+        areEqualForgivingNaNs(x, y)
       }
     }
 
