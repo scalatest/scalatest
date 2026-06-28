@@ -1071,10 +1071,7 @@ object Numerics {
       def compare(x: NumericString, y: NumericString): Int = x.compareTo(y)
     }
   }
-
-  // Extension methods for NumericString — placed outside the companion object
-  // so they are always in scope (opaque types hide companion object extensions
-  // from outside their defining scope).
+  
   extension (x: NumericString) {
     /** Return the underlying String value. */
     def value: String = x
