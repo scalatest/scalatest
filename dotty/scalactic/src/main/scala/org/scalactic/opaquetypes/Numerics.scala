@@ -17,6 +17,7 @@ package org.scalactic.opaquetypes
 
 import org.scalactic.Resources
 import scala.compiletime.{ constValueOpt, error }
+import scala.quoted.*
 import scala.util.{Try, Success, Failure}
 import org.scalactic.{Validation, Pass, Fail}
 import org.scalactic.{Or, Good, Bad}
@@ -34,6 +35,8 @@ import NonZeroFloats.{NonZeroFloat, NonZeroFiniteFloat}
 import NonZeroDoubles.{NonZeroDouble, NonZeroFiniteDouble}
 import NonZeroInts.NonZeroInt
 import Finites.{FiniteFloat, FiniteDouble}
+
+import scala.annotation.targetName
 
 /** Factory object for numeric opaque types that enforce value constraints at
   * compile time or runtime.
@@ -939,5 +942,167 @@ object Numerics {
   /** Ordering instance based on underlying Char ordering. */
   given Ordering[NumericChar] with {
     def compare(x: NumericChar, y: NumericChar): Int = x.compare(y)
+  }
+
+  /** Opaque type representing a non-empty String consisting only of digit
+    * characters ('0' to '9').
+    *
+    * Instances of this type are guaranteed to be non-empty and contain only
+    * numeric digit characters. Use the compile-time apply method to construct
+    * instances from string literals, or the runtime factory methods for values
+    * known only at runtime.
+    */
+  opaque type NumericString = String
+
+  /** Companion object for [[NumericString]] with construction and validation helpers.
+    *
+    * Provides factory methods for compile-time-checked construction from String
+    * literals, runtime validation helpers, given conversions, and extension
+    * methods for common string operations.
+    */
+  object NumericString {
+
+    /** Compile-time factory for creating a [[NumericString]] from a String literal.
+      *
+      * Rejects empty strings and strings containing non-digit characters at
+      * compile time.
+      */
+    transparent inline def apply(inline s: String): NumericString =
+      ${ NumericString.applyImpl('s) }
+
+    private def applyImpl(s: Expr[String])(using Quotes): Expr[NumericString] = {
+      import quotes.reflect.*
+      val v = s.valueOrAbort
+      // At this point v is guaranteed to be a non-empty digit-only string
+      // since the error case was handled above.
+      // Cast the string literal to the opaque type.
+      s.asExprOf[NumericString]
+    }
+
+    /** Construct a [[NumericString]] from a runtime String if it is numeric.
+      *
+      * @param s the String to validate
+      * @return Some(NumericString) if s is non-empty and contains only digits, else None
+      */
+    def from(s: String): Option[NumericString] =
+      if (isNumericString(s)) Some(s.asInstanceOf[NumericString]) else None
+
+    /** Validate and return the given String as [[NumericString]].
+      *
+      * @throws AssertionError if s is empty or contains non-digit characters
+      */
+    def ensuringValid(s: String): NumericString =
+      if (isNumericString(s))
+        s.asInstanceOf[NumericString]
+      else
+        throw new AssertionError(Resources.invalidNumericString)
+
+    /** Runtime factory that returns Success for valid input, Failure otherwise.
+      *
+      * @param value the String to validate
+      * @return Success(NumericString) if value is non-empty and contains only digits,
+      *   else Failure(AssertionError)
+      */
+    def tryingValid(value: String): Try[NumericString] =
+      if (isNumericString(value))
+        Success(value.asInstanceOf[NumericString])
+      else
+        Failure(new AssertionError(Resources.invalidNumericString))
+
+    /** Predicate indicating whether the given String is valid for [[NumericString]].
+      *
+      * @param value the String to validate
+      * @return true if value is non-empty and contains only digit characters, else false
+      */
+    def isValid(value: String): Boolean = isNumericString(value)
+
+    private[opaquetypes] def isNumericString(s: String): Boolean =
+      !s.isEmpty && s.forall(c => c >= '0' && c <= '9')
+
+    /** Validate a value and return Pass, else Fail(f(value)).
+      *
+      * @param value the String to validate
+      * @param f function to produce an error value when validation fails
+      * @return Pass if value is a valid NumericString, else Fail(f(value))
+      */
+    def passOrElse[E](value: String)(f: String => E): Validation[E] =
+      if (isValid(value)) Pass else Fail(f(value))
+
+    /** Validate a value and return Good(NumericString), else Bad(f(value)).
+      *
+      * @param value the String to validate
+      * @param f function to produce an error value when validation fails
+      * @return Good(NumericString) if value is valid, else Bad(f(value))
+      */
+    def goodOrElse[B](value: String)(f: String => B): NumericString Or B =
+      if (isValid(value)) Good(value.asInstanceOf[NumericString]) else Bad(f(value))
+
+    /** Validate a value and return Right(NumericString), else Left(f(value)).
+      *
+      * @param value the String to validate
+      * @param f function to produce an error value when validation fails
+      * @return Right(NumericString) if value is valid, else Left(f(value))
+      */
+    def rightOrElse[L](value: String)(f: String => L): Either[L, NumericString] =
+      if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))
+
+    /** Return a validated value or the provided default if invalid.
+      *
+      * @param value the String to validate
+      * @param default the NumericString to return if value is not valid
+      * @return value as NumericString if valid, else default
+      */
+    def fromOrElse(value: String, default: => NumericString): NumericString =
+      if (isValid(value)) value.asInstanceOf[NumericString] else default
+
+    /** Smallest valid NumericString value (which is "0"). */
+    val MinValue: NumericString = "0".asInstanceOf[NumericString]
+
+    /** Largest valid NumericString value (which is "9"). */
+    val MaxValue: NumericString = "9".asInstanceOf[NumericString]
+
+    /** Convert [[NumericString]] to [[String]] for interoperability. */
+    given numericStringToStringConversion: Conversion[NumericString, String] with {
+      def apply(x: NumericString): String = x
+    }
+
+    /** Ordering instance based on underlying String ordering. */
+    given Ordering[NumericString] with {
+      def compare(x: NumericString, y: NumericString): Int = x.compareTo(y)
+    }
+  }
+
+  // Extension methods for NumericString — placed outside the companion object
+  // so they are always in scope (opaque types hide companion object extensions
+  // from outside their defining scope).
+  extension (x: NumericString) {
+    /** Return the underlying String value. */
+    def value: String = x
+
+    /** Length of this NumericString. */
+    def length: Int = x.length
+
+    /** Character at the given index. */
+    def apply(idx: Int): Char = (x: String).charAt(idx)
+
+    /** Concatenate with another NumericString, returning NumericString. */
+    @targetName("plusPlusNumericString")  
+    def ++(other: NumericString): NumericString = {
+      val s: String = x
+      val o: String = other
+      s.concat(o)
+    }
+
+    def ++(other: String): String =
+      // Cast to String explicitly so the compiler uses String's ++,
+      // not a recursive call to this very extension
+      (x: String).concat(other: String)
+
+    /** Extract a substring as NumericString (caller must ensure validity). */
+    def slice(from: Int, until: Int): NumericString = 
+      (x: String).substring(from, until)
+
+    /** Reverse the characters, returning a NumericString. */
+    def reverse: NumericString = new scala.collection.immutable.StringOps(x: String).reverse
   }
 }
