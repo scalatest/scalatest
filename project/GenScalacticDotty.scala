@@ -241,7 +241,10 @@ object GenScalacticDotty {
         "Position.scala",  // Re-implemented
         "TypeInfo.scala"  // Re-implemented
       )) ++
-    copyDir("jvm/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty)
+    copyDir("jvm/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir,
+      List(
+        "NonEmptyString.scala"  // Re-implemented with macro-based compile-time checking for dotty
+      ))
 
   def genScalaJS(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("jvm/scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir,
@@ -258,7 +261,10 @@ object GenScalacticDotty {
         "TypeInfo.scala",  // Re-implemented
         "ObjectMeta.scala"    // Re-implemented in scala-js
       )) ++
-    copyDir("jvm/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
+    copyDir("jvm/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir,
+      List(
+        "NonEmptyString.scala"  // Re-implemented with macro-based compile-time checking for dotty
+      )) ++
     copyDir("dotty/scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir, List.empty) ++
     copyDir("dotty/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty) ++
     copyDir("dotty/scalactic/src/main/scala/org/scalactic/opaquetypes", "org/scalactic/opaquetypes", targetDir, List.empty) ++
@@ -280,7 +286,10 @@ object GenScalacticDotty {
         "TypeInfo.scala",  // Re-implemented
         "ObjectMeta.scala"    // Re-implemented in scala-js
       )) ++
-    copyDir("jvm/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
+    copyDir("jvm/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir,
+      List(
+        "NonEmptyString.scala"  // Re-implemented with macro-based compile-time checking for dotty
+      )) ++
     copyDir("dotty/scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir, List.empty) ++
     copyDir("dotty/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty) ++
     copyDir("dotty/scalactic/src/main/scala/org/scalactic/opaquetypes", "org/scalactic/opaquetypes", targetDir, List.empty) ++

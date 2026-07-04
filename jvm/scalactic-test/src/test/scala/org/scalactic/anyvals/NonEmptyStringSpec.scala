@@ -81,8 +81,10 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("789")(2) shouldEqual '9'
 
     the [AssertionError] thrownBy {
-      NonEmptyString("")
+      NonEmptyString.ensuringValid("")
     } should have message Resources.nonEmptyStringEmpty
+
+    "NonEmptyString(\"\")" shouldNot compile
 
     // SKIP-SCALATESTJS,NATIVE-START
     val iobe = 
