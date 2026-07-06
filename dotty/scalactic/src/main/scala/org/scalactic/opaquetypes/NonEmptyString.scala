@@ -15,7 +15,7 @@
  */
 package org.scalactic.opaquetypes
 
-import scala.collection.{GenSeq, StringOps}
+import scala.collection.StringOps
 import scala.collection.mutable.Buffer
 import org.scalactic.Every
 import org.scalactic.Resources
@@ -202,14 +202,46 @@ object NonEmptyStrings {
         string
 
     /**
-      * Optionally construct a <code>NonEmptyString</code> containing the characters, if any, of a given <code>GenSeq</code>.
+      * A factory/assertion method that produces a <code>NonEmptyString</code>
+      * given a valid <code>IterableOnce[Char]</code> value, or throws
+      * <code>AssertionError</code>, if given an invalid <code>IterableOnce[Char]</code> value.
       *
-      * @param seq the <code>GenSeq</code> of <code>Char</code> with which to construct a <code>NonEmptyString</code>
-      * @return a <code>NonEmptyString</code> containing the elements of the given <code>GenSeq</code>, if non-empty, wrapped in
-      *     a <code>Some</code>; else <code>None</code> if the <code>GenSeq</code> is empty
+      * Note: you should use this method only when you are convinced that it will
+      * always succeed, i.e., never throw an exception. It is good practice to
+      * add a comment near the invocation of this method indicating ''why'' you
+      * think it will always succeed to document your reasoning. If you are not
+      * sure an `ensuringValid` call will always succeed, you should use one of
+      * the other factory or validation methods provided on this object instead:
+      * `from`.
+      *
+      * <p>
+      * This method will inspect the passed <code>IterableOnce[Char]</code> value and if
+      * it is a non-empty <code>IterableOnce[Char]</code>, it will return a <code>NonEmptyString</code>
+      * representing that value.  Otherwise, the passed <code>IterableOnce[Char]</code>
+      * value is empty, so this method will throw
+      * <code>AssertionError</code>.
+      * </p>
+      *
+      * @param seq the <code>IterableOnce[Char]</code> to inspect, and if non-empty, return
+      *     wrapped in a <code>NonEmptyString</code>.
+      * @return a <code>NonEmptyString</code> containing the characters of the given <code>IterableOnce</code>
+      * @throws AssertionError if the passed <code>IterableOnce</code> is empty
       */
-    def from[T](seq: GenSeq[Char]): Option[NonEmptyString] =
-      seq.headOption match {
+    def ensuringValid(seq: IterableOnce[Char]): NonEmptyString =
+      seq.iterator.nextOption match {
+        case None => throw new AssertionError(Resources.nonEmptyStringEmpty)
+        case Some(first) => seq.mkString
+      }
+
+    /**
+      * Optionally construct a <code>NonEmptyString</code> containing the characters, if any, of a given <code>IterableOnce</code>.
+      *
+      * @param seq the <code>IterableOnce</code> of <code>Char</code> with which to construct a <code>NonEmptyString</code>
+      * @return a <code>NonEmptyString</code> containing the elements of the given <code>IterableOnce</code>, if non-empty, wrapped in
+      *     a <code>Some</code>; else <code>None</code> if the <code>IterableOnce</code> is empty
+      */
+    def from(seq: IterableOnce[Char]): Option[NonEmptyString] =
+      seq.iterator.nextOption match {
         case None => None
         case Some(first) => Some(seq.mkString)
       }  

@@ -1570,13 +1570,13 @@ object NonEmptyString {
   */
 
   /**
-    * Optionally construct a <code>NonEmptyString</code> containing the characters, if any, of a given <code>GenSeq</code>.
+    * Optionally construct a <code>NonEmptyString</code> containing the characters, if any, of a given <code>Iterable</code>.
     *
-    * @param seq the <code>GenSeq</code> of <code>Char</code> with which to construct a <code>NonEmptyString</code>
-    * @return a <code>NonEmptyString</code> containing the elements of the given <code>GenSeq</code>, if non-empty, wrapped in
-    *     a <code>Some</code>; else <code>None</code> if the <code>GenSeq</code> is empty
+    * @param seq the <code>Iterable</code> of <code>Char</code> with which to construct a <code>NonEmptyString</code>
+    * @return a <code>NonEmptyString</code> containing the elements of the given <code>Iterable</code>, if non-empty, wrapped in
+    *     a <code>Some</code>; else <code>None</code> if the <code>Iterable</code> is empty
     */
-  def from(seq: GenSeq[Char]): Option[NonEmptyString] =
+  def from(seq: Iterable[Char]): Option[NonEmptyString] =
     seq.headOption match {
       case None => None
       case Some(first) => Some(new NonEmptyString(seq.mkString))
@@ -1591,6 +1591,38 @@ object NonEmptyString {
     */
   def from(string: String): Option[NonEmptyString] =
     if (string.isEmpty) None else Some(new NonEmptyString(string))
+
+  /**
+    * A factory/assertion method that produces a <code>NonEmptyString</code>
+    * given a valid <code>Iterable[Char]</code> value, or throws
+    * <code>AssertionError</code>, if given an invalid <code>Iterable[Char]</code> value.
+    *
+    * Note: you should use this method only when you are convinced that it will
+    * always succeed, i.e., never throw an exception. It is good practice to
+    * add a comment near the invocation of this method indicating ''why'' you
+    * think it will always succeed to document your reasoning. If you are not
+    * sure an `ensuringValid` call will always succeed, you should use one of
+    * the other factory or validation methods provided on this object instead:
+    * `isValid`, `tryingValid`, `passOrElse`, `goodOrElse`, or `rightOrElse`.
+    *
+    * <p>
+    * This method will inspect the passed <code>Iterable[Char]</code> value and if
+    * it is a non-empty <code>Iterable[Char]</code>, it will return a <code>NonEmptyString</code>
+    * representing that value.  Otherwise, the passed <code>Iterable[Char]</code>
+    * value is empty, so this method will throw
+    * <code>AssertionError</code>.
+    * </p>
+    *
+    * @param seq the <code>Iterable[Char]</code> to inspect, and if non-empty, return
+    *     wrapped in a <code>NonEmptyString</code>.
+    * @return a <code>NonEmptyString</code> containing the characters of the given <code>Iterable</code>
+    * @throws AssertionError if the passed <code>Iterable</code> is empty
+    */
+  def ensuringValid(seq: Iterable[Char]): NonEmptyString =
+    seq.headOption match {
+      case None => throw new AssertionError(Resources.nonEmptyStringEmpty)
+      case Some(first) => new NonEmptyString(seq.mkString)
+    }
 
   /**
    * A factory/assertion method that produces a <code>NonEmptyString</code>
