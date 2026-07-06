@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -152,7 +152,7 @@ import org.scalactic.Resources
   *
   */
 //DOTTY-ONLY @deprecated("Please use org.scalactic.opaquetypes.NonEmptyString.", "3.3.0")  
-final class NonEmptyString private (val theString: String) extends AnyVal {
+final class NonEmptyString private[anyvals] (val theString: String) extends AnyVal {
 
   /**
     * Returns a new <code>NonEmptyString</code> containing this <code>NonEmptyString</code> followed by the passed <code>NonEmptyString</code>.
@@ -1240,7 +1240,7 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     * @param that the <code>GenSeq</code> slice to look for in this <code>NonEmptyString</code>
     * @return <code>true</code> if this <code>NonEmptyString</code> has <code>that</code> as a prefix, <code>false</code> otherwise.
     */
-  final def startsWith(that: GenSeq[Char]): Boolean = theString.startsWith(that)
+  final def startsWith(that: GenSeq[Char]): Boolean = theString.startsWith(that.mkString)
 
   /**
     * Indicates whether this <code>NonEmptyString</code> starts with the given <code>GenSeq</code> at the given index. 
@@ -1249,7 +1249,7 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     * @param offset the index at which this <code>NonEmptyString</code> is searched.
     * @return <code>true</code> if this <code>NonEmptyString</code> has <code>that</code> as a slice at the index <code>offset</code>, <code>false</code> otherwise.
     */
-  final def startsWith(that: GenSeq[Char], offset: Int): Boolean = theString.startsWith(that, offset)
+  final def startsWith(that: GenSeq[Char], offset: Int): Boolean = theString.startsWith(that.mkString, offset)
 
   /**
     * Indicates whether this <code>NonEmptyString</code> starts with the given <code>Every</code>. 
@@ -1257,7 +1257,7 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     * @param that the <code>Every</code> to test
     * @return <code>true</code> if this collection has <code>that</code> as a prefix, <code>false</code> otherwise.
     */
-  final def startsWith(that: Every[Char]): Boolean = theString.startsWith(that.toVector)
+  final def startsWith(that: Every[Char]): Boolean = theString.startsWith(that.mkString)
 
   /**
     * Indicates whether this <code>NonEmptyString</code> starts with the given <code>NonEmptyString</code>. 
@@ -1274,7 +1274,7 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     * @param offset the index at which this <code>NonEmptyString</code> is searched.
     * @return <code>true</code> if this <code>NonEmptyString</code> has <code>that</code> as a slice at the index <code>offset</code>, <code>false</code> otherwise.
     */
-  final def startsWith(that: Every[Char], offset: Int): Boolean = theString.startsWith(that.toVector, offset)
+  final def startsWith(that: Every[Char], offset: Int): Boolean = theString.startsWith(that.mkString, offset)
 
   /**
     * Indicates whether this <code>NonEmptyString</code> starts with the given <code>NonEmptyString</code> at the given index. 
@@ -1544,15 +1544,14 @@ object NonEmptyString {
    *
    * @param s the <code>String</code> represented by this <code>NonEmptyString</code>
    */
-  import scala.language.experimental.macros
-  def apply(s: String): NonEmptyString = macro NonEmptyStringMacro.apply
+  inline def apply(inline s: String): NonEmptyString = ${ NonEmptyStringMacro('{s}) }
 
   /**
-    * Constructs a new <code>NonEmptyString</code> given at least one character.
-    *
-    * @param firstChar the first character (with index 0) contained in this <code>NonEmptyString</code>
-    * @param otherChars a varargs of zero or more other characters (with index 1, 2, 3, ...) contained in this <code>NonEmptyString</code>
-    */
+   * Constructs a new <code>NonEmptyString</code> given at least one character.
+   *
+   * @param firstChar the first character (with index 0) contained in this <code>NonEmptyString</code>
+   * @param otherChars a varargs of zero or more other characters (with index 1, 2, 3, ...) contained in this <code>NonEmptyString</code>
+   */
   def apply(firstChar: Char, otherChars: Char*): NonEmptyString = new NonEmptyString(firstChar + otherChars.mkString)
 
   /**
@@ -1571,42 +1570,102 @@ object NonEmptyString {
   */
 
   /**
-    * Optionally construct a <code>NonEmptyString</code> containing the characters, if any, of a given <code>GenSeq</code>.
+    * Optionally construct a <code>NonEmptyString</code> containing the characters, if any, of a given <code>Iterable</code>.
     *
-    * @param seq the <code>GenSeq</code> of <code>Char</code> with which to construct a <code>NonEmptyString</code>
-    * @return a <code>NonEmptyString</code> containing the elements of the given <code>GenSeq</code>, if non-empty, wrapped in
-    *     a <code>Some</code>; else <code>None</code> if the <code>GenSeq</code> is empty
+    * @param seq the <code>Iterable</code> of <code>Char</code> with which to construct a <code>NonEmptyString</code>
+    * @return a <code>NonEmptyString</code> containing the elements of the given <code>Iterable</code>, if non-empty, wrapped in
+    *     a <code>Some</code>; else <code>None</code> if the <code>Iterable</code> is empty
     */
-  def from[T](seq: GenSeq[Char]): Option[NonEmptyString] =
+  def from(seq: Iterable[Char]): Option[NonEmptyString] =
     seq.headOption match {
       case None => None
       case Some(first) => Some(new NonEmptyString(seq.mkString))
     }
 
   /**
-    * Construct a <code>NonEmptyString</code> containing the characters of a given <code>GenSeq[Char]</code>, throwing an <code>AssertionError</code> if the <code>GenSeq</code> is empty.
+    * Optionally construct a <code>NonEmptyString</code> containing the characters, if any, of a given <code>String</code>.
     *
-    * @param seq the <code>GenSeq[Char]</code> with which to construct a <code>NonEmptyString</code>
-    * @return a <code>NonEmptyString</code> containing the characters of the given <code>GenSeq</code>
-    * @throws AssertionError if the passed <code>GenSeq</code> is empty
+    * @param string the <code>String</code> with which to construct a <code>NonEmptyString</code>
+    * @return a <code>NonEmptyString</code> containing the characters of the given <code>String</code>, if non-empty, wrapped in
+    *     a <code>Some</code>; else <code>None</code> if the <code>String</code> is empty
     */
-  def ensuringValid(seq: GenSeq[Char]): NonEmptyString =
+  def from(string: String): Option[NonEmptyString] =
+    if (string.isEmpty) None else Some(new NonEmptyString(string))
+
+  /**
+    * A factory/assertion method that produces a <code>NonEmptyString</code>
+    * given a valid <code>Iterable[Char]</code> value, or throws
+    * <code>AssertionError</code>, if given an invalid <code>Iterable[Char]</code> value.
+    *
+    * Note: you should use this method only when you are convinced that it will
+    * always succeed, i.e., never throw an exception. It is good practice to
+    * add a comment near the invocation of this method indicating ''why'' you
+    * think it will always succeed to document your reasoning. If you are not
+    * sure an `ensuringValid` call will always succeed, you should use one of
+    * the other factory or validation methods provided on this object instead:
+    * `isValid`, `tryingValid`, `passOrElse`, `goodOrElse`, or `rightOrElse`.
+    *
+    * <p>
+    * This method will inspect the passed <code>Iterable[Char]</code> value and if
+    * it is a non-empty <code>Iterable[Char]</code>, it will return a <code>NonEmptyString</code>
+    * representing that value.  Otherwise, the passed <code>Iterable[Char]</code>
+    * value is empty, so this method will throw
+    * <code>AssertionError</code>.
+    * </p>
+    *
+    * @param seq the <code>Iterable[Char]</code> to inspect, and if non-empty, return
+    *     wrapped in a <code>NonEmptyString</code>.
+    * @return a <code>NonEmptyString</code> containing the characters of the given <code>Iterable</code>
+    * @throws AssertionError if the passed <code>Iterable</code> is empty
+    */
+  def ensuringValid(seq: Iterable[Char]): NonEmptyString =
     seq.headOption match {
       case None => throw new AssertionError(Resources.nonEmptyStringEmpty)
       case Some(first) => new NonEmptyString(seq.mkString)
     }
 
   /**
-    * Construct a <code>NonEmptyString</code> from a given <code>String</code>, throwing an <code>AssertionError</code> if the <code>String</code> is empty.
-    *
-    * @param s the <code>String</code> with which to construct a <code>NonEmptyString</code>
-    * @return a <code>NonEmptyString</code> containing the characters of the given <code>String</code>
-    * @throws AssertionError if the passed <code>String</code> is empty
-    */
-  def ensuringValid(s: String): NonEmptyString = {
-    if (s.isEmpty) throw new AssertionError(Resources.nonEmptyStringEmpty)
-    new NonEmptyString(s)
-  }
+   * A factory/assertion method that produces a <code>NonEmptyString</code>
+   * given a valid <code>String</code> value, or throws
+   * <code>AssertionError</code>, if given an invalid <code>String</code> value.
+   *
+   * Note: you should use this method only when you are convinced that it will
+   * always succeed, i.e., never throw an exception. It is good practice to
+   * add a comment near the invocation of this method indicating ''why'' you
+   * think it will always succeed to document your reasoning. If you are not
+   * sure an `ensuringValid` call will always succeed, you should use one of
+   * the other factory or validation methods provided on this object instead:
+   * `isValid`, `tryingValid`, `passOrElse`, `goodOrElse`, or `rightOrElse`.
+   *
+   * <p>
+   * This method will inspect the passed <code>String</code> value and if
+   * it is a non-empty <code>String</code>, it will return a <code>NonEmptyString</code>
+   * representing that value.  Otherwise, the passed <code>String</code>
+   * value is empty, so this method will throw
+   * <code>AssertionError</code>.
+   * </p>
+   *
+   * <p>
+   * This factory method differs from the <code>apply</code> factory method
+   * in that <code>apply</code> is implemented via a macro that inspects
+   * <code>String</code> literals at compile time, whereas this method inspects
+   * <code>String</code> values at run time.
+   * It differs from a vanilla <code>assert</code> or <code>ensuring</code>
+   * call in that you get something you didn't already have if the assertion
+   * succeeds: a <em>type</em> that promises a <code>String</code> is non-empty.
+   * </p>
+   *
+   * @param value the <code>String</code> to inspect, and if non-empty, return
+   *     wrapped in a <code>NonEmptyString</code>.
+   * @return the specified <code>String</code> value wrapped in a
+   *     <code>NonEmptyString</code>, if it is non-empty, else throws
+   *     <code>AssertionError</code>.
+   * @throws AssertionError if the passed value is empty
+   */
+  def ensuringValid(value: String): NonEmptyString =
+    if (NonEmptyStringMacro.isValid(value)) new NonEmptyString(value) else {
+      throw new AssertionError(Resources.nonEmptyStringEmpty)
+    }
 
   import scala.language.implicitConversions
 
@@ -1633,33 +1692,4 @@ object NonEmptyString {
       def isDefinedAt(idx: Int): Boolean = nonEmptyString.theString.isDefinedAt(idx)
       def apply(idx: Int): Char = nonEmptyString.theString(idx)
     }
-}
-
-/**
- * Macro implementation for compile-time validation of NonEmptyString.
- */
-private[scalactic] object NonEmptyStringMacro {
-
-  def isValid(s: String): Boolean = s.nonEmpty
-
-  def apply(c: scala.reflect.macros.whitebox.Context)(s: c.Expr[String]): c.Expr[NonEmptyString] = {
-    import c.universe._
-
-    val notValidMsg =
-      "NonEmptyString.apply can only be invoked on String literals that are non-empty, "+
-      "like NonEmptyString(\"1\")."
-    val notLiteralMsg =
-      "NonEmptyString.apply can only be invoked on String literals, like NonEmptyString(\"1\")."+
-      " Please use NonEmptyString.from instead."
-
-    s.tree match {
-      case Literal(stringConst) =>
-        val literalValue = stringConst.value.toString
-        if (!isValid(literalValue))
-          c.abort(c.enclosingPosition, notValidMsg)
-      case _ =>
-        c.abort(c.enclosingPosition, notLiteralMsg)
-    }
-    c.universe.reify { NonEmptyString.ensuringValid(s.splice) }
-  }
 }
