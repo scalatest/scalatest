@@ -260,6 +260,59 @@ trait DottyBuild { this: BuildCommons =>
       scalacticDotty
     )
 
+  lazy val scalacticDocDotty = project.in(file("dotty/scalactic-doc"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(scalacticDocSettings: _*)
+    .settings(
+      projectTitle := "Scalactic Doc Dotty",
+      name := "scalactic-doc-dotty",
+      organization := "org.scalactic",
+      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
+      sourceDirectory := baseDirectory.value / "../../jvm/scalactic/src/main",
+      javaSourceManaged := target.value / "java",
+      Compile / sourceGenerators += {
+        Def.task {
+          GenScalacticDocDotty.genScala((Compile / sourceManaged).value, version.value, scalaVersion.value)
+        }.taskValue
+      },
+      Compile / doc / sources :=
+        genDocSources((Compile / sources).value,
+                       Seq((Compile / sourceManaged).value,
+                           (Compile / scalaSource).value,
+                           (Compile / javaSource).value),
+                       docsrcDir.value),
+      docTaskSetting,
+      Compile / unmanagedResourceDirectories += baseDirectory.value / "../../jvm/scalactic/src/main/html",
+      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalactic",
+      "org.scalactic.anyvals",
+      "org.scalactic.opaquetypes",
+      "org.scalactic.exceptions",
+      "org.scalactic.source"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "org.scalactic.*",
+      "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "Scalactic Doc Dotty",
+      "Bundle-Description" -> "Scalactic is an open-source library for Scala projects.",
+      "Bundle-DocURL" -> "http://www.scalactic.org/",
+      "Bundle-Vendor" -> "Artima, Inc."
+    )
+  ).dependsOn(
+    scalacticDotty
+  )
+
   lazy val scalatestCoreDotty = project.in(file("dotty/core"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
