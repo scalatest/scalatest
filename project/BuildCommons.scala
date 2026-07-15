@@ -117,21 +117,28 @@ trait BuildCommons {
   //
   def docTask(docDir: File, resDir: File, projectName: String): File = {
     val docLibDir = docDir / "lib"
+    val docStylesDir = docDir / "styles"
     val htmlSrcDir = resDir / "html"
     val cssFile = docLibDir / "template.css"
+    val stylesCssFile = docStylesDir / "apistyles.css"
     val addlCssFile = htmlSrcDir / "addl.css"
 
-    val css = Source.fromFile(cssFile).mkString
-    val addlCss = Source.fromFile(addlCssFile).mkString
+    // Scala 3 uses styles/apistyles.css instead of lib/template.css
+    val targetCssFile = if (cssFile.exists) cssFile else if (stylesCssFile.exists) stylesCssFile else cssFile
 
-    if (!css.contains("pre.stHighlighted")) {
-      val writer = new PrintWriter(cssFile)
+    if (targetCssFile.exists && addlCssFile.exists) {
+      val css = Source.fromFile(targetCssFile).mkString
+      val addlCss = Source.fromFile(addlCssFile).mkString
 
-      try {
-        writer.println(css)
-        writer.println(addlCss)
+      if (!css.contains("pre.stHighlighted")) {
+        val writer = new PrintWriter(targetCssFile)
+
+        try {
+          writer.println(css)
+          writer.println(addlCss)
+        }
+        finally { writer.close }
       }
-      finally { writer.close }
     }
 
     if (projectName.contains("scalatest")) {
