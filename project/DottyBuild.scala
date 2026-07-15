@@ -214,7 +214,7 @@ trait DottyBuild { this: BuildCommons =>
     .settings(dottySettings: _*)
     .settings(scalatestDocSettings: _*)
     .settings(
-      projectTitle := "ScalaTest Doc Dotty",
+      projectTitle := "ScalaTest Documentation",
       name := "scalatest-doc-dotty",
       organization := "org.scalatest",
       libraryDependencies ++= scalatestLibraryDependencies,
@@ -266,7 +266,7 @@ trait DottyBuild { this: BuildCommons =>
     .settings(dottySettings: _*)
     .settings(scalacticDocSettings: _*)
     .settings(
-      projectTitle := "Scalactic Doc Dotty",
+      projectTitle := "Scalactic Documentation",
       name := "scalactic-doc-dotty",
       organization := "org.scalactic",
       libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
