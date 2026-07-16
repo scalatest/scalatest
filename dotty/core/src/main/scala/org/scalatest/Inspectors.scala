@@ -214,12 +214,12 @@ trait Inspectors {
    *
    * @param xs the collection of elements
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
    *
    */
-  inline def forAll[E, C[_], ASSERTION, RESULT](xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forAll[E, C[_], ASSERTION, RESULT](xs: C[E])(fun: E => ASSERTION)(using collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forAllMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
@@ -235,13 +235,13 @@ trait Inspectors {
     *
     * @param xs the <code>java.util.Map</code>
     * @param fun the inspection function
-    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+    * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
     * @tparam K the type of key in the Map
     * @tparam V the type of value in the Map
     * @tparam MAP subtype of <code>java.util.Map</code>
     *
     */
-  inline def forAll[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forAll[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(using collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forAllForMapMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
@@ -258,13 +258,13 @@ trait Inspectors {
    *
    * @param xs the <code>java.util.Map</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
    * @tparam K the type of key in the Java Map
    * @tparam V the type of value in the Java Map
    * @tparam JMAP subtype of <code>java.util.Map</code>
    *
    */
-  inline def forAll[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forAll[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(using collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forAllForJMapMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
   // SKIP-SCALATESTJS,NATIVE-END
@@ -281,10 +281,10 @@ trait Inspectors {
    *
    * @param xs the <code>String</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
    *
    */
-  inline def forAll[ASSERTION, RESULT](xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forAll[ASSERTION, RESULT](xs: String)(fun: Char => ASSERTION)(using collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forAllForStringMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
@@ -294,12 +294,12 @@ trait Inspectors {
    * @param min the minimum number of elements that must pass the inspection function
    * @param xs the collection of elements
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
    *
    */
-  inline def forAtLeast[E, C[_], ASSERTION, RESULT](min: Int, xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forAtLeast[E, C[_], ASSERTION, RESULT](min: Int, xs: C[E])(fun: E => ASSERTION)(using collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forAtLeastMacro('{min}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
@@ -309,13 +309,13 @@ trait Inspectors {
     * @param min the minimum number of elements that must pass the inspection function
     * @param xs the <code>scala.collection.GenMap</code>
     * @param fun the inspection function
-    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+    * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
     * @tparam K the type of key in the <code>scala.collection.GenMap</code>
     * @tparam V the type of value in the <code>scala.collection.GenMap</code>
     * @tparam MAP subtype of <code>scala.collection.GenMap</code>
     *
     */
-  inline def forAtLeast[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](min: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forAtLeast[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](min: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(using collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forAtLeastForMapMacro('{min}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
@@ -326,13 +326,13 @@ trait Inspectors {
    * @param min the minimum number of elements that must pass the inspection function
    * @param xs the <code>java.util.Map</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
    * @tparam K the type of key in the <code>java.util.Map</code>
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
    *
    */
-  inline def forAtLeast[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](min: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V],JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forAtLeast[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](min: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(using collecting: Collecting[org.scalatest.Entry[K, V],JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forAtLeastForJMapMacro('{min}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
   // SKIP-SCALATESTJS,NATIVE-END
@@ -343,10 +343,10 @@ trait Inspectors {
    * @param min the minimum number of characters in <code>String</code> that must pass the inspection function
    * @param xs the <code>String</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
    *
    */
-  inline def forAtLeast[ASSERTION, RESULT](min: Int, xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forAtLeast[ASSERTION, RESULT](min: Int, xs: String)(fun: Char => ASSERTION)(using collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forAtLeastForStringMacro('{min}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
@@ -358,11 +358,11 @@ trait Inspectors {
    * @param max the maximum number of elements that must pass the inspection function
    * @param xs the collection of elements
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
    */
-  inline def forAtMost[E, C[_], ASSERTION, RESULT](max: Int, xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forAtMost[E, C[_], ASSERTION, RESULT](max: Int, xs: C[E])(fun: E => ASSERTION)(using collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forAtMostMacro('{max}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
@@ -372,12 +372,12 @@ trait Inspectors {
     * @param max the maximum number of elements in the <code>scala.collection.GenMap</code> that must pass the inspection function
     * @param xs the <code>scala.collection.GenMap</code>
     * @param fun the inspection function
-    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+    * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
     * @tparam K the type of key in the <code>scala.collection.GenMap</code>
     * @tparam V the type of value in the <code>scala.collection.GenMap</code>
     * @tparam MAP subtype of <code>scala.collection.GenMap</code>
     */
-  inline def forAtMost[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](max: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forAtMost[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](max: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(using collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forAtMostForMapMacro('{max}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
@@ -388,12 +388,12 @@ trait Inspectors {
    * @param max the maximum number of elements in the <code>java.util.Map</code> that must pass the inspection function
    * @param xs the <code>java.util.Map</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
    * @tparam K the type of key in the <code>java.util.Map</code>
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
-  inline def forAtMost[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](max: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forAtMost[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](max: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(using collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forAtMostForJMapMacro('{max}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
   // SKIP-SCALATESTJS,NATIVE-END
@@ -404,9 +404,9 @@ trait Inspectors {
    * @param max the maximum number of characters in <code>String</code> that must pass the inspection function
    * @param xs the <code>String</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
    */
-  inline def forAtMost[ASSERTION, RESULT](max: Int, xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forAtMost[ASSERTION, RESULT](max: Int, xs: String)(fun: Char => ASSERTION)(using collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forAtMostForStringMacro('{max}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
@@ -416,11 +416,11 @@ trait Inspectors {
    * @param succeededCount the number of elements that must pass the inspection function
    * @param xs the collection of elements
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
    */
-  inline def forExactly[E, C[_], ASSERTION, RESULT](succeededCount: Int, xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forExactly[E, C[_], ASSERTION, RESULT](succeededCount: Int, xs: C[E])(fun: E => ASSERTION)(using collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forExactlyMacro('{succeededCount}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
@@ -430,12 +430,12 @@ trait Inspectors {
     * @param succeededCount the number of entries in the <code>scala.collection.GenMap</code> that must pass the inspection function
     * @param xs the <code>scala.collection.GenMap</code>
     * @param fun the inspection function
-    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+    * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
     * @tparam K the type of key in the <code>scala.collection.GenMap</code>
     * @tparam V the type of value in the <code>scala.collection.GenMap</code>
     * @tparam MAP subtype of <code>scala.collection.GenMap</code>
     */
-  inline def forExactly[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](succeededCount: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forExactly[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](succeededCount: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(using collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forExactlyForMapMacro('{succeededCount}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
@@ -446,12 +446,12 @@ trait Inspectors {
    * @param succeededCount the number of elements in the <code>java.util.Map</code> that must pass the inspection function
    * @param xs the <code>java.util.Map</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
    * @tparam K the type of key in the <code>java.util.Map</code>
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
-  inline def forExactly[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](succeededCount: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forExactly[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](succeededCount: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(using collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forExactlyForJMapMacro('{succeededCount}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
   // SKIP-SCALATESTJS,NATIVE-END
@@ -462,27 +462,27 @@ trait Inspectors {
    * @param succeededCount the number of characters in the <code>String</code> that must pass the inspection function
    * @param xs the <code>String</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
    */
-  inline def forExactly[ASSERTION, RESULT](succeededCount: Int, xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forExactly[ASSERTION, RESULT](succeededCount: Int, xs: String)(fun: Char => ASSERTION)(using collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forExactlyForStringMacro('{succeededCount}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
   
-  private[scalatest] inline def forNo[E, C[_], ASSERTION, RESULT](xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  private[scalatest] inline def forNo[E, C[_], ASSERTION, RESULT](xs: C[E])(fun: E => ASSERTION)(using collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forNoMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
-  private[scalatest] inline def forNo[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  private[scalatest] inline def forNo[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(using collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forNoForMapMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
-  private[scalatest] inline def forNo[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  private[scalatest] inline def forNo[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(using collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forNoForJMapMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
-  private[scalatest] inline def forNo[ASSERTION, RESULT](xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  private[scalatest] inline def forNo[ASSERTION, RESULT](xs: String)(fun: Char => ASSERTION)(using collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forNoForStringMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
@@ -493,11 +493,11 @@ trait Inspectors {
    * @param upTo the maximum number of elements that must pass the inspection number
    * @param xs the collection of elements
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
    */
-  inline def forBetween[E, C[_], ASSERTION, RESULT](from: Int, upTo: Int, xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forBetween[E, C[_], ASSERTION, RESULT](from: Int, upTo: Int, xs: C[E])(fun: E => ASSERTION)(using collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forBetweenMacro('{from}, '{upTo}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
@@ -508,12 +508,12 @@ trait Inspectors {
     * @param upTo the maximum number of elements in the <code>scala.collection.GenMap</code> that must pass the inspection number
     * @param xs the <code>scala.collection.GenMap</code>
     * @param fun the inspection function
-    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+    * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
     * @tparam K the type of key in the <code>scala.collection.GenMap</code>
     * @tparam V the type of value in the <code>scala.collection.GenMap</code>
     * @tparam MAP subtype of <code>scala.collection.GenMap</code>
     */
-  inline def forBetween[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](from: Int, upTo: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forBetween[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](from: Int, upTo: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(using collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forBetweenForMapMacro('{from}, '{upTo}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
@@ -525,12 +525,12 @@ trait Inspectors {
    * @param upTo the maximum number of elements in the <code>java.util.Map</code> that must pass the inspection number
    * @param xs the <code>java.util.Map</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
    * @tparam K the type of key in the <code>java.util.Map</code>
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
-  inline def forBetween[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](from: Int, upTo: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forBetween[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](from: Int, upTo: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(using collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forBetweenForJMapMacro('{from}, '{upTo}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
   // SKIP-SCALATESTJS,NATIVE-END
@@ -542,9 +542,9 @@ trait Inspectors {
    * @param upTo the maximum number of characters in the <code>String</code> that must pass the inspection number
    * @param xs the <code>String</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
    */
-  inline def forBetween[ASSERTION, RESULT](from: Int, upTo: Int, xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forBetween[ASSERTION, RESULT](from: Int, upTo: Int, xs: String)(fun: Char => ASSERTION)(using collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forBetweenForStringMacro('{from}, '{upTo}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
@@ -560,11 +560,11 @@ trait Inspectors {
    *
    * @param xs the collection of elements
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
    */
-  inline def forEvery[E, C[_], ASSERTION, RESULT](xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forEvery[E, C[_], ASSERTION, RESULT](xs: C[E])(fun: E => ASSERTION)(using collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forEveryMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
@@ -580,12 +580,12 @@ trait Inspectors {
     *
     * @param xs the <code>scala.collection.GenMap</code>
     * @param fun the inspection function
-    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+    * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
     * @tparam K the type of key in the <code>scala.collection.GenMap</code>
     * @tparam V the type of value in the <code>scala.collection.GenMap</code>
     * @tparam MAP subtype of <code>scala.collection.GenMap</code>
     */
-  inline def forEvery[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forEvery[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(using collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forEveryForMapMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
@@ -602,12 +602,12 @@ trait Inspectors {
    *
    * @param xs the <code>java.util.Map</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
    * @tparam K the type of key in the <code>java.util.Map</code>
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
-  inline def forEvery[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forEvery[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(using collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forEveryForJMapMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
   // SKIP-SCALATESTJS,NATIVE-END
@@ -624,9 +624,9 @@ trait Inspectors {
    *
    * @param xs the <code>String</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @param collecting the <code>Collecting</code> that can transform <code>xs</code> into a <code>org.scalactic.ColCompatHelper.Iterable</code>
    */
-  inline def forEvery[ASSERTION, RESULT](xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+  inline def forEvery[ASSERTION, RESULT](xs: String)(fun: Char => ASSERTION)(using collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
     ${ Inspectors.forEveryForStringMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 }
