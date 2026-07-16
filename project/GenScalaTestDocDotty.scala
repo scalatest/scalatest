@@ -17,10 +17,12 @@
 object GenScalaTestDocDotty {
 
   def genScala(targetDir: java.io.File, version: String, scalaVersion: String): Seq[java.io.File] =
-    GenScalaTestDoc.copyDir("dotty/core/src/main/scala/org/scalatest", "scala/org/scalatest", targetDir, ".scala") ++
-    GenScalaTestDoc.copyDir("dotty/diagrams/src/main/scala/org/scalatest/diagrams", "scala/org/scalatest/diagrams", targetDir, ".scala") ++
-    GenScalaTestDoc.copyDir("dotty/expectations/src/main/scala/org/scalatest/expectations", "scala/org/scalatest/expectations", targetDir, ".scala") ++
-    GenScalaTestDoc.copyDir("dotty/matchers-core/src/main/scala/org/scalatest/matchers", "scala/org/scalatest/matchers", targetDir, ".scala") ++
-    GenScalaTestDoc.copyDir("dotty/shouldmatchers/src/main/scala/org/scalatest/matchers/should", "scala/org/scalatest/matchers/should", targetDir, ".scala") ++
-    GenScalaTestDoc.copyDir("dotty/mustmatchers/src/main/scala/org/scalatest/matchers/must", "scala/org/scalatest/matchers/must", targetDir, ".scala")
+    GenScalaTestDotty.copyDir("dotty/core/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++
+    GenScalaTestDotty.copyDir("dotty/core/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
+    GenScalaTestDotty.copyDir("dotty/diagrams/src/main/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty) ++
+    GenScalaTestDotty.copyDir("dotty/expectations/src/main/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, List.empty) ++
+    GenScalaTestDotty.copyDir("dotty/matchers-core/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
+    GenScalaTestDotty.copyDir("dotty/matchers-core/src/main/scala/org/scalatest/matchers/dsl", "org/scalatest/matchers/dsl", targetDir, List.empty) ++
+    GenScalaTestDotty.copyDir("dotty/shouldmatchers/src/main/scala/org/scalatest/matchers/should", "org/scalatest/matchers/should", targetDir, List.empty) ++
+    GenScalaTestDotty.copyDir("dotty/mustmatchers/src/main/scala/org/scalatest/matchers/must", "org/scalatest/matchers/must", targetDir, List.empty)
 }
