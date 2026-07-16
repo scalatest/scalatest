@@ -74,7 +74,7 @@ trait InspectorAsserting[T, R] {
 }
 
 /**
- * Class holding lowest priority <code>InspectorAsserting</code> implicit, which enables inspector expressions that have result type <code>Unit</code>.
+ * Class holding lowest priority <code>InspectorAsserting</code> instance, which enables inspector expressions that have result type <code>Unit</code>.
  */
 abstract class UnitInspectorAsserting {
 
@@ -310,10 +310,10 @@ abstract class UnitInspectorAsserting {
   }
 
   /**
-   * Provides an implicit <code>InspectorAsserting</code> instance for any type that did not match a
-   * higher priority implicit provider, enabling inspector syntax that has result type <code>Unit</code>.
+   * Provides an <code>InspectorAsserting</code> instance for any type that did not match a
+   * higher priority instance, enabling inspector syntax that has result type <code>Unit</code>.
    */
-  implicit def assertingNatureOfT[T]: InspectorAsserting[T, Unit] =
+  given assertingNatureOfT[T]: InspectorAsserting[T, Unit] =
     new InspectorAssertingImpl[T, Unit] {
       def indicateSuccess(message: => String): Unit = ()
       def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): Unit = {
@@ -338,12 +338,12 @@ abstract class UnitInspectorAsserting {
 }
 
 /**
- * Abstract class that in the future will hold an intermediate priority <code>InspectorAsserting</code> implicit, which will enable inspector expressions
+ * Abstract class that in the future will hold an intermediate priority <code>InspectorAsserting</code> instance, which will enable inspector expressions
  * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
  */
 abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
 
-  private[scalatest] implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): InspectorAsserting[Expectation, Expectation] = {
+  private[scalatest] given assertingNatureOfExpectation(using prettifier: Prettifier): InspectorAsserting[Expectation, Expectation] = {
     new InspectorAssertingImpl[Expectation, Expectation] {
       def indicateSuccess(message: => String): Expectation = Fact.Yes(message, prettifier)
       def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: org.scalactic.source.Position): Expectation = Fact.No(message, prettifier)
@@ -353,16 +353,16 @@ abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
 } 
 
 /**
- * Companion object to <code>InspectorAsserting</code> that provides two implicit providers, a higher priority one for passed functions that have result
+ * Companion object to <code>InspectorAsserting</code> that provides two instance providers, a higher priority one for passed functions that have result
  * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
  */
 object InspectorAsserting extends ExpectationInspectorAsserting {
 
   /**
-   * Provides an implicit <code>InspectorAsserting</code> instance for type <code>Assertion</code>,
+   * Provides an <code>InspectorAsserting</code> instance for type <code>Assertion</code>,
    * enabling inspector syntax that has result type <code>Assertion</code>.
    */
-  implicit def assertingNatureOfAssertion: InspectorAsserting[Assertion, Assertion] =
+  given assertingNatureOfAssertion: InspectorAsserting[Assertion, Assertion] =
     new InspectorAssertingImpl[Assertion, Assertion] {
       def indicateSuccess(message: => String): Assertion = Succeeded
       def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): Assertion = {
@@ -390,7 +390,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
     * methods.
     */
   private[scalatest] abstract class FutureInspectorAssertingImpl[T] extends InspectorAsserting[Future[T], Future[T]] {
-    implicit def executionContext: ExecutionContext
+    given executionContext: ExecutionContext
 
     // Inherit Scaladoc for now. See later if can just make this implementation class private[scalatest].
     def forAll[E](xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Future[T] = {
@@ -594,7 +594,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
 
     def forEvery[E](xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Future[T] = {
       val xsIsMap = isMap(original)
-      val future = runAsyncParallel(xs, xsIsMap, fun)(executionContext)
+      val future = runAsyncParallel(xs, xsIsMap, fun)
       future.map { result =>
         if (result.failedElements.length > 0)
           indicateFailureFuture(
@@ -617,7 +617,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
     private[scalatest] def indicateFailureFuture(message: => String, optionalCause: Option[Throwable], pos: source.Position): T
   }
 
-  implicit def assertingNatureOfFutureAssertion(implicit execCtx: ExecutionContext): InspectorAsserting[Future[Assertion], Future[Assertion]] =
+  given assertingNatureOfFutureAssertion(using execCtx: ExecutionContext): InspectorAsserting[Future[Assertion], Future[Assertion]] =
     new FutureInspectorAssertingImpl[Assertion] {
       val executionContext = execCtx
       def indicateSuccessFuture(message: => String): Assertion = Succeeded
@@ -724,7 +724,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
       result
   }
 
-  private[scalatest] final def runAsyncParallel[T, ASSERTION](col: Iterable[T], xsIsMap: Boolean, fun: T => Future[ASSERTION])(implicit ctx: ExecutionContext): Future[ForResult[T]] = {
+  private[scalatest] final def runAsyncParallel[T, ASSERTION](col: Iterable[T], xsIsMap: Boolean, fun: T => Future[ASSERTION])(using ctx: ExecutionContext): Future[ForResult[T]] = {
     val futCol: IndexedSeq[Future[(T, Int, Try[ASSERTION])]] =
       col.toIndexedSeq.zipWithIndex map { case (next, idx) =>
         try {
@@ -768,7 +768,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
     }
   }
 
-  private[scalatest] final def runAsyncSerial[T, ASSERTION](itr: Iterator[T], xsIsMap: Boolean, index:Int, result: ForResult[T], fun: T => Future[ASSERTION], stopFun: ForResult[_] => Boolean)(implicit ctx: ExecutionContext): Future[ForResult[T]] = {
+  private[scalatest] final def runAsyncSerial[T, ASSERTION](itr: Iterator[T], xsIsMap: Boolean, index:Int, result: ForResult[T], fun: T => Future[ASSERTION], stopFun: ForResult[_] => Boolean)(using ctx: ExecutionContext): Future[ForResult[T]] = {
     if (itr.hasNext) {
       val head = itr.next
       try {
