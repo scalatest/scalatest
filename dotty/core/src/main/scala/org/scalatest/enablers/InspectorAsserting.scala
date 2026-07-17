@@ -343,7 +343,7 @@ abstract class UnitInspectorAsserting {
  */
 abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
 
-  private[scalatest] given assertingNatureOfExpectation(using prettifier: Prettifier): InspectorAsserting[Expectation, Expectation] = {
+  given assertingNatureOfExpectation(using prettifier: Prettifier): InspectorAsserting[Expectation, Expectation] = {
     new InspectorAssertingImpl[Expectation, Expectation] {
       def indicateSuccess(message: => String): Expectation = Fact.Yes(message, prettifier)
       def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: org.scalactic.source.Position): Expectation = Fact.No(message, prettifier)
