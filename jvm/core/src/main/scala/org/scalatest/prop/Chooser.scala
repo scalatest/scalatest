@@ -63,159 +63,276 @@ object Chooser {
   // The order of the following typeclass instances is arbitrary, but matches the order
   // of the declarations in Randomizer.
 
+  // SKIP-DOTTY-START
   implicit val charChooser: Chooser[Char] = new Chooser[Char] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given charChooser: Chooser[Char] = new Chooser[Char] {
     def choose(from: Char, to: Char)(rnd: Randomizer) = rnd.chooseChar(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val byteChooser: Chooser[Byte] = new Chooser[Byte] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given byteChooser: Chooser[Byte] = new Chooser[Byte] {  
     def choose(from: Byte, to: Byte)(rnd: Randomizer) = rnd.chooseByte(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val shortChooser: Chooser[Short] = new Chooser[Short] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given shortChooser: Chooser[Short] = new Chooser[Short] { 
     def choose(from: Short, to: Short)(rnd: Randomizer) = rnd.chooseShort(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val intChooser: Chooser[Int] = new Chooser[Int] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given intChooser: Chooser[Int] = new Chooser[Int] {  
     def choose(from: Int, to: Int)(rnd: Randomizer) = rnd.chooseInt(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val floatChooser: Chooser[Float] = new Chooser[Float] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given floatChooser: Chooser[Float] = new Chooser[Float] {
     def choose(from: Float, to: Float)(rnd: Randomizer) = rnd.chooseFloat(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val posFloatChooser: Chooser[PosFloat] = new Chooser[PosFloat] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given posFloatChooser: Chooser[PosFloat] = new Chooser[PosFloat] {  
     def choose(from: PosFloat, to: PosFloat)(rnd: Randomizer) = rnd.choosePosFloat(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val posFiniteFloatChooser: Chooser[PosFiniteFloat] = new Chooser[PosFiniteFloat] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given posFiniteFloatChooser: Chooser[PosFiniteFloat] = new Chooser[PosFiniteFloat] {  
     def choose(from: PosFiniteFloat, to: PosFiniteFloat)(rnd: Randomizer) = rnd.choosePosFiniteFloat(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val posZFloatChooser: Chooser[PosZFloat] = new Chooser[PosZFloat] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given posZFloatChooser: Chooser[PosZFloat] = new Chooser[PosZFloat] {  
     def choose(from: PosZFloat, to: PosZFloat)(rnd: Randomizer) = rnd.choosePosZFloat(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val posZFiniteFloatChooser: Chooser[PosZFiniteFloat] = new Chooser[PosZFiniteFloat] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given posZFiniteFloatChooser: Chooser[PosZFiniteFloat] = new Chooser[PosZFiniteFloat] {  
     def choose(from: PosZFiniteFloat, to: PosZFiniteFloat)(rnd: Randomizer) = rnd.choosePosZFiniteFloat(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val doubleChooser: Chooser[Double] = new Chooser[Double] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given doubleChooser: Chooser[Double] = new Chooser[Double] {
     def choose(from: Double, to: Double)(rnd: Randomizer) = rnd.chooseDouble(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val posIntChooser: Chooser[PosInt] = new Chooser[PosInt] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given posIntChooser: Chooser[PosInt] = new Chooser[PosInt] {  
     def choose(from: PosInt, to: PosInt)(rnd: Randomizer) = rnd.choosePosInt(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val posZIntChooser: Chooser[PosZInt] = new Chooser[PosZInt] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given posZIntChooser: Chooser[PosZInt] = new Chooser[PosZInt] {  
     def choose(from: PosZInt, to: PosZInt)(rnd: Randomizer) = rnd.choosePosZInt(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val longChooser: Chooser[Long] = new Chooser[Long] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given longChooser: Chooser[Long] = new Chooser[Long] {  
     def choose(from: Long, to: Long)(rnd: Randomizer) = rnd.chooseLong(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val posLongChooser: Chooser[PosLong] = new Chooser[PosLong] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given posLongChooser: Chooser[PosLong] = new Chooser[PosLong] {  
     def choose(from: PosLong, to: PosLong)(rnd: Randomizer) = rnd.choosePosLong(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val posZLongChooser: Chooser[PosZLong] = new Chooser[PosZLong] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given posZLongChooser: Chooser[PosZLong] = new Chooser[PosZLong] {  
     def choose(from: PosZLong, to: PosZLong)(rnd: Randomizer) = rnd.choosePosZLong(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val posDoubleChooser: Chooser[PosDouble] = new Chooser[PosDouble] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given posDoubleChooser: Chooser[PosDouble] = new Chooser[PosDouble] {  
     def choose(from: PosDouble, to: PosDouble)(rnd: Randomizer) = rnd.choosePosDouble(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val posFiniteDoubleChooser: Chooser[PosFiniteDouble] = new Chooser[PosFiniteDouble] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given posFiniteDoubleChooser: Chooser[PosFiniteDouble] = new Chooser[PosFiniteDouble] {  
     def choose(from: PosFiniteDouble, to: PosFiniteDouble)(rnd: Randomizer) = rnd.choosePosFiniteDouble(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val posZDoubleChooser: Chooser[PosZDouble] = new Chooser[PosZDouble] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given posZDoubleChooser: Chooser[PosZDouble] = new Chooser[PosZDouble] {  
     def choose(from: PosZDouble, to: PosZDouble)(rnd: Randomizer) = rnd.choosePosZDouble(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val posZFiniteDoubleChooser: Chooser[PosZFiniteDouble] = new Chooser[PosZFiniteDouble] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given posZFiniteDoubleChooser: Chooser[PosZFiniteDouble] = new Chooser[PosZFiniteDouble] {  
     def choose(from: PosZFiniteDouble, to: PosZFiniteDouble)(rnd: Randomizer) = rnd.choosePosZFiniteDouble(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val negIntChooser: Chooser[NegInt] = new Chooser[NegInt] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given negIntChooser: Chooser[NegInt] = new Chooser[NegInt] {  
     def choose(from: NegInt, to: NegInt)(rnd: Randomizer) = rnd.chooseNegInt(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val negLongChooser: Chooser[NegLong] = new Chooser[NegLong] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given negLongChooser: Chooser[NegLong] = new Chooser[NegLong] {  
     def choose(from: NegLong, to: NegLong)(rnd: Randomizer) = rnd.chooseNegLong(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val negFloatChooser: Chooser[NegFloat] = new Chooser[NegFloat] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given negFloatChooser: Chooser[NegFloat] = new Chooser[NegFloat] {  
     def choose(from: NegFloat, to: NegFloat)(rnd: Randomizer) = rnd.chooseNegFloat(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val negFiniteFloatChooser: Chooser[NegFiniteFloat] = new Chooser[NegFiniteFloat] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given negFiniteFloatChooser: Chooser[NegFiniteFloat] = new Chooser[NegFiniteFloat] {  
     def choose(from: NegFiniteFloat, to: NegFiniteFloat)(rnd: Randomizer) = rnd.chooseNegFiniteFloat(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val negDoubleChooser: Chooser[NegDouble] = new Chooser[NegDouble] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given negDoubleChooser: Chooser[NegDouble] = new Chooser[NegDouble] {  
     def choose(from: NegDouble, to: NegDouble)(rnd: Randomizer) = rnd.chooseNegDouble(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val negFiniteDoubleChooser: Chooser[NegFiniteDouble] = new Chooser[NegFiniteDouble] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given negFiniteDoubleChooser: Chooser[NegFiniteDouble] = new Chooser[NegFiniteDouble] {  
     def choose(from: NegFiniteDouble, to: NegFiniteDouble)(rnd: Randomizer) = rnd.chooseNegFiniteDouble(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val negZIntChooser: Chooser[NegZInt] = new Chooser[NegZInt] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given negZIntChooser: Chooser[NegZInt] = new Chooser[NegZInt] {  
     def choose(from: NegZInt, to: NegZInt)(rnd: Randomizer) = rnd.chooseNegZInt(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val negZLongChooser: Chooser[NegZLong] = new Chooser[NegZLong] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given negZLongChooser: Chooser[NegZLong] = new Chooser[NegZLong] {  
     def choose(from: NegZLong, to: NegZLong)(rnd: Randomizer) = rnd.chooseNegZLong(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val negZFloatChooser: Chooser[NegZFloat] = new Chooser[NegZFloat] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given negZFloatChooser: Chooser[NegZFloat] = new Chooser[NegZFloat] {  
     def choose(from: NegZFloat, to: NegZFloat)(rnd: Randomizer) = rnd.chooseNegZFloat(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val negZFiniteFloatChooser: Chooser[NegZFiniteFloat] = new Chooser[NegZFiniteFloat] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given negZFiniteFloatChooser: Chooser[NegZFiniteFloat] = new Chooser[NegZFiniteFloat] {  
     def choose(from: NegZFiniteFloat, to: NegZFiniteFloat)(rnd: Randomizer) = rnd.chooseNegZFiniteFloat(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val negZDoubleChooser: Chooser[NegZDouble] = new Chooser[NegZDouble] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given negZDoubleChooser: Chooser[NegZDouble] = new Chooser[NegZDouble] {  
     def choose(from: NegZDouble, to: NegZDouble)(rnd: Randomizer) = rnd.chooseNegZDouble(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val negZFiniteDoubleChooser: Chooser[NegZFiniteDouble] = new Chooser[NegZFiniteDouble] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given negZFiniteDoubleChooser: Chooser[NegZFiniteDouble] = new Chooser[NegZFiniteDouble] {  
     def choose(from: NegZFiniteDouble, to: NegZFiniteDouble)(rnd: Randomizer) = rnd.chooseNegZFiniteDouble(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val nonZeroIntChooser: Chooser[NonZeroInt] = new Chooser[NonZeroInt] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given nonZeroIntChooser: Chooser[NonZeroInt] = new Chooser[NonZeroInt] {  
     def choose(from: NonZeroInt, to: NonZeroInt)(rnd: Randomizer) = rnd.chooseNonZeroInt(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val nonZeroLongChooser: Chooser[NonZeroLong] = new Chooser[NonZeroLong] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given nonZeroLongChooser: Chooser[NonZeroLong] = new Chooser[NonZeroLong] {  
     def choose(from: NonZeroLong, to: NonZeroLong)(rnd: Randomizer) = rnd.chooseNonZeroLong(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val nonZeroFloatChooser: Chooser[NonZeroFloat] = new Chooser[NonZeroFloat] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given nonZeroFloatChooser: Chooser[NonZeroFloat] = new Chooser[NonZeroFloat] {  
     def choose(from: NonZeroFloat, to: NonZeroFloat)(rnd: Randomizer) = rnd.chooseNonZeroFloat(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val nonZeroFiniteFloatChooser: Chooser[NonZeroFiniteFloat] = new Chooser[NonZeroFiniteFloat] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given nonZeroFiniteFloatChooser: Chooser[NonZeroFiniteFloat] = new Chooser[NonZeroFiniteFloat] {  
     def choose(from: NonZeroFiniteFloat, to: NonZeroFiniteFloat)(rnd: Randomizer) = rnd.chooseNonZeroFiniteFloat(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val nonZeroDoubleChooser: Chooser[NonZeroDouble] = new Chooser[NonZeroDouble] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given nonZeroDoubleChooser: Chooser[NonZeroDouble] = new Chooser[NonZeroDouble] {  
     def choose(from: NonZeroDouble, to: NonZeroDouble)(rnd: Randomizer) = rnd.chooseNonZeroDouble(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val nonZeroFiniteDoubleChooser: Chooser[NonZeroFiniteDouble] = new Chooser[NonZeroFiniteDouble] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given nonZeroFiniteDoubleChooser: Chooser[NonZeroFiniteDouble] = new Chooser[NonZeroFiniteDouble] {  
     def choose(from: NonZeroFiniteDouble, to: NonZeroFiniteDouble)(rnd: Randomizer) = rnd.chooseNonZeroFiniteDouble(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val finiteFloatChooser: Chooser[FiniteFloat] = new Chooser[FiniteFloat] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given finiteFloatChooser: Chooser[FiniteFloat] = new Chooser[FiniteFloat] {  
     def choose(from: FiniteFloat, to: FiniteFloat)(rnd: Randomizer) = rnd.chooseFiniteFloat(from, to)
   }
 
+  // SKIP-DOTTY-START
   implicit val finiteDoubleChooser: Chooser[FiniteDouble] = new Chooser[FiniteDouble] {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY given finiteDoubleChooser: Chooser[FiniteDouble] = new Chooser[FiniteDouble] {  
     def choose(from: FiniteDouble, to: FiniteDouble)(rnd: Randomizer) = rnd.chooseFiniteDouble(from, to)
   }
 
