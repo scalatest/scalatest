@@ -95,16 +95,16 @@ class ListShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (contain only ("FEE", "FIE", "FOE", "FUM") and contain only ("FEE", "FIE", "FUM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (contain only ("FEE", "FIE", "FOE", "FUM") and contain only ("FEE", "FIE", "FUM", "FOE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain only ("FEE", "FIE", "FOE", "FAM") and contain only ("FEE", "FIE", "FUM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (contain only ("FEE", "FIE", "FOE", "FAM") and contain only ("FEE", "FIE", "FUM", "FOE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.didNotContainOnlyElements(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FOE\", \"FAM\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (contain only ("FEE", "FIE", "FOE", "FUM") and contain only ("FEE", "FIE", "FAM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (contain only ("FEE", "FIE", "FOE", "FUM") and contain only ("FEE", "FIE", "FAM", "FOE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources.containedOnlyElements(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", but " + Resources.didNotContainOnlyElements(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
-        (fumList should (contain only (" FEE ", " FIE ", " FOE ", " FUM ") and contain only (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (contain only (" FEE ", " FIE ", " FOE ", " FUM ") and contain only (" FEE ", " FIE ", " FOE ", " FUM "))) (using after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
@@ -195,16 +195,16 @@ class ListShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (equal (toList) and contain only ("FEE", "FIE", "FOE", "FUM"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (equal (toList) and contain only ("FEE", "FIE", "FOE", "FUM"))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (equal (toList) and contain only ("FEE", "FIE", "FOE", "FAM"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+          (fumList should (equal (toList) and contain only ("FEE", "FIE", "FOE", "FAM"))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.equaled(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", but " + Resources.didNotContainOnlyElements(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FOE\", \"FAM\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (equal (fumList) and contain only ("FEE", "FIE", "FOE", "FUM"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+          (fumList should (equal (fumList) and contain only ("FEE", "FIE", "FOE", "FUM"))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources.didNotEqual(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)), fileName, thisLineNumber - 2)
-        (fumList should (equal (toList) and contain only (" FEE ", " FIE ", " FOE ", " FUM "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
+        (fumList should (equal (toList) and contain only (" FEE ", " FIE ", " FOE ", " FUM "))) (using decided by invertedListOfStringEquality, after being lowerCased and trimmed)
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
@@ -270,16 +270,16 @@ class ListShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (be (fumList) and contain only ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+        (fumList should (be (fumList) and contain only ("FEE", "FIE", "FOE", "FUM"))) (using decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (be (fumList) and contain only ("happy", "birthday", "to", "you"))) (decided by upperCaseStringEquality)
+          (fumList should (be (fumList) and contain only ("happy", "birthday", "to", "you"))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.wasEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", but " + Resources.didNotContainOnlyElements(decorateToStringValue(prettifier, fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (be (toList) and contain only ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+          (fumList should (be (toList) and contain only ("FEE", "FIE", "FOE", "FUM"))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)), fileName, thisLineNumber - 2)
-        (fumList should (be (fumList) and contain only (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
+        (fumList should (be (fumList) and contain only (" FEE ", " FIE ", " FOE ", " FUM "))) (using after being lowerCased and trimmed)
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
@@ -345,16 +345,16 @@ class ListShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (contain only ("FIE", "FEE", "FUM", "FOE") and be (fumList))) (decided by upperCaseStringEquality)
+        (fumList should (contain only ("FIE", "FEE", "FUM", "FOE") and be (fumList))) (using decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain only ("FIE", "FEE", "FAM", "FOE") and be (fumList))) (decided by upperCaseStringEquality)
+          (fumList should (contain only ("FIE", "FEE", "FAM", "FOE") and be (fumList))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.didNotContainOnlyElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (contain only ("FIE", "FEE", "FUM", "FOE") and be (toList))) (decided by upperCaseStringEquality)
+          (fumList should (contain only ("FIE", "FEE", "FUM", "FOE") and be (toList))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources.containedOnlyElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\"") + ", but " + Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)), fileName, thisLineNumber - 2)
-        (fumList should (contain only (" FEE ", " FIE ", " FOE ", " FUM ") and be (fumList))) (after being lowerCased and trimmed)
+        (fumList should (contain only (" FEE ", " FIE ", " FOE ", " FUM ") and be (fumList))) (using after being lowerCased and trimmed)
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
@@ -420,16 +420,16 @@ class ListShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (not contain only ("FIE", "FEE", "FAM", "FOE") and not contain only ("FIE", "FEE", "FOE", "FAM"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not contain only ("FIE", "FEE", "FAM", "FOE") and not contain only ("FIE", "FEE", "FOE", "FAM"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not contain only ("FIE", "FEE", "FAM", "FOE") and not contain only ("FIE", "FEE", "FOE", "FUM"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not contain only ("FIE", "FEE", "FAM", "FOE") and not contain only ("FIE", "FEE", "FOE", "FUM"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.didNotContainOnlyElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\"") + ", but " + Resources.containedOnlyElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (not contain only ("FIE", "FEE", "FUM", "FOE") and not contain only ("FIE", "FEE", "FOE", "FAM"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not contain only ("FIE", "FEE", "FUM", "FOE") and not contain only ("FIE", "FEE", "FOE", "FAM"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources.containedOnlyElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
-        (fumList should (contain only (" FEE ", " FIE ", " FOE ", " FUM ") and contain only (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (contain only (" FEE ", " FIE ", " FOE ", " FUM ") and contain only (" FEE ", " FIE ", " FOE ", " FUM "))) (using after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
@@ -504,16 +504,16 @@ class ListShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (not equal (fumList) and not contain only ("FIE", "FEE", "FAM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not equal (fumList) and not contain only ("FIE", "FEE", "FAM", "FOE"))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not equal (fumList) and not contain only ("FIE", "FEE", "FUM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not equal (fumList) and not contain only ("FIE", "FEE", "FUM", "FOE"))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.didNotEqual(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", but " + Resources.containedOnlyElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (not equal (toList) and not contain only ("FIE", "FEE", "FAM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not equal (toList) and not contain only ("FIE", "FEE", "FAM", "FOE"))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources.equaled(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)), fileName, thisLineNumber - 2)
-        (fumList should (not contain only (" FEE ", " FIE ", " FOE ", " FUU ") and not contain only (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (not contain only (" FEE ", " FIE ", " FOE ", " FUU ") and not contain only (" FEE ", " FIE ", " FOE ", " FUU "))) (using after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
@@ -570,16 +570,16 @@ class ListShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (not be (toList) and not contain only ("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality)
+        (fumList should (not be (toList) and not contain only ("FIE", "FEE", "FAM", "FOE"))) (using decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not be (toList) and not contain only ("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality)
+          (fumList should (not be (toList) and not contain only ("FIE", "FEE", "FUM", "FOE"))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", but " + Resources.containedOnlyElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (not be (fumList) and not contain only ("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality)
+          (fumList should (not be (fumList) and not contain only ("FIE", "FEE", "FAM", "FOE"))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources.wasEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)), fileName, thisLineNumber - 2)
-        (fumList should (not contain only (" FEE ", " FIE ", " FOE ", " FUU ") and not contain only (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (not contain only (" FEE ", " FIE ", " FOE ", " FUU ") and not contain only (" FEE ", " FIE ", " FOE ", " FUU "))) (using after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
@@ -664,14 +664,14 @@ class ListShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (contain only ("HELLO", "HI") and contain only ("HI", "HELLO"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (contain only ("HELLO", "HI") and contain only ("HI", "HELLO"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (contain only ("HO", "HELLO") and contain only ("HI", "HELLO"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (contain only ("HO", "HELLO") and contain only ("HI", "HELLO"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " did not contain only " + "(\"HO\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          (all (hiLists) should (contain only ("HELLO", "HI") and contain only ("HO", "HELLO"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (contain only ("HELLO", "HI") and contain only ("HO", "HELLO"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " contained only " + "(\"HELLO\", \"HI\")" + ", but " + decorateToStringValue(prettifier, List("hi", "hello")) + " did not contain only " + "(\"HO\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -800,14 +800,14 @@ class ListShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (be (List("hi", "hello")) and contain only ("HELLO", "HI"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (be (List("hi", "hello")) and contain only ("HELLO", "HI"))) (using decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (be (List("HI", "HELLO")) and contain only ("HELLO", "HI"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (be (List("HI", "HELLO")) and contain only ("HELLO", "HI"))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " was not equal to " + decorateToStringValue(prettifier, List("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          (all (hiLists) should (be (List("hi", "hello")) and contain only ("HO", "HELLO"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (be (List("hi", "hello")) and contain only ("HO", "HELLO"))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " was equal to " + decorateToStringValue(prettifier, List("hi", "hello")) + ", but " + decorateToStringValue(prettifier, List("hi", "hello")) + " did not contain only " + "(\"HO\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -903,14 +903,14 @@ class ListShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (not contain only ("HI") and not contain only ("HO"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (not contain only ("HI") and not contain only ("HO"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not contain only ("HELLO", "HI") and not contain only ("HO"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (not contain only ("HELLO", "HI") and not contain only ("HO"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " contained only " + "(\"HELLO\", \"HI\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          (all (hiLists) should (not contain only ("HI") and not contain only ("HELLO", "HI"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (not contain only ("HI") and not contain only ("HELLO", "HI"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " did not contain only " + "(\"HI\")" + ", but " + decorateToStringValue(prettifier, List("hi", "hello")) + " contained only " + "(\"HELLO\", \"HI\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -1016,14 +1016,14 @@ class ListShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (not be (List("ho")) and not contain only ("HO", "HELLO"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (not be (List("ho")) and not contain only ("HO", "HELLO"))) (using decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not be (List("hi", "hello")) and not contain only ("HELLO", "HI"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (not be (List("hi", "hello")) and not contain only ("HELLO", "HI"))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " was equal to " + decorateToStringValue(prettifier, List("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          (all (hiLists) should (not be (List("ho")) and not contain only ("HI", "HELLO"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (not be (List("ho")) and not contain only ("HI", "HELLO"))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " was not equal to " + decorateToStringValue(prettifier, List("ho")) + ", but " + decorateToStringValue(prettifier, List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }

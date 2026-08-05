@@ -97,18 +97,18 @@ class InOrderOnlyContainMatcherDeciderSpec extends AnyFunSpec with Explicitly {
     }
     
     it("should take specified normalization when 'should contain' is used") {
-      (List("1", " 2", "3") should contain inOrderOnly (" 1", "2 ", " 3")) (after being trimmed)
-      (Array("1", " 2", "3") should contain inOrderOnly (" 1", "2 ", " 3")) (after being trimmed)
+      (List("1", " 2", "3") should contain inOrderOnly (" 1", "2 ", " 3")) (using after being trimmed)
+      (Array("1", " 2", "3") should contain inOrderOnly (" 1", "2 ", " 3")) (using after being trimmed)
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList("1", " 2", "3") should contain inOrderOnly (" 1", "2 ", " 3")) (after being trimmed)
+      (javaList("1", " 2", "3") should contain inOrderOnly (" 1", "2 ", " 3")) (using after being trimmed)
       // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should take specified normalization when 'should not contain' is used") {
-      (List("1", "2", "3") should not contain inOrderOnly ("1", "2", "3")) (after being appended)
-      (Array("1", "2", "3") should not contain inOrderOnly ("1", "2", "3")) (after being appended)
+      (List("1", "2", "3") should not contain inOrderOnly ("1", "2", "3")) (using after being appended)
+      (Array("1", "2", "3") should not contain inOrderOnly ("1", "2", "3")) (using after being appended)
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList("1", "2", "3") should not contain inOrderOnly ("1", "2", "3")) (after being appended)
+      (javaList("1", "2", "3") should not contain inOrderOnly ("1", "2", "3")) (using after being appended)
       // SKIP-SCALATESTJS,NATIVE-END
     }
     
@@ -116,20 +116,20 @@ class InOrderOnlyContainMatcherDeciderSpec extends AnyFunSpec with Explicitly {
       
       val left1 = List("1", "2", "3")
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should contain inOrderOnly ("1", "2", "3")) (after being appended)
+        (left1 should contain inOrderOnly ("1", "2", "3")) (using after being appended)
       }
       checkShouldContainStackDepth(e1, left1, deep(Array("1", "2", "3")), thisLineNumber - 2)
         
       val left2 = Array("1", "2", "3")
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should contain inOrderOnly ("1", "2", "3")) (after being appended)
+        (left2 should contain inOrderOnly ("1", "2", "3")) (using after being appended)
       }
       checkShouldContainStackDepth(e2, left2, deep(Array("1", "2", "3")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS,NATIVE-START
       val left3 = javaList("1", "2", "3")
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should contain inOrderOnly ("1", "2", "3")) (after being appended)
+        (left3 should contain inOrderOnly ("1", "2", "3")) (using after being appended)
       }
       checkShouldContainStackDepth(e3, left3, deep(Array("1", "2", "3")), thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END
@@ -139,38 +139,38 @@ class InOrderOnlyContainMatcherDeciderSpec extends AnyFunSpec with Explicitly {
         
       val left1 = List("1", " 2", "3")
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should not contain inOrderOnly (" 1", "2 ", " 3")) (after being trimmed)
+        (left1 should not contain inOrderOnly (" 1", "2 ", " 3")) (using after being trimmed)
       }
       checkShouldNotContainStackDepth(e1, left1, deep(Array(" 1", "2 ", " 3")), thisLineNumber - 2)
         
       val left2 = Array("1", " 2", "3")
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should not contain inOrderOnly (" 1", "2 ", " 3")) (after being trimmed)
+        (left2 should not contain inOrderOnly (" 1", "2 ", " 3")) (using after being trimmed)
       }
       checkShouldNotContainStackDepth(e2, left2, deep(Array(" 1", "2 ", " 3")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS,NATIVE-START
       val left3 = javaList("1", " 2", "3")
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should not contain inOrderOnly (" 1", "2 ", " 3")) (after being trimmed)
+        (left3 should not contain inOrderOnly (" 1", "2 ", " 3")) (using after being trimmed)
       }
       checkShouldNotContainStackDepth(e3, left3, deep(Array(" 1", "2 ", " 3")), thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should take specified equality and normalization when 'should contain' is used") {
-      (List("ONE ", " TWO", "THREE ") should contain inOrderOnly (" one", "two ", " three")) (decided by lowerCaseEquality afterBeing trimmed)
-      (Array("ONE ", " TWO", "THREE ") should contain inOrderOnly (" one", "two ", " three")) (decided by lowerCaseEquality afterBeing trimmed)
+      (List("ONE ", " TWO", "THREE ") should contain inOrderOnly (" one", "two ", " three")) (using decided by lowerCaseEquality afterBeing trimmed)
+      (Array("ONE ", " TWO", "THREE ") should contain inOrderOnly (" one", "two ", " three")) (using decided by lowerCaseEquality afterBeing trimmed)
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList("ONE ", " TWO", "THREE ") should contain inOrderOnly (" one", "two ", " three")) (decided by lowerCaseEquality afterBeing trimmed)
+      (javaList("ONE ", " TWO", "THREE ") should contain inOrderOnly (" one", "two ", " three")) (using decided by lowerCaseEquality afterBeing trimmed)
       // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should take specified equality and normalization when 'should not contain' is used") {
-      (List("one ", " two", "three ") should not contain inOrderOnly (" one", "two ", " three")) (decided by reverseEquality afterBeing trimmed)
-      (Array("one ", " two", "three ") should not contain inOrderOnly (" one", "two ", " three")) (decided by reverseEquality afterBeing trimmed)
+      (List("one ", " two", "three ") should not contain inOrderOnly (" one", "two ", " three")) (using decided by reverseEquality afterBeing trimmed)
+      (Array("one ", " two", "three ") should not contain inOrderOnly (" one", "two ", " three")) (using decided by reverseEquality afterBeing trimmed)
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList("one ", " two", "three ") should not contain inOrderOnly (" one", "two ", " three")) (decided by reverseEquality afterBeing trimmed)
+      (javaList("one ", " two", "three ") should not contain inOrderOnly (" one", "two ", " three")) (using decided by reverseEquality afterBeing trimmed)
       // SKIP-SCALATESTJS,NATIVE-END
     }
     
@@ -178,20 +178,20 @@ class InOrderOnlyContainMatcherDeciderSpec extends AnyFunSpec with Explicitly {
       
       val left1 = List("one ", " two", "three ")
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should contain inOrderOnly (" one", "two ", " three")) (decided by reverseEquality afterBeing trimmed)
+        (left1 should contain inOrderOnly (" one", "two ", " three")) (using decided by reverseEquality afterBeing trimmed)
       }
       checkShouldContainStackDepth(e1, left1, deep(Array(" one", "two ", " three")), thisLineNumber - 2)
         
       val left2 = Array("one ", " two", "three ")
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should contain inOrderOnly (" one", "two ", " three")) (decided by reverseEquality afterBeing trimmed)
+        (left2 should contain inOrderOnly (" one", "two ", " three")) (using decided by reverseEquality afterBeing trimmed)
       }
       checkShouldContainStackDepth(e2, left2, deep(Array(" one", "two ", " three")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS,NATIVE-START
       val left3 = javaList("one ", " two", "three ")
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should contain inOrderOnly (" one", "two ", " three")) (decided by reverseEquality afterBeing trimmed)
+        (left3 should contain inOrderOnly (" one", "two ", " three")) (using decided by reverseEquality afterBeing trimmed)
       }
       checkShouldContainStackDepth(e3, left3, deep(Array(" one", "two ", " three")), thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END
@@ -201,20 +201,20 @@ class InOrderOnlyContainMatcherDeciderSpec extends AnyFunSpec with Explicitly {
       
       val left1 = List("ONE ", " TWO", "THREE ")
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should not contain inOrderOnly (" one", "two ", " three")) (decided by lowerCaseEquality afterBeing trimmed)
+        (left1 should not contain inOrderOnly (" one", "two ", " three")) (using decided by lowerCaseEquality afterBeing trimmed)
       }
       checkShouldNotContainStackDepth(e1, left1, deep(Array(" one", "two ", " three")), thisLineNumber - 2)
         
       val left2 = Array("ONE ", " TWO", "THREE ")
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should not contain inOrderOnly (" one", "two ", " three")) (decided by lowerCaseEquality afterBeing trimmed)
+        (left2 should not contain inOrderOnly (" one", "two ", " three")) (using decided by lowerCaseEquality afterBeing trimmed)
       }
       checkShouldNotContainStackDepth(e2, left2, deep(Array(" one", "two ", " three")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS,NATIVE-START
       val left3 = javaList("ONE ", " TWO", "THREE ")
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should not contain inOrderOnly (" one", "two ", " three")) (decided by lowerCaseEquality afterBeing trimmed)
+        (left3 should not contain inOrderOnly (" one", "two ", " three")) (using decided by lowerCaseEquality afterBeing trimmed)
       }
       checkShouldNotContainStackDepth(e3, left3, deep(Array(" one", "two ", " three")), thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END

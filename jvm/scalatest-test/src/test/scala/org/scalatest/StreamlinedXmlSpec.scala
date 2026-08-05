@@ -24,35 +24,35 @@ class StreamlinedXmlSpec extends AnyFunSpec with Matchers with StreamlinedXml {
   describe("Xml Equality of Elems (after being streamlined)") {
 
     it("should leave already-normalized XML alone") {
-      <summer></summer> should equal (<summer></summer>) (after being streamlined[Elem])
+      (<summer></summer> should equal (<summer></summer>)) (/* DOTTY-ONLY using */ after being streamlined[Elem])
     }
 
     it("should zap text that is only whitespace") {
 
-      <summer> </summer> should equal (<summer></summer>) (after being streamlined[Elem])
+      (<summer> </summer> should equal (<summer></summer>)) (/* DOTTY-ONLY using */ after being streamlined[Elem])
 
-      <summer>
-       </summer> should equal (<summer></summer>) (after being streamlined[Elem])
+      (<summer>
+       </summer> should equal (<summer></summer>)) (/* DOTTY-ONLY using */ after being streamlined[Elem])
 
-      <summer>
+      (<summer>
         <day></day>
-      </summer> should equal (<summer><day></day></summer>) (after being streamlined[Elem])
+      </summer> should equal (<summer><day></day></summer>)) (/* DOTTY-ONLY using */ after being streamlined[Elem])
 
-      <summer><day></day></summer> should equal (
+      (<summer><day></day></summer> should equal (
         <summer>
           <day></day>
         </summer>
-      ) (after being streamlined[Elem])
+      )) (/* DOTTY-ONLY using */ after being streamlined[Elem])
 
-      <summer><day>Dude!</day></summer> should equal (
+      (<summer><day>Dude!</day></summer> should equal (
         <summer>
           <day>
             Dude!
           </day>
         </summer>
-      ) (after being streamlined[Elem])
+      )) (/* DOTTY-ONLY using */ after being streamlined[Elem])
 
-      <div>{Text("My name is ")}{Text("Harry")}</div> should equal (<div>My name is Harry</div>) (after being streamlined[Elem])
+      (<div>{Text("My name is ")}{Text("Harry")}</div> should equal (<div>My name is Harry</div>)) (/* DOTTY-ONLY using */ after being streamlined[Elem])
     }
   }
 
@@ -60,39 +60,39 @@ class StreamlinedXmlSpec extends AnyFunSpec with Matchers with StreamlinedXml {
 
     it("should leave already-normalized XML alone") {
 
-      ((<summer></summer>: Node) shouldEqual (<summer></summer>)) (after being streamlined[Node])
+      ((<summer></summer>: Node) shouldEqual (<summer></summer>)) (/* DOTTY-ONLY using */ after being streamlined[Node])
 
-      ((Text("Bla"): Node) shouldEqual (Text("Bla"))) (after being streamlined[Node])
+      ((Text("Bla"): Node) shouldEqual (Text("Bla"))) (/* DOTTY-ONLY using */ after being streamlined[Node])
     }
 
     it("should zap text that is only whitespace, unless it is already a Text") {
 
-      (<summer> </summer>: Node) should equal (<summer></summer>) (after being streamlined[Node])
+      ((<summer> </summer>: Node) should equal (<summer></summer>)) (/* DOTTY-ONLY using */ after being streamlined[Node])
 
-      (<summer>
-      </summer>: Node) should equal (<summer></summer>) (after being streamlined[Node])
+      ((<summer>
+      </summer>: Node) should equal (<summer></summer>)) (/* DOTTY-ONLY using */ after being streamlined[Node])
 
-      (<summer>
+      ((<summer>
         <day></day>
-      </summer>: Node) should equal (<summer><day></day></summer>) (after being streamlined[Node])
+      </summer>: Node) should equal (<summer><day></day></summer>)) (/* DOTTY-ONLY using */ after being streamlined[Node])
 
-      <summer><day></day></summer> should equal (
+      (<summer><day></day></summer> should equal (
         <summer>
           <day></day>
         </summer>: Node
-      ) (after being streamlined[Node])
+      )) (/* DOTTY-ONLY using */ after being streamlined[Node])
 
-      <summer><day>Dude!</day></summer> should equal (
+      (<summer><day>Dude!</day></summer> should equal (
         <summer>
           <day>
             Dude!
           </day>
         </summer>: Node
-      ) (after being streamlined[Node])
+      )) (/* DOTTY-ONLY using */ after being streamlined[Node])
 
-      (Text("   "): Node) should equal (Text("   ")) (after being streamlined[Node])
+      ((Text("   "): Node) should equal (Text("   "))) (/* DOTTY-ONLY using */ after being streamlined[Node])
 
-      (<div>{Text("My name is ")}{Text("Harry")}</div>: Node) should equal (<div>My name is Harry</div>) (after being streamlined[Node])
+      ((<div>{Text("My name is ")}{Text("Harry")}</div>: Node) should equal (<div>My name is Harry</div>)) (/* DOTTY-ONLY using */ after being streamlined[Node])
     }
   }
 
@@ -100,39 +100,39 @@ class StreamlinedXmlSpec extends AnyFunSpec with Matchers with StreamlinedXml {
 
     it("should leave already-normalized XML alone") {
 
-      (<summer></summer>: NodeSeq) should equal (<summer></summer>) (after being streamlined[NodeSeq])
+      ((<summer></summer>: NodeSeq) should equal (<summer></summer>)) (/* DOTTY-ONLY using */ after being streamlined[NodeSeq])
 
-      (Text("Bla"): NodeSeq) should equal (Text("Bla")) (after being streamlined[NodeSeq])
+      ((Text("Bla"): NodeSeq) should equal (Text("Bla"))) (/* DOTTY-ONLY using */ after being streamlined[NodeSeq])
     }
 
     it("should zap text that is only whitespace, unless it is already a Text") {
 
-      (<summer> </summer>: NodeSeq) should equal (<summer></summer>) (after being streamlined[NodeSeq])
+      ((<summer> </summer>: NodeSeq) should equal (<summer></summer>)) (/* DOTTY-ONLY using */ after being streamlined[NodeSeq])
 
-      (<summer>
-      </summer>: NodeSeq) should equal (<summer></summer>) (after being streamlined[NodeSeq])
+      ((<summer>
+      </summer>: NodeSeq) should equal (<summer></summer>)) (/* DOTTY-ONLY using */ after being streamlined[NodeSeq])
 
-      (<summer>
+      ((<summer>
         <day></day>
-      </summer>: NodeSeq) should equal (<summer><day></day></summer>) (after being streamlined[NodeSeq])
+      </summer>: NodeSeq) should equal (<summer><day></day></summer>)) (/* DOTTY-ONLY using */ after being streamlined[NodeSeq])
 
-      <summer><day></day></summer> should equal (
+      (<summer><day></day></summer> should equal (
         <summer>
           <day></day>
         </summer>: NodeSeq
-      ) (after being streamlined[NodeSeq])
+      )) (/* DOTTY-ONLY using */ after being streamlined[NodeSeq])
 
-      <summer><day>Dude!</day></summer> should equal (
+      (<summer><day>Dude!</day></summer> should equal (
         <summer>
           <day>
             Dude!
           </day>
         </summer>: NodeSeq
-      ) (after being streamlined[NodeSeq])
+      )) (/* DOTTY-ONLY using */ after being streamlined[NodeSeq])
 
-      (Text("   "): NodeSeq) should equal (Text("   ")) (after being streamlined[NodeSeq])
+      ((Text("   "): NodeSeq) should equal (Text("   "))) (/* DOTTY-ONLY using */ after being streamlined[NodeSeq])
 
-      (<div>{Text("My name is ")}{Text("Harry")}</div>: NodeSeq) should equal (<div>My name is Harry</div>) (after being streamlined[NodeSeq])
+      ((<div>{Text("My name is ")}{Text("Harry")}</div>: NodeSeq) should equal (<div>My name is Harry</div>)) (/* DOTTY-ONLY using */ after being streamlined[NodeSeq])
     }
   }
 }

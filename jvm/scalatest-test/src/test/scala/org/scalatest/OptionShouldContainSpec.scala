@@ -81,12 +81,12 @@ class OptionShouldContainSpec extends AnyFunSpec with Matchers {
         intercept[TestFailedException] {
           some should contain ("HI")
         }
-        (some should contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
-        (some should contain ("HI")) (after being lowerCased)
+        (some should contain ("HI")) (using decided by defaultEquality afterBeing lowerCased)
+        (some should contain ("HI")) (using after being lowerCased)
         intercept[TestFailedException] {
-          (some should contain ("HI ")) (after being lowerCased)
+          (some should contain ("HI ")) (using after being lowerCased)
         }
-        (some should contain ("HI ")) (after being lowerCased and trimmed)
+        (some should contain ("HI ")) (using after being lowerCased and trimmed)
         
         {
           implicit val e = new Equality[String] {
@@ -95,7 +95,7 @@ class OptionShouldContainSpec extends AnyFunSpec with Matchers {
           intercept[TestFailedException] {
             some should contain ("hi")
           }
-          (some should contain ("hi")) (decided by defaultEquality[String])
+          (some should contain ("hi")) (using decided by defaultEquality[String])
         }
       }
       it("should do nothing when used with null and LHS contains null value") {
@@ -150,13 +150,13 @@ class OptionShouldContainSpec extends AnyFunSpec with Matchers {
       it("should use an explicitly provided Equality") {
         some should not contain "HI"
         some should not contain "HI "
-        (some should not contain "HI ") (decided by defaultEquality afterBeing lowerCased)
-        (some should not contain "HI ") (after being lowerCased)
+        (some should not contain "HI ") (using decided by defaultEquality afterBeing lowerCased)
+        (some should not contain "HI ") (using after being lowerCased)
         intercept[TestFailedException] {
-          (some should not contain "HI") (decided by defaultEquality afterBeing lowerCased)
+          (some should not contain "HI") (using decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (some should not contain "HI ") (after being lowerCased and trimmed)
+          (some should not contain "HI ") (using after being lowerCased and trimmed)
         }
       }
       it("should do nothing when used with null and LHS did not contain null value") {
@@ -214,13 +214,13 @@ class OptionShouldContainSpec extends AnyFunSpec with Matchers {
       it("should use an explicitly provided Equality") {
         some should not (contain ("HI"))
         some should not (contain ("HI "))
-        (some should not (contain ("HI "))) (decided by defaultEquality afterBeing lowerCased)
-        (some should not (contain ("HI "))) (after being lowerCased)
+        (some should not (contain ("HI "))) (using decided by defaultEquality afterBeing lowerCased)
+        (some should not (contain ("HI "))) (using after being lowerCased)
         intercept[TestFailedException] {
-          (some should not (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
+          (some should not (contain ("HI"))) (using decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (some should not (contain ("HI "))) (after being lowerCased and trimmed)
+          (some should not (contain ("HI "))) (using after being lowerCased and trimmed)
         }
       }
       it("should do nothing when used with null and LHS did not contain null value") {
@@ -277,13 +277,13 @@ class OptionShouldContainSpec extends AnyFunSpec with Matchers {
       it("should use an explicitly provided Equality") {
         some should (not contain "HI")
         some should (not contain "HI ")
-        (some should (not contain "HI ")) (decided by defaultEquality afterBeing lowerCased)
-        (some should (not contain "HI ")) (after being lowerCased)
+        (some should (not contain "HI ")) (using decided by defaultEquality afterBeing lowerCased)
+        (some should (not contain "HI ")) (using after being lowerCased)
         intercept[TestFailedException] {
-          (some should (not contain "HI")) (decided by defaultEquality afterBeing lowerCased)
+          (some should (not contain "HI")) (using decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (some should (not contain "HI ")) (after being lowerCased and trimmed)
+          (some should (not contain "HI ")) (using after being lowerCased and trimmed)
         }
       }
       it("should do nothing when used with null and LHS did not contain null value") {
@@ -332,13 +332,13 @@ class OptionShouldContainSpec extends AnyFunSpec with Matchers {
       it("should use an explicitly provided Equality") {
         some shouldNot contain ("HI")
         some shouldNot contain ("HI ")
-        (some shouldNot contain ("HI ")) (decided by defaultEquality afterBeing lowerCased)
-        (some shouldNot contain ("HI ")) (after being lowerCased)
+        (some shouldNot contain ("HI ")) (using decided by defaultEquality afterBeing lowerCased)
+        (some shouldNot contain ("HI ")) (using after being lowerCased)
         intercept[TestFailedException] {
-          (some shouldNot contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
+          (some shouldNot contain ("HI")) (using decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (some shouldNot contain ("HI ")) (after being lowerCased and trimmed)
+          (some shouldNot contain ("HI ")) (using after being lowerCased and trimmed)
         }
       }
       it("should minimize normalization if an implicit NormalizingEquality is in scope") {
@@ -411,16 +411,16 @@ class OptionShouldContainSpec extends AnyFunSpec with Matchers {
       it("should use an explicitly provided Equality") {
         some shouldNot (contain ("HI"))
         some shouldNot (contain ("HI "))
-        (some shouldNot (contain ("HI "))) (decided by defaultEquality afterBeing lowerCased)
-        (some shouldNot (contain ("HI "))) (after being lowerCased)
+        (some shouldNot (contain ("HI "))) (using decided by defaultEquality afterBeing lowerCased)
+        (some shouldNot (contain ("HI "))) (using after being lowerCased)
         intercept[TestFailedException] {
-          (some shouldNot (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
+          (some shouldNot (contain ("HI"))) (using decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (some shouldNot (contain ("HI"))) (after being lowerCased)
+          (some shouldNot (contain ("HI"))) (using after being lowerCased)
         }
         intercept[TestFailedException] {
-          (some shouldNot (contain ("HI "))) (after being lowerCased and trimmed)
+          (some shouldNot (contain ("HI "))) (using after being lowerCased and trimmed)
         }
       }
       it("should minimize normalization if an implicit NormalizingEquality is in scope") {
@@ -529,8 +529,8 @@ class OptionShouldContainSpec extends AnyFunSpec with Matchers {
         intercept[TestFailedException] {
           all (hiSomes) should contain ("HI ")
         }
-        (all (hiSomes) should contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
-        (all (hiSomes) should contain ("HI ")) (after being trimmed and lowerCased)
+        (all (hiSomes) should contain ("HI")) (using decided by defaultEquality afterBeing lowerCased)
+        (all (hiSomes) should contain ("HI ")) (using after being trimmed and lowerCased)
       }
       it("should do nothing when used with null and LHS contains null value") {
         all (hiNullSomes) should contain (null)
@@ -593,10 +593,10 @@ class OptionShouldContainSpec extends AnyFunSpec with Matchers {
         all (hiSomes) should not contain "HI"
         all (hiSomes) should not contain "HI "
         intercept[TestFailedException] {
-          (all (hiSomes) should not contain "HI") (decided by defaultEquality afterBeing lowerCased)
+          (all (hiSomes) should not contain "HI") (using decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (all (hiSomes) should not contain "HI ") (after being trimmed and lowerCased)
+          (all (hiSomes) should not contain "HI ") (using after being trimmed and lowerCased)
         }
       }
       it("should do nothing when used with null and LHS did not contain null value") {
@@ -660,10 +660,10 @@ class OptionShouldContainSpec extends AnyFunSpec with Matchers {
         all (hiSomes) should not (contain ("HI"))
         all (hiSomes) should not (contain ("HI "))
         intercept[TestFailedException] {
-          (all (hiSomes) should not (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
+          (all (hiSomes) should not (contain ("HI"))) (using decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (all (hiSomes) should not (contain ("HI "))) (after being trimmed and lowerCased)
+          (all (hiSomes) should not (contain ("HI "))) (using after being trimmed and lowerCased)
         }
       }
       it("should do nothing when used with null and LHS did not contain null value") {
@@ -727,10 +727,10 @@ class OptionShouldContainSpec extends AnyFunSpec with Matchers {
         all (hiSomes) should (not contain "HI")
         all (hiSomes) should (not contain "HI ")
         intercept[TestFailedException] {
-          (all (hiSomes) should (not contain "HI")) (decided by defaultEquality afterBeing lowerCased)
+          (all (hiSomes) should (not contain "HI")) (using decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (all (hiSomes) should (not contain "HI ")) (after being trimmed and lowerCased)
+          (all (hiSomes) should (not contain "HI ")) (using after being trimmed and lowerCased)
         }
       }
       it("should do nothing when used with null and LHS did not contain null value") {
@@ -795,10 +795,10 @@ class OptionShouldContainSpec extends AnyFunSpec with Matchers {
         all (hiSomes) shouldNot contain ("HI")
         all (hiSomes) shouldNot contain ("HI ")
         intercept[TestFailedException] {
-          (all (hiSomes) shouldNot contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
+          (all (hiSomes) shouldNot contain ("HI")) (using decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (all (hiSomes) shouldNot contain ("HI ")) (after being trimmed and lowerCased)
+          (all (hiSomes) shouldNot contain ("HI ")) (using after being trimmed and lowerCased)
         }
       }
       it("should do nothing when used with null and LHS did not contain null value") {
@@ -863,10 +863,10 @@ class OptionShouldContainSpec extends AnyFunSpec with Matchers {
         all (hiSomes) shouldNot (contain ("HI"))
         all (hiSomes) shouldNot (contain ("HI "))
         intercept[TestFailedException] {
-          (all (hiSomes) shouldNot (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
+          (all (hiSomes) shouldNot (contain ("HI"))) (using decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (all (hiSomes) shouldNot (contain ("HI "))) (after being trimmed and lowerCased)
+          (all (hiSomes) shouldNot (contain ("HI "))) (using after being trimmed and lowerCased)
         }
       }
       it("should do nothing when used with null and LHS did not contain null value") {

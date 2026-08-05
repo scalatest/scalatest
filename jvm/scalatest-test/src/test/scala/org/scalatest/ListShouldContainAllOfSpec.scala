@@ -75,14 +75,14 @@ class ListShouldContainAllOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should contain allOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
+        (fumList should contain allOf ("FEE", "FIE", "FOE", "FUM")) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should contain allOf ("fee", "fie", "foe", "fam")) (decided by upperCaseStringEquality)
+          (fumList should contain allOf ("fee", "fie", "foe", "fam")) (using decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
           fumList should contain allOf (" FEE ", " FIE ", " FOE ", " FUM ")
         }
-        (fumList should contain allOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
+        (fumList should contain allOf (" FEE ", " FIE ", " FOE ", " FUM ")) (using after being lowerCased and trimmed)
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -120,14 +120,14 @@ class ListShouldContainAllOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should (contain allOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+        (fumList should (contain allOf ("FEE", "FIE", "FOE", "FUM"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should (contain allOf ("fee", "fie", "foe", "fam"))) (decided by upperCaseStringEquality)
+          (fumList should (contain allOf ("fee", "fie", "foe", "fam"))) (using decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
           fumList should (contain allOf (" FEE ", " FIE ", " FOE ", " FUM "))
         }
-        (fumList should (contain allOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
+        (fumList should (contain allOf (" FEE ", " FIE ", " FOE ", " FUM "))) (using after being lowerCased and trimmed)
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -208,13 +208,13 @@ class ListShouldContainAllOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList should (not contain allOf ("NICE", "TO", "MEET", "YOU", "TOO"))) (decided by upperCaseStringEquality)
+        (toList should (not contain allOf ("NICE", "TO", "MEET", "YOU", "TOO"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should (not contain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+          (toList should (not contain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (using decided by upperCaseStringEquality)
         }
         toList should (not contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList should (not contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+          (toList should (not contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (using after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -246,13 +246,13 @@ class ListShouldContainAllOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList shouldNot contain allOf ("happy", "birthday", "to", "you", "dear")) (decided by upperCaseStringEquality)
+        (toList shouldNot contain allOf ("happy", "birthday", "to", "you", "dear")) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList shouldNot contain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
+          (toList shouldNot contain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (using decided by upperCaseStringEquality)
         }
         toList shouldNot contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         intercept[TestFailedException] {
-          (toList shouldNot contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
+          (toList shouldNot contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (using after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -284,13 +284,13 @@ class ListShouldContainAllOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList shouldNot (contain allOf ("NICE", "TO", "MEET", "YOU", "TOO"))) (decided by upperCaseStringEquality)
+        (toList shouldNot (contain allOf ("NICE", "TO", "MEET", "YOU", "TOO"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList shouldNot (contain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+          (toList shouldNot (contain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (using decided by upperCaseStringEquality)
         }
         toList shouldNot (contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList shouldNot (contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+          (toList shouldNot (contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (using after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -345,14 +345,14 @@ class ListShouldContainAllOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should contain allOf ("HE", "HI")) (decided by upperCaseStringEquality)
+        (all (hiLists) should contain allOf ("HE", "HI")) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should contain allOf ("HO", "HI")) (decided by upperCaseStringEquality)
+          (all (hiLists) should contain allOf ("HO", "HI")) (using decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should contain allOf ("he", "hi")) (decided by defaultEquality[String])
+        (all (hiLists) should contain allOf ("he", "hi")) (using decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should contain allOf ("ho", "hi")) (decided by defaultEquality[String])
+          (all (hiLists) should contain allOf ("ho", "hi")) (using decided by defaultEquality[String])
         }
       }
     }
@@ -390,14 +390,14 @@ class ListShouldContainAllOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (contain allOf ("HE", "HI"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (contain allOf ("HE", "HI"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should (contain allOf ("HO", "HI"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (contain allOf ("HO", "HI"))) (using decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should (contain allOf ("he", "hi"))) (decided by defaultEquality[String])
+        (all (hiLists) should (contain allOf ("he", "hi"))) (using decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should (contain allOf ("ho", "hi"))) (decided by defaultEquality[String])
+          (all (hiLists) should (contain allOf ("ho", "hi"))) (using decided by defaultEquality[String])
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -431,13 +431,13 @@ class ListShouldContainAllOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should not contain allOf ("NICE", "MEET", "YOU")) (decided by upperCaseStringEquality)
+        (all (toLists) should not contain allOf ("NICE", "MEET", "YOU")) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should not contain allOf ("YOU", "TO")) (decided by upperCaseStringEquality)
+          (all (toLists) should not contain allOf ("YOU", "TO")) (using decided by upperCaseStringEquality)
         }
         all (toLists) should not contain allOf (" YOU ", " TO ")
         intercept[TestFailedException] {
-          (all (toLists) should not contain allOf (" YOU ", " TO ")) (after being lowerCased and trimmed)
+          (all (toLists) should not contain allOf (" YOU ", " TO ")) (using after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -471,13 +471,13 @@ class ListShouldContainAllOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should (not contain allOf ("NICE", "MEET", "YOU"))) (decided by upperCaseStringEquality)
+        (all (toLists) should (not contain allOf ("NICE", "MEET", "YOU"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should (not contain allOf ("YOU", "TO"))) (decided by upperCaseStringEquality)
+          (all (toLists) should (not contain allOf ("YOU", "TO"))) (using decided by upperCaseStringEquality)
         }
         all (toLists) should (not contain allOf (" YOU ", " TO "))
         intercept[TestFailedException] {
-          (all (toLists) should (not contain allOf (" YOU ", " TO "))) (after being lowerCased and trimmed)
+          (all (toLists) should (not contain allOf (" YOU ", " TO "))) (using after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -511,13 +511,13 @@ class ListShouldContainAllOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot contain allOf ("NICE", "MEET", "YOU")) (decided by upperCaseStringEquality)
+        (all (toLists) shouldNot contain allOf ("NICE", "MEET", "YOU")) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain allOf ("YOU", "TO")) (decided by upperCaseStringEquality)
+          (all (toLists) shouldNot contain allOf ("YOU", "TO")) (using decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot contain allOf (" YOU ", " TO ")
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain allOf (" YOU ", " TO ")) (after being lowerCased and trimmed)
+          (all (toLists) shouldNot contain allOf (" YOU ", " TO ")) (using after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -551,13 +551,13 @@ class ListShouldContainAllOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot (contain allOf ("NICE", "MEET", "YOU"))) (decided by upperCaseStringEquality)
+        (all (toLists) shouldNot (contain allOf ("NICE", "MEET", "YOU"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain allOf ("YOU", "TO"))) (decided by upperCaseStringEquality)
+          (all (toLists) shouldNot (contain allOf ("YOU", "TO"))) (using decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot (contain allOf (" YOU ", " TO "))
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain allOf (" YOU ", " TO "))) (after being lowerCased and trimmed)
+          (all (toLists) shouldNot (contain allOf (" YOU ", " TO "))) (using after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {

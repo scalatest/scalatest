@@ -85,16 +85,16 @@ class ListShouldContainAtLeastOneElementOfLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM") and contain atLeastOneElementOf Seq("FEE", "FIE", "FUM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM") and contain atLeastOneElementOf Seq("FEE", "FIE", "FUM", "FOE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM") and contain atLeastOneElementOf Seq("fum", "foe"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM") and contain atLeastOneElementOf Seq("fum", "foe"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, FailureMessages.containedAtLeastOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", but " + FailureMessages.didNotContainAtLeastOneElementOf(prettifier, fumList, Seq("fum", "foe")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (contain atLeastOneElementOf Seq("fum", "foe") and contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (contain atLeastOneElementOf Seq("fum", "foe") and contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, FailureMessages.didNotContainAtLeastOneElementOf(prettifier, fumList, Seq("fum", "foe")), fileName, thisLineNumber - 2)
-        (fumList should (contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ") and contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ") and contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (using after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
       it("should allow RHS to contain duplicated value") {
@@ -131,16 +131,16 @@ class ListShouldContainAtLeastOneElementOfLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (equal (fumList) and contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
+        (fumList should (equal (fumList) and contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (using decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (equal (fumList) and contain atLeastOneElementOf Seq("fum", "foe"))) (decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
+          (fumList should (equal (fumList) and contain atLeastOneElementOf Seq("fum", "foe"))) (using decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, FailureMessages.equaled(prettifier, fumList, fumList) + ", but " + FailureMessages.didNotContainAtLeastOneElementOf(prettifier, fumList, Seq("fum", "foe")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (equal (toList) and contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
+          (fumList should (equal (toList) and contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (using decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, FailureMessages.didNotEqual(prettifier, fumList, toList), fileName, thisLineNumber - 2)
-        (fumList should (equal (fumList) and contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (decided by defaultEquality[List[String]], after being lowerCased and trimmed)
+        (fumList should (equal (fumList) and contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (using decided by defaultEquality[List[String]], after being lowerCased and trimmed)
       }
 
       it("should allow RHS to contain duplicated value") {
@@ -176,16 +176,16 @@ class ListShouldContainAtLeastOneElementOfLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (be (fumList) and contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+        (fumList should (be (fumList) and contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (using decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (be (fumList) and contain atLeastOneElementOf Seq("fum", "foe"))) (decided by upperCaseStringEquality)
+          (fumList should (be (fumList) and contain atLeastOneElementOf Seq("fum", "foe"))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, FailureMessages.wasEqualTo(prettifier, fumList, fumList) + ", but " + FailureMessages.didNotContainAtLeastOneElementOf(prettifier, fumList, Seq("fum", "foe")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (be (toList) and contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+          (fumList should (be (toList) and contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, FailureMessages.wasNotEqualTo(prettifier, fumList, toList), fileName, thisLineNumber - 2)
-        (fumList should (be (fumList) and contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
+        (fumList should (be (fumList) and contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (using after being lowerCased and trimmed)
       }
 
       it("should allow RHS to contain duplicated value") {
@@ -221,16 +221,16 @@ class ListShouldContainAtLeastOneElementOfLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM") and be (fumList))) (decided by upperCaseStringEquality)
+        (fumList should (contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM") and be (fumList))) (using decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain atLeastOneElementOf Seq("fum", "foe") and be (fumList))) (decided by upperCaseStringEquality)
+          (fumList should (contain atLeastOneElementOf Seq("fum", "foe") and be (fumList))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, FailureMessages.didNotContainAtLeastOneElementOf(prettifier, fumList, Seq("fum", "foe")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM") and be (toList))) (decided by upperCaseStringEquality)
+          (fumList should (contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM") and be (toList))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, FailureMessages.containedAtLeastOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", but " + FailureMessages.wasNotEqualTo(prettifier, fumList, toList), fileName, thisLineNumber - 2)
-        (fumList should (contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ") and be (fumList))) (after being lowerCased and trimmed)
+        (fumList should (contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ") and be (fumList))) (using after being lowerCased and trimmed)
       }
 
       it("should allow RHS to contain duplicated value") {
@@ -266,16 +266,16 @@ class ListShouldContainAtLeastOneElementOfLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (not contain atLeastOneElementOf (Seq("fum", "foe")) and not contain atLeastOneElementOf (Seq("fum", "foe")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not contain atLeastOneElementOf (Seq("fum", "foe")) and not contain atLeastOneElementOf (Seq("fum", "foe")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not contain atLeastOneElementOf (Seq("fum", "foe")) and not contain atLeastOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not contain atLeastOneElementOf (Seq("fum", "foe")) and not contain atLeastOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, FailureMessages.didNotContainAtLeastOneElementOf(prettifier, fumList, Seq("fum", "foe")) + ", but " + FailureMessages.containedAtLeastOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (not contain atLeastOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")) and not contain atLeastOneElementOf (Seq("fum", "foe")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not contain atLeastOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")) and not contain atLeastOneElementOf (Seq("fum", "foe")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, FailureMessages.containedAtLeastOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
-        (fumList should (contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ") and contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ") and contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (using after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
       it("should allow RHS to contain duplicated value") {
@@ -312,16 +312,16 @@ class ListShouldContainAtLeastOneElementOfLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (not equal (toList) and not contain atLeastOneElementOf (Seq("fum", "foe")))) (decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
+        (fumList should (not equal (toList) and not contain atLeastOneElementOf (Seq("fum", "foe")))) (using decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not equal (toList) and not contain atLeastOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")))) (decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
+          (fumList should (not equal (toList) and not contain atLeastOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")))) (using decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, FailureMessages.didNotEqual(prettifier, fumList, toList) + ", but " + FailureMessages.containedAtLeastOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (not equal (fumList) and not contain atLeastOneElementOf (Seq("fum", "foe")))) (decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
+          (fumList should (not equal (fumList) and not contain atLeastOneElementOf (Seq("fum", "foe")))) (using decided by defaultEquality[List[String]], decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, FailureMessages.equaled(prettifier, fumList, fumList), fileName, thisLineNumber - 2)
-        (fumList should (not contain atLeastOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUU ")) and not contain atLeastOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUU ")))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (not contain atLeastOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUU ")) and not contain atLeastOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUU ")))) (using after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
       it("should allow RHS to contain duplicated value") {
@@ -357,16 +357,16 @@ class ListShouldContainAtLeastOneElementOfLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (not be (toList) and not contain atLeastOneElementOf (Seq("fum", "foe")))) (decided by upperCaseStringEquality)
+        (fumList should (not be (toList) and not contain atLeastOneElementOf (Seq("fum", "foe")))) (using decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not be (toList) and not contain atLeastOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality)
+          (fumList should (not be (toList) and not contain atLeastOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, FailureMessages.wasNotEqualTo(prettifier, fumList, toList) + ", but " + FailureMessages.containedAtLeastOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (not be (fumList) and not contain atLeastOneElementOf (Seq("fum", "foe")))) (decided by upperCaseStringEquality)
+          (fumList should (not be (fumList) and not contain atLeastOneElementOf (Seq("fum", "foe")))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, FailureMessages.wasEqualTo(prettifier, fumList, fumList), fileName, thisLineNumber - 2)
-        (fumList should (not contain atLeastOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUU ")) and not contain atLeastOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUU ")))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (not contain atLeastOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUU ")) and not contain atLeastOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUU ")))) (using after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
       it("should allow RHS to contain duplicated value") {
@@ -448,14 +448,14 @@ class ListShouldContainAtLeastOneElementOfLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (contain atLeastOneElementOf Seq("HI", "HE") and contain atLeastOneElementOf Seq("HI", "HE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (contain atLeastOneElementOf Seq("HI", "HE") and contain atLeastOneElementOf Seq("HI", "HE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (contain atLeastOneElementOf Seq("hi", "he") and contain atLeastOneElementOf Seq("HI", "HE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (contain atLeastOneElementOf Seq("hi", "he") and contain atLeastOneElementOf Seq("HI", "HE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, hiLists(0)) + " did not contain at least one element of " + decorateToStringValue(prettifier, Seq("hi", "he")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          (all (hiLists) should (contain atLeastOneElementOf Seq("HI", "HE") and contain atLeastOneElementOf Seq("hi", "he"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (contain atLeastOneElementOf Seq("HI", "HE") and contain atLeastOneElementOf Seq("hi", "he"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(prettifier, hiLists(0)) + " contained at least one element of " + decorateToStringValue(prettifier, Seq("HI", "HE")) + ", but " + decorateToStringValue(prettifier, hiLists(0)) + " did not contain at least one element of " + decorateToStringValue(prettifier, Seq("hi", "he")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -524,14 +524,14 @@ class ListShouldContainAtLeastOneElementOfLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (be (List("hi")) and contain atLeastOneElementOf Seq("HI", "HE"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (be (List("hi")) and contain atLeastOneElementOf Seq("HI", "HE"))) (using decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (be (List("ho")) and contain atLeastOneElementOf Seq("HI", "HE"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (be (List("ho")) and contain atLeastOneElementOf Seq("HI", "HE"))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, List("hi")) + " was not equal to " + decorateToStringValue(prettifier, List("ho")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          (all (hiLists) should (be (List("hi")) and contain atLeastOneElementOf Seq("hi", "he"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (be (List("hi")) and contain atLeastOneElementOf Seq("hi", "he"))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(prettifier, List("hi")) + " was equal to " + decorateToStringValue(prettifier, List("hi")) + ", but " + decorateToStringValue(prettifier, hiLists(0)) + " did not contain at least one element of " + decorateToStringValue(prettifier, Seq("hi", "he")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -587,14 +587,14 @@ class ListShouldContainAtLeastOneElementOfLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (not contain atLeastOneElementOf (Seq("hi", "he")) and not contain atLeastOneElementOf (Seq("hi", "he")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (not contain atLeastOneElementOf (Seq("hi", "he")) and not contain atLeastOneElementOf (Seq("hi", "he")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not contain atLeastOneElementOf (Seq("HI", "HE")) and not contain atLeastOneElementOf (Seq("hi", "he")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (not contain atLeastOneElementOf (Seq("HI", "HE")) and not contain atLeastOneElementOf (Seq("hi", "he")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, hiLists(0)) + " contained at least one element of " + decorateToStringValue(prettifier, Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          (all (hiLists) should (not contain atLeastOneElementOf (Seq("hi", "he")) and not contain atLeastOneElementOf (Seq("HI", "HE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (not contain atLeastOneElementOf (Seq("hi", "he")) and not contain atLeastOneElementOf (Seq("HI", "HE")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(prettifier, hiLists(0)) + " did not contain at least one element of " + decorateToStringValue(prettifier, Seq("hi", "he")) + ", but " + decorateToStringValue(prettifier, hiLists(0)) + " contained at least one element of " + decorateToStringValue(prettifier, Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -651,14 +651,14 @@ class ListShouldContainAtLeastOneElementOfLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (not be (List("ho")) and not contain atLeastOneElementOf (Seq("hi", "he")))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (not be (List("ho")) and not contain atLeastOneElementOf (Seq("hi", "he")))) (using decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not be (List("hi")) and not contain atLeastOneElementOf (Seq("hi", "he")))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (not be (List("hi")) and not contain atLeastOneElementOf (Seq("hi", "he")))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, List("hi")) + " was equal to " + decorateToStringValue(prettifier, List("hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          (all (hiLists) should (not be (List("ho")) and not contain atLeastOneElementOf (Seq("HI", "HE")))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (not be (List("ho")) and not contain atLeastOneElementOf (Seq("HI", "HE")))) (using decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(prettifier, List("hi")) + " was not equal to " + decorateToStringValue(prettifier, List("ho")) + ", but " + decorateToStringValue(prettifier, hiLists(0)) + " contained at least one element of " + decorateToStringValue(prettifier, Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }

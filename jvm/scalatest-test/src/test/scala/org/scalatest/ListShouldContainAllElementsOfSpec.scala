@@ -75,14 +75,14 @@ class ListShouldContainAllElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should contain allElementsOf Seq("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
+        (fumList should contain allElementsOf Seq("FEE", "FIE", "FOE", "FUM")) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should contain allElementsOf Seq("fee", "fie", "foe", "fam")) (decided by upperCaseStringEquality)
+          (fumList should contain allElementsOf Seq("fee", "fie", "foe", "fam")) (using decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
           fumList should contain allElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")
         }
-        (fumList should contain allElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
+        (fumList should contain allElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")) (using after being lowerCased and trimmed)
       }
       it("should allow RHS to contain duplicated value") {
         fumList should contain allElementsOf Seq("fee", "fie", "foe", "fie", "fum")
@@ -115,14 +115,14 @@ class ListShouldContainAllElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should (contain allElementsOf Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+        (fumList should (contain allElementsOf Seq("FEE", "FIE", "FOE", "FUM"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should (contain allElementsOf Seq("fee", "fie", "foe", "fam"))) (decided by upperCaseStringEquality)
+          (fumList should (contain allElementsOf Seq("fee", "fie", "foe", "fam"))) (using decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
           fumList should (contain allElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))
         }
-        (fumList should (contain allElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
+        (fumList should (contain allElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (using after being lowerCased and trimmed)
       }
       it("should allow RHS to contain duplicated value") {
         fumList should (contain allElementsOf Seq("fee", "fie", "foe", "fie", "fum"))
@@ -187,13 +187,13 @@ class ListShouldContainAllElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList should (not contain allElementsOf (Seq("NICE", "TO", "MEET", "YOU", "TOO")))) (decided by upperCaseStringEquality)
+        (toList should (not contain allElementsOf (Seq("NICE", "TO", "MEET", "YOU", "TOO")))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should (not contain allElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseStringEquality)
+          (toList should (not contain allElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (using decided by upperCaseStringEquality)
         }
         toList should (not contain allElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
         intercept[TestFailedException] {
-          (toList should (not contain allElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
+          (toList should (not contain allElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (using after being lowerCased and trimmed)
         }
       }
       it("should allow RHS to contain duplicated value") {
@@ -220,13 +220,13 @@ class ListShouldContainAllElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList shouldNot contain allElementsOf Seq("happy", "birthday", "to", "you", "dear")) (decided by upperCaseStringEquality)
+        (toList shouldNot contain allElementsOf Seq("happy", "birthday", "to", "you", "dear")) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList shouldNot contain allElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
+          (toList shouldNot contain allElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) (using decided by upperCaseStringEquality)
         }
         toList shouldNot contain allElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         intercept[TestFailedException] {
-          (toList shouldNot contain allElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
+          (toList shouldNot contain allElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (using after being lowerCased and trimmed)
         }
       }
       it("should allow RHS to contain duplicated value") {
@@ -253,13 +253,13 @@ class ListShouldContainAllElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList shouldNot (contain allElementsOf Seq("NICE", "TO", "MEET", "YOU", "TOO"))) (decided by upperCaseStringEquality)
+        (toList shouldNot (contain allElementsOf Seq("NICE", "TO", "MEET", "YOU", "TOO"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList shouldNot (contain allElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+          (toList shouldNot (contain allElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (using decided by upperCaseStringEquality)
         }
         toList shouldNot (contain allElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList shouldNot (contain allElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+          (toList shouldNot (contain allElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (using after being lowerCased and trimmed)
         }
       }
       it("should allow RHS to contain duplicated value") {
@@ -309,14 +309,14 @@ class ListShouldContainAllElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should contain allElementsOf Seq("HE", "HI")) (decided by upperCaseStringEquality)
+        (all (hiLists) should contain allElementsOf Seq("HE", "HI")) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should contain allElementsOf Seq("HO", "HI")) (decided by upperCaseStringEquality)
+          (all (hiLists) should contain allElementsOf Seq("HO", "HI")) (using decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should contain allElementsOf Seq("he", "hi")) (decided by defaultEquality[String])
+        (all (hiLists) should contain allElementsOf Seq("he", "hi")) (using decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should contain allElementsOf Seq("ho", "hi")) (decided by defaultEquality[String])
+          (all (hiLists) should contain allElementsOf Seq("ho", "hi")) (using decided by defaultEquality[String])
         }
       }
       it("should allow RHS to contain duplicated value") {
@@ -357,14 +357,14 @@ class ListShouldContainAllElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (contain allElementsOf Seq("HE", "HI"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (contain allElementsOf Seq("HE", "HI"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should (contain allElementsOf Seq("HO", "HI"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (contain allElementsOf Seq("HO", "HI"))) (using decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should (contain allElementsOf Seq("he", "hi"))) (decided by defaultEquality[String])
+        (all (hiLists) should (contain allElementsOf Seq("he", "hi"))) (using decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should (contain allElementsOf Seq("ho", "hi"))) (decided by defaultEquality[String])
+          (all (hiLists) should (contain allElementsOf Seq("ho", "hi"))) (using decided by defaultEquality[String])
         }
       }
       it("should allow RHS to contain duplicated value") {
@@ -393,13 +393,13 @@ class ListShouldContainAllElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should not contain allElementsOf (Seq("NICE", "MEET", "YOU"))) (decided by upperCaseStringEquality)
+        (all (toLists) should not contain allElementsOf (Seq("NICE", "MEET", "YOU"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should not contain allElementsOf (Seq("YOU", "TO"))) (decided by upperCaseStringEquality)
+          (all (toLists) should not contain allElementsOf (Seq("YOU", "TO"))) (using decided by upperCaseStringEquality)
         }
         all (toLists) should not contain allElementsOf (Seq(" YOU ", " TO "))
         intercept[TestFailedException] {
-          (all (toLists) should not contain allElementsOf (Seq(" YOU ", " TO "))) (after being lowerCased and trimmed)
+          (all (toLists) should not contain allElementsOf (Seq(" YOU ", " TO "))) (using after being lowerCased and trimmed)
         }
       }
       it("should allow RHS to contain duplicated value") {
@@ -428,13 +428,13 @@ class ListShouldContainAllElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should (not contain allElementsOf (Seq("NICE", "MEET", "YOU")))) (decided by upperCaseStringEquality)
+        (all (toLists) should (not contain allElementsOf (Seq("NICE", "MEET", "YOU")))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should (not contain allElementsOf (Seq("YOU", "TO")))) (decided by upperCaseStringEquality)
+          (all (toLists) should (not contain allElementsOf (Seq("YOU", "TO")))) (using decided by upperCaseStringEquality)
         }
         all (toLists) should (not contain allElementsOf (Seq(" YOU ", " TO ")))
         intercept[TestFailedException] {
-          (all (toLists) should (not contain allElementsOf (Seq(" YOU ", " TO ")))) (after being lowerCased and trimmed)
+          (all (toLists) should (not contain allElementsOf (Seq(" YOU ", " TO ")))) (using after being lowerCased and trimmed)
         }
       }
       it("should allow RHS to contain duplicated value") {
@@ -463,13 +463,13 @@ class ListShouldContainAllElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot contain allElementsOf Seq("NICE", "MEET", "YOU")) (decided by upperCaseStringEquality)
+        (all (toLists) shouldNot contain allElementsOf Seq("NICE", "MEET", "YOU")) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain allElementsOf Seq("YOU", "TO")) (decided by upperCaseStringEquality)
+          (all (toLists) shouldNot contain allElementsOf Seq("YOU", "TO")) (using decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot contain allElementsOf Seq(" YOU ", " TO ")
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain allElementsOf Seq(" YOU ", " TO ")) (after being lowerCased and trimmed)
+          (all (toLists) shouldNot contain allElementsOf Seq(" YOU ", " TO ")) (using after being lowerCased and trimmed)
         }
       }
       it("should allow RHS to contain duplicated value") {
@@ -498,13 +498,13 @@ class ListShouldContainAllElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot (contain allElementsOf Seq("NICE", "MEET", "YOU"))) (decided by upperCaseStringEquality)
+        (all (toLists) shouldNot (contain allElementsOf Seq("NICE", "MEET", "YOU"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain allElementsOf Seq("YOU", "TO"))) (decided by upperCaseStringEquality)
+          (all (toLists) shouldNot (contain allElementsOf Seq("YOU", "TO"))) (using decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot (contain allElementsOf Seq(" YOU ", " TO "))
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain allElementsOf Seq(" YOU ", " TO "))) (after being lowerCased and trimmed)
+          (all (toLists) shouldNot (contain allElementsOf Seq(" YOU ", " TO "))) (using after being lowerCased and trimmed)
         }
       }
       it("should allow RHS to contain duplicated value") {

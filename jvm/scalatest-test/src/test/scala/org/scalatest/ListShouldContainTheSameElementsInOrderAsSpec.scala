@@ -76,14 +76,14 @@ class ListShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE")) (decided by upperCaseStringEquality)
+        (fumList should contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE")) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum")) (decided by upperCaseStringEquality)
+          (fumList should contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum")) (using decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
           fumList should contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE ")
         }
-        (fumList should contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE ")) (after being lowerCased and trimmed)
+        (fumList should contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE ")) (using after being lowerCased and trimmed)
       }
       it("should throw TestFailedException with analysis showing escaped string") {
         val e1 = intercept[exceptions.TestFailedException] {
@@ -113,14 +113,14 @@ class ListShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should (contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
+          (fumList should (contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum"))) (using decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
           fumList should (contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE "))
         }
-        (fumList should (contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE "))) (using after being lowerCased and trimmed)
       }
       it("should throw TestFailedException with analysis showing escaped string") {
         val e1 = intercept[exceptions.TestFailedException] {
@@ -149,13 +149,13 @@ class ListShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList should not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY"))) (decided by upperCaseStringEquality)
+        (toList should not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should not contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+          (toList should not contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU"))) (using decided by upperCaseStringEquality)
         }
         toList should not contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList should not contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+          (toList should not contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (using after being lowerCased and trimmed)
         }
       }
     }
@@ -179,13 +179,13 @@ class ListShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList should (not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY")))) (decided by upperCaseStringEquality)
+        (toList should (not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY")))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should (not contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseStringEquality)
+          (toList should (not contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU")))) (using decided by upperCaseStringEquality)
         }
         toList should (not contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
         intercept[TestFailedException] {
-          (toList should (not contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
+          (toList should (not contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (using after being lowerCased and trimmed)
         }
       }
     }
@@ -209,13 +209,13 @@ class ListShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList shouldNot contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY"))) (decided by upperCaseStringEquality)
+        (toList shouldNot contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList shouldNot contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+          (toList shouldNot contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU"))) (using decided by upperCaseStringEquality)
         }
         toList shouldNot contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList shouldNot contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+          (toList shouldNot contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (using after being lowerCased and trimmed)
         }
       }
     }
@@ -239,13 +239,13 @@ class ListShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList shouldNot (contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY")))) (decided by upperCaseStringEquality)
+        (toList shouldNot (contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY")))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList shouldNot (contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseStringEquality)
+          (toList shouldNot (contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU")))) (using decided by upperCaseStringEquality)
         }
         toList shouldNot (contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
         intercept[TestFailedException] {
-          (toList shouldNot (contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
+          (toList shouldNot (contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (using after being lowerCased and trimmed)
         }
       }
     }
@@ -301,14 +301,14 @@ class ListShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("HI", "HE")) (decided by upperCaseStringEquality)
+        (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("HI", "HE")) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("HI", "HO")) (decided by upperCaseStringEquality)
+          (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("HI", "HO")) (using decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("hi", "he")) (decided by defaultEquality[String])
+        (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("hi", "he")) (using decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("hi", "ho")) (decided by defaultEquality[String])
+          (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("hi", "ho")) (using decided by defaultEquality[String])
         }
       }
     }
@@ -356,14 +356,14 @@ class ListShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HE"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HE"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HO"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HO"))) (using decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("hi", "he"))) (decided by defaultEquality[String])
+        (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("hi", "he"))) (using decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("he", "hi"))) (decided by defaultEquality[String])
+          (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("he", "hi"))) (using decided by defaultEquality[String])
         }
       }
     }
@@ -389,13 +389,13 @@ class ListShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO"))) (decided by upperCaseStringEquality)
+        (all (toLists) should not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should not contain theSameElementsInOrderAs (ListBuffer("TO", "YOU"))) (decided by upperCaseStringEquality)
+          (all (toLists) should not contain theSameElementsInOrderAs (ListBuffer("TO", "YOU"))) (using decided by upperCaseStringEquality)
         }
         all (toLists) should not contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU "))
         intercept[TestFailedException] {
-          (all (toLists) should not contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU "))) (after being lowerCased and trimmed)
+          (all (toLists) should not contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU "))) (using after being lowerCased and trimmed)
         }
       }
     }
@@ -421,13 +421,13 @@ class ListShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO")))) (decided by upperCaseStringEquality)
+        (all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO")))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer("TO", "YOU")))) (decided by upperCaseStringEquality)
+          (all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer("TO", "YOU")))) (using decided by upperCaseStringEquality)
         }
         all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU ")))
         intercept[TestFailedException] {
-          (all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU ")))) (after being lowerCased and trimmed)
+          (all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU ")))) (using after being lowerCased and trimmed)
         }
       }
     }
@@ -453,13 +453,13 @@ class ListShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer("YOU", "TO"))) (decided by upperCaseStringEquality)
+        (all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer("YOU", "TO"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer("TO", "YOU"))) (decided by upperCaseStringEquality)
+          (all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer("TO", "YOU"))) (using decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU "))
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU "))) (after being lowerCased and trimmed)
+          (all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU "))) (using after being lowerCased and trimmed)
         }
       }
     }
@@ -485,13 +485,13 @@ class ListShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer("YOU", "TO")))) (decided by upperCaseStringEquality)
+        (all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer("YOU", "TO")))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer("TO", "YOU")))) (decided by upperCaseStringEquality)
+          (all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer("TO", "YOU")))) (using decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU ")))
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU ")))) (after being lowerCased and trimmed)
+          (all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU ")))) (using after being lowerCased and trimmed)
         }
       }
     }

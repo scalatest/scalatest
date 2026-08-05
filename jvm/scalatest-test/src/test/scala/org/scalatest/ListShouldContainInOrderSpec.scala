@@ -76,14 +76,14 @@ class ListShouldContainInOrderSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should contain inOrder ("FUM", "FOE", "FIE", "FEE")) (decided by upperCaseStringEquality)
+        (fumList should contain inOrder ("FUM", "FOE", "FIE", "FEE")) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should contain inOrder ("fee", "fie", "foe", "fum")) (decided by upperCaseStringEquality)
+          (fumList should contain inOrder ("fee", "fie", "foe", "fum")) (using decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
           fumList should contain inOrder (" FUM ", " FOE ", " FIE ", " FEE ")
         }
-        (fumList should contain inOrder (" FUM ", " FOE ", " FIE ", " FEE ")) (after being lowerCased and trimmed)
+        (fumList should contain inOrder (" FUM ", " FOE ", " FIE ", " FEE ")) (using after being lowerCased and trimmed)
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -135,14 +135,14 @@ class ListShouldContainInOrderSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should (contain inOrder ("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
+        (fumList should (contain inOrder ("FUM", "FOE", "FIE", "FEE"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should (contain inOrder ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
+          (fumList should (contain inOrder ("fee", "fie", "foe", "fum"))) (using decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
           fumList should (contain inOrder (" FUM ", " FOE ", " FIE ", " FEE "))
         }
-        (fumList should (contain inOrder (" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed)
+        (fumList should (contain inOrder (" FUM ", " FOE ", " FIE ", " FEE "))) (using after being lowerCased and trimmed)
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -179,13 +179,13 @@ class ListShouldContainInOrderSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList should not contain inOrder ("YOU", "TO", "BIRTHDAY", "HAPPY")) (decided by upperCaseStringEquality)
+        (toList should not contain inOrder ("YOU", "TO", "BIRTHDAY", "HAPPY")) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should not contain inOrder ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
+          (toList should not contain inOrder ("HAPPY", "BIRTHDAY", "TO", "YOU")) (using decided by upperCaseStringEquality)
         }
         toList should not contain inOrder (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         intercept[TestFailedException] {
-          (toList should not contain inOrder (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
+          (toList should not contain inOrder (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (using after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -217,13 +217,13 @@ class ListShouldContainInOrderSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList should (not contain inOrder ("YOU", "TO", "BIRTHDAY", "HAPPY"))) (decided by upperCaseStringEquality)
+        (toList should (not contain inOrder ("YOU", "TO", "BIRTHDAY", "HAPPY"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should (not contain inOrder ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+          (toList should (not contain inOrder ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (using decided by upperCaseStringEquality)
         }
         toList should (not contain inOrder (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList should (not contain inOrder (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+          (toList should (not contain inOrder (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (using after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -255,13 +255,13 @@ class ListShouldContainInOrderSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList shouldNot contain inOrder ("YOU", "TO", "BIRTHDAY", "HAPPY")) (decided by upperCaseStringEquality)
+        (toList shouldNot contain inOrder ("YOU", "TO", "BIRTHDAY", "HAPPY")) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList shouldNot contain inOrder ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
+          (toList shouldNot contain inOrder ("HAPPY", "BIRTHDAY", "TO", "YOU")) (using decided by upperCaseStringEquality)
         }
         toList shouldNot contain inOrder (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         intercept[TestFailedException] {
-          (toList shouldNot contain inOrder (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
+          (toList shouldNot contain inOrder (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (using after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -293,13 +293,13 @@ class ListShouldContainInOrderSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList shouldNot (contain inOrder ("YOU", "TO", "BIRTHDAY", "HAPPY"))) (decided by upperCaseStringEquality)
+        (toList shouldNot (contain inOrder ("YOU", "TO", "BIRTHDAY", "HAPPY"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList shouldNot (contain inOrder ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+          (toList shouldNot (contain inOrder ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (using decided by upperCaseStringEquality)
         }
         toList shouldNot (contain inOrder (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList shouldNot (contain inOrder (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+          (toList shouldNot (contain inOrder (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (using after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -363,14 +363,14 @@ class ListShouldContainInOrderSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should contain inOrder ("HI", "HE")) (decided by upperCaseStringEquality)
+        (all (hiLists) should contain inOrder ("HI", "HE")) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should contain inOrder ("HI", "HO")) (decided by upperCaseStringEquality)
+          (all (hiLists) should contain inOrder ("HI", "HO")) (using decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should contain inOrder ("hi", "he")) (decided by defaultEquality[String])
+        (all (hiLists) should contain inOrder ("hi", "he")) (using decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should contain inOrder ("hi", "ho")) (decided by defaultEquality[String])
+          (all (hiLists) should contain inOrder ("hi", "ho")) (using decided by defaultEquality[String])
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -426,14 +426,14 @@ class ListShouldContainInOrderSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (contain inOrder ("HI", "HE"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (contain inOrder ("HI", "HE"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should (contain inOrder ("HI", "HO"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (contain inOrder ("HI", "HO"))) (using decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should (contain inOrder ("hi", "he"))) (decided by defaultEquality[String])
+        (all (hiLists) should (contain inOrder ("hi", "he"))) (using decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should (contain inOrder ("he", "hi"))) (decided by defaultEquality[String])
+          (all (hiLists) should (contain inOrder ("he", "hi"))) (using decided by defaultEquality[String])
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -467,13 +467,13 @@ class ListShouldContainInOrderSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should not contain inOrder ("YOU", "TO")) (decided by upperCaseStringEquality)
+        (all (toLists) should not contain inOrder ("YOU", "TO")) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should not contain inOrder ("TO", "YOU")) (decided by upperCaseStringEquality)
+          (all (toLists) should not contain inOrder ("TO", "YOU")) (using decided by upperCaseStringEquality)
         }
         all (toLists) should not contain inOrder (" TO ", " YOU ")
         intercept[TestFailedException] {
-          (all (toLists) should not contain inOrder (" TO ", " YOU ")) (after being lowerCased and trimmed)
+          (all (toLists) should not contain inOrder (" TO ", " YOU ")) (using after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -507,13 +507,13 @@ class ListShouldContainInOrderSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should (not contain inOrder ("YOU", "TO"))) (decided by upperCaseStringEquality)
+        (all (toLists) should (not contain inOrder ("YOU", "TO"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should (not contain inOrder ("TO", "YOU"))) (decided by upperCaseStringEquality)
+          (all (toLists) should (not contain inOrder ("TO", "YOU"))) (using decided by upperCaseStringEquality)
         }
         all (toLists) should (not contain inOrder (" TO ", " YOU "))
         intercept[TestFailedException] {
-          (all (toLists) should (not contain inOrder (" TO ", " YOU "))) (after being lowerCased and trimmed)
+          (all (toLists) should (not contain inOrder (" TO ", " YOU "))) (using after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -547,13 +547,13 @@ class ListShouldContainInOrderSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot contain inOrder ("YOU", "TO")) (decided by upperCaseStringEquality)
+        (all (toLists) shouldNot contain inOrder ("YOU", "TO")) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain inOrder ("TO", "YOU")) (decided by upperCaseStringEquality)
+          (all (toLists) shouldNot contain inOrder ("TO", "YOU")) (using decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot contain inOrder (" TO ", " YOU ")
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain inOrder (" TO ", " YOU ")) (after being lowerCased and trimmed)
+          (all (toLists) shouldNot contain inOrder (" TO ", " YOU ")) (using after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -587,13 +587,13 @@ class ListShouldContainInOrderSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot (contain inOrder ("YOU", "TO"))) (decided by upperCaseStringEquality)
+        (all (toLists) shouldNot (contain inOrder ("YOU", "TO"))) (using decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain inOrder ("TO", "YOU"))) (decided by upperCaseStringEquality)
+          (all (toLists) shouldNot (contain inOrder ("TO", "YOU"))) (using decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot (contain inOrder (" TO ", " YOU "))
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain inOrder (" TO ", " YOU "))) (after being lowerCased and trimmed)
+          (all (toLists) shouldNot (contain inOrder (" TO ", " YOU "))) (using after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
