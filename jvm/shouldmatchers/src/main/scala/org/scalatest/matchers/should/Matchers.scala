@@ -1876,7 +1876,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * book should have (convertSymbolToHavePropertyMatcherGenerator('title).apply("A Tale of Two Cities"))
      * </pre>
      */
-    def apply(expectedValue: Any): HavePropertyMatcher[AnyRef, Any] =
+    /* DOTTY-ONLY infix */ def apply(expectedValue: Any): HavePropertyMatcher[AnyRef, Any] =
       new HavePropertyMatcher[AnyRef, Any] {
 
         /**
@@ -1902,7 +1902,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
          * </p>
          * TODO continue the story
          */
-        def apply(objectWithProperty: AnyRef): HavePropertyMatchResult[Any] = {
+        /* DOTTY-ONLY infix */ def apply(objectWithProperty: AnyRef): HavePropertyMatchResult[Any] = {
         
           // If 'empty passed, propertyName would be "empty"
           val propertyName = symbol.name
@@ -1969,10 +1969,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *             ^
      * </pre>
      */
-    //DOTTY-ONLY infix def a(aMatcher: AMatcher[T]): Assertion = {
-    // SKIP-DOTTY-START 
-    def a(aMatcher: AMatcher[T]): Assertion = {
-    // SKIP-DOTTY-END  
+    /* DOTTY-ONLY infix */ def a(aMatcher: AMatcher[T]): Assertion = {
       val matcherResult = aMatcher(left)
       if (matcherResult.matches != shouldBeTrue) {
         indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
@@ -1987,10 +1984,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *             ^
      * </pre>
      */
-    //DOTTY-ONLY infix def an(anMatcher: AnMatcher[T]): Assertion = {
-    // SKIP-DOTTY-START 
-    def an(anMatcher: AnMatcher[T]): Assertion = {
-    // SKIP-DOTTY-END  
+    /* DOTTY-ONLY infix */ def an(anMatcher: AnMatcher[T]): Assertion = {
       val matcherResult = anMatcher(left)
       if (matcherResult.matches != shouldBeTrue) {
         indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
@@ -2005,7 +1999,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                  ^
      * </pre>
      */
-    //DOTTY-ONLY infix def theSameInstanceAs(right: AnyRef)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    //DOTTY-ONLY infix def theSameInstanceAs(right: AnyRef)(using toAnyRef: T <:< AnyRef): Assertion = {
     // SKIP-DOTTY-START 
     def theSameInstanceAs(right: AnyRef)(implicit toAnyRef: T <:< AnyRef): Assertion = {
     // SKIP-DOTTY-END  
@@ -2046,7 +2040,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    //DOTTY-ONLY infix def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    //DOTTY-ONLY infix def a(symbol: Symbol)(using toAnyRef: T <:< AnyRef): Assertion = {
     // SKIP-DOTTY-START 
     def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
     // SKIP-DOTTY-END  
@@ -2067,7 +2061,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                   ^
      * </pre>
      */
-    //DOTTY-ONLY infix def a(bePropertyMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try expanding this to 2.10 AnyVals
+    //DOTTY-ONLY infix def a(bePropertyMatcher: BePropertyMatcher[T])(using ev: T <:< AnyRef): Assertion = { // TODO: Try expanding this to 2.10 AnyVals
     // SKIP-DOTTY-START 
     def a(bePropertyMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try expanding this to 2.10 AnyVals
     // SKIP-DOTTY-END
@@ -2087,7 +2081,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                 ^
      * </pre>
      */
-    //DOTTY-ONLY infix def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    //DOTTY-ONLY infix def an(symbol: Symbol)(using toAnyRef: T <:< AnyRef): Assertion = {
     // SKIP-DOTTY-START 
     def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
     // SKIP-DOTTY-END  
@@ -2107,7 +2101,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                ^
      * </pre>
      */
-    //DOTTY-ONLY infix def an(beTrueMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try expanding this to 2.10 AnyVals
+    //DOTTY-ONLY infix def an(beTrueMatcher: BePropertyMatcher[T])(using ev: T <:< AnyRef): Assertion = { // TODO: Try expanding this to 2.10 AnyVals
     // SKIP-DOTTY-START 
     def an(beTrueMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try expanding this to 2.10 AnyVals
     // SKIP-DOTTY-END
@@ -2125,7 +2119,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    //DOTTY-ONLY infix def definedAt[U](right: U)(implicit ev: T <:< PartialFunction[U, _]): Assertion = {
+    //DOTTY-ONLY infix def definedAt[U](right: U)(using ev: T <:< PartialFunction[U, _]): Assertion = {
     // SKIP-DOTTY-START 
     def definedAt[U](right: U)(implicit ev: T <:< PartialFunction[U, _]): Assertion = {
     // SKIP-DOTTY-END  
@@ -2158,7 +2152,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                                     ^
      * </pre>
      */
-    def apply(regexString: String): ResultOfRegexWordApplication = 
+    /* DOTTY-ONLY infix */ def apply(regexString: String): ResultOfRegexWordApplication = 
       new ResultOfRegexWordApplication(regexString, IndexedSeq.empty)
 
     /**
@@ -2169,7 +2163,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                                     ^
      * </pre>
      */
-    def apply(regex: Regex): ResultOfRegexWordApplication = 
+    /* DOTTY-ONLY infix */ def apply(regex: Regex): ResultOfRegexWordApplication = 
       new ResultOfRegexWordApplication(regex, IndexedSeq.empty)
 
     /**
@@ -2180,7 +2174,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                                    ^
      * </pre>
      */
-    def apply(regexWithGroups: RegexWithGroups) =
+    /* DOTTY-ONLY infix */ def apply(regexWithGroups: RegexWithGroups) =
       new ResultOfRegexWordApplication(regexWithGroups.regex, regexWithGroups.groups)
 
     /**
@@ -2205,10 +2199,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(rightRegexString: String): Assertion =
-    // SKIP-DOTTY-START 
-    def regex(rightRegexString: String): Assertion = 
-    // SKIP-DOTTY-END
+    /* DOTTY-ONLY infix */ def regex(rightRegexString: String): Assertion = 
       regex(rightRegexString.r)
     
     /**
@@ -2219,10 +2210,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(regexWithGroups: RegexWithGroups): Assertion = {
-    // SKIP-DOTTY-START 
-    def regex(regexWithGroups: RegexWithGroups): Assertion = {
-    // SKIP-DOTTY-END  
+    /* DOTTY-ONLY infix */ def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = includeRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
         indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, pos)
@@ -2237,10 +2225,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(rightRegex: Regex): Assertion = {
-    // SKIP-DOTTY-START 
-    def regex(rightRegex: Regex): Assertion = {
-    // SKIP-DOTTY-END  
+    /* DOTTY-ONLY infix */ def regex(rightRegex: Regex): Assertion = {
       if (rightRegex.findFirstIn(left).isDefined != shouldBeTrue)
         indicateFailure(if (shouldBeTrue) FailureMessages.didNotIncludeRegex(prettifier, left, rightRegex) else FailureMessages.includedRegex(prettifier, left, rightRegex), None, pos)
       else indicateSuccess(shouldBeTrue, FailureMessages.includedRegex(prettifier, left, rightRegex), FailureMessages.didNotIncludeRegex(prettifier, left, rightRegex))
@@ -2270,10 +2255,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                         ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(rightRegexString: String): Assertion =
-    // SKIP-DOTTY-START 
-    def regex(rightRegexString: String): Assertion = 
-    // SKIP-DOTTY-END
+    /* DOTTY-ONLY infix */ def regex(rightRegexString: String): Assertion = 
       regex(rightRegexString.r)
 
     /**
@@ -2284,10 +2266,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                         ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(regexWithGroups: RegexWithGroups): Assertion = {
-    // SKIP-DOTTY-START 
-    def regex(regexWithGroups: RegexWithGroups): Assertion = {
-    // SKIP-DOTTY-END  
+    /* DOTTY-ONLY infix */ def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = startWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
         indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, pos)
@@ -2302,10 +2281,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                         ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(rightRegex: Regex): Assertion = {
-    // SKIP-DOTTY-START 
-    def regex(rightRegex: Regex): Assertion = {
-    // SKIP-DOTTY-END  
+    /* DOTTY-ONLY infix */ def regex(rightRegex: Regex): Assertion = {
       if (rightRegex.pattern.matcher(left).lookingAt != shouldBeTrue)
         indicateFailure(if (shouldBeTrue) FailureMessages.didNotStartWithRegex(prettifier, left, rightRegex) else FailureMessages.startedWithRegex(prettifier, left, rightRegex), None, pos)
       else indicateSuccess(shouldBeTrue, FailureMessages.startedWithRegex(prettifier, left, rightRegex), FailureMessages.didNotStartWithRegex(prettifier, left, rightRegex))
@@ -2335,10 +2311,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(rightRegexString: String): Assertion =
-    // SKIP-DOTTY-START 
-    def regex(rightRegexString: String): Assertion = 
-    // SKIP-DOTTY-END
+    /* DOTTY-ONLY infix */ def regex(rightRegexString: String): Assertion = 
       regex(rightRegexString.r)
 
     /**
@@ -2349,10 +2322,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(regexWithGroups: RegexWithGroups): Assertion = {
-    // SKIP-DOTTY-START 
-    def regex(regexWithGroups: RegexWithGroups): Assertion = {
-    // SKIP-DOTTY-END  
+    /* DOTTY-ONLY infix */ def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = endWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
         indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, pos)
@@ -2367,10 +2337,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(rightRegex: Regex): Assertion = {
-    // SKIP-DOTTY-START 
-    def regex(rightRegex: Regex): Assertion = {
-    // SKIP-DOTTY-END  
+    /* DOTTY-ONLY infix */ def regex(rightRegex: Regex): Assertion = {
       val allMatches = rightRegex.findAllIn(left)
       if ((allMatches.hasNext && (allMatches.end == left.length)) != shouldBeTrue)
         indicateFailure(if (shouldBeTrue) FailureMessages.didNotEndWithRegex(prettifier, left, rightRegex) else FailureMessages.endedWithRegex(prettifier, left, rightRegex), None, pos)
@@ -2401,10 +2368,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                         ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(rightRegexString: String): Assertion =
-    // SKIP-DOTTY-START 
-    def regex(rightRegexString: String): Assertion = 
-    // SKIP-DOTTY-END
+    /* DOTTY-ONLY infix */ def regex(rightRegexString: String): Assertion = 
       regex(rightRegexString.r)
     
 
@@ -2416,10 +2380,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                         ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(regexWithGroups: RegexWithGroups): Assertion = {
-    // SKIP-DOTTY-START 
-    def regex(regexWithGroups: RegexWithGroups): Assertion = {
-    // SKIP-DOTTY-END  
+    /* DOTTY-ONLY infix */ def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = fullyMatchRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
         indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, pos)
@@ -2434,10 +2395,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                          ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(rightRegex: Regex): Assertion = {
-    // SKIP-DOTTY-START 
-    def regex(rightRegex: Regex): Assertion = {
-    // SKIP-DOTTY-END  
+    /* DOTTY-ONLY infix */ def regex(rightRegex: Regex): Assertion = {
       if (rightRegex.pattern.matcher(left).matches != shouldBeTrue)
         indicateFailure(if (shouldBeTrue) FailureMessages.didNotFullyMatchRegex(prettifier, left, rightRegex) else FailureMessages.fullyMatchedRegex(prettifier, left, rightRegex), None, pos)
       else indicateSuccess(shouldBeTrue, FailureMessages.fullyMatchedRegex(prettifier, left, rightRegex), FailureMessages.didNotFullyMatchRegex(prettifier, left, rightRegex))
@@ -2474,7 +2432,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *               ^
    * </pre>
    */
-  def equal[T](spread: Spread[T]): Matcher[T] = {
+  /* DOTTY-ONLY infix */ def equal[T](spread: Spread[T]): Matcher[T] = {
     new Matcher[T] {
       def apply(left: T): MatchResult = {
         MatchResult(
@@ -2496,7 +2454,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *               ^
    * </pre>
    */ 
-  def equal(o: Null): Matcher[AnyRef] =
+  /* DOTTY-ONLY infix */ def equal(o: Null): Matcher[AnyRef] =
     new Matcher[AnyRef] {
       def apply(left: AnyRef): MatchResult = {
         MatchResult(
@@ -2528,7 +2486,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                            ^
      * </pre>
      */
-    def apply(expectedKey: Any): ResultOfKeyWordApplication = 
+    /* DOTTY-ONLY infix */ def apply(expectedKey: Any): ResultOfKeyWordApplication = 
       new ResultOfKeyWordApplication(expectedKey)
 
     /**
@@ -2565,7 +2523,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                            ^
      * </pre>
      */ 
-    def apply(expectedValue: Any): ResultOfValueWordApplication =
+    /* DOTTY-ONLY infix */ def apply(expectedValue: Any): ResultOfValueWordApplication =
       new ResultOfValueWordApplication(expectedValue)
 
     /**
@@ -2602,7 +2560,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                         ^
      * </pre>
      */
-    def apply(symbol: Symbol): ResultOfAWordToSymbolApplication =
+    /* DOTTY-ONLY infix */ def apply(symbol: Symbol): ResultOfAWordToSymbolApplication =
       new ResultOfAWordToSymbolApplication(symbol)
 
     /**
@@ -2614,7 +2572,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                         ^
      * </pre>
      */
-    def apply[T](beTrueMatcher: BePropertyMatcher[T]): ResultOfAWordToBePropertyMatcherApplication[T] = 
+    /* DOTTY-ONLY infix */ def apply[T](beTrueMatcher: BePropertyMatcher[T]): ResultOfAWordToBePropertyMatcherApplication[T] = 
       new ResultOfAWordToBePropertyMatcherApplication(beTrueMatcher)
 
     /**
@@ -2625,7 +2583,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
-    def apply[T](aMatcher: AMatcher[T]): ResultOfAWordToAMatcherApplication[T] = 
+    /* DOTTY-ONLY infix */ def apply[T](aMatcher: AMatcher[T]): ResultOfAWordToAMatcherApplication[T] = 
       new ResultOfAWordToAMatcherApplication(aMatcher)
 
     /**
@@ -2662,7 +2620,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                          ^
      * </pre>
      */
-    def apply(symbol: Symbol): ResultOfAnWordToSymbolApplication = 
+    /* DOTTY-ONLY infix */ def apply(symbol: Symbol): ResultOfAnWordToSymbolApplication = 
       new ResultOfAnWordToSymbolApplication(symbol)
 
     /**
@@ -2674,7 +2632,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                          ^
      * </pre>
      */
-    def apply[T](beTrueMatcher: BePropertyMatcher[T]): ResultOfAnWordToBePropertyMatcherApplication[T] = 
+    /* DOTTY-ONLY infix */ def apply[T](beTrueMatcher: BePropertyMatcher[T]): ResultOfAnWordToBePropertyMatcherApplication[T] = 
       new ResultOfAnWordToBePropertyMatcherApplication(beTrueMatcher)
 
     /**
@@ -2685,7 +2643,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                         ^
      * </pre>
      */
-    def apply[T](anMatcher: AnMatcher[T]): ResultOfAnWordToAnMatcherApplication[T] = 
+    /* DOTTY-ONLY infix */ def apply[T](anMatcher: AnMatcher[T]): ResultOfAnWordToAnMatcherApplication[T] = 
       new ResultOfAnWordToAnMatcherApplication(anMatcher)
 
     /**
@@ -2722,7 +2680,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                                           ^
      * </pre>
      */
-    def apply(anyRef: AnyRef): ResultOfTheSameInstanceAsApplication =
+    /* DOTTY-ONLY infix */ def apply(anyRef: AnyRef): ResultOfTheSameInstanceAsApplication =
       new ResultOfTheSameInstanceAsApplication(anyRef)
 
     /**
@@ -2776,7 +2734,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * <code>scala.Seq</code>, <code>java.lang.String</code>, and <code>java.util.List</code>.
      * </p>
      */
-    //DOTTY-ONLY infix def length(expectedLength: Long)(implicit len: Length[A]): Assertion = {
+    //DOTTY-ONLY infix def length(expectedLength: Long)(using len: Length[A]): Assertion = {
     // SKIP-DOTTY-START 
     def length(expectedLength: Long)(implicit len: Length[A]): Assertion = {
     // SKIP-DOTTY-END  
@@ -2801,7 +2759,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * <code>Traversable</code> and <code>java.util.Collection</code>.
      * </p>
      */
-    //DOTTY-ONLY infix def size(expectedSize: Long)(implicit sz: Size[A]): Assertion = {
+    //DOTTY-ONLY infix def size(expectedSize: Long)(using sz: Size[A]): Assertion = {
     // SKIP-DOTTY-START 
     def size(expectedSize: Long)(implicit sz: Size[A]): Assertion = {
     // SKIP-DOTTY-END  
@@ -2819,7 +2777,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    //DOTTY-ONLY infix def message(expectedMessage: String)(implicit messaging: Messaging[A]): Assertion = {
+    //DOTTY-ONLY infix def message(expectedMessage: String)(using messaging: Messaging[A]): Assertion = {
     // SKIP-DOTTY-START 
     def message(expectedMessage: String)(implicit messaging: Messaging[A]): Assertion = {
     // SKIP-DOTTY-END  
@@ -2844,8 +2802,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * num should (not be &lt; (10) and not be &gt; (17))
    *                    ^
    * </pre>
-   */ 
+   */
+  //DOTTY-ONLY infix def <[T : Ordering] (right: T): ResultOfLessThanComparison[T] =
+  // SKIP-DOTTY-START  
   def <[T : Ordering] (right: T): ResultOfLessThanComparison[T] =
+  // SKIP-DOTTY-END
     new ResultOfLessThanComparison(right)
 
   /**
@@ -2855,8 +2816,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * num should (not be &gt; (10) and not be &lt; (7))
    *                    ^
    * </pre>
-   */ 
+   */
+  //DOTTY-ONLY infix def >[T : Ordering] (right: T): ResultOfGreaterThanComparison[T] =
+  // SKIP-DOTTY-START  
   def >[T : Ordering] (right: T): ResultOfGreaterThanComparison[T] =
+  // SKIP-DOTTY-END
     new ResultOfGreaterThanComparison(right)
 
   /**
@@ -2867,7 +2831,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                    ^
    * </pre>
    */ 
+  //DOTTY-ONLY infix def <=[T : Ordering] (right: T): ResultOfLessThanOrEqualToComparison[T] =
+  // SKIP-DOTTY-START 
   def <=[T : Ordering] (right: T): ResultOfLessThanOrEqualToComparison[T] =
+  // SKIP-DOTTY-END
     new ResultOfLessThanOrEqualToComparison(right)
 
   /**
@@ -2878,7 +2845,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                    ^
    * </pre>
    */ 
+  //DOTTY-ONLY infix def >=[T : Ordering] (right: T): ResultOfGreaterThanOrEqualToComparison[T] =
+  // SKIP-DOTTY-START 
   def >=[T : Ordering] (right: T): ResultOfGreaterThanOrEqualToComparison[T] =
+  // SKIP-DOTTY-END
     new ResultOfGreaterThanOrEqualToComparison(right)
 
   /**
@@ -2889,7 +2859,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                     ^
    * </pre>
    */
+  //DOTTY-ONLY infix def definedAt[T](right: T): ResultOfDefinedAt[T] =
+  // SKIP-DOTTY-START 
   def definedAt[T](right: T): ResultOfDefinedAt[T] =
+  // SKIP-DOTTY-END
     new ResultOfDefinedAt(right)
 
   /**
@@ -2900,7 +2873,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
+  //DOTTY-ONLY infix def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(using pos: source.Position) = { 
+  // SKIP-DOTTY-START 
   def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
+  // SKIP-DOTTY-END
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages.oneOfDuplicate, pos)
@@ -2915,7 +2891,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
+  //DOTTY-ONLY infix def oneElementOf(elements: Iterable[Any]) = {
+  // SKIP-DOTTY-START 
   def oneElementOf(elements: Iterable[Any]) = {
+  // SKIP-DOTTY-END  
     val xs = elements.toList
     new ResultOfOneElementOfApplication(xs)
   }
@@ -2928,7 +2907,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
+  //DOTTY-ONLY infix def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(using pos: source.Position) = { 
+  // SKIP-DOTTY-START
   def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
+  // SKIP-DOTTY-END
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, pos)
@@ -2943,7 +2925,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
+  //DOTTY-ONLY infix def atLeastOneElementOf(elements: Iterable[Any]) = {
+  // SKIP-DOTTY-START
   def atLeastOneElementOf(elements: Iterable[Any]) = {
+  // SKIP-DOTTY-END  
     val xs = elements.toList
     new ResultOfAtLeastOneElementOfApplication(xs)
   }
@@ -2956,7 +2941,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
+  //DOTTY-ONLY infix def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(using pos: source.Position) = {
+  // SKIP-DOTTY-START 
   def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
+  // SKIP-DOTTY-END
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages.noneOfDuplicate, pos)
@@ -2971,7 +2959,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
+  //DOTTY-ONLY infix def noElementsOf(elements: Iterable[Any]) = {
+  // SKIP-DOTTY-START 
   def noElementsOf(elements: Iterable[Any]) = {
+  // SKIP-DOTTY-END
     val xs = elements.toList
     new ResultOfNoElementsOfApplication(xs)
   }
@@ -2984,7 +2975,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
+  //DOTTY-ONLY infix def theSameElementsAs(xs: Iterable[_]) = 
+  // SKIP-DOTTY-START 
   def theSameElementsAs(xs: Iterable[_]) = 
+  // SKIP-DOTTY-END
     new ResultOfTheSameElementsAsApplication(xs)
 
   /**
