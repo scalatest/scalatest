@@ -31,6 +31,7 @@ object GenScalacticDotty {
       line.replaceAll("""import ([\w\.]+)\._""", """import $1.*""")
           .replace(": _*", "*")
           .replace("uncheckedVariance => uV", "uncheckedVariance as uV")
+          .replaceAll("""/\*\s*DOTTY-ONLY\s*(.*?)\s*\*/""", "$1")
 
   private def rewrite213(line: String): String =
     line.replaceAllLiterally("final def startsWith(that: GenSeq[Char]): Boolean = theString.startsWith(that)", "final def startsWith(that: GenSeq[Char]): Boolean = theString.startsWith(that.mkString)")
@@ -103,7 +104,7 @@ object GenScalacticDotty {
     else if (line.trim.startsWith("//SCALATESTJS-ONLY "))
       line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19)    
     else
-      line
+      line.replaceAll("""/\*\s*DOTTY-ONLY\s*(.*?)\s*\*/""", "$1")
 
   private def transformLineJS(line: String): String =
     uncommentJsExportJS(line)
@@ -165,7 +166,7 @@ object GenScalacticDotty {
     else if (line.trim.startsWith("//SCALATESTNATIVE-ONLY "))
       line.substring(line.indexOf("//SCALATESTNATIVE-ONLY ") + 23)    
     else
-      line
+      line.replaceAll("""/\*\s*DOTTY-ONLY\s*(.*?)\s*\*/""", "$1")
 
   private def transformLineNative(line: String): String =
     uncommentNativeExportNative(line)
