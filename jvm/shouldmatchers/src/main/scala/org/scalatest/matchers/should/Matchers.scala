@@ -2803,10 +2803,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                    ^
    * </pre>
    */
-  //DOTTY-ONLY infix def <[T : Ordering] (right: T): ResultOfLessThanComparison[T] =
-  // SKIP-DOTTY-START  
-  def <[T : Ordering] (right: T): ResultOfLessThanComparison[T] =
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def <[T : Ordering] (right: T): ResultOfLessThanComparison[T] =
     new ResultOfLessThanComparison(right)
 
   /**
@@ -2817,10 +2814,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                    ^
    * </pre>
    */
-  //DOTTY-ONLY infix def >[T : Ordering] (right: T): ResultOfGreaterThanComparison[T] =
-  // SKIP-DOTTY-START  
-  def >[T : Ordering] (right: T): ResultOfGreaterThanComparison[T] =
-  // SKIP-DOTTY-END
+ /* DOTTY-ONLY infix */ def >[T : Ordering] (right: T): ResultOfGreaterThanComparison[T] =
     new ResultOfGreaterThanComparison(right)
 
   /**
@@ -2831,10 +2825,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                    ^
    * </pre>
    */ 
-  //DOTTY-ONLY infix def <=[T : Ordering] (right: T): ResultOfLessThanOrEqualToComparison[T] =
-  // SKIP-DOTTY-START 
-  def <=[T : Ordering] (right: T): ResultOfLessThanOrEqualToComparison[T] =
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def <=[T : Ordering] (right: T): ResultOfLessThanOrEqualToComparison[T] =
     new ResultOfLessThanOrEqualToComparison(right)
 
   /**
@@ -2845,10 +2836,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                    ^
    * </pre>
    */ 
-  //DOTTY-ONLY infix def >=[T : Ordering] (right: T): ResultOfGreaterThanOrEqualToComparison[T] =
-  // SKIP-DOTTY-START 
-  def >=[T : Ordering] (right: T): ResultOfGreaterThanOrEqualToComparison[T] =
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def >=[T : Ordering] (right: T): ResultOfGreaterThanOrEqualToComparison[T] =
     new ResultOfGreaterThanOrEqualToComparison(right)
 
   /**
@@ -2859,10 +2847,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                     ^
    * </pre>
    */
-  //DOTTY-ONLY infix def definedAt[T](right: T): ResultOfDefinedAt[T] =
-  // SKIP-DOTTY-START 
-  def definedAt[T](right: T): ResultOfDefinedAt[T] =
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def definedAt[T](right: T): ResultOfDefinedAt[T] =
     new ResultOfDefinedAt(right)
 
   /**
@@ -2891,10 +2876,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def oneElementOf(elements: Iterable[Any]) = {
-  // SKIP-DOTTY-START 
-  def oneElementOf(elements: Iterable[Any]) = {
-  // SKIP-DOTTY-END  
+  /* DOTTY-ONLY infix */ def oneElementOf(elements: Iterable[Any]) = {
     val xs = elements.toList
     new ResultOfOneElementOfApplication(xs)
   }
@@ -2925,10 +2907,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def atLeastOneElementOf(elements: Iterable[Any]) = {
-  // SKIP-DOTTY-START
-  def atLeastOneElementOf(elements: Iterable[Any]) = {
-  // SKIP-DOTTY-END  
+  /* DOTTY-ONLY infix */ def atLeastOneElementOf(elements: Iterable[Any]) = {
     val xs = elements.toList
     new ResultOfAtLeastOneElementOfApplication(xs)
   }
@@ -2959,10 +2938,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def noElementsOf(elements: Iterable[Any]) = {
-  // SKIP-DOTTY-START 
-  def noElementsOf(elements: Iterable[Any]) = {
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def noElementsOf(elements: Iterable[Any]) = {
     val xs = elements.toList
     new ResultOfNoElementsOfApplication(xs)
   }
