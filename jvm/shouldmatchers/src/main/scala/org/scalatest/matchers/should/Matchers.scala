@@ -3416,10 +3416,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    //DOTTY-ONLY infix def be(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication): Assertion = {
-    // SKIP-DOTTY-START 
-    def be(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication): Assertion = {
-    // SKIP-DOTTY-END  
+    /* DOTTY-ONLY infix */ def be(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         e match {
           case ref: AnyRef =>
@@ -3441,7 +3438,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    //DOTTY-ONLY infix def be[U](resultOfDefinedAt: ResultOfDefinedAt[U])(implicit ev: T <:< PartialFunction[U, _]): Assertion = {
+    //DOTTY-ONLY infix def be[U](resultOfDefinedAt: ResultOfDefinedAt[U])(using ev: T <:< PartialFunction[U, _]): Assertion = {
     // SKIP-DOTTY-START 
     def be[U](resultOfDefinedAt: ResultOfDefinedAt[U])(implicit ev: T <:< PartialFunction[U, _]): Assertion = {
     // SKIP-DOTTY-END  
@@ -3466,7 +3463,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      *
      */
-    //DOTTY-ONLY infix def have(resultOfLengthWordApplication: ResultOfLengthWordApplication)(implicit len: Length[T]): Assertion = {
+    //DOTTY-ONLY infix def have(resultOfLengthWordApplication: ResultOfLengthWordApplication)(using len: Length[T]): Assertion = {
     // SKIP-DOTTY-START 
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication)(implicit len: Length[T]): Assertion = {
     // SKIP-DOTTY-END  
@@ -3489,7 +3486,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      *
      */
-    //DOTTY-ONLY infix def have(resultOfSizeWordApplication: ResultOfSizeWordApplication)(implicit sz: Size[T]): Assertion = {
+    //DOTTY-ONLY infix def have(resultOfSizeWordApplication: ResultOfSizeWordApplication)(using sz: Size[T]): Assertion = {
     // SKIP-DOTTY-START 
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication)(implicit sz: Size[T]): Assertion = {
     // SKIP-DOTTY-END  
@@ -3512,10 +3509,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    //DOTTY-ONLY infix def have[U >: T](firstPropertyMatcher: HavePropertyMatcher[U, _], propertyMatchers: HavePropertyMatcher[U, _]*): Assertion = {
-    // SKIP-DOTTY-START 
-    def have[U >: T](firstPropertyMatcher: HavePropertyMatcher[U, _], propertyMatchers: HavePropertyMatcher[U, _]*): Assertion = {
-    // SKIP-DOTTY-END  
+    /* DOTTY-ONLY infix */ def have[U >: T](firstPropertyMatcher: HavePropertyMatcher[U, _], propertyMatchers: HavePropertyMatcher[U, _]*): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
 
         val results =
@@ -3603,7 +3597,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    //DOTTY-ONLY infix def be(o: Null)(implicit ev: T <:< AnyRef): Assertion = {
+    //DOTTY-ONLY infix def be(o: Null)(using ev: T <:< AnyRef): Assertion = {
     // SKIP-DOTTY-START 
     def be(o: Null)(implicit ev: T <:< AnyRef): Assertion = {
     // SKIP-DOTTY-END  
@@ -3624,7 +3618,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    //DOTTY-ONLY infix def be(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    //DOTTY-ONLY infix def be(symbol: Symbol)(using toAnyRef: T <:< AnyRef): Assertion = {
     // SKIP-DOTTY-START 
     def be(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
     // SKIP-DOTTY-END  
@@ -3645,7 +3639,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    //DOTTY-ONLY infix def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    //DOTTY-ONLY infix def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(using toAnyRef: T <:< AnyRef): Assertion = {
     // SKIP-DOTTY-START 
     def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
     // SKIP-DOTTY-END  
@@ -3666,7 +3660,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    //DOTTY-ONLY infix def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    //DOTTY-ONLY infix def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(using toAnyRef: T <:< AnyRef): Assertion = {
     // SKIP-DOTTY-START 
     def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
     // SKIP-DOTTY-END  
@@ -3688,7 +3682,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    //DOTTY-ONLY infix def be(sortedWord: SortedWord)(implicit sortable: Sortable[T]): Assertion = {
+    //DOTTY-ONLY infix def be(sortedWord: SortedWord)(using sortable: Sortable[T]): Assertion = {
     // SKIP-DOTTY-START 
     def be(sortedWord: SortedWord)(implicit sortable: Sortable[T]): Assertion = {
     // SKIP-DOTTY-END  
@@ -3708,7 +3702,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    //DOTTY-ONLY infix def be(readableWord: ReadableWord)(implicit readability: Readability[T]): Assertion = {
+    //DOTTY-ONLY infix def be(readableWord: ReadableWord)(using readability: Readability[T]): Assertion = {
     // SKIP-DOTTY-START 
     def be(readableWord: ReadableWord)(implicit readability: Readability[T]): Assertion = {
     // SKIP-DOTTY-END  
@@ -3728,7 +3722,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    //DOTTY-ONLY infix def be(writableWord: WritableWord)(implicit writability: Writability[T]): Assertion = {
+    //DOTTY-ONLY infix def be(writableWord: WritableWord)(using writability: Writability[T]): Assertion = {
     // SKIP-DOTTY-START 
     def be(writableWord: WritableWord)(implicit writability: Writability[T]): Assertion = {
     // SKIP-DOTTY-END  
@@ -3748,7 +3742,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    //DOTTY-ONLY infix def be(emptyWord: EmptyWord)(implicit emptiness: Emptiness[T]): Assertion = {
+    //DOTTY-ONLY infix def be(emptyWord: EmptyWord)(using emptiness: Emptiness[T]): Assertion = {
     // SKIP-DOTTY-START 
     def be(emptyWord: EmptyWord)(implicit emptiness: Emptiness[T]): Assertion = {
     // SKIP-DOTTY-END  
@@ -3768,7 +3762,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    //DOTTY-ONLY infix def be(definedWord: DefinedWord)(implicit definition: Definition[T]): Assertion = {
+    //DOTTY-ONLY infix def be(definedWord: DefinedWord)(using definition: Definition[T]): Assertion = {
     // SKIP-DOTTY-START 
     def be(definedWord: DefinedWord)(implicit definition: Definition[T]): Assertion = {
     // SKIP-DOTTY-END  
@@ -3788,7 +3782,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    //DOTTY-ONLY infix def contain(nullValue: Null)(implicit containing: Containing[T]): Assertion = {
+    //DOTTY-ONLY infix def contain(nullValue: Null)(using containing: Containing[T]): Assertion = {
     // SKIP-DOTTY-START 
     def contain(nullValue: Null)(implicit containing: Containing[T]): Assertion = {
     // SKIP-DOTTY-END  
@@ -3808,7 +3802,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    //DOTTY-ONLY infix def contain(expectedElement: Any)(implicit containing: Containing[T]): Assertion = {
+    //DOTTY-ONLY infix def contain(expectedElement: Any)(using containing: Containing[T]): Assertion = {
     // SKIP-DOTTY-START 
     def contain(expectedElement: Any)(implicit containing: Containing[T]): Assertion = {
     // SKIP-DOTTY-END  
@@ -3829,7 +3823,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    //DOTTY-ONLY infix def contain(oneOf: ResultOfOneOfApplication)(implicit containing: Containing[T]): Assertion = {
+    //DOTTY-ONLY infix def contain(oneOf: ResultOfOneOfApplication)(using containing: Containing[T]): Assertion = {
     // SKIP-DOTTY-START 
     def contain(oneOf: ResultOfOneOfApplication)(implicit containing: Containing[T]): Assertion = {
     // SKIP-DOTTY-END
@@ -3860,7 +3854,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    //DOTTY-ONLY infix def contain(oneElementOf: ResultOfOneElementOfApplication)(implicit containing: Containing[T]): Assertion = {
+    //DOTTY-ONLY infix def contain(oneElementOf: ResultOfOneElementOfApplication)(using containing: Containing[T]): Assertion = {
     // SKIP-DOTTY-START 
     def contain(oneElementOf: ResultOfOneElementOfApplication)(implicit containing: Containing[T]): Assertion = {
     // SKIP-DOTTY-END
@@ -3882,7 +3876,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    //DOTTY-ONLY infix def contain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit aggregating: Aggregating[T]): Assertion = {
+    //DOTTY-ONLY infix def contain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(using aggregating: Aggregating[T]): Assertion = {
     // SKIP-DOTTY-START 
     def contain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit aggregating: Aggregating[T]): Assertion = {
     // SKIP-DOTTY-END  
@@ -3915,7 +3909,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    //DOTTY-ONLY infix def contain(atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication)(implicit evidence: Aggregating[T]): Assertion = {
+    //DOTTY-ONLY infix def contain(atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication)(using evidence: Aggregating[T]): Assertion = {
     // SKIP-DOTTY-START 
     def contain(atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication)(implicit evidence: Aggregating[T]): Assertion = {
     // SKIP-DOTTY-END  
@@ -3937,7 +3931,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    //DOTTY-ONLY infix def contain(noneOf: ResultOfNoneOfApplication)(implicit containing: Containing[T]): Assertion = {
+    //DOTTY-ONLY infix def contain(noneOf: ResultOfNoneOfApplication)(using containing: Containing[T]): Assertion = {
     // SKIP-DOTTY-START 
     def contain(noneOf: ResultOfNoneOfApplication)(implicit containing: Containing[T]): Assertion = {
     // SKIP-DOTTY-END  
@@ -3970,7 +3964,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    //DOTTY-ONLY infix def contain(noElementsOf: ResultOfNoElementsOfApplication)(implicit evidence: Containing[T]): Assertion = {
+    //DOTTY-ONLY infix def contain(noElementsOf: ResultOfNoElementsOfApplication)(using evidence: Containing[T]): Assertion = {
     // SKIP-DOTTY-START 
     def contain(noElementsOf: ResultOfNoElementsOfApplication)(implicit evidence: Containing[T]): Assertion = {
     // SKIP-DOTTY-END  
@@ -3992,7 +3986,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    //DOTTY-ONLY infix def contain(theSameElementsAs: ResultOfTheSameElementsAsApplication)(implicit aggregating: Aggregating[T]): Assertion = {
+    //DOTTY-ONLY infix def contain(theSameElementsAs: ResultOfTheSameElementsAsApplication)(using aggregating: Aggregating[T]): Assertion = {
     // SKIP-DOTTY-START 
     def contain(theSameElementsAs: ResultOfTheSameElementsAsApplication)(implicit aggregating: Aggregating[T]): Assertion = {
     // SKIP-DOTTY-END  
