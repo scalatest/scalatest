@@ -6049,7 +6049,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    //DOTTY-ONLY infix def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    //DOTTY-ONLY infix def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(using toAnyRef: T <:< AnyRef): Assertion = {
     // SKIP-DOTTY-START 
     def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
     // SKIP-DOTTY-END  
@@ -6090,7 +6090,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    //DOTTY-ONLY infix def shouldBe[U <: T](bePropertyMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try supporting this with 2.10 AnyVals
+    //DOTTY-ONLY infix def shouldBe[U <: T](bePropertyMatcher: BePropertyMatcher[U])(using ev: T <:< AnyRef): Assertion = { // TODO: Try supporting this with 2.10 AnyVals
     // SKIP-DOTTY-START 
     def shouldBe[U <: T](bePropertyMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try supporting this with 2.10 AnyVals
     // SKIP-DOTTY-END
@@ -6110,7 +6110,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    //DOTTY-ONLY infix def shouldBe[U <: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {// TODO: Try supporting this with 2.10 AnyVals
+    //DOTTY-ONLY infix def shouldBe[U <: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U])(using ev: T <:< AnyRef): Assertion = {// TODO: Try supporting this with 2.10 AnyVals
     // SKIP-DOTTY-START 
     def shouldBe[U <: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {// TODO: Try supporting this with 2.10 AnyVals
     // SKIP-DOTTY-END
@@ -6130,7 +6130,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    //DOTTY-ONLY infix def shouldBe[U <: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {// TODO: Try supporting this with 2.10 AnyVals
+    //DOTTY-ONLY infix def shouldBe[U <: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U])(using ev: T <:< AnyRef): Assertion = {// TODO: Try supporting this with 2.10 AnyVals
     // SKIP-DOTTY-START 
     def shouldBe[U <: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {// TODO: Try supporting this with 2.10 AnyVals
     // SKIP-DOTTY-END
@@ -6176,7 +6176,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    //DOTTY-ONLY infix def shouldNot[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
+    //DOTTY-ONLY infix def shouldNot[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(using typeClass1: TYPECLASS1[T]): Assertion = {
     // SKIP-DOTTY-START 
     def shouldNot[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
     // SKIP-DOTTY-END  
@@ -6199,7 +6199,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
-    //DOTTY-ONLY infix def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: T CanEqual U): Assertion = {
+    //DOTTY-ONLY infix def should[U](inv: TripleEqualsInvocation[U])(using constraint: T CanEqual U): Assertion = {
     // SKIP-DOTTY-START 
     def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: T CanEqual U): Assertion = {
     // SKIP-DOTTY-END  
@@ -6225,7 +6225,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
-    //DOTTY-ONLY infix def should(inv: TripleEqualsInvocationOnSpread[T])(implicit ev: Numeric[T]): Assertion = {
+    //DOTTY-ONLY infix def should(inv: TripleEqualsInvocationOnSpread[T])(using ev: Numeric[T]): Assertion = {
     // SKIP-DOTTY-START 
     def should(inv: TripleEqualsInvocationOnSpread[T])(implicit ev: Numeric[T]): Assertion = {
     // SKIP-DOTTY-END  
@@ -6295,7 +6295,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    //DOTTY-ONLY infix def should(existWord: ExistWord)(implicit existence: Existence[T]): Assertion = {
+    //DOTTY-ONLY infix def should(existWord: ExistWord)(using existence: Existence[T]): Assertion = {
     // SKIP-DOTTY-START 
     def should(existWord: ExistWord)(implicit existence: Existence[T]): Assertion = {
     // SKIP-DOTTY-END  
@@ -6318,7 +6318,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    //DOTTY-ONLY infix def should(notExist: ResultOfNotExist)(implicit existence: Existence[T]): Assertion = {
+    //DOTTY-ONLY infix def should(notExist: ResultOfNotExist)(using existence: Existence[T]): Assertion = {
     // SKIP-DOTTY-START 
     def should(notExist: ResultOfNotExist)(implicit existence: Existence[T]): Assertion = {
     // SKIP-DOTTY-END  
@@ -6341,7 +6341,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    //DOTTY-ONLY infix def shouldNot(existWord: ExistWord)(implicit existence: Existence[T]): Assertion = {
+    //DOTTY-ONLY infix def shouldNot(existWord: ExistWord)(using existence: Existence[T]): Assertion = {
     // SKIP-DOTTY-START 
     def shouldNot(existWord: ExistWord)(implicit existence: Existence[T]): Assertion = {
     // SKIP-DOTTY-END  
@@ -6364,7 +6364,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *             ^
      * </pre>
      */
-    //DOTTY-ONLY infix def should(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForCollectedString =
+    //DOTTY-ONLY infix def should(startWithWord: StartWithWord)(using ev: T <:< String): ResultOfStartWithWordForCollectedString =
     // SKIP-DOTTY-START 
     def should(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForCollectedString =
     // SKIP-DOTTY-END
@@ -6378,7 +6378,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *             ^
      * </pre>
      */
-    //DOTTY-ONLY infix def should(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForCollectedString =
+    //DOTTY-ONLY infix def should(endWithWord: EndWithWord)(using ev: T <:< String): ResultOfEndWithWordForCollectedString =
     // SKIP-DOTTY-START 
     def should(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForCollectedString =
     // SKIP-DOTTY-END
@@ -6392,7 +6392,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *             ^
      * </pre>
      */
-    //DOTTY-ONLY infix def should(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForCollectedString =
+    //DOTTY-ONLY infix def should(includeWord: IncludeWord)(using ev: T <:< String): ResultOfIncludeWordForCollectedString =
     // SKIP-DOTTY-START 
     def should(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForCollectedString =
     // SKIP-DOTTY-END
@@ -6406,7 +6406,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *             ^
      * </pre>
      */
-    //DOTTY-ONLY infix def should(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForCollectedString =
+    //DOTTY-ONLY infix def should(fullyMatchWord: FullyMatchWord)(using ev: T <:< String): ResultOfFullyMatchWordForCollectedString =
     // SKIP-DOTTY-START 
     def should(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForCollectedString =
     // SKIP-DOTTY-END
@@ -6420,7 +6420,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *             ^
      * </pre>
      */
-    //DOTTY-ONLY infix def shouldNot(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForCollectedString =
+    //DOTTY-ONLY infix def shouldNot(fullyMatchWord: FullyMatchWord)(using ev: T <:< String): ResultOfFullyMatchWordForCollectedString =
     // SKIP-DOTTY-START 
     def shouldNot(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForCollectedString =
     // SKIP-DOTTY-END
@@ -6434,7 +6434,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *             ^
      * </pre>
      */
-    //DOTTY-ONLY infix def shouldNot(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForCollectedString =
+    //DOTTY-ONLY infix def shouldNot(startWithWord: StartWithWord)(using ev: T <:< String): ResultOfStartWithWordForCollectedString =
     // SKIP-DOTTY-START 
     def shouldNot(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForCollectedString =
     // SKIP-DOTTY-END
@@ -6448,7 +6448,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *             ^
      * </pre>
      */
-    //DOTTY-ONLY infix def shouldNot(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForCollectedString =
+    //DOTTY-ONLY infix def shouldNot(endWithWord: EndWithWord)(using ev: T <:< String): ResultOfEndWithWordForCollectedString =
     // SKIP-DOTTY-START 
     def shouldNot(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForCollectedString =
     // SKIP-DOTTY-END
@@ -6462,7 +6462,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *             ^
      * </pre>
      */
-    //DOTTY-ONLY infix def shouldNot(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForCollectedString =
+    //DOTTY-ONLY infix def shouldNot(includeWord: IncludeWord)(using ev: T <:< String): ResultOfIncludeWordForCollectedString =
     // SKIP-DOTTY-START 
     def shouldNot(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForCollectedString =
     // SKIP-DOTTY-END
@@ -6492,7 +6492,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                      ^
      * </pre>
      */
-    //DOTTY-ONLY infix def length(expectedLength: Long)(implicit len: Length[A]): Assertion = {
+    //DOTTY-ONLY infix def length(expectedLength: Long)(using len: Length[A]): Assertion = {
     // SKIP-DOTTY-START 
     def length(expectedLength: Long)(implicit len: Length[A]): Assertion = {
     // SKIP-DOTTY-END  
@@ -6524,7 +6524,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                      ^
      * </pre>
      */
-    //DOTTY-ONLY infix def size(expectedSize: Long)(implicit sz: Size[A]): Assertion = {
+    //DOTTY-ONLY infix def size(expectedSize: Long)(using sz: Size[A]): Assertion = {
     // SKIP-DOTTY-START 
     def size(expectedSize: Long)(implicit sz: Size[A]): Assertion = {
     // SKIP-DOTTY-END  
@@ -6572,10 +6572,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(rightRegexString: String): Assertion = 
-    // SKIP-DOTTY-START 
-    def regex(rightRegexString: String): Assertion = 
-    // SKIP-DOTTY-END
+    /* DOTTY-ONLY */ def regex(rightRegexString: String): Assertion = 
       checkRegex(rightRegexString.r)
 
     /**
@@ -6586,10 +6583,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(regexWithGroups: RegexWithGroups): Assertion = 
-    // SKIP-DOTTY-START 
-    def regex(regexWithGroups: RegexWithGroups): Assertion = 
-    // SKIP-DOTTY-END
+    /* DOTTY-ONLY */ def regex(regexWithGroups: RegexWithGroups): Assertion = 
       checkRegex(regexWithGroups.regex, regexWithGroups.groups)
 
     /**
@@ -6600,10 +6594,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(rightRegex: Regex): Assertion = 
-    // SKIP-DOTTY-START 
-    def regex(rightRegex: Regex): Assertion = 
-    // SKIP-DOTTY-END
+    /* DOTTY-ONLY */ def regex(rightRegex: Regex): Assertion = 
       checkRegex(rightRegex)
 
     private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty): Assertion = {
@@ -6652,10 +6643,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                            ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(rightRegexString: String): Assertion = 
-    // SKIP-DOTTY-START 
-    def regex(rightRegexString: String): Assertion = 
-    // SKIP-DOTTY-END
+    /* DOTTY-ONLY */ def regex(rightRegexString: String): Assertion = 
       checkRegex(rightRegexString.r)
 
     /**
@@ -6666,10 +6654,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                            ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(regexWithGroups: RegexWithGroups): Assertion = 
-    // SKIP-DOTTY-START 
-    def regex(regexWithGroups: RegexWithGroups): Assertion = 
-    // SKIP-DOTTY-END
+    /* DOTTY-ONLY */ def regex(regexWithGroups: RegexWithGroups): Assertion = 
       checkRegex(regexWithGroups.regex, regexWithGroups.groups)
 
     /**
@@ -6680,10 +6665,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                            ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(rightRegex: Regex): Assertion = 
-    // SKIP-DOTTY-START 
-    def regex(rightRegex: Regex): Assertion = 
-    // SKIP-DOTTY-END
+    /* DOTTY-ONLY */ def regex(rightRegex: Regex): Assertion = 
       checkRegex(rightRegex)
 
     private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty): Assertion = {
@@ -6732,10 +6714,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                            ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(rightRegexString: String): Assertion = 
-    // SKIP-DOTTY-START 
-    def regex(rightRegexString: String): Assertion = 
-    // SKIP-DOTTY-END
+    /* DOTTY-ONLY */ def regex(rightRegexString: String): Assertion = 
       checkRegex(rightRegexString.r)
 
     /**
@@ -6746,10 +6725,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                            ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(regexWithGroups: RegexWithGroups): Assertion = 
-    // SKIP-DOTTY-START 
-    def regex(regexWithGroups: RegexWithGroups): Assertion = 
-    // SKIP-DOTTY-END
+    /* DOTTY-ONLY */ def regex(regexWithGroups: RegexWithGroups): Assertion = 
       checkRegex(regexWithGroups.regex, regexWithGroups.groups)
 
     /**
@@ -6760,10 +6736,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                            ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(rightRegex: Regex): Assertion = 
-    // SKIP-DOTTY-START 
-    def regex(rightRegex: Regex): Assertion = 
-    // SKIP-DOTTY-END
+    /* DOTTY-ONLY */ def regex(rightRegex: Regex): Assertion = 
       checkRegex(rightRegex)
 
     private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty): Assertion = {
@@ -6812,10 +6785,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(rightRegexString: String): Assertion = 
-    // SKIP-DOTTY-START 
-    def regex(rightRegexString: String): Assertion = 
-    // SKIP-DOTTY-END
+    /* DOTTY-ONLY */ def regex(rightRegexString: String): Assertion = 
       checkRegex(rightRegexString.r)
 
     /**
@@ -6826,10 +6796,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(regexWithGroups: RegexWithGroups): Assertion = 
-    // SKIP-DOTTY-START 
-    def regex(regexWithGroups: RegexWithGroups): Assertion = 
-    // SKIP-DOTTY-END
+    /* DOTTY-ONLY */ def regex(regexWithGroups: RegexWithGroups): Assertion = 
       checkRegex(regexWithGroups.regex, regexWithGroups.groups)
 
     /**
@@ -6840,10 +6807,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                               ^
      * </pre>
      */
-    //DOTTY-ONLY infix def regex(rightRegex: Regex): Assertion = 
-    // SKIP-DOTTY-START 
-    def regex(rightRegex: Regex): Assertion = 
-    // SKIP-DOTTY-END
+    /* DOTTY-ONLY */ def regex(rightRegex: Regex): Assertion = 
       checkRegex(rightRegex)
 
     private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty): Assertion = {
@@ -6883,7 +6847,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def all[E, C[_]](xs: C[E])(using collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] = 
+  // SKIP-DOTTY-START 
   def all[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AllCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -6894,7 +6861,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * ^
     * </pre>
     */
+  //DOTTY-ONLY def all[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](xs: MAP[K, V])(implicit collecting: Collecting[(K, V), Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
+  // SKIP-DOTTY-START  
   def all[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](xs: MAP[K, V])(implicit collecting: Collecting[(K, V), Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AllCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -6905,7 +6875,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def all[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(using collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  // SKIP-DOTTY-START 
   def all[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AllCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -6916,7 +6889,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def all(xs: String)(using collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+  // SKIP-DOTTY-START 
   def all(xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AllCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -6927,7 +6903,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def atLeast[E, C[_]](num: Int, xs: C[E])(using collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+  // SKIP-DOTTY-START 
   def atLeast[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AtLeastCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -6938,7 +6917,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * ^
     * </pre>
     */
+  //DOTTY-ONLY def atLeast[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(using collecting: Collecting[(K, V), Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
+  // SKIP-DOTTY-START  
   def atLeast[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AtLeastCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -6949,7 +6931,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def atLeast[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(using collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  // SKIP-DOTTY-START 
   def atLeast[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AtLeastCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -6960,7 +6945,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def atLeast(num: Int, xs: String)(using collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+  // SKIP-DOTTY-START 
   def atLeast(num: Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AtLeastCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -6971,7 +6959,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def every[E, C[_]](xs: C[E])(using collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+  // SKIP-DOTTY-START 
   def every[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(EveryCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -6982,7 +6973,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * ^
     * </pre>
     */
+  //DOTTY-ONLY def every[K, V, MAP[k, v] <: scala.collection.Map[k, v]](xs: MAP[K, V])(using collecting: Collecting[(K, V), Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
+  // SKIP-DOTTY-START  
   def every[K, V, MAP[k, v] <: scala.collection.Map[k, v]](xs: MAP[K, V])(implicit collecting: Collecting[(K, V), Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(EveryCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -6994,7 +6988,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def every[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(using collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  // SKIP-DOTTY-START 
   def every[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(EveryCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7005,7 +7002,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def every(xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+  // SKIP-DOTTY-START 
   def every(xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(EveryCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7016,7 +7016,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def exactly[E, C[_]](num: Int, xs: C[E])(using collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+  // SKIP-DOTTY-START  
   def exactly[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(ExactlyCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7027,7 +7030,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * ^
     * </pre>
     */
+  //DOTTY-ONLY def exactly[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(using collecting: Collecting[(K, V), Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
+  // SKIP-DOTTY-START  
   def exactly[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(ExactlyCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7038,7 +7044,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def exactly[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(using collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  // SKIP-DOTTY-START 
   def exactly[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(ExactlyCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7049,7 +7058,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def exactly(num: Int, xs: String)(using collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+  // SKIP-DOTTY-START 
   def exactly(num: Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+  // SKIP-DOTTY-END 
     new ResultOfCollectedAny(ExactlyCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7059,8 +7071,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * no(xs) should fullymatch regex ("Hel*o world".r)
    * ^
    * </pre>
-   */ 
+   */
+  //DOTTY-ONLY def no[E, C[_]](xs: C[E])(using collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+  // SKIP-DOTTY-START  
   def no[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(NoCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7071,7 +7086,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def no[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(using collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  // SKIP-DOTTY-START 
   def no[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(NoCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7082,7 +7100,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def no(xs: String)(using collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+  // SKIP-DOTTY-START 
   def no(xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(NoCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7093,7 +7114,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def between[E, C[_]](from: Int, upTo:Int, xs: C[E])(using collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+  // SKIP-DOTTY-START 
   def between[E, C[_]](from: Int, upTo:Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7104,7 +7128,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def between[K, V, JMAP[k, v] <: java.util.Map[k, v]](from: Int, upTo:Int, xs: JMAP[K, V])(using collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  // SKIP-DOTTY-START  
   def between[K, V, JMAP[k, v] <: java.util.Map[k, v]](from: Int, upTo:Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7115,7 +7142,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def between(from: Int, upTo:Int, xs: String)(using collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+  // SKIP-DOTTY-START 
   def between(from: Int, upTo:Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7126,7 +7156,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def atMost[E, C[_]](num: Int, xs: C[E])(using collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+  // SKIP-DOTTY-START 
   def atMost[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AtMostCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7137,7 +7170,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * ^
     * </pre>
     */
+  //DOTTY-ONLY def atMost[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(using collecting: Collecting[(K, V), Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
+  // SKIP-DOTTY-START   
   def atMost[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AtMostCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7148,7 +7184,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def atMost[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(using collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  // SKIP-DOTTY-START 
   def atMost[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AtMostCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7159,7 +7198,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
+  //DOTTY-ONLY def atMost(num: Int, xs: String)(using collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+  // SKIP-DOTTY-START 
   def atMost(num: Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AtMostCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7170,7 +7212,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def a[T: ClassTag]: ResultOfATypeInvocation[T] =
+  /* DOTTY-ONLY infix */ def a[T: ClassTag]: ResultOfATypeInvocation[T] =
     new ResultOfATypeInvocation(classTag)
 
   /**
@@ -7181,7 +7223,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def an[T : ClassTag]: ResultOfAnTypeInvocation[T] =
+  /* DOTTY-ONLY infix */ def an[T : ClassTag]: ResultOfAnTypeInvocation[T] =
     new ResultOfAnTypeInvocation(classTag)
 
   /**
