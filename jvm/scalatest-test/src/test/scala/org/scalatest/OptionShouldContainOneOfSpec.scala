@@ -62,14 +62,14 @@ class OptionShouldContainOneOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumSome should contain oneOf ("FEE", "FIE", "FOE", "FUM")) (using decided by upperCaseEquality)
+        (fumSome should contain oneOf ("FEE", "FIE", "FOE", "FUM")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (fumSome should contain oneOf ("fee", "fie", "foe", "fum")) (using decided by upperCaseEquality)
+          (fumSome should contain oneOf ("fee", "fie", "foe", "fum")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
         intercept[TestFailedException] {
           fumSome should contain oneOf (" FEE ", " FIE ", " FOE ", " FUM ")
         }
-        (fumSome should contain oneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (using after being lowerCased and trimmed)
+        (fumSome should contain oneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -101,14 +101,14 @@ class OptionShouldContainOneOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumSome should (contain oneOf ("FEE", "FIE", "FOE", "FUM"))) (using decided by upperCaseEquality)
+        (fumSome should (contain oneOf ("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (fumSome should (contain oneOf ("fee", "fie", "foe", "fum"))) (using decided by upperCaseEquality)
+          (fumSome should (contain oneOf ("fee", "fie", "foe", "fum"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
         intercept[TestFailedException] {
           fumSome should (contain oneOf (" FEE ", " FIE ", " FOE ", " FUM "))
         }
-        (fumSome should (contain oneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (using after being lowerCased and trimmed)
+        (fumSome should (contain oneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -147,13 +147,13 @@ class OptionShouldContainOneOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toSome should not contain oneOf ("happy", "birthday", "to", "you")) (using decided by upperCaseEquality)
+        (toSome should not contain oneOf ("happy", "birthday", "to", "you")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (toSome should not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (using decided by upperCaseEquality)
+          (toSome should not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
         toSome should not contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         intercept[TestFailedException] {
-          (toSome should not contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (using after being lowerCased and trimmed)
+          (toSome should not contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -194,13 +194,13 @@ The bottom two don't, but still I don't want to support that in general.
         }
       }
       it("should use an explicitly provided Equality") {
-        (toSome should (not contain oneOf ("happy", "birthday", "to", "you"))) (using decided by upperCaseEquality)
+        (toSome should (not contain oneOf ("happy", "birthday", "to", "you"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (toSome should (not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (using decided by upperCaseEquality)
+          (toSome should (not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
         toSome should (not contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toSome should (not contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (using after being lowerCased and trimmed)
+          (toSome should (not contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -276,14 +276,14 @@ The bottom two don't, but still I don't want to support that in general.
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiSomes) should contain oneOf ("HI", "HE")) (using decided by upperCaseEquality)
+        (all (hiSomes) should contain oneOf ("HI", "HE")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (hiSomes) should contain oneOf ("hi", "he")) (using decided by upperCaseEquality)
+          (all (hiSomes) should contain oneOf ("hi", "he")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
         implicit val ise = upperCaseEquality
-        (all (hiSomes) should contain oneOf ("hi", "he")) (using decided by defaultEquality[String])
+        (all (hiSomes) should contain oneOf ("hi", "he")) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiSomes) should contain oneOf ("HI", "HE")) (using decided by defaultEquality[String])
+          (all (hiSomes) should contain oneOf ("HI", "HE")) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -349,14 +349,14 @@ The bottom two don't, but still I don't want to support that in general.
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiSomes) should (contain oneOf ("HI", "HE"))) (using decided by upperCaseEquality)
+        (all (hiSomes) should (contain oneOf ("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (hiSomes) should (contain oneOf ("hi", "he"))) (using decided by upperCaseEquality)
+          (all (hiSomes) should (contain oneOf ("hi", "he"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
         implicit val ise = upperCaseEquality
-        (all (hiSomes) should (contain oneOf ("hi", "he"))) (using decided by defaultEquality[String])
+        (all (hiSomes) should (contain oneOf ("hi", "he"))) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiSomes) should (contain oneOf ("HI", "HE"))) (using decided by defaultEquality[String])
+          (all (hiSomes) should (contain oneOf ("HI", "HE"))) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -405,13 +405,13 @@ scala> all (some1s) should (contain (oneOf (1, 3, 4)))
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toSomes) should not contain oneOf ("happy", "birthday", "to", "you")) (using decided by upperCaseEquality)
+        (all (toSomes) should not contain oneOf ("happy", "birthday", "to", "you")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (toSomes) should not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (using decided by upperCaseEquality)
+          (all (toSomes) should not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
         all (toSomes) should not contain oneOf (" happy ", " birthday ", " to ", " you ")
         intercept[TestFailedException] {
-          (all (toSomes) should not contain oneOf (" happy ", " birthday ", " to ", " you ")) (using after being lowerCased and trimmed)
+          (all (toSomes) should not contain oneOf (" happy ", " birthday ", " to ", " you ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -462,13 +462,13 @@ The top two don't, but still I don't want to support that in general.
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toSomes) should (not contain oneOf ("happy", "birthday", "to", "you"))) (using decided by upperCaseEquality)
+        (all (toSomes) should (not contain oneOf ("happy", "birthday", "to", "you"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (toSomes) should (not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (using decided by upperCaseEquality)
+          (all (toSomes) should (not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
         all (toSomes) should (not contain oneOf (" happy ", " birthday ", " to ", " you "))
         intercept[TestFailedException] {
-          (all (toSomes) should (not contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (using after being lowerCased and trimmed)
+          (all (toSomes) should (not contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {

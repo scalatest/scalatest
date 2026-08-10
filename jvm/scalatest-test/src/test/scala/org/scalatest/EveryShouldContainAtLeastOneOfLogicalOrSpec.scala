@@ -79,14 +79,14 @@ class EveryShouldContainAtLeastOneOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (contain atLeastOneOf ("FIE", "FEE", "FUM", "FOE") or contain atLeastOneOf ("FIE", "FEE", "FOE", "FUM"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (contain atLeastOneOf ("fie", "fee", "fum", "foe") or contain atLeastOneOf ("FIE", "FEE", "FOE", "FUM"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (contain atLeastOneOf ("FIE", "FEE", "FUM", "FOE") or contain atLeastOneOf ("fie", "fee", "foe", "fum"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (contain atLeastOneOf ("FIE", "FEE", "FUM", "FOE") or contain atLeastOneOf ("FIE", "FEE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (contain atLeastOneOf ("fie", "fee", "fum", "foe") or contain atLeastOneOf ("FIE", "FEE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (contain atLeastOneOf ("FIE", "FEE", "FUM", "FOE") or contain atLeastOneOf ("fie", "fee", "foe", "fum"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain atLeastOneOf ("fum", "foe") or contain atLeastOneOf ("fie", "fee", "foe", "fum"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (contain atLeastOneOf ("fum", "foe") or contain atLeastOneOf ("fie", "fee", "foe", "fum"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.didNotContainAtLeastOneOf(decorateToStringValue(prettifier, fumList), "\"fum\", \"foe\"") + ", and " + Resources.didNotContainAtLeastOneOf(decorateToStringValue(prettifier, fumList), "\"fie\", \"fee\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
-        (fumList should (contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ") or contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (using after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ") or contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
       "should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value" in {
@@ -130,14 +130,14 @@ class EveryShouldContainAtLeastOneOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (equal (fumList) or contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (using decided by defaultEquality, decided by upperCaseStringEquality)
-        (fumList should (equal (toList) or contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (using decided by defaultEquality, decided by upperCaseStringEquality)
-        (fumList should (equal (fumList) or contain atLeastOneOf ("fum", "foe"))) (using decided by defaultEquality, decided by upperCaseStringEquality)
+        (fumList should (equal (fumList) or contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by defaultEquality, decided by upperCaseStringEquality)
+        (fumList should (equal (toList) or contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by defaultEquality, decided by upperCaseStringEquality)
+        (fumList should (equal (fumList) or contain atLeastOneOf ("fum", "foe"))) (/* DOTTY-ONLY using */ decided by defaultEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (equal (toList) or contain atLeastOneOf ("fum", "foe"))) (using decided by defaultEquality, decided by upperCaseStringEquality)
+          (fumList should (equal (toList) or contain atLeastOneOf ("fum", "foe"))) (/* DOTTY-ONLY using */ decided by defaultEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.didNotEqual(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.didNotContainAtLeastOneOf(decorateToStringValue(prettifier, fumList), "\"fum\", \"foe\""), fileName, thisLineNumber - 2)
-        (fumList should (equal (toList) or contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (using decided by defaultEquality, after being lowerCased and trimmed)
+        (fumList should (equal (toList) or contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ decided by defaultEquality, after being lowerCased and trimmed)
       }
 
       "should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value" in {
@@ -174,14 +174,14 @@ class EveryShouldContainAtLeastOneOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (be (fumList) or contain atLeastOneOf ("FIE", "FEE", "FUM", "FOE"))) (using decided by upperCaseStringEquality)
-        (fumList should (be (toList) or contain atLeastOneOf ("FIE", "FEE", "FUM", "FOE"))) (using decided by upperCaseStringEquality)
-        (fumList should (be (fumList) or contain atLeastOneOf ("fum", "foe"))) (using decided by upperCaseStringEquality)
+        (fumList should (be (fumList) or contain atLeastOneOf ("FIE", "FEE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (be (toList) or contain atLeastOneOf ("FIE", "FEE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (be (fumList) or contain atLeastOneOf ("fum", "foe"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (be (toList) or contain atLeastOneOf ("fum", "foe"))) (using decided by upperCaseStringEquality)
+          (fumList should (be (toList) or contain atLeastOneOf ("fum", "foe"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.didNotContainAtLeastOneOf(decorateToStringValue(prettifier, fumList), "\"fum\", \"foe\""), fileName, thisLineNumber - 2)
-        (fumList should (be (fumList) or contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (using after being lowerCased and trimmed)
+        (fumList should (be (fumList) or contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
 
       "should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value" in {
@@ -218,14 +218,14 @@ class EveryShouldContainAtLeastOneOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (contain atLeastOneOf ("FIE", "FEE", "FUM", "FOE") or be (fumList))) (using decided by upperCaseStringEquality)
-        (fumList should (contain atLeastOneOf ("fum", "foe") or be (fumList))) (using decided by upperCaseStringEquality)
-        (fumList should (contain atLeastOneOf ("FIE", "FEE", "FUM", "FOE") or be (toList))) (using decided by upperCaseStringEquality)
+        (fumList should (contain atLeastOneOf ("FIE", "FEE", "FUM", "FOE") or be (fumList))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (contain atLeastOneOf ("fum", "foe") or be (fumList))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (contain atLeastOneOf ("FIE", "FEE", "FUM", "FOE") or be (toList))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain atLeastOneOf ("fum", "foe") or be (toList))) (using decided by upperCaseStringEquality)
+          (fumList should (contain atLeastOneOf ("fum", "foe") or be (toList))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.didNotContainAtLeastOneOf(decorateToStringValue(prettifier, fumList), "\"fum\", \"foe\"") + ", and " + Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)), fileName, thisLineNumber - 2)
-        (fumList should (contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ") or be (fumList))) (using after being lowerCased and trimmed)
+        (fumList should (contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ") or be (fumList))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
 
       "should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value" in {
@@ -262,14 +262,14 @@ class EveryShouldContainAtLeastOneOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (not contain atLeastOneOf ("fum", "foe") or not contain atLeastOneOf ("fum", "foe"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (not contain atLeastOneOf ("FIE", "FEE", "FUM", "FOE") or not contain atLeastOneOf ("fum", "foe"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (not contain atLeastOneOf ("fum", "foe") or not contain atLeastOneOf ("FIE", "FEE", "FUM", "FOE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not contain atLeastOneOf ("fum", "foe") or not contain atLeastOneOf ("fum", "foe"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not contain atLeastOneOf ("FIE", "FEE", "FUM", "FOE") or not contain atLeastOneOf ("fum", "foe"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not contain atLeastOneOf ("fum", "foe") or not contain atLeastOneOf ("FIE", "FEE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM") or not contain atLeastOneOf ("FEE", "FIE", "FUM", "FOE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM") or not contain atLeastOneOf ("FEE", "FIE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.containedAtLeastOneOf(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", and " + Resources.containedAtLeastOneOf(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
-        (fumList should (contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ") or contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (using after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ") or contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
       "should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value" in {
@@ -313,14 +313,14 @@ class EveryShouldContainAtLeastOneOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (not equal (toList) or not contain atLeastOneOf ("fum", "foe"))) (using decided by defaultEquality, decided by upperCaseStringEquality)
-        (fumList should (not equal (fumList) or not contain atLeastOneOf ("fum", "foe"))) (using decided by defaultEquality, decided by upperCaseStringEquality)
-        (fumList should (not equal (toList) or not contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (using decided by defaultEquality, decided by upperCaseStringEquality)
+        (fumList should (not equal (toList) or not contain atLeastOneOf ("fum", "foe"))) (/* DOTTY-ONLY using */ decided by defaultEquality, decided by upperCaseStringEquality)
+        (fumList should (not equal (fumList) or not contain atLeastOneOf ("fum", "foe"))) (/* DOTTY-ONLY using */ decided by defaultEquality, decided by upperCaseStringEquality)
+        (fumList should (not equal (toList) or not contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by defaultEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not equal (fumList) or not contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (using decided by defaultEquality, decided by upperCaseStringEquality)
+          (fumList should (not equal (fumList) or not contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by defaultEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.equaled(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.containedAtLeastOneOf(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
-        (fumList should (not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU ") or not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU "))) (using after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU ") or not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
       "should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value" in {
@@ -357,14 +357,14 @@ class EveryShouldContainAtLeastOneOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (not be (toList) or not contain atLeastOneOf ("fum", "foe"))) (using decided by upperCaseStringEquality)
-        (fumList should (not be (fumList) or not contain atLeastOneOf ("fum", "foe"))) (using decided by upperCaseStringEquality)
-        (fumList should (not be (toList) or not contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (using decided by upperCaseStringEquality)
+        (fumList should (not be (toList) or not contain atLeastOneOf ("fum", "foe"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (not be (fumList) or not contain atLeastOneOf ("fum", "foe"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (not be (toList) or not contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not be (fumList) or not contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (using decided by upperCaseStringEquality)
+          (fumList should (not be (fumList) or not contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.wasEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.containedAtLeastOneOf(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
-        (fumList should (not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU ") or not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU "))) (using after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU ") or not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
       "should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value" in {
@@ -422,12 +422,12 @@ class EveryShouldContainAtLeastOneOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (contain atLeastOneOf ("HI", "HE") or contain atLeastOneOf ("HI", "HE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (contain atLeastOneOf ("hi", "he") or contain atLeastOneOf ("HI", "HE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (contain atLeastOneOf ("HI", "HE") or contain atLeastOneOf ("hi", "he"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (contain atLeastOneOf ("HI", "HE") or contain atLeastOneOf ("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (contain atLeastOneOf ("hi", "he") or contain atLeastOneOf ("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (contain atLeastOneOf ("HI", "HE") or contain atLeastOneOf ("hi", "he"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
 
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (contain atLeastOneOf ("hi", "he") or contain atLeastOneOf ("hi", "he"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (contain atLeastOneOf ("hi", "he") or contain atLeastOneOf ("hi", "he"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, One("hi")) + " did not contain at least one of (\"hi\", \"he\"), and " + decorateToStringValue(prettifier, One("hi")) + " did not contain at least one of (\"hi\", \"he\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -476,12 +476,12 @@ class EveryShouldContainAtLeastOneOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (be (One("hi")) or contain atLeastOneOf ("HI", "HE"))) (using decided by upperCaseStringEquality)
-        (all (hiLists) should (be (One("ho")) or contain atLeastOneOf ("HI", "HE"))) (using decided by upperCaseStringEquality)
-        (all (hiLists) should (be (One("hi")) or contain atLeastOneOf ("hi", "he"))) (using decided by upperCaseStringEquality)
+        (all (hiLists) should (be (One("hi")) or contain atLeastOneOf ("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (hiLists) should (be (One("ho")) or contain atLeastOneOf ("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (hiLists) should (be (One("hi")) or contain atLeastOneOf ("hi", "he"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
 
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (be (One("ho")) or contain atLeastOneOf ("hi", "he"))) (using decided by upperCaseStringEquality)
+          (all (hiLists) should (be (One("ho")) or contain atLeastOneOf ("hi", "he"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, One("hi")) + " was not equal to " + decorateToStringValue(prettifier, One("ho")) + ", and " + decorateToStringValue(prettifier, One("hi")) + " did not contain at least one of (\"hi\", \"he\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -523,12 +523,12 @@ class EveryShouldContainAtLeastOneOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (not contain atLeastOneOf ("hi", "he") or not contain atLeastOneOf ("hi", "he"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (not contain atLeastOneOf ("HI", "HE") or not contain atLeastOneOf ("hi", "he"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (not contain atLeastOneOf ("hi", "he") or not contain atLeastOneOf ("HI", "HE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (not contain atLeastOneOf ("hi", "he") or not contain atLeastOneOf ("hi", "he"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (not contain atLeastOneOf ("HI", "HE") or not contain atLeastOneOf ("hi", "he"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (not contain atLeastOneOf ("hi", "he") or not contain atLeastOneOf ("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
 
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not contain atLeastOneOf ("HI", "HE") or not contain atLeastOneOf ("HI", "HE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (not contain atLeastOneOf ("HI", "HE") or not contain atLeastOneOf ("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, One("hi")) + " contained at least one of (\"HI\", \"HE\"), and " + decorateToStringValue(prettifier, One("hi")) + " contained at least one of (\"HI\", \"HE\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -577,12 +577,12 @@ class EveryShouldContainAtLeastOneOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (not be (One("ho")) or not contain atLeastOneOf ("hi", "he"))) (using decided by upperCaseStringEquality)
-        (all (hiLists) should (not be (One("hi")) or not contain atLeastOneOf ("hi", "he"))) (using decided by upperCaseStringEquality)
-        (all (hiLists) should (not be (One("ho")) or not contain atLeastOneOf ("HI", "HE"))) (using decided by upperCaseStringEquality)
+        (all (hiLists) should (not be (One("ho")) or not contain atLeastOneOf ("hi", "he"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (hiLists) should (not be (One("hi")) or not contain atLeastOneOf ("hi", "he"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (hiLists) should (not be (One("ho")) or not contain atLeastOneOf ("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
 
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not be (One("hi")) or not contain atLeastOneOf ("HI", "HE"))) (using decided by upperCaseStringEquality)
+          (all (hiLists) should (not be (One("hi")) or not contain atLeastOneOf ("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, One("hi")) + " was equal to " + decorateToStringValue(prettifier, One("hi")) + ", and " + decorateToStringValue(prettifier, One("hi")) + " contained at least one of (\"HI\", \"HE\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }

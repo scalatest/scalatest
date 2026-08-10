@@ -251,19 +251,19 @@ class AllOfContainMatcherEqualitySpec extends funspec.AnyFunSpec {
         
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should contain allOf (1, 2, 3)) (using equality)
+        (left1 should contain allOf (1, 2, 3)) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldContainStackDepth(e1, left1, deep(Array(1, 2, 3)), thisLineNumber - 2)
         
       val left2 = Set(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should contain allOf (1, 2, 3)) (using equality)
+        (left2 should contain allOf (1, 2, 3)) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldContainStackDepth(e2, left2, deep(Array(1, 2, 3)), thisLineNumber - 2)
         
       val left3 = Array(1, 2, 3)
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should contain allOf (1, 2, 3)) (using equality)
+        (left3 should contain allOf (1, 2, 3)) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldContainStackDepth(e3, left3, deep(Array(1, 2, 3)), thisLineNumber - 2)
         
@@ -271,14 +271,14 @@ class AllOfContainMatcherEqualitySpec extends funspec.AnyFunSpec {
         
       val left4 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        (left4 should contain allOf (1 -> "one", 2 -> "two", 3 -> "three")) (using mapEquality)
+        (left4 should contain allOf (1 -> "one", 2 -> "two", 3 -> "three")) (/* DOTTY-ONLY using */ mapEquality)
       }
       checkShouldContainStackDepth(e4, left4, deep(Array(1 -> "one", 2 -> "two", 3 -> "three")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS,NATIVE-START
       val left5 = javaList(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
-        (left5 should contain allOf (1, 2, 3)) (using equality)
+        (left5 should contain allOf (1, 2, 3)) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldContainStackDepth(e5, left5, deep(Array(1, 2, 3)), thisLineNumber - 2)
 
@@ -286,7 +286,7 @@ class AllOfContainMatcherEqualitySpec extends funspec.AnyFunSpec {
       
       val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
-        (left6 should contain allOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (using javaMapEquality)
+        (left6 should contain allOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (/* DOTTY-ONLY using */ javaMapEquality)
       }
       checkShouldContainStackDepth(e6, left6, deep(Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))), thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END

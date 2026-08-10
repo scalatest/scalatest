@@ -61,14 +61,14 @@ class ListShouldContainAtLeastOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM")) (using decided by upperCaseStringEquality)
+        (fumList should contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should contain atLeastOneElementOf Seq("fum", "foe")) (using decided by upperCaseStringEquality)
+          (fumList should contain atLeastOneElementOf Seq("fum", "foe")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
           fumList should contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")
         }
-        (fumList should contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")) (using after being lowerCased and trimmed)
+        (fumList should contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
       it("should allow RHS to contain duplicated value") {
         fumList should contain atLeastOneElementOf Seq("fee", "fie", "foe", "fie", "fum")
@@ -101,14 +101,14 @@ class ListShouldContainAtLeastOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should (contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (using decided by upperCaseStringEquality)
+        (fumList should (contain atLeastOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should (contain atLeastOneElementOf Seq("fum", "foe"))) (using decided by upperCaseStringEquality)
+          (fumList should (contain atLeastOneElementOf Seq("fum", "foe"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
           fumList should (contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))
         }
-        (fumList should (contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (using after being lowerCased and trimmed)
+        (fumList should (contain atLeastOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
       it("should allow RHS to contain duplicated value") {
         fumList should (contain atLeastOneElementOf Seq("fee", "fie", "foe", "fie", "fum"))
@@ -190,13 +190,13 @@ class ListShouldContainAtLeastOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList should (not contain atLeastOneElementOf (Seq("to", "you")))) (using decided by upperCaseStringEquality)
+        (toList should (not contain atLeastOneElementOf (Seq("to", "you")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should (not contain atLeastOneElementOf (Seq("TO", "YOU")))) (using decided by upperCaseStringEquality)
+          (toList should (not contain atLeastOneElementOf (Seq("TO", "YOU")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         toList should (not contain atLeastOneElementOf (Seq(" TO ", " YOU ")))
         intercept[TestFailedException] {
-          (toList should (not contain atLeastOneElementOf (Seq(" TO ", " YOU ")))) (using after being lowerCased and trimmed)
+          (toList should (not contain atLeastOneElementOf (Seq(" TO ", " YOU ")))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
 
@@ -224,13 +224,13 @@ class ListShouldContainAtLeastOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList shouldNot contain atLeastOneElementOf Seq("to", "you")) (using decided by upperCaseStringEquality)
+        (toList shouldNot contain atLeastOneElementOf Seq("to", "you")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList shouldNot contain atLeastOneElementOf Seq("TO", "YOU")) (using decided by upperCaseStringEquality)
+          (toList shouldNot contain atLeastOneElementOf Seq("TO", "YOU")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         toList shouldNot contain atLeastOneElementOf Seq(" TO ", " YOU ")
         intercept[TestFailedException] {
-          (toList shouldNot contain atLeastOneElementOf Seq(" TO ", " YOU ")) (using after being lowerCased and trimmed)
+          (toList shouldNot contain atLeastOneElementOf Seq(" TO ", " YOU ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should allow RHS to contain duplicated value") {
@@ -257,13 +257,13 @@ class ListShouldContainAtLeastOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList shouldNot (contain atLeastOneElementOf Seq("to", "you"))) (using decided by upperCaseStringEquality)
+        (toList shouldNot (contain atLeastOneElementOf Seq("to", "you"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList shouldNot (contain atLeastOneElementOf Seq("TO", "YOU"))) (using decided by upperCaseStringEquality)
+          (toList shouldNot (contain atLeastOneElementOf Seq("TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         toList shouldNot (contain atLeastOneElementOf Seq(" TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList shouldNot (contain atLeastOneElementOf Seq(" TO ", " YOU "))) (using after being lowerCased and trimmed)
+          (toList shouldNot (contain atLeastOneElementOf Seq(" TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
 
@@ -335,14 +335,14 @@ class ListShouldContainAtLeastOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should contain atLeastOneElementOf Seq("HI", "HE")) (using decided by upperCaseStringEquality)
+        (all (hiLists) should contain atLeastOneElementOf Seq("HI", "HE")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should contain atLeastOneElementOf Seq("hi", "he")) (using decided by upperCaseStringEquality)
+          (all (hiLists) should contain atLeastOneElementOf Seq("hi", "he")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should contain atLeastOneElementOf Seq("hi", "he")) (using decided by defaultEquality[String])
+        (all (hiLists) should contain atLeastOneElementOf Seq("hi", "he")) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should contain atLeastOneElementOf Seq("HI", "HE")) (using decided by defaultEquality[String])
+          (all (hiLists) should contain atLeastOneElementOf Seq("HI", "HE")) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         }
       }
       it("should allow RHS to contain duplicated value") {
@@ -403,14 +403,14 @@ class ListShouldContainAtLeastOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (contain atLeastOneElementOf Seq("HI", "HE"))) (using decided by upperCaseStringEquality)
+        (all (hiLists) should (contain atLeastOneElementOf Seq("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should (contain atLeastOneElementOf Seq("hi", "he"))) (using decided by upperCaseStringEquality)
+          (all (hiLists) should (contain atLeastOneElementOf Seq("hi", "he"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should (contain atLeastOneElementOf Seq("hi", "he"))) (using decided by defaultEquality[String])
+        (all (hiLists) should (contain atLeastOneElementOf Seq("hi", "he"))) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should (contain atLeastOneElementOf Seq("HI", "HE"))) (using decided by defaultEquality[String])
+          (all (hiLists) should (contain atLeastOneElementOf Seq("HI", "HE"))) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         }
       }
       it("should allow RHS to contain duplicated value") {
@@ -454,13 +454,13 @@ class ListShouldContainAtLeastOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should not contain atLeastOneElementOf (Seq("to", "you"))) (using decided by upperCaseStringEquality)
+        (all (toLists) should not contain atLeastOneElementOf (Seq("to", "you"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should not contain atLeastOneElementOf (Seq("TO", "YOU"))) (using decided by upperCaseStringEquality)
+          (all (toLists) should not contain atLeastOneElementOf (Seq("TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         all (toLists) should not contain atLeastOneElementOf (Seq(" TO ", " YOU "))
         intercept[TestFailedException] {
-          (all (toLists) should not contain atLeastOneElementOf (Seq(" TO ", " YOU "))) (using after being lowerCased and trimmed)
+          (all (toLists) should not contain atLeastOneElementOf (Seq(" TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should allow RHS to contain duplicated value") {
@@ -506,13 +506,13 @@ class ListShouldContainAtLeastOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should (not contain atLeastOneElementOf (Seq("to", "you")))) (using decided by upperCaseStringEquality)
+        (all (toLists) should (not contain atLeastOneElementOf (Seq("to", "you")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should (not contain atLeastOneElementOf (Seq("TO", "YOU")))) (using decided by upperCaseStringEquality)
+          (all (toLists) should (not contain atLeastOneElementOf (Seq("TO", "YOU")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         all (toLists) should (not contain atLeastOneElementOf (Seq(" TO ", " YOU ")))
         intercept[TestFailedException] {
-          (all (toLists) should (not contain atLeastOneElementOf (Seq(" TO ", " YOU ")))) (using after being lowerCased and trimmed)
+          (all (toLists) should (not contain atLeastOneElementOf (Seq(" TO ", " YOU ")))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should allow RHS to contain duplicated value") {
@@ -541,13 +541,13 @@ class ListShouldContainAtLeastOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot contain atLeastOneElementOf Seq("to", "you")) (using decided by upperCaseStringEquality)
+        (all (toLists) shouldNot contain atLeastOneElementOf Seq("to", "you")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain atLeastOneElementOf Seq("TO", "YOU")) (using decided by upperCaseStringEquality)
+          (all (toLists) shouldNot contain atLeastOneElementOf Seq("TO", "YOU")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot contain atLeastOneElementOf Seq(" TO ", " YOU ")
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain atLeastOneElementOf Seq(" TO ", " YOU ")) (using after being lowerCased and trimmed)
+          (all (toLists) shouldNot contain atLeastOneElementOf Seq(" TO ", " YOU ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should allow RHS to contain duplicated value") {
@@ -576,13 +576,13 @@ class ListShouldContainAtLeastOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot (contain atLeastOneElementOf Seq("to", "you"))) (using decided by upperCaseStringEquality)
+        (all (toLists) shouldNot (contain atLeastOneElementOf Seq("to", "you"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain atLeastOneElementOf Seq("TO", "YOU"))) (using decided by upperCaseStringEquality)
+          (all (toLists) shouldNot (contain atLeastOneElementOf Seq("TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot (contain atLeastOneElementOf Seq(" TO ", " YOU "))
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain atLeastOneElementOf Seq(" TO ", " YOU "))) (using after being lowerCased and trimmed)
+          (all (toLists) shouldNot (contain atLeastOneElementOf Seq(" TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should allow RHS to contain duplicated value") {

@@ -95,16 +95,16 @@ class ListShouldContainTheSameElementsAsLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM") and contain theSameElementsAs Set("FEE", "FIE", "FUM", "FOE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM") and contain theSameElementsAs Set("FEE", "FIE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain theSameElementsAs Set("FEE", "FIE", "FOE", "FAM") and contain theSameElementsAs Set("FEE", "FIE", "FUM", "FOE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (contain theSameElementsAs Set("FEE", "FIE", "FOE", "FAM") and contain theSameElementsAs Set("FEE", "FIE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.didNotContainSameElements(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, Set("FEE", "FIE", "FOE", "FAM"))), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM") and contain theSameElementsAs Set("FEE", "FIE", "FAM", "FOE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM") and contain theSameElementsAs Set("FEE", "FIE", "FAM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources.containedSameElements(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, Set("FEE", "FIE", "FOE", "FUM"))) + ", but " + Resources.didNotContainSameElements(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, Set("FEE", "FIE", "FAM", "FOE"))), fileName, thisLineNumber - 2)
-        (fumList should (contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM ") and contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM "))) (using after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM ") and contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
     }
 
@@ -136,16 +136,16 @@ class ListShouldContainTheSameElementsAsLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (equal (toList) and contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (equal (toList) and contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (equal (toList) and contain theSameElementsAs Set("FEE", "FIE", "FOE", "FAM"))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+          (fumList should (equal (toList) and contain theSameElementsAs Set("FEE", "FIE", "FOE", "FAM"))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.equaled(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", but " + Resources.didNotContainSameElements(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, Set("FEE", "FIE", "FOE", "FAM"))), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (equal (fumList) and contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+          (fumList should (equal (fumList) and contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources.didNotEqual(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)), fileName, thisLineNumber - 2)
-        (fumList should (equal (toList) and contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM "))) (using decided by invertedListOfStringEquality, after being lowerCased and trimmed)
+        (fumList should (equal (toList) and contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, after being lowerCased and trimmed)
       }
     }
 
@@ -177,16 +177,16 @@ class ListShouldContainTheSameElementsAsLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (be (fumList) and contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))) (using decided by upperCaseStringEquality)
+        (fumList should (be (fumList) and contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (be (fumList) and contain theSameElementsAs Set("happy", "birthday", "to", "you"))) (using decided by upperCaseStringEquality)
+          (fumList should (be (fumList) and contain theSameElementsAs Set("happy", "birthday", "to", "you"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.wasEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", but " + Resources.didNotContainSameElements(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, Set("happy", "birthday", "to", "you"))), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (be (toList) and contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))) (using decided by upperCaseStringEquality)
+          (fumList should (be (toList) and contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)), fileName, thisLineNumber - 2)
-        (fumList should (be (fumList) and contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM "))) (using after being lowerCased and trimmed)
+        (fumList should (be (fumList) and contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
     }
 
@@ -218,16 +218,16 @@ class ListShouldContainTheSameElementsAsLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE") and be (fumList))) (using decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE") and be (fumList))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain theSameElementsAs Set("FIE", "FEE", "FAM", "FOE") and be (fumList))) (using decided by upperCaseStringEquality)
+          (fumList should (contain theSameElementsAs Set("FIE", "FEE", "FAM", "FOE") and be (fumList))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.didNotContainSameElements(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, Set("FIE", "FEE", "FAM", "FOE"))), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE") and be (toList))) (using decided by upperCaseStringEquality)
+          (fumList should (contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE") and be (toList))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources.containedSameElements(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, Set("FIE", "FEE", "FUM", "FOE"))) + ", but " + Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)), fileName, thisLineNumber - 2)
-        (fumList should (contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM ") and be (fumList))) (using after being lowerCased and trimmed)
+        (fumList should (contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM ") and be (fumList))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
     }
 
@@ -259,16 +259,16 @@ class ListShouldContainTheSameElementsAsLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (not contain theSameElementsAs (Set("FIE", "FEE", "FAM", "FOE")) and not contain theSameElementsAs (Set("FIE", "FEE", "FOE", "FAM")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not contain theSameElementsAs (Set("FIE", "FEE", "FAM", "FOE")) and not contain theSameElementsAs (Set("FIE", "FEE", "FOE", "FAM")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not contain theSameElementsAs (Set("FIE", "FEE", "FAM", "FOE")) and not contain theSameElementsAs (Set("FIE", "FEE", "FOE", "FUM")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not contain theSameElementsAs (Set("FIE", "FEE", "FAM", "FOE")) and not contain theSameElementsAs (Set("FIE", "FEE", "FOE", "FUM")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.didNotContainSameElements(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, Set("FIE", "FEE", "FAM", "FOE"))) + ", but " + Resources.containedSameElements(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, Set("FIE", "FEE", "FOE", "FUM"))), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (not contain theSameElementsAs (Set("FIE", "FEE", "FUM", "FOE")) and not contain theSameElementsAs (Set("FIE", "FEE", "FOE", "FAM")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not contain theSameElementsAs (Set("FIE", "FEE", "FUM", "FOE")) and not contain theSameElementsAs (Set("FIE", "FEE", "FOE", "FAM")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources.containedSameElements(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, Set("FIE", "FEE", "FUM", "FOE"))), fileName, thisLineNumber - 2)
-        (fumList should (contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM ") and contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM "))) (using after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM ") and contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
     }
 
@@ -300,16 +300,16 @@ class ListShouldContainTheSameElementsAsLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (not equal (fumList) and not contain theSameElementsAs (Set("FIE", "FEE", "FAM", "FOE")))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not equal (fumList) and not contain theSameElementsAs (Set("FIE", "FEE", "FAM", "FOE")))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not equal (fumList) and not contain theSameElementsAs (Set("FIE", "FEE", "FUM", "FOE")))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not equal (fumList) and not contain theSameElementsAs (Set("FIE", "FEE", "FUM", "FOE")))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.didNotEqual(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", but " + Resources.containedSameElements(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, Set("FIE", "FEE", "FUM", "FOE"))), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (not equal (toList) and not contain theSameElementsAs (Set("FIE", "FEE", "FAM", "FOE")))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not equal (toList) and not contain theSameElementsAs (Set("FIE", "FEE", "FAM", "FOE")))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources.equaled(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)), fileName, thisLineNumber - 2)
-        (fumList should (not contain theSameElementsAs (Set(" FEE ", " FIE ", " FOE ", " FUU ")) and not contain theSameElementsAs (Set(" FEE ", " FIE ", " FOE ", " FUU ")))) (using after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (not contain theSameElementsAs (Set(" FEE ", " FIE ", " FOE ", " FUU ")) and not contain theSameElementsAs (Set(" FEE ", " FIE ", " FOE ", " FUU ")))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
     }
 
@@ -341,16 +341,16 @@ class ListShouldContainTheSameElementsAsLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (fumList should (not be (toList) and not contain theSameElementsAs (Set("FIE", "FEE", "FAM", "FOE")))) (using decided by upperCaseStringEquality)
+        (fumList should (not be (toList) and not contain theSameElementsAs (Set("FIE", "FEE", "FAM", "FOE")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not be (toList) and not contain theSameElementsAs (Set("FIE", "FEE", "FUM", "FOE")))) (using decided by upperCaseStringEquality)
+          (fumList should (not be (toList) and not contain theSameElementsAs (Set("FIE", "FEE", "FUM", "FOE")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", but " + Resources.containedSameElements(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, Set("FIE", "FEE", "FUM", "FOE"))), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (not be (fumList) and not contain theSameElementsAs (Set("FIE", "FEE", "FAM", "FOE")))) (using decided by upperCaseStringEquality)
+          (fumList should (not be (fumList) and not contain theSameElementsAs (Set("FIE", "FEE", "FAM", "FOE")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources.wasEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)), fileName, thisLineNumber - 2)
-        (fumList should (not contain theSameElementsAs (Set(" FEE ", " FIE ", " FOE ", " FUU ")) and not contain theSameElementsAs (Set(" FEE ", " FIE ", " FOE ", " FUU ")))) (using after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (not contain theSameElementsAs (Set(" FEE ", " FIE ", " FOE ", " FUU ")) and not contain theSameElementsAs (Set(" FEE ", " FIE ", " FOE ", " FUU ")))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
     }
 
@@ -417,14 +417,14 @@ class ListShouldContainTheSameElementsAsLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (contain theSameElementsAs Set("HELLO", "HI") and contain theSameElementsAs Set("HI", "HELLO"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (contain theSameElementsAs Set("HELLO", "HI") and contain theSameElementsAs Set("HI", "HELLO"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (contain theSameElementsAs Set("HO", "HELLO") and contain theSameElementsAs Set("HI", "HELLO"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (contain theSameElementsAs Set("HO", "HELLO") and contain theSameElementsAs Set("HI", "HELLO"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " did not contain the same elements as " + decorateToStringValue(prettifier, Set("HO", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          (all (hiLists) should (contain theSameElementsAs Set("HELLO", "HI") and contain theSameElementsAs Set("HO", "HELLO"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (contain theSameElementsAs Set("HELLO", "HI") and contain theSameElementsAs Set("HO", "HELLO"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " contained the same elements as " + decorateToStringValue(prettifier, Set("HELLO", "HI")) + ", but " + decorateToStringValue(prettifier, List("hi", "hello")) + " did not contain the same elements as " + decorateToStringValue(prettifier, Set("HO", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -488,14 +488,14 @@ class ListShouldContainTheSameElementsAsLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (be (List("hi", "hello")) and contain theSameElementsAs Set("HELLO", "HI"))) (using decided by upperCaseStringEquality)
+        (all (hiLists) should (be (List("hi", "hello")) and contain theSameElementsAs Set("HELLO", "HI"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (be (List("HI", "HELLO")) and contain theSameElementsAs Set("HELLO", "HI"))) (using decided by upperCaseStringEquality)
+          (all (hiLists) should (be (List("HI", "HELLO")) and contain theSameElementsAs Set("HELLO", "HI"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " was not equal to " + decorateToStringValue(prettifier, List("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          (all (hiLists) should (be (List("hi", "hello")) and contain theSameElementsAs Set("HO", "HELLO"))) (using decided by upperCaseStringEquality)
+          (all (hiLists) should (be (List("hi", "hello")) and contain theSameElementsAs Set("HO", "HELLO"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " was equal to " + decorateToStringValue(prettifier, List("hi", "hello")) + ", but " + decorateToStringValue(prettifier, List("hi", "hello")) + " did not contain the same elements as " + decorateToStringValue(prettifier, Set("HO", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -547,14 +547,14 @@ class ListShouldContainTheSameElementsAsLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (not contain theSameElementsAs (Set("HI")) and not contain theSameElementsAs (Set("HO")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (not contain theSameElementsAs (Set("HI")) and not contain theSameElementsAs (Set("HO")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not contain theSameElementsAs (Set("HELLO", "HI")) and not contain theSameElementsAs (Set("HO")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (not contain theSameElementsAs (Set("HELLO", "HI")) and not contain theSameElementsAs (Set("HO")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " contained the same elements as " + decorateToStringValue(prettifier, Set("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          (all (hiLists) should (not contain theSameElementsAs (Set("HI")) and not contain theSameElementsAs (Set("HELLO", "HI")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (not contain theSameElementsAs (Set("HI")) and not contain theSameElementsAs (Set("HELLO", "HI")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " did not contain the same elements as " + decorateToStringValue(prettifier, Set("HI")) + ", but " + decorateToStringValue(prettifier, List("hi", "hello")) + " contained the same elements as " + decorateToStringValue(prettifier, Set("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -606,14 +606,14 @@ class ListShouldContainTheSameElementsAsLogicalAndSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (not be (List("ho")) and not contain theSameElementsAs (Set("HO", "HELLO")))) (using decided by upperCaseStringEquality)
+        (all (hiLists) should (not be (List("ho")) and not contain theSameElementsAs (Set("HO", "HELLO")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not be (List("hi", "hello")) and not contain theSameElementsAs (Set("HELLO", "HI")))) (using decided by upperCaseStringEquality)
+          (all (hiLists) should (not be (List("hi", "hello")) and not contain theSameElementsAs (Set("HELLO", "HI")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " was equal to " + decorateToStringValue(prettifier, List("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
-          (all (hiLists) should (not be (List("ho")) and not contain theSameElementsAs (Set("HI", "HELLO")))) (using decided by upperCaseStringEquality)
+          (all (hiLists) should (not be (List("ho")) and not contain theSameElementsAs (Set("HI", "HELLO")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " was not equal to " + decorateToStringValue(prettifier, List("ho")) + ", but " + decorateToStringValue(prettifier, List("hi", "hello")) + " contained the same elements as " + decorateToStringValue(prettifier, Set("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }

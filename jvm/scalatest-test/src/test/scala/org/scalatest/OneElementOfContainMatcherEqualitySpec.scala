@@ -220,34 +220,34 @@ class OneElementOfContainMatcherEqualitySpec extends funspec.AnyFunSpec with Exp
 
     it("should take passed in custom explicit equality when 'should contain' is used") {
       implicit val equality = new TrimEquality
-      (List("1", " 2", "3") should contain oneElementOf Seq("2 ", "6", "8")) (using equality)
-      (Set("1", " 2", "3") should contain oneElementOf Seq("2 ", "6", "8")) (using equality)
-      (Array("1", " 2", "3") should contain oneElementOf Seq("2 ", "6", "8")) (using equality)
+      (List("1", " 2", "3") should contain oneElementOf Seq("2 ", "6", "8")) (/* DOTTY-ONLY using */ equality)
+      (Set("1", " 2", "3") should contain oneElementOf Seq("2 ", "6", "8")) (/* DOTTY-ONLY using */ equality)
+      (Array("1", " 2", "3") should contain oneElementOf Seq("2 ", "6", "8")) (/* DOTTY-ONLY using */ equality)
       implicit val mapEquality = new MapTrimEquality
-      (Map(1 -> "one", 2 -> " two", 3 -> "three") should contain oneElementOf Seq(2 -> "two ", 6 -> "six", 8 -> "eight")) (using mapEquality)
+      (Map(1 -> "one", 2 -> " two", 3 -> "three") should contain oneElementOf Seq(2 -> "two ", 6 -> "six", 8 -> "eight")) (/* DOTTY-ONLY using */ mapEquality)
 
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList("1", " 2", "3") should contain oneElementOf Seq("2 ", "6", "8")) (using equality)
+      (javaList("1", " 2", "3") should contain oneElementOf Seq("2 ", "6", "8")) (/* DOTTY-ONLY using */ equality)
 
       implicit val javaMapEquality = new JavaMapTrimEquality
-      (javaMap(Entry(1, "one"), Entry(2, " two"), Entry(3, "three")) should contain oneElementOf Seq(Entry(2, "two "), Entry(6, "six"), Entry(8, "eight"))) (using javaMapEquality)
+      (javaMap(Entry(1, "one"), Entry(2, " two"), Entry(3, "three")) should contain oneElementOf Seq(Entry(2, "two "), Entry(6, "six"), Entry(8, "eight"))) (/* DOTTY-ONLY using */ javaMapEquality)
       // SKIP-SCALATESTJS,NATIVE-END
     }
 
     it("should take passed in custom explicit equality when 'should not contain' is used") {
       implicit val equality = new FalseEquality
-      (List(1, 2, 3) should not contain oneElementOf (Seq(1, 2, 3))) (using equality)
-      (Set(1, 2, 3) should not contain oneElementOf (Seq(1, 2, 3))) (using equality)
-      (Array(1, 2, 3) should not contain oneElementOf (Seq(1, 2, 3))) (using equality)
+      (List(1, 2, 3) should not contain oneElementOf (Seq(1, 2, 3))) (/* DOTTY-ONLY using */ equality)
+      (Set(1, 2, 3) should not contain oneElementOf (Seq(1, 2, 3))) (/* DOTTY-ONLY using */ equality)
+      (Array(1, 2, 3) should not contain oneElementOf (Seq(1, 2, 3))) (/* DOTTY-ONLY using */ equality)
 
       implicit val mapEquality = new MapFalseEquality
-      (Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneElementOf (Seq(1 -> "one", 2 -> "two", 3 -> "three"))) (using mapEquality)
+      (Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneElementOf (Seq(1 -> "one", 2 -> "two", 3 -> "three"))) (/* DOTTY-ONLY using */ mapEquality)
 
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList(1, 2, 3) should not contain oneElementOf (Seq(1, 2, 3))) (using equality)
+      (javaList(1, 2, 3) should not contain oneElementOf (Seq(1, 2, 3))) (/* DOTTY-ONLY using */ equality)
 
       implicit val javaMapEquality = new JavaMapFalseEquality
-      (javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain oneElementOf (Seq(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")))) (using javaMapEquality)
+      (javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain oneElementOf (Seq(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")))) (/* DOTTY-ONLY using */ javaMapEquality)
       // SKIP-SCALATESTJS,NATIVE-END
     }
 
@@ -256,19 +256,19 @@ class OneElementOfContainMatcherEqualitySpec extends funspec.AnyFunSpec with Exp
 
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should contain oneElementOf Seq(1, 2, 3)) (using equality)
+        (left1 should contain oneElementOf Seq(1, 2, 3)) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldContainStackDepth(e1, left1, Seq(1, 2, 3), thisLineNumber - 2)
 
       val left2 = Set(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should contain oneElementOf Seq(1, 2, 3)) (using equality)
+        (left2 should contain oneElementOf Seq(1, 2, 3)) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldContainStackDepth(e2, left2, Seq(1, 2, 3), thisLineNumber - 2)
 
       val left3 = Array(1, 2, 3)
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should contain oneElementOf Seq(1, 2, 3)) (using equality)
+        (left3 should contain oneElementOf Seq(1, 2, 3)) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldContainStackDepth(e3, left3, Seq(1, 2, 3), thisLineNumber - 2)
 
@@ -276,14 +276,14 @@ class OneElementOfContainMatcherEqualitySpec extends funspec.AnyFunSpec with Exp
 
       val left4 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        (left4 should contain oneElementOf Seq(1 -> "one", 2 -> "two", 3 -> "three")) (using mapEquality)
+        (left4 should contain oneElementOf Seq(1 -> "one", 2 -> "two", 3 -> "three")) (/* DOTTY-ONLY using */ mapEquality)
       }
       checkShouldContainStackDepth(e4, left4, Seq(1 -> "one", 2 -> "two", 3 -> "three"), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS,NATIVE-START
       val left5 = javaList(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
-        (left5 should contain oneElementOf Seq(1, 2, 3)) (using equality)
+        (left5 should contain oneElementOf Seq(1, 2, 3)) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldContainStackDepth(e5, left5, Seq(1, 2, 3), thisLineNumber - 2)
 
@@ -291,7 +291,7 @@ class OneElementOfContainMatcherEqualitySpec extends funspec.AnyFunSpec with Exp
 
       val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
-        (left6 should contain oneElementOf Seq(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (using javaMapEquality)
+        (left6 should contain oneElementOf Seq(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (/* DOTTY-ONLY using */ javaMapEquality)
       }
       checkShouldContainStackDepth(e6, left6, Seq(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END
@@ -302,19 +302,19 @@ class OneElementOfContainMatcherEqualitySpec extends funspec.AnyFunSpec with Exp
 
       val left1 = List("1", " 2", "3")
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should not contain oneElementOf (Seq("2 ", "6", "8"))) (using equality)
+        (left1 should not contain oneElementOf (Seq("2 ", "6", "8"))) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldNotContainStackDepth(e1, left1, Seq("2 ", "6", "8"), thisLineNumber - 2)
 
       val left2 = Set("1", " 2", "3")
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should not contain oneElementOf (Seq("2 ", "6", "8"))) (using equality)
+        (left2 should not contain oneElementOf (Seq("2 ", "6", "8"))) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldNotContainStackDepth(e2, left2, Seq("2 ", "6", "8"), thisLineNumber - 2)
 
       val left3 = Array("1", " 2", "3")
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should not contain oneElementOf (Seq("2 ", "6", "8"))) (using equality)
+        (left3 should not contain oneElementOf (Seq("2 ", "6", "8"))) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldNotContainStackDepth(e3, left3, Seq("2 ", "6", "8"), thisLineNumber - 2)
 
@@ -322,14 +322,14 @@ class OneElementOfContainMatcherEqualitySpec extends funspec.AnyFunSpec with Exp
 
       val left4 = Map(1 -> "one", 2 -> " two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        (left4 should not contain oneElementOf (Seq(2 -> "two ", 6 -> "six", 8 -> "eight"))) (using mapEquality)
+        (left4 should not contain oneElementOf (Seq(2 -> "two ", 6 -> "six", 8 -> "eight"))) (/* DOTTY-ONLY using */ mapEquality)
       }
       checkShouldNotContainStackDepth(e4, left4, Seq(2 -> "two ", 6 -> "six", 8 -> "eight"), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS,NATIVE-START
       val left5 = javaList("1", " 2", "3")
       val e5 = intercept[exceptions.TestFailedException] {
-        (left5 should not contain oneElementOf (Seq("2 ", "6", "8"))) (using equality)
+        (left5 should not contain oneElementOf (Seq("2 ", "6", "8"))) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldNotContainStackDepth(e5, left5, Seq("2 ", "6", "8"), thisLineNumber - 2)
 
@@ -337,7 +337,7 @@ class OneElementOfContainMatcherEqualitySpec extends funspec.AnyFunSpec with Exp
 
       val left6 = javaMap(Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
-        (left6 should not contain oneElementOf (Seq(Entry(2, "two "), Entry(6, "six"), Entry(8, "eight")))) (using javaMapEquality)
+        (left6 should not contain oneElementOf (Seq(Entry(2, "two "), Entry(6, "six"), Entry(8, "eight")))) (/* DOTTY-ONLY using */ javaMapEquality)
       }
       checkShouldNotContainStackDepth(e6, left6, Seq(Entry(2, "two "), Entry(6, "six"), Entry(8, "eight")), thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END

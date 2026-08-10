@@ -74,14 +74,14 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE")) (using decided by upperCaseStringEquality)
+        (fumList should contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum")) (using decided by upperCaseStringEquality)
+          (fumList should contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
           fumList should contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE ")
         }
-        (fumList should contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE ")) (using after being lowerCased and trimmed)
+        (fumList should contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
       it("should throw TestFailedException with analysis showing escaped string") {
         val e1 = intercept[exceptions.TestFailedException] {
@@ -111,14 +111,14 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (using decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should (contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum"))) (using decided by upperCaseStringEquality)
+          (fumList should (contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
           fumList should (contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE "))
         }
-        (fumList should (contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE "))) (using after being lowerCased and trimmed)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
       it("should throw TestFailedException with analysis showing escaped string") {
         val e1 = intercept[exceptions.TestFailedException] {
@@ -147,13 +147,13 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList should not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY"))) (using decided by upperCaseStringEquality)
+        (toList should not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should not contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU"))) (using decided by upperCaseStringEquality)
+          (toList should not contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         toList should not contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList should not contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (using after being lowerCased and trimmed)
+          (toList should not contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
     }
@@ -177,13 +177,13 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList should (not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY")))) (using decided by upperCaseStringEquality)
+        (toList should (not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should (not contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU")))) (using decided by upperCaseStringEquality)
+          (toList should (not contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         toList should (not contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
         intercept[TestFailedException] {
-          (toList should (not contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (using after being lowerCased and trimmed)
+          (toList should (not contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
     }
@@ -207,13 +207,13 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList shouldNot contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY"))) (using decided by upperCaseStringEquality)
+        (toList shouldNot contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList shouldNot contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU"))) (using decided by upperCaseStringEquality)
+          (toList shouldNot contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         toList shouldNot contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList shouldNot contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (using after being lowerCased and trimmed)
+          (toList shouldNot contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
     }
@@ -237,13 +237,13 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList shouldNot (contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY")))) (using decided by upperCaseStringEquality)
+        (toList shouldNot (contain theSameElementsInOrderAs (ListBuffer("YOU", "TO", "BIRTHDAY", "HAPPY")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList shouldNot (contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU")))) (using decided by upperCaseStringEquality)
+          (toList shouldNot (contain theSameElementsInOrderAs (ListBuffer("HAPPY", "BIRTHDAY", "TO", "YOU")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         toList shouldNot (contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
         intercept[TestFailedException] {
-          (toList shouldNot (contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (using after being lowerCased and trimmed)
+          (toList shouldNot (contain theSameElementsInOrderAs (ListBuffer(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
     }
@@ -290,14 +290,14 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("HI", "HE")) (using decided by upperCaseStringEquality)
+        (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("HI", "HE")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("HI", "HO")) (using decided by upperCaseStringEquality)
+          (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("HI", "HO")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("hi", "he")) (using decided by defaultEquality[String])
+        (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("hi", "he")) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("hi", "ho")) (using decided by defaultEquality[String])
+          (all (hiLists) should contain theSameElementsInOrderAs ListBuffer("hi", "ho")) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         }
       }
     }
@@ -336,14 +336,14 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HE"))) (using decided by upperCaseStringEquality)
+        (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HO"))) (using decided by upperCaseStringEquality)
+          (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HO"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("hi", "he"))) (using decided by defaultEquality[String])
+        (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("hi", "he"))) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("he", "hi"))) (using decided by defaultEquality[String])
+          (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("he", "hi"))) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         }
       }
     }
@@ -370,13 +370,13 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO"))) (using decided by upperCaseStringEquality)
+        (all (toLists) should not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should not contain theSameElementsInOrderAs (ListBuffer("TO", "YOU"))) (using decided by upperCaseStringEquality)
+          (all (toLists) should not contain theSameElementsInOrderAs (ListBuffer("TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         all (toLists) should not contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU "))
         intercept[TestFailedException] {
-          (all (toLists) should not contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU "))) (using after being lowerCased and trimmed)
+          (all (toLists) should not contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
     }
@@ -403,13 +403,13 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO")))) (using decided by upperCaseStringEquality)
+        (all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer("YOU", "TO")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer("TO", "YOU")))) (using decided by upperCaseStringEquality)
+          (all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer("TO", "YOU")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU ")))
         intercept[TestFailedException] {
-          (all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU ")))) (using after being lowerCased and trimmed)
+          (all (toLists) should (not contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU ")))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
     }
@@ -436,13 +436,13 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer("YOU", "TO"))) (using decided by upperCaseStringEquality)
+        (all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer("YOU", "TO"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer("TO", "YOU"))) (using decided by upperCaseStringEquality)
+          (all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer("TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU "))
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU "))) (using after being lowerCased and trimmed)
+          (all (toLists) shouldNot contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
     }
@@ -469,13 +469,13 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer("YOU", "TO")))) (using decided by upperCaseStringEquality)
+        (all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer("YOU", "TO")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer("TO", "YOU")))) (using decided by upperCaseStringEquality)
+          (all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer("TO", "YOU")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU ")))
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU ")))) (using after being lowerCased and trimmed)
+          (all (toLists) shouldNot (contain theSameElementsInOrderAs (ListBuffer(" TO ", " YOU ")))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
     }

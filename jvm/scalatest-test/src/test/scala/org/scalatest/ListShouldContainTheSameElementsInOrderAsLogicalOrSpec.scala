@@ -92,14 +92,14 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends AnyFreeSpec
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE") or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM") or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE") or contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE") or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM") or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE") or contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM") or contain theSameElementsInOrderAs ListBuffer("FIE", "FEE", "FAM", "FOE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM") or contain theSameElementsInOrderAs ListBuffer("FIE", "FEE", "FAM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FEE", "FIE", "FOE", "FUM"))) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FIE", "FEE", "FAM", "FOE"))), fileName, thisLineNumber - 2)
-        (fumList should (contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE ") or contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE "))) (using after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE ") or contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
     }
     
@@ -127,14 +127,14 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends AnyFreeSpec
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (equal (toList) or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
-        (fumList should (equal (fumList) or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
-        (fumList should (equal (toList) or contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (equal (toList) or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (equal (fumList) or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (equal (toList) or contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (equal (fumList) or contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+          (fumList should (equal (fumList) or contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.didNotEqual(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FEE", "FIE", "FOE", "FUM"))), fileName, thisLineNumber - 2)
-        (fumList should (equal (toList) or contain theSameElementsInOrderAs ListBuffer(" FEE ", " FIE ", " FOE ", " FUM "))) (using decided by invertedListOfStringEquality, after being lowerCased and trimmed)
+        (fumList should (equal (toList) or contain theSameElementsInOrderAs ListBuffer(" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, after being lowerCased and trimmed)
       }
     }
     
@@ -162,14 +162,14 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends AnyFreeSpec
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (be (fumList) or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (using decided by upperCaseStringEquality)
-        (fumList should (be (toList) or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (using decided by upperCaseStringEquality)
-        (fumList should (be (fumList) or contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM"))) (using decided by upperCaseStringEquality)
+        (fumList should (be (fumList) or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (be (toList) or contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (be (fumList) or contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (be (toList) or contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM"))) (using decided by upperCaseStringEquality)
+          (fumList should (be (toList) or contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FEE", "FIE", "FOE", "FUM"))), fileName, thisLineNumber - 2)
-        (fumList should (be (fumList) or contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE "))) (using after being lowerCased and trimmed)
+        (fumList should (be (fumList) or contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
     }
 
@@ -197,14 +197,14 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends AnyFreeSpec
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE") or be (fumList))) (using decided by upperCaseStringEquality)
-        (fumList should (contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM") or be (fumList))) (using decided by upperCaseStringEquality)
-        (fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE") or be (toList))) (using decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE") or be (fumList))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM") or be (fumList))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer("FUM", "FOE", "FIE", "FEE") or be (toList))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM") or be (toList))) (using decided by upperCaseStringEquality)
+          (fumList should (contain theSameElementsInOrderAs ListBuffer("FEE", "FIE", "FOE", "FUM") or be (toList))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.didNotContainSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FEE", "FIE", "FOE", "FUM"))) + ", and " + Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)), fileName, thisLineNumber - 2)
-        (fumList should (contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE ") or be (fumList))) (using after being lowerCased and trimmed)
+        (fumList should (contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE ") or be (fumList))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
     }
     
@@ -232,11 +232,11 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends AnyFreeSpec
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FUM", "FOE", "FIE", "FEE"))) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FUM", "FOE", "FIE", "FEE"))), fileName, thisLineNumber - 2)
       }
@@ -266,11 +266,11 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends AnyFreeSpec
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (not equal (fumList) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
-        (fumList should (not equal (toList) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
-        (fumList should (not equal (fumList) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not equal (fumList) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not equal (toList) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not equal (fumList) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not equal (toList) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))) (using decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not equal (toList) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.equaled(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FUM", "FOE", "FIE", "FEE"))), fileName, thisLineNumber - 2)
       }
@@ -300,14 +300,14 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends AnyFreeSpec
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (not be (toList) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (using decided by upperCaseStringEquality)
-        (fumList should (not be (fumList) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (using decided by upperCaseStringEquality)
-        (fumList should (not be (toList) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))) (using decided by upperCaseStringEquality)
+        (fumList should (not be (toList) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (not be (fumList) or not contain theSameElementsInOrderAs (ListBuffer("FEE", "FIE", "FOE", "FUM")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (not be (toList) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not be (fumList) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))) (using decided by upperCaseStringEquality)
+          (fumList should (not be (fumList) or not contain theSameElementsInOrderAs (ListBuffer("FUM", "FOE", "FIE", "FEE")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.wasEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.containedSameElementsInOrder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, ListBuffer("FUM", "FOE", "FIE", "FEE"))), fileName, thisLineNumber - 2)
-        (fumList should (not contain theSameElementsInOrderAs (Set(" FEE ", " FIE ", " FOE ", " FUU ")) or not contain theSameElementsInOrderAs (Set(" FEE ", " FIE ", " FOE ", " FUU ")))) (using after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (not contain theSameElementsInOrderAs (Set(" FEE ", " FIE ", " FOE ", " FUU ")) or not contain theSameElementsInOrderAs (Set(" FEE ", " FIE ", " FOE ", " FUU ")))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
     }
     
@@ -358,12 +358,12 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends AnyFreeSpec
       }
       
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HELLO") or contain theSameElementsInOrderAs ListBuffer("hi", "hello"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HELLO", "HO") or contain theSameElementsInOrderAs ListBuffer("hi", "hello"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HELLO") or contain theSameElementsInOrderAs ListBuffer("hello", "ho"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HELLO") or contain theSameElementsInOrderAs ListBuffer("hi", "hello"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HELLO", "HO") or contain theSameElementsInOrderAs ListBuffer("hi", "hello"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HELLO") or contain theSameElementsInOrderAs ListBuffer("hello", "ho"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HELLO", "HO") or contain theSameElementsInOrderAs ListBuffer("hello", "ho"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HELLO", "HO") or contain theSameElementsInOrderAs ListBuffer("hello", "ho"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("HELLO", "HO")) + ", and " + decorateToStringValue(prettifier, List("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("hello", "ho")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -396,12 +396,12 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends AnyFreeSpec
       }
       
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (be (List("hi", "hello")) or contain theSameElementsInOrderAs ListBuffer("HI", "HELLO"))) (using decided by upperCaseStringEquality)
-        (all (hiLists) should (be (List("ho", "hello")) or contain theSameElementsInOrderAs ListBuffer("HI", "HELLO"))) (using decided by upperCaseStringEquality)
-        (all (hiLists) should (be (List("hi", "hello")) or contain theSameElementsInOrderAs ListBuffer("HELLO", "HI"))) (using decided by upperCaseStringEquality)
+        (all (hiLists) should (be (List("hi", "hello")) or contain theSameElementsInOrderAs ListBuffer("HI", "HELLO"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (hiLists) should (be (List("ho", "hello")) or contain theSameElementsInOrderAs ListBuffer("HI", "HELLO"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (hiLists) should (be (List("hi", "hello")) or contain theSameElementsInOrderAs ListBuffer("HELLO", "HI"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (be (List("ho", "hello")) or contain theSameElementsInOrderAs ListBuffer("HELLO", "HI"))) (using decided by upperCaseStringEquality)
+          (all (hiLists) should (be (List("ho", "hello")) or contain theSameElementsInOrderAs ListBuffer("HELLO", "HI"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " was not equal to " + decorateToStringValue(prettifier, List("ho", "hello")) + ", and " + decorateToStringValue(prettifier, List("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -434,12 +434,12 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends AnyFreeSpec
       }
       
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (not contain theSameElementsInOrderAs (ListBuffer("HELLO", "HI")) or not contain theSameElementsInOrderAs (ListBuffer("hello", "hi")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (not contain theSameElementsInOrderAs (ListBuffer("HI", "HELLO")) or not contain theSameElementsInOrderAs (ListBuffer("hello", "hi")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (not contain theSameElementsInOrderAs (ListBuffer("HELLO", "HI")) or not contain theSameElementsInOrderAs (ListBuffer("hi", "hello")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (not contain theSameElementsInOrderAs (ListBuffer("HELLO", "HI")) or not contain theSameElementsInOrderAs (ListBuffer("hello", "hi")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (not contain theSameElementsInOrderAs (ListBuffer("HI", "HELLO")) or not contain theSameElementsInOrderAs (ListBuffer("hello", "hi")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (not contain theSameElementsInOrderAs (ListBuffer("HELLO", "HI")) or not contain theSameElementsInOrderAs (ListBuffer("hi", "hello")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not contain theSameElementsInOrderAs (ListBuffer("HI", "HELLO")) or not contain theSameElementsInOrderAs (ListBuffer("hi", "hello")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (not contain theSameElementsInOrderAs (ListBuffer("HI", "HELLO")) or not contain theSameElementsInOrderAs (ListBuffer("hi", "hello")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("HI", "HELLO")) + ", and " + decorateToStringValue(prettifier, List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -472,12 +472,12 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends AnyFreeSpec
       }
       
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (not be (List("hello", "ho")) or not contain theSameElementsInOrderAs (ListBuffer("HELLO", "HO")))) (using decided by upperCaseStringEquality)
-        (all (hiLists) should (not be (List("hi", "hello")) or not contain theSameElementsInOrderAs (ListBuffer("HELLO", "HO")))) (using decided by upperCaseStringEquality)
-        (all (hiLists) should (not be (List("hello", "ho")) or not contain theSameElementsInOrderAs (ListBuffer("HI", "HELLO")))) (using decided by upperCaseStringEquality)
+        (all (hiLists) should (not be (List("hello", "ho")) or not contain theSameElementsInOrderAs (ListBuffer("HELLO", "HO")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (hiLists) should (not be (List("hi", "hello")) or not contain theSameElementsInOrderAs (ListBuffer("HELLO", "HO")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (hiLists) should (not be (List("hello", "ho")) or not contain theSameElementsInOrderAs (ListBuffer("HI", "HELLO")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not be (List("hi", "hello")) or not contain theSameElementsInOrderAs (ListBuffer("HI", "HELLO")))) (using decided by upperCaseStringEquality)
+          (all (hiLists) should (not be (List("hi", "hello")) or not contain theSameElementsInOrderAs (ListBuffer("HI", "HELLO")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, List("hi", "hello")) + " was equal to " + decorateToStringValue(prettifier, List("hi", "hello")) + ", and " + decorateToStringValue(prettifier, List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, ListBuffer("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }

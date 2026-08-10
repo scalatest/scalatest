@@ -69,12 +69,12 @@ class OptionShouldContainOneElementOfLogicalOrSpec extends AnyFunSpec {
         checkMessageStackDepth(e1, FailureMessages.didNotContainOneElementOf(prettifier, fumSome, Seq("fee", "fie", "foe", "fum")) + ", and " + FailureMessages.didNotContainOneElementOf(prettifier, fumSome, Seq("fee", "fie", "fum", "foe")), fileName, thisLineNumber - 2)
       }
       it("should use an explicitly provided Equality") {
-        (fumSome should (contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM") or contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumSome should (contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM") or contain oneElementOf Seq("fee", "fie", "foe", "fum"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumSome should (contain oneElementOf Seq("fee", "fie", "foe", "fum") or contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumSome should (contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM") or contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumSome should (contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM") or contain oneElementOf Seq("fee", "fie", "foe", "fum"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumSome should (contain oneElementOf Seq("fee", "fie", "foe", "fum") or contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
 
         val e1 = intercept[TestFailedException] {
-          (fumSome should (contain oneElementOf Seq("fee", "fie", "foe", "fum") or contain oneElementOf Seq("fee", "fie", "fum", "foe"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumSome should (contain oneElementOf Seq("fee", "fie", "foe", "fum") or contain oneElementOf Seq("fee", "fie", "fum", "foe"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, FailureMessages.didNotContainOneElementOf(prettifier, fumSome, Seq("fee", "fie", "foe", "fum")) + ", and " + FailureMessages.didNotContainOneElementOf(prettifier, fumSome, Seq("fee", "fie", "fum", "foe")), fileName, thisLineNumber - 2)
       }
@@ -109,12 +109,12 @@ class OptionShouldContainOneElementOfLogicalOrSpec extends AnyFunSpec {
         checkMessageStackDepth(e1, FailureMessages.wasNotEqualTo(prettifier, fumSome, toSome) + ", and " + FailureMessages.didNotContainOneElementOf(prettifier, fumSome, Seq("fee", "fie", "fum", "foe")), fileName, thisLineNumber - 2)
       }
       it("should use an explicitly provided Equality") {
-        (fumSome should (be (fumSome) or contain oneElementOf Seq("FEE", "FIE", "FUM", "FOE"))) (using decided by upperCaseStringEquality)
-        (fumSome should (be (toSome) or contain oneElementOf Seq("FEE", "FIE", "FUM", "FOE"))) (using decided by upperCaseStringEquality)
-        (fumSome should (be (fumSome) or contain oneElementOf Seq("fee", "fie", "fum", "foe"))) (using decided by upperCaseStringEquality)
+        (fumSome should (be (fumSome) or contain oneElementOf Seq("FEE", "FIE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumSome should (be (toSome) or contain oneElementOf Seq("FEE", "FIE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumSome should (be (fumSome) or contain oneElementOf Seq("fee", "fie", "fum", "foe"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
 
         val e1 = intercept[TestFailedException] {
-          (fumSome should (be (toSome) or contain oneElementOf Seq("fee", "fie", "fum", "foe"))) (using decided by upperCaseStringEquality)
+          (fumSome should (be (toSome) or contain oneElementOf Seq("fee", "fie", "fum", "foe"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, FailureMessages.wasNotEqualTo(prettifier, fumSome, toSome) + ", and " + FailureMessages.didNotContainOneElementOf(prettifier, fumSome, Seq("fee", "fie", "fum", "foe")), fileName, thisLineNumber - 2)
       }
@@ -145,11 +145,11 @@ class OptionShouldContainOneElementOfLogicalOrSpec extends AnyFunSpec {
         checkMessageStackDepth(e1, FailureMessages.containedOneElementOf(prettifier, toSome, Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) + ", and " + FailureMessages.containedOneElementOf(prettifier, toSome, Seq("NICE", "TO", "MEET", "YOU")), fileName, thisLineNumber - 2)
       }
       it("should use an explicitly provided Equality") {
-        (toSome should (not contain oneElementOf (Seq("happy", "birthday", "to", "you")) or not contain oneElementOf (Seq("nice", "to", "meet", "you")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (toSome should (not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) or not contain oneElementOf (Seq("nice", "to", "meet", "you")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (toSome should (not contain oneElementOf (Seq("happy", "birthday", "to", "you")) or not contain oneElementOf (Seq("NICE", "TO", "MEET", "YOU")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (toSome should (not contain oneElementOf (Seq("happy", "birthday", "to", "you")) or not contain oneElementOf (Seq("nice", "to", "meet", "you")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (toSome should (not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) or not contain oneElementOf (Seq("nice", "to", "meet", "you")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (toSome should (not contain oneElementOf (Seq("happy", "birthday", "to", "you")) or not contain oneElementOf (Seq("NICE", "TO", "MEET", "YOU")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (toSome should (not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) or not contain oneElementOf (Seq("NICE", "TO", "MEET", "YOU")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (toSome should (not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) or not contain oneElementOf (Seq("NICE", "TO", "MEET", "YOU")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, FailureMessages.containedOneElementOf(prettifier, toSome, Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) + ", and " + FailureMessages.containedOneElementOf(prettifier, toSome, Seq("NICE", "TO", "MEET", "YOU")), fileName, thisLineNumber - 2)
       }
@@ -181,11 +181,11 @@ class OptionShouldContainOneElementOfLogicalOrSpec extends AnyFunSpec {
         checkMessageStackDepth(e1, FailureMessages.wasEqualTo(prettifier, toSome, toSome) + ", and " + FailureMessages.containedOneElementOf(prettifier, toSome, Seq("HAPPY", "BIRTHDAY", "TO", "YOU")), fileName, thisLineNumber - 2)
       }
       it("should use an explicitly provided Equality") {
-        (toSome should (not be (fumSome) or not contain oneElementOf (Seq("happy", "birthday", "to", "you")))) (using decided by upperCaseStringEquality)
-        (toSome should (not be (toSome) or not contain oneElementOf (Seq("happy", "birthday", "to", "you")))) (using decided by upperCaseStringEquality)
-        (toSome should (not be (fumSome) or not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (using decided by upperCaseStringEquality)
+        (toSome should (not be (fumSome) or not contain oneElementOf (Seq("happy", "birthday", "to", "you")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (toSome should (not be (toSome) or not contain oneElementOf (Seq("happy", "birthday", "to", "you")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (toSome should (not be (fumSome) or not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (toSome should (not be (toSome) or not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (using decided by upperCaseStringEquality)
+          (toSome should (not be (toSome) or not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, FailureMessages.wasEqualTo(prettifier, toSome, toSome) + ", and " + FailureMessages.containedOneElementOf(prettifier, toSome, Seq("HAPPY", "BIRTHDAY", "TO", "YOU")), fileName, thisLineNumber - 2)
       }
@@ -247,11 +247,11 @@ class OptionShouldContainOneElementOfLogicalOrSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiSomes) should (contain oneElementOf Seq("HI", "HE") or contain oneElementOf Seq("HI", "HE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiSomes) should (contain oneElementOf Seq("hi", "he") or contain oneElementOf Seq("HI", "HE"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiSomes) should (contain oneElementOf Seq("HI", "HE") or contain oneElementOf Seq("hi", "he"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiSomes) should (contain oneElementOf Seq("HI", "HE") or contain oneElementOf Seq("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiSomes) should (contain oneElementOf Seq("hi", "he") or contain oneElementOf Seq("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiSomes) should (contain oneElementOf Seq("HI", "HE") or contain oneElementOf Seq("hi", "he"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiSomes) should (contain oneElementOf Seq("hi", "he") or contain oneElementOf Seq("hi", "he"))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiSomes) should (contain oneElementOf Seq("hi", "he") or contain oneElementOf Seq("hi", "he"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, FailureMessages.didNotContainOneElementOf(prettifier, hiSomes(0), Seq("hi", "he")) + ", and " + FailureMessages.didNotContainOneElementOf(prettifier, hiSomes(0), Seq("hi", "he")), thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
       }
@@ -299,11 +299,11 @@ class OptionShouldContainOneElementOfLogicalOrSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiSomes) should (be (Some("hi")) or contain oneElementOf Seq("HI", "HE"))) (using decided by upperCaseStringEquality)
-        (all (hiSomes) should (be (Some("he")) or contain oneElementOf Seq("HI", "HE"))) (using decided by upperCaseStringEquality)
-        (all (hiSomes) should (be (Some("hi")) or contain oneElementOf Seq("hi", "he"))) (using decided by upperCaseStringEquality)
+        (all (hiSomes) should (be (Some("hi")) or contain oneElementOf Seq("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (hiSomes) should (be (Some("he")) or contain oneElementOf Seq("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (hiSomes) should (be (Some("hi")) or contain oneElementOf Seq("hi", "he"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiSomes) should (be (Some("he")) or contain oneElementOf Seq("hi", "he"))) (using decided by upperCaseStringEquality)
+          (all (hiSomes) should (be (Some("he")) or contain oneElementOf Seq("hi", "he"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, "Some(\"hi\") was not equal to Some(\"he\"), and " + FailureMessages.didNotContainOneElementOf(prettifier, hiSomes(0), Seq("hi", "he")), thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
       }
@@ -334,11 +334,11 @@ class OptionShouldContainOneElementOfLogicalOrSpec extends AnyFunSpec {
         checkMessageStackDepth(e1, allErrMsg(0, FailureMessages.containedOneElementOf(prettifier, toSomes(0), Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) + ", and " + FailureMessages.containedOneElementOf(prettifier, toSomes(0), Seq("NICE", "TO", "MEET", "YOU")), thisLineNumber - 2, toSomes), fileName, thisLineNumber - 2)
       }
       it("should use an explicitly provided Equality") {
-        (all (toSomes) should (not contain oneElementOf (Seq("happy", "birthday", "to", "you")) or not contain oneElementOf (Seq("nice", "to", "meet", "you")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (toSomes) should (not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) or not contain oneElementOf (Seq("nice", "to", "meet", "you")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (toSomes) should (not contain oneElementOf (Seq("happy", "birthday", "to", "you")) or not contain oneElementOf (Seq("NICE", "TO", "MEET", "YOU")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (toSomes) should (not contain oneElementOf (Seq("happy", "birthday", "to", "you")) or not contain oneElementOf (Seq("nice", "to", "meet", "you")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (toSomes) should (not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) or not contain oneElementOf (Seq("nice", "to", "meet", "you")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (toSomes) should (not contain oneElementOf (Seq("happy", "birthday", "to", "you")) or not contain oneElementOf (Seq("NICE", "TO", "MEET", "YOU")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (toSomes) should (not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) or not contain oneElementOf (Seq("NICE", "TO", "MEET", "YOU")))) (using decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (toSomes) should (not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) or not contain oneElementOf (Seq("NICE", "TO", "MEET", "YOU")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, FailureMessages.containedOneElementOf(prettifier, toSomes(0), Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) + ", and " + FailureMessages.containedOneElementOf(prettifier, toSomes(0), Seq("NICE", "TO", "MEET", "YOU")), thisLineNumber - 2, toSomes), fileName, thisLineNumber - 2)
       }
@@ -370,11 +370,11 @@ class OptionShouldContainOneElementOfLogicalOrSpec extends AnyFunSpec {
         checkMessageStackDepth(e1, allErrMsg(0, "Some(\"to\") was equal to Some(\"to\"), and " + FailureMessages.containedOneElementOf(prettifier, toSomes(0), Seq("HAPPY", "BIRTHDAY", "TO", "YOU")), thisLineNumber - 2, toSomes), fileName, thisLineNumber - 2)
       }
       it("should use an explicitly provided Equality") {
-        (all (toSomes) should (not be (Some("hi")) or not contain oneElementOf (Seq("happy", "birthday", "to", "you")))) (using decided by upperCaseStringEquality)
-        (all (toSomes) should (not be (Some("to")) or not contain oneElementOf (Seq("happy", "birthday", "to", "you")))) (using decided by upperCaseStringEquality)
-        (all (toSomes) should (not be (Some("hi")) or not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (using decided by upperCaseStringEquality)
+        (all (toSomes) should (not be (Some("hi")) or not contain oneElementOf (Seq("happy", "birthday", "to", "you")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (toSomes) should (not be (Some("to")) or not contain oneElementOf (Seq("happy", "birthday", "to", "you")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (toSomes) should (not be (Some("hi")) or not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (toSomes) should (not be (Some("to")) or not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (using decided by upperCaseStringEquality)
+          (all (toSomes) should (not be (Some("to")) or not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, "Some(\"to\") was equal to Some(\"to\"), and " + FailureMessages.containedOneElementOf(prettifier, toSomes(0), Seq("HAPPY", "BIRTHDAY", "TO", "YOU")), thisLineNumber - 2, toSomes), fileName, thisLineNumber - 2)
       }

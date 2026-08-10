@@ -76,19 +76,19 @@ class StreamlinedXmlSpec extends AnyFunSpec with Matchers with StreamlinedXml {
         <day></day>
       </summer>: Node) should equal (<summer><day></day></summer>)) (/* DOTTY-ONLY using */ after being streamlined[Node])
 
-      (<summer><day></day></summer> should equal (
+      /* DOTTY-ONLY ( */ <summer><day></day></summer> should equal (
         <summer>
           <day></day>
         </summer>: Node
-      )) (/* DOTTY-ONLY using */ after being streamlined[Node])
+      ) /* DOTTY-ONLY ) */ (/* DOTTY-ONLY using */ after being streamlined[Node])
 
-      (<summer><day>Dude!</day></summer> should equal (
+      /* DOTTY-ONLY ( */ <summer><day>Dude!</day></summer> should equal (
         <summer>
           <day>
             Dude!
           </day>
         </summer>: Node
-      )) (/* DOTTY-ONLY using */ after being streamlined[Node])
+      ) /* DOTTY-ONLY ) */ (/* DOTTY-ONLY using */ after being streamlined[Node])
 
       ((Text("   "): Node) should equal (Text("   "))) (/* DOTTY-ONLY using */ after being streamlined[Node])
 
@@ -116,19 +116,19 @@ class StreamlinedXmlSpec extends AnyFunSpec with Matchers with StreamlinedXml {
         <day></day>
       </summer>: NodeSeq) should equal (<summer><day></day></summer>)) (/* DOTTY-ONLY using */ after being streamlined[NodeSeq])
 
-      (<summer><day></day></summer> should equal (
+      /* DOTTY-ONLY ( */ <summer><day></day></summer> should equal (
         <summer>
           <day></day>
         </summer>: NodeSeq
-      )) (/* DOTTY-ONLY using */ after being streamlined[NodeSeq])
+      ) /* DOTTY-ONLY ) */ (/* DOTTY-ONLY using */ after being streamlined[NodeSeq])
 
-      (<summer><day>Dude!</day></summer> should equal (
+      /* DOTTY-ONLY ( */ <summer><day>Dude!</day></summer> should equal (
         <summer>
           <day>
             Dude!
           </day>
         </summer>: NodeSeq
-      )) (/* DOTTY-ONLY using */ after being streamlined[NodeSeq])
+      ) /* DOTTY-ONLY ) */ (/* DOTTY-ONLY using */ after being streamlined[NodeSeq])
 
       ((Text("   "): NodeSeq) should equal (Text("   "))) (/* DOTTY-ONLY using */ after being streamlined[NodeSeq])
 

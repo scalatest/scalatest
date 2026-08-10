@@ -228,15 +228,15 @@ class TheSameElementsAsContainMatcherDeciderSpec extends AnyFunSpec with Explici
     }
     
     it("should take specified normalization when 'should contain' is used") {
-      (List("1 ", "2", "3 ") should contain theSameElementsAs List("1", "2 ", "3")) (using after being trimmed)
-      (Set("1 ", "2", "3 ") should contain theSameElementsAs List("1", "2 ", "3")) (using after being trimmed)
-      (Array("1 ", "2", "3 ") should contain theSameElementsAs List("1", "2 ", "3")) (using after being trimmed)
-      (Map(1 -> "one ", 2 -> "two", 3 -> "three ") should contain theSameElementsAs Map(1 -> "one", 2 -> "two ", 3 -> "three")) (using after being mapTrimmed)
+      (List("1 ", "2", "3 ") should contain theSameElementsAs List("1", "2 ", "3")) (/* DOTTY-ONLY using */ after being trimmed)
+      (Set("1 ", "2", "3 ") should contain theSameElementsAs List("1", "2 ", "3")) (/* DOTTY-ONLY using */ after being trimmed)
+      (Array("1 ", "2", "3 ") should contain theSameElementsAs List("1", "2 ", "3")) (/* DOTTY-ONLY using */ after being trimmed)
+      (Map(1 -> "one ", 2 -> "two", 3 -> "three ") should contain theSameElementsAs Map(1 -> "one", 2 -> "two ", 3 -> "three")) (/* DOTTY-ONLY using */ after being mapTrimmed)
 
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList("1 ", "2", "3 ") should contain theSameElementsAs List("1", "2 ", "3")) (using after being trimmed)
-      (javaSet("1 ", "2", "3 ") should contain theSameElementsAs List("1", "2 ", "3")) (using after being trimmed)
-      (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, "three ")) should contain theSameElementsAs List(Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))) (using after being javaMapTrimmed)
+      (javaList("1 ", "2", "3 ") should contain theSameElementsAs List("1", "2 ", "3")) (/* DOTTY-ONLY using */ after being trimmed)
+      (javaSet("1 ", "2", "3 ") should contain theSameElementsAs List("1", "2 ", "3")) (/* DOTTY-ONLY using */ after being trimmed)
+      (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, "three ")) should contain theSameElementsAs List(Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))) (/* DOTTY-ONLY using */ after being javaMapTrimmed)
       // SKIP-SCALATESTJS,NATIVE-END
     }
     
@@ -258,28 +258,28 @@ class TheSameElementsAsContainMatcherDeciderSpec extends AnyFunSpec with Explici
       val left1 = List(1, 2, 3)
       val right1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should contain theSameElementsAs right1) (using after being incremented)
+        (left1 should contain theSameElementsAs right1) (/* DOTTY-ONLY using */ after being incremented)
       }
       checkShouldContainStackDepth(e1, left1, right1, thisLineNumber - 2)
         
       val left2 = Set(1, 2, 3)
       val right2 = List(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should contain theSameElementsAs right2) (using after being incremented)
+        (left2 should contain theSameElementsAs right2) (/* DOTTY-ONLY using */ after being incremented)
       }
       checkShouldContainStackDepth(e2, left2, right2, thisLineNumber - 2)
         
       val left3 = Array(1, 2, 3)
       val right3 = List(1, 2, 3)
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should contain theSameElementsAs right3) (using after being incremented)
+        (left3 should contain theSameElementsAs right3) (/* DOTTY-ONLY using */ after being incremented)
       }
         checkShouldContainStackDepth(e3, left3, right3, thisLineNumber - 2)
       
       val left4 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val right4 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        (left4 should contain theSameElementsAs right4) (using after being mapIncremented)
+        (left4 should contain theSameElementsAs right4) (/* DOTTY-ONLY using */ after being mapIncremented)
       }
       checkShouldContainStackDepth(e4, left4, right4, thisLineNumber - 2)
 
@@ -287,14 +287,14 @@ class TheSameElementsAsContainMatcherDeciderSpec extends AnyFunSpec with Explici
       val left5 = javaList(1, 2, 3)
       val right5 = List(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
-        (left5 should contain theSameElementsAs right5) (using after being incremented)
+        (left5 should contain theSameElementsAs right5) (/* DOTTY-ONLY using */ after being incremented)
       }
       checkShouldContainStackDepth(e5, left5, right5, thisLineNumber - 2)
 
       val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val right6 = List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
-        (left6 should contain theSameElementsAs right6) (using after being javaMapIncremented)
+        (left6 should contain theSameElementsAs right6) (/* DOTTY-ONLY using */ after being javaMapIncremented)
       }
       checkShouldContainStackDepth(e6, left6, right6, thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END
@@ -349,14 +349,14 @@ class TheSameElementsAsContainMatcherDeciderSpec extends AnyFunSpec with Explici
     
     it("should take passed in custom explicit equality when 'should contain' is used") {
       
-      (List("A ", "B", " C") should contain theSameElementsAs List("a", "b ", "c")) (using decided by lowerCaseEquality afterBeing trimmed)
-      (Set("A ", "B", " C") should contain theSameElementsAs List("a", "b ", "c")) (using decided by lowerCaseEquality afterBeing trimmed)
-      (Array("A ", "B", " C") should contain theSameElementsAs List("a", "b ", "c")) (using decided by lowerCaseEquality afterBeing trimmed)
-      (Map(1 -> "ONE ", 2 -> "TWO", 3 -> " THREE") should contain theSameElementsAs Map(1 -> "one", 2 -> " two", 3 -> "three")) (using decided by mapLowerCaseEquality afterBeing mapTrimmed)
+      (List("A ", "B", " C") should contain theSameElementsAs List("a", "b ", "c")) (/* DOTTY-ONLY using */ decided by lowerCaseEquality afterBeing trimmed)
+      (Set("A ", "B", " C") should contain theSameElementsAs List("a", "b ", "c")) (/* DOTTY-ONLY using */ decided by lowerCaseEquality afterBeing trimmed)
+      (Array("A ", "B", " C") should contain theSameElementsAs List("a", "b ", "c")) (/* DOTTY-ONLY using */ decided by lowerCaseEquality afterBeing trimmed)
+      (Map(1 -> "ONE ", 2 -> "TWO", 3 -> " THREE") should contain theSameElementsAs Map(1 -> "one", 2 -> " two", 3 -> "three")) (/* DOTTY-ONLY using */ decided by mapLowerCaseEquality afterBeing mapTrimmed)
 
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList("A ", "B", " C") should contain theSameElementsAs List("a", "b ", "c")) (using decided by lowerCaseEquality afterBeing trimmed)
-      (javaMap(Entry(1, "ONE "), Entry(2, "TWO"), Entry(3, " THREE")) should contain theSameElementsAs List(Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))) (using decided by javaMapLowerCaseEquality afterBeing javaMapTrimmed)
+      (javaList("A ", "B", " C") should contain theSameElementsAs List("a", "b ", "c")) (/* DOTTY-ONLY using */ decided by lowerCaseEquality afterBeing trimmed)
+      (javaMap(Entry(1, "ONE "), Entry(2, "TWO"), Entry(3, " THREE")) should contain theSameElementsAs List(Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))) (/* DOTTY-ONLY using */ decided by javaMapLowerCaseEquality afterBeing javaMapTrimmed)
       // SKIP-SCALATESTJS,NATIVE-END
     }
       
@@ -378,28 +378,28 @@ class TheSameElementsAsContainMatcherDeciderSpec extends AnyFunSpec with Explici
       val left1 = List("one ", " two", "three ")
       val right1 = List(" one", "two ", " three")
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should contain theSameElementsAs right1) (using decided by reverseEquality afterBeing trimmed)
+        (left1 should contain theSameElementsAs right1) (/* DOTTY-ONLY using */ decided by reverseEquality afterBeing trimmed)
       }
       checkShouldContainStackDepth(e1, left1, right1, thisLineNumber - 2)
         
       val left2 = Set("one ", " two", "three ")
       val right2 = List(" one", "two ", " three")
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should contain theSameElementsAs right2) (using decided by reverseEquality afterBeing trimmed)
+        (left2 should contain theSameElementsAs right2) (/* DOTTY-ONLY using */ decided by reverseEquality afterBeing trimmed)
       }
       checkShouldContainStackDepth(e2, left2, right2, thisLineNumber - 2)
         
       val left3 = Array("one ", " two", "three ")
       val right3 = List(" one", "two ", " three")
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should contain theSameElementsAs right3) (using decided by reverseEquality afterBeing trimmed)
+        (left3 should contain theSameElementsAs right3) (/* DOTTY-ONLY using */ decided by reverseEquality afterBeing trimmed)
       }
       checkShouldContainStackDepth(e3, left3, right3, thisLineNumber - 2)
       
       val left4 = Map(1 -> "one ", 2 -> " two", 3 -> "three ")
       val right4 = Map(1 -> " one", 2 -> "two ", 3 -> " three")
       val e4 = intercept[exceptions.TestFailedException] {
-        (left4 should contain theSameElementsAs right4) (using decided by mapReverseEquality afterBeing mapTrimmed)
+        (left4 should contain theSameElementsAs right4) (/* DOTTY-ONLY using */ decided by mapReverseEquality afterBeing mapTrimmed)
       }
       checkShouldContainStackDepth(e4, left4, right4, thisLineNumber - 2)
 
@@ -407,14 +407,14 @@ class TheSameElementsAsContainMatcherDeciderSpec extends AnyFunSpec with Explici
       val left5 = javaList("one ", " two", "three ")
       val right5 = List(" one", "two ", " three")
       val e5 = intercept[exceptions.TestFailedException] {
-        (left5 should contain theSameElementsAs right5) (using decided by reverseEquality afterBeing trimmed)
+        (left5 should contain theSameElementsAs right5) (/* DOTTY-ONLY using */ decided by reverseEquality afterBeing trimmed)
       }
       checkShouldContainStackDepth(e5, left5, right5, thisLineNumber - 2)
 
       val left6 = javaMap(Entry(1, "one "), Entry(2, " two"), Entry(3, "three "))
       val right6 = List(Entry(1, " one"), Entry(2, "two "), Entry(3, " three"))
       val e6 = intercept[exceptions.TestFailedException] {
-        (left6 should contain theSameElementsAs right6) (using decided by javaMapReverseEquality afterBeing javaMapTrimmed)
+        (left6 should contain theSameElementsAs right6) (/* DOTTY-ONLY using */ decided by javaMapReverseEquality afterBeing javaMapTrimmed)
       }
       checkShouldContainStackDepth(e6, left6, right6, thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END
