@@ -57,7 +57,7 @@ import scala.language.higherKinds
  * (in <code>TC1</code>, <code>TC2</code>, <em>etc.</em>) means <em>typeclass</em>.
  * This class's <code>matcher</code> factory method will produce a <code>Matcher[T]</code>, where <code>T</code> is a subtype of (or the same type
  * as) <code>SC</code>, given a typeclass instance for each <code>TC<em>n</em></code>
- * implicit parameter (for example, a <code>TC1[T]</code>, <code>TC2[T]</code>, <em>etc.</em>).
+ * using parameter (for example, a <code>TC1[T]</code>, <code>TC2[T]</code>, <em>etc.</em>).
  * </p>
  *
  * @author Bill Venners
@@ -68,7 +68,7 @@ abstract class MatcherFactory$arity$[-SC, $typeConstructors$] { thisMatcherFacto
   /**
    * Factory method that will produce a <code>Matcher[T]</code>, where <code>T</code> is a subtype of (or the same type
    * as) <code>SC</code>, given a typeclass instance for each <code>TC<em>n</em></code>
-   * implicit parameter (for example, a <code>TC1[T]</code>, <code>TC2[T]</code>, <em>etc.</em>).
+   * using parameter (for example, a <code>TC1[T]</code>, <code>TC2[T]</code>, <em>etc.</em>).
    */
   def matcher[T <: SC : $colonSeparatedTCNs$]: Matcher[T]
 
@@ -494,7 +494,7 @@ $endif$
    *                 ^
    * </pre>
    */
-  infix def and(containWord: ContainWord)(implicit prettifier: Prettifier, pos: source.Position): AndContainWord = new AndContainWord(prettifier, pos)
+  infix def and(containWord: ContainWord)(using prettifier: Prettifier, pos: source.Position): AndContainWord = new AndContainWord(prettifier, pos)
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -1493,7 +1493,7 @@ $endif$
    *                 ^
    * </pre>
    */
-  infix def and(notWord: NotWord)(implicit prettifier: Prettifier, pos: source.Position): AndNotWord = new AndNotWord(prettifier, pos)
+  infix def and(notWord: NotWord)(using prettifier: Prettifier, pos: source.Position): AndNotWord = new AndNotWord(prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -1789,7 +1789,7 @@ $endif$
    *                  ^
    * </pre>
    */
-  infix def or(containWord: ContainWord)(implicit prettifier: Prettifier, pos: source.Position): OrContainWord = new OrContainWord(prettifier, pos)
+  infix def or(containWord: ContainWord)(using prettifier: Prettifier, pos: source.Position): OrContainWord = new OrContainWord(prettifier, pos)
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -2785,7 +2785,7 @@ $endif$
    *                 ^
    * </pre>
    */
-  infix def or(notWord: NotWord)(implicit prettifier: Prettifier, pos: source.Position): OrNotWord = new OrNotWord(prettifier, pos)
+  infix def or(notWord: NotWord)(using prettifier: Prettifier, pos: source.Position): OrNotWord = new OrNotWord(prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -2811,7 +2811,7 @@ $endif$
 }
 
 /**
- * Companion object containing an implicit method that converts a <code>MatcherFactory$arity$</code> to a <code>Matcher</code>.
+ * Companion object containing an given method that converts a <code>MatcherFactory$arity$</code> to a <code>Matcher</code>.
  *
  * @author Bill Venners
  */
