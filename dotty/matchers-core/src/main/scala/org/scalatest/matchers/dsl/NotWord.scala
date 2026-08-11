@@ -54,7 +54,7 @@ final class NotWord {
    *                     ^
    * </pre>
    **/
-  def apply[S](matcher: Matcher[S]): Matcher[S] =
+  infix def apply[S](matcher: Matcher[S]): Matcher[S] =
     new Matcher[S] {
       def apply(left: S): MatchResult = matcher(left).negated
       override def toString: String = "not (" + Prettifier.default(matcher) + ")"
@@ -70,7 +70,7 @@ final class NotWord {
    *                      ^
    * </pre>
    **/
-  def apply[S, TYPECLASS[_]](matcherGen1: MatcherFactory1[S, TYPECLASS]): MatcherFactory1[S, TYPECLASS] = {
+  infix def apply[S, TYPECLASS[_]](matcherGen1: MatcherFactory1[S, TYPECLASS]): MatcherFactory1[S, TYPECLASS] = {
     new MatcherFactory1[S, TYPECLASS] {
       def matcher[V <: S : TYPECLASS]: Matcher[V] = {
         val innerMatcher: Matcher[V] = matcherGen1.matcher
@@ -83,7 +83,7 @@ final class NotWord {
     }
   }
 
-  def apply[S, TYPECLASS1[_], TYPECLASS2[_]](matcherGen2: MatcherFactory2[S, TYPECLASS1, TYPECLASS2]): MatcherFactory2[S, TYPECLASS1, TYPECLASS2] = {
+  infix def apply[S, TYPECLASS1[_], TYPECLASS2[_]](matcherGen2: MatcherFactory2[S, TYPECLASS1, TYPECLASS2]): MatcherFactory2[S, TYPECLASS1, TYPECLASS2] = {
     new MatcherFactory2[S, TYPECLASS1, TYPECLASS2] {
       def matcher[V <: S : TYPECLASS1 : TYPECLASS2]: Matcher[V] = {
         val innerMatcher: Matcher[V] = matcherGen2.matcher
@@ -123,7 +123,7 @@ final class NotWord {
    * num should not be (odd)
    * </pre>
    */
-  def apply[S](beMatcher: BeMatcher[S]): BeMatcher[S] =
+  infix def apply[S](beMatcher: BeMatcher[S]): BeMatcher[S] =
     new BeMatcher[S] {
       def apply(left: S): MatchResult = beMatcher(left).negated
       override def toString: String = "not (" + Prettifier.default(beMatcher) + ")"
@@ -137,7 +137,7 @@ final class NotWord {
    *             ^
    * </pre>
    **/
-  def apply(existWord: ExistWord): ResultOfNotExist =
+  infix def apply(existWord: ExistWord): ResultOfNotExist =
     new ResultOfNotExist(this)
 
   /*
@@ -420,7 +420,7 @@ final class NotWord {
    * </p>
    */
   @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
-  infix def be(tripleEqualsInvocation: TripleEqualsInvocation[_])(implicit pos: source.Position): Matcher[Any] = {
+  infix def be(tripleEqualsInvocation: TripleEqualsInvocation[_])(using pos: source.Position): Matcher[Any] = {
     throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed, pos)
   }
 
@@ -433,7 +433,7 @@ final class NotWord {
    *                    ^
    * </pre>
    **/
-  infix def be[T <: AnyRef](symbol: Symbol)(implicit prettifier: Prettifier, pos: source.Position): Matcher[T] = {
+  infix def be[T <: AnyRef](symbol: Symbol)(using prettifier: Prettifier, pos: source.Position): Matcher[T] = {
     new Matcher[T] {
       def apply(left: T): MatchResult = {
         val positiveMatchResult = matchSymbolToPredicateMethod(left, symbol, false, false, prettifier, pos)
@@ -483,7 +483,7 @@ final class NotWord {
    *                           ^
    * </pre>
    **/
-  infix def be[T <: AnyRef](resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit prettifier: Prettifier, pos: source.Position): Matcher[T] = {
+  infix def be[T <: AnyRef](resultOfAWordApplication: ResultOfAWordToSymbolApplication)(using prettifier: Prettifier, pos: source.Position): Matcher[T] = {
     new Matcher[T] {
       def apply(left: T): MatchResult = {
         val positiveMatchResult = matchSymbolToPredicateMethod(left, resultOfAWordApplication.symbol, true, true, prettifier, pos)
@@ -557,7 +557,7 @@ final class NotWord {
    *                            ^
    * </pre>
    **/
-  infix def be[T <: AnyRef](resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit prettifier: Prettifier, pos: source.Position): Matcher[T] = {
+  infix def be[T <: AnyRef](resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(using prettifier: Prettifier, pos: source.Position): Matcher[T] = {
     new Matcher[T] {
       def apply(left: T): MatchResult = {
         val positiveMatchResult = matchSymbolToPredicateMethod(left, resultOfAnWordApplication.symbol, true, false, prettifier, pos)
@@ -1033,9 +1033,9 @@ final class NotWord {
    *                         ^
    * </pre>
    **/
-  infix def contain[T](oneOf: ResultOfOneOfApplication)(implicit prettifier: Prettifier): MatcherFactory1[Any, Containing] = {
+  infix def contain[T](oneOf: ResultOfOneOfApplication)(using prettifier: Prettifier): MatcherFactory1[Any, Containing] = {
     new MatcherFactory1[Any, Containing] {
-      def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
+      def matcher[T](using containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
 
@@ -1065,7 +1065,7 @@ final class NotWord {
    **/
   infix def contain[T](oneElementOf: ResultOfOneElementOfApplication): MatcherFactory1[Any, Containing] = {
     new MatcherFactory1[Any, Containing] {
-      def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
+      def matcher[T](using containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
 
@@ -1093,9 +1093,9 @@ final class NotWord {
    *                         ^
    * </pre>
    **/
-  infix def contain[T](atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit prettifier: Prettifier): MatcherFactory1[Any, Aggregating] = {
+  infix def contain[T](atLeastOneOf: ResultOfAtLeastOneOfApplication)(using prettifier: Prettifier): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+      def matcher[T](using aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
 
@@ -1125,7 +1125,7 @@ final class NotWord {
    **/
   infix def contain[T](atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+      def matcher[T](using aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
 
@@ -1153,9 +1153,9 @@ final class NotWord {
    *                         ^
    * </pre>
    **/
-  infix def contain[T](noneOf: ResultOfNoneOfApplication)(implicit prettifier: Prettifier): MatcherFactory1[Any, Containing] = {
+  infix def contain[T](noneOf: ResultOfNoneOfApplication)(using prettifier: Prettifier): MatcherFactory1[Any, Containing] = {
     new MatcherFactory1[Any, Containing] {
-      def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
+      def matcher[T](using containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
 
@@ -1185,7 +1185,7 @@ final class NotWord {
    **/
   infix def contain[T](noElementsOf: ResultOfNoElementsOfApplication): MatcherFactory1[Any, Containing] = {
     new MatcherFactory1[Any, Containing] {
-      def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
+      def matcher[T](using containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
 
@@ -1215,7 +1215,7 @@ final class NotWord {
    **/
   infix def contain[T](theSameElementAs: ResultOfTheSameElementsAsApplication): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+      def matcher[T](using aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
 
@@ -1245,7 +1245,7 @@ final class NotWord {
    **/
   infix def contain[T](theSameElementInOrderAs: ResultOfTheSameElementsInOrderAsApplication): MatcherFactory1[Any, Sequencing] = {
     new MatcherFactory1[Any, Sequencing] {
-      def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
+      def matcher[T](using sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
 
@@ -1273,9 +1273,9 @@ final class NotWord {
    *                                 ^
    * </pre>
    **/
-  infix def contain[T](only: ResultOfOnlyApplication)(implicit prettifier: Prettifier): MatcherFactory1[Any, Aggregating] = {
+  infix def contain[T](only: ResultOfOnlyApplication)(using prettifier: Prettifier): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+      def matcher[T](using aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
 
@@ -1305,9 +1305,9 @@ final class NotWord {
    *                                 ^
    * </pre>
    **/
-  infix def contain[T](inOrderOnly: ResultOfInOrderOnlyApplication)(implicit prettifier: Prettifier): MatcherFactory1[Any, Sequencing] = {
+  infix def contain[T](inOrderOnly: ResultOfInOrderOnlyApplication)(using prettifier: Prettifier): MatcherFactory1[Any, Sequencing] = {
     new MatcherFactory1[Any, Sequencing] {
-      def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
+      def matcher[T](using sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
 
@@ -1335,9 +1335,9 @@ final class NotWord {
    *                                 ^
    * </pre>
    **/
-  infix def contain[T](allOf: ResultOfAllOfApplication)(implicit prettifier: Prettifier): MatcherFactory1[Any, Aggregating] = {
+  infix def contain[T](allOf: ResultOfAllOfApplication)(using prettifier: Prettifier): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+      def matcher[T](using aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
 
@@ -1367,7 +1367,7 @@ final class NotWord {
    **/
   infix def contain(allElementsOf: ResultOfAllElementsOfApplication): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+      def matcher[T](using aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
 
@@ -1395,9 +1395,9 @@ final class NotWord {
    *                                 ^
    * </pre>
    **/
-  infix def contain[T](inOrder: ResultOfInOrderApplication)(implicit prettifier: Prettifier): MatcherFactory1[Any, Sequencing] = {
+  infix def contain[T](inOrder: ResultOfInOrderApplication)(using prettifier: Prettifier): MatcherFactory1[Any, Sequencing] = {
     new MatcherFactory1[Any, Sequencing] {
-      def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
+      def matcher[T](using sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
 
@@ -1427,7 +1427,7 @@ final class NotWord {
    **/
   infix def contain(inOrderElementsOf: ResultOfInOrderElementsOfApplication): MatcherFactory1[Any, Sequencing] = {
     new MatcherFactory1[Any, Sequencing] {
-      def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
+      def matcher[T](using sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
 
@@ -1455,9 +1455,9 @@ final class NotWord {
    *                         ^
    * </pre>
    **/
-  infix def contain[T](atMostOneOf: ResultOfAtMostOneOfApplication)(implicit prettifier: Prettifier): MatcherFactory1[Any, Aggregating] = {
+  infix def contain[T](atMostOneOf: ResultOfAtMostOneOfApplication)(using prettifier: Prettifier): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+      def matcher[T](using aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
 
@@ -1487,7 +1487,7 @@ final class NotWord {
    **/
   infix def contain(atMostOneElementOf: ResultOfAtMostOneElementOfApplication): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+      def matcher[T](using aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
 
@@ -1517,7 +1517,7 @@ final class NotWord {
    **/
   infix def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication): MatcherFactory1[Any, KeyMapping] = {
     new MatcherFactory1[Any, KeyMapping] {
-      def matcher[T](implicit keyMapping: KeyMapping[T]): Matcher[T] = {
+      def matcher[T](using keyMapping: KeyMapping[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             val expectedKey = resultOfKeyWordApplication.expectedKey
@@ -1545,7 +1545,7 @@ final class NotWord {
    **/
   infix def contain(resultOfValueWordApplication: ResultOfValueWordApplication): MatcherFactory1[Any, ValueMapping] = {
     new MatcherFactory1[Any, ValueMapping] {
-      def matcher[T](implicit valueMapping: ValueMapping[T]): Matcher[T] = {
+      def matcher[T](using valueMapping: ValueMapping[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             val expectedValue = resultOfValueWordApplication.expectedValue
