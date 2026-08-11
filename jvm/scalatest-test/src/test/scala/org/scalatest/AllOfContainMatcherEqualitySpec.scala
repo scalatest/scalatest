@@ -220,14 +220,14 @@ class AllOfContainMatcherEqualitySpec extends funspec.AnyFunSpec {
       val mapTrimEquality = new MapTrimEquality
       val javaMapTrimEquality = new JavaMapTrimEquality
       
-      (List("1 ", "2", "3 ") should contain allOf ("1", "2 ", "3 ")) (trimEquality)
-      (Set("1 ", "2", "3 ") should contain allOf ("1", "2 ", "3 ")) (trimEquality)
-      (Array("1 ", "2", "3 ") should contain allOf ("1", "2 ", "3 ")) (trimEquality)
-      (Map(1 -> "one ", 2 -> "two", 3 -> "three ") should contain allOf (1 -> "one", 2 -> "two ", 3 -> "three")) (mapTrimEquality)
+      (List("1 ", "2", "3 ") should contain allOf ("1", "2 ", "3 ")) (/* DOTTY-ONLY using */ trimEquality)
+      (Set("1 ", "2", "3 ") should contain allOf ("1", "2 ", "3 ")) (/* DOTTY-ONLY using */ trimEquality)
+      (Array("1 ", "2", "3 ") should contain allOf ("1", "2 ", "3 ")) (/* DOTTY-ONLY using */ trimEquality)
+      (Map(1 -> "one ", 2 -> "two", 3 -> "three ") should contain allOf (1 -> "one", 2 -> "two ", 3 -> "three")) (/* DOTTY-ONLY using */ mapTrimEquality)
 
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList("1 ", "2", "3 ") should contain allOf ("1", "2 ", "3 ")) (trimEquality)
-      (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, "three ")) should contain allOf (Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))) (javaMapTrimEquality)
+      (javaList("1 ", "2", "3 ") should contain allOf ("1", "2 ", "3 ")) (/* DOTTY-ONLY using */ trimEquality)
+      (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, "three ")) should contain allOf (Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))) (/* DOTTY-ONLY using */ javaMapTrimEquality)
       // SKIP-SCALATESTJS,NATIVE-END
     }
     
