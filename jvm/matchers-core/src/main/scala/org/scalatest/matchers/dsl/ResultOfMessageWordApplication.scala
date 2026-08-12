@@ -25,12 +25,18 @@ import org.scalactic.Prettifier
  * the matchers DSL.
  *
  * @author Bill Venners
- * @author Chee Seng
  */
 final class ResultOfMessageWordApplication(val expectedMessage: String) {
 
-  // TODO: SCALADOC
-  def apply[T : Messaging](resultOfOfTypeInvocation: ResultOfOfTypeInvocation[T]): HavePropertyMatcher[T, String] = {  
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * book should have (message ("A Tale of Two Cities") (of [Book]))
+   *                                  ^
+   * </pre>
+   */
+  def apply[T : Messaging](resultOfOfTypeInvocation: ResultOfOfTypeInvocation[T]): HavePropertyMatcher[T, String] = {
     new HavePropertyMatcher[T, String] {
       def apply(t: T): HavePropertyMatchResult[String] = {
         val messaging = implicitly[Messaging[T]]
@@ -46,7 +52,7 @@ final class ResultOfMessageWordApplication(val expectedMessage: String) {
   }
   
   /**
-   * Overrides toString to return "message (\"XXX\")", where XXX is expectedMessage
+   * Returns a human-readable representation of this matcher.
    */
   override def toString: String = "message (" + Prettifier.default(expectedMessage) + ")"
 }
