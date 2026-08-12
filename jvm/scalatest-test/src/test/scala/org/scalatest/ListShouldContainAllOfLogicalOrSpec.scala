@@ -91,14 +91,14 @@ class ListShouldContainAllOfLogicalOrSpec extends AnyFunSpec {
       }
       
       it("should use an explicitly provided Equality") {
-        (fumList should (contain allOf ("FEE", "FIE", "FOE", "FUM") or contain allOf ("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (contain allOf ("FEE", "FIE", "FOE", "FAM") or contain allOf ("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (contain allOf ("FEE", "FIE", "FOE", "FUM") or contain allOf ("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (contain allOf ("FEE", "FIE", "FOE", "FUM") or contain allOf ("FIE", "FEE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (contain allOf ("FEE", "FIE", "FOE", "FAM") or contain allOf ("FIE", "FEE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (contain allOf ("FEE", "FIE", "FOE", "FUM") or contain allOf ("FIE", "FEE", "FAM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain allOf ("FEE", "FIE", "FOE", "FAM") or contain allOf ("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (contain allOf ("FEE", "FIE", "FOE", "FAM") or contain allOf ("FIE", "FEE", "FAM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FOE\", \"FAM\"") + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
-        (fumList should (contain allOf (" FEE ", " FIE ", " FOE ", " FUM ") or contain allOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (contain allOf (" FEE ", " FIE ", " FOE ", " FUM ") or contain allOf (" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
       
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -142,14 +142,14 @@ class ListShouldContainAllOfLogicalOrSpec extends AnyFunSpec {
       }
       
       it("should use an explicitly provided Equality") {
-        (fumList should (equal (toList) or contain allOf ("FIE", "FEE", "FUM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
-        (fumList should (equal (fumList) or contain allOf ("FIE", "FEE", "FUM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
-        (fumList should (equal (toList) or contain allOf ("FIE", "FEE", "FAM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (equal (toList) or contain allOf ("FIE", "FEE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (equal (fumList) or contain allOf ("FIE", "FEE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (equal (toList) or contain allOf ("FIE", "FEE", "FAM", "FOE"))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (equal (fumList) or contain allOf ("FIE", "FEE", "FAM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+          (fumList should (equal (fumList) or contain allOf ("FIE", "FEE", "FAM", "FOE"))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.didNotEqual(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
-        (fumList should (equal (toList) or contain allOf (" FEE ", " FIE ", " FOE ", " FUM "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
+        (fumList should (equal (toList) or contain allOf (" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, after being lowerCased and trimmed)
       }
       
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -186,14 +186,14 @@ class ListShouldContainAllOfLogicalOrSpec extends AnyFunSpec {
       }
       
       it("should use an explicitly provided Equality") {
-        (fumList should (be (fumList) or contain allOf ("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality)
-        (fumList should (be (toList) or contain allOf ("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality)
-        (fumList should (be (fumList) or contain allOf ("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality)
+        (fumList should (be (fumList) or contain allOf ("FIE", "FEE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (be (toList) or contain allOf ("FIE", "FEE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (be (fumList) or contain allOf ("FIE", "FEE", "FAM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (be (toList) or contain allOf ("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality)
+          (fumList should (be (toList) or contain allOf ("FIE", "FEE", "FAM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
-        (fumList should (be (fumList) or contain allOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
+        (fumList should (be (fumList) or contain allOf (" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
       
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -230,14 +230,14 @@ class ListShouldContainAllOfLogicalOrSpec extends AnyFunSpec {
       }
       
       it("should use an explicitly provided Equality") {
-        (fumList should (contain allOf ("FIE", "FEE", "FUM", "FOE") or be (fumList))) (decided by upperCaseStringEquality)
-        (fumList should (contain allOf ("FIE", "FEE", "FAM", "FOE") or be (fumList))) (decided by upperCaseStringEquality)
-        (fumList should (contain allOf ("FIE", "FEE", "FUM", "FOE") or be (toList))) (decided by upperCaseStringEquality)
+        (fumList should (contain allOf ("FIE", "FEE", "FUM", "FOE") or be (fumList))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (contain allOf ("FIE", "FEE", "FAM", "FOE") or be (fumList))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (contain allOf ("FIE", "FEE", "FUM", "FOE") or be (toList))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain allOf ("FEE", "FIE", "FOE", "FAM") or be (toList))) (decided by upperCaseStringEquality)
+          (fumList should (contain allOf ("FEE", "FIE", "FOE", "FAM") or be (toList))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FOE\", \"FAM\"") + ", and " + Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)), fileName, thisLineNumber - 2)
-        (fumList should (contain allOf (" FEE ", " FIE ", " FOE ", " FUM ") or be (fumList))) (after being lowerCased and trimmed)
+        (fumList should (contain allOf (" FEE ", " FIE ", " FOE ", " FUM ") or be (fumList))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
       
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -274,14 +274,14 @@ class ListShouldContainAllOfLogicalOrSpec extends AnyFunSpec {
       }
       
       it("should use an explicitly provided Equality") {
-        (fumList should (not contain allOf ("FEE", "FIE", "FOE", "FUU") or not contain allOf ("FIE", "FEE", "FUU", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (not contain allOf ("FEE", "FIE", "FOE", "FUM") or not contain allOf ("FIE", "FEE", "FUU", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (not contain allOf ("FEE", "FIE", "FOE", "FUU") or not contain allOf ("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not contain allOf ("FEE", "FIE", "FOE", "FUU") or not contain allOf ("FIE", "FEE", "FUU", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not contain allOf ("FEE", "FIE", "FOE", "FUM") or not contain allOf ("FIE", "FEE", "FUU", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not contain allOf ("FEE", "FIE", "FOE", "FUU") or not contain allOf ("FIE", "FEE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not contain allOf ("FEE", "FIE", "FOE", "FUM") or not contain allOf ("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not contain allOf ("FEE", "FIE", "FOE", "FUM") or not contain allOf ("FIE", "FEE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.containedAllOfElements(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", and " + Resources.containedAllOfElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
-        (fumList should (contain allOf (" FEE ", " FIE ", " FOE ", " FUM ") or contain allOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (contain allOf (" FEE ", " FIE ", " FOE ", " FUM ") or contain allOf (" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
       
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -325,14 +325,14 @@ class ListShouldContainAllOfLogicalOrSpec extends AnyFunSpec {
       }
       
       it("should use an explicitly provided Equality") {
-        (fumList should (not equal (fumList) or not contain allOf ("FIE", "FEE", "FUU", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
-        (fumList should (not equal (toList) or not contain allOf ("FIE", "FEE", "FUU", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
-        (fumList should (not equal (fumList) or not contain allOf ("FIE", "FEE", "FUM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not equal (fumList) or not contain allOf ("FIE", "FEE", "FUU", "FOE"))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not equal (toList) or not contain allOf ("FIE", "FEE", "FUU", "FOE"))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not equal (fumList) or not contain allOf ("FIE", "FEE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not equal (toList) or not contain allOf ("FIE", "FEE", "FUM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not equal (toList) or not contain allOf ("FIE", "FEE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.equaled(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.containedAllOfElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
-        (fumList should (not contain allOf (" FEE ", " FIE ", " FOE ", " FUU ") or not contain allOf (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (not contain allOf (" FEE ", " FIE ", " FOE ", " FUU ") or not contain allOf (" FEE ", " FIE ", " FOE ", " FUU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
       
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -369,14 +369,14 @@ class ListShouldContainAllOfLogicalOrSpec extends AnyFunSpec {
       }
       
       it("should use an explicitly provided Equality") {
-        (fumList should (not be (toList) or not contain allOf ("FIE", "FEE", "FUU", "FOE"))) (decided by upperCaseStringEquality)
-        (fumList should (not be (fumList) or not contain allOf ("FIE", "FEE", "FUU", "FOE"))) (decided by upperCaseStringEquality)
-        (fumList should (not be (toList) or not contain allOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+        (fumList should (not be (toList) or not contain allOf ("FIE", "FEE", "FUU", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (not be (fumList) or not contain allOf ("FIE", "FEE", "FUU", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (not be (toList) or not contain allOf ("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not be (fumList) or not contain allOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+          (fumList should (not be (fumList) or not contain allOf ("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources.wasEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.containedAllOfElements(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
-        (fumList should (not contain allOf (" FEE ", " FIE ", " FOE ", " FUU ") or not contain allOf (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (not contain allOf (" FEE ", " FIE ", " FOE ", " FUU ") or not contain allOf (" FEE ", " FIE ", " FOE ", " FUU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
       
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -436,12 +436,12 @@ class ListShouldContainAllOfLogicalOrSpec extends AnyFunSpec {
       }
       
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (contain allOf ("HELLO", "HI") or contain allOf ("hello", "hi"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (contain allOf ("HELLO", "HO") or contain allOf ("hello", "hi"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (contain allOf ("HELLO", "HI") or contain allOf ("hello", "ho"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (contain allOf ("HELLO", "HI") or contain allOf ("hello", "hi"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (contain allOf ("HELLO", "HO") or contain allOf ("hello", "hi"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (contain allOf ("HELLO", "HI") or contain allOf ("hello", "ho"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (contain allOf ("HELLO", "HO") or contain allOf ("hello", "ho"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (contain allOf ("HELLO", "HO") or contain allOf ("hello", "ho"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, List("howdy", "hi", "hello")) + " did not contain all of " + "(\"HELLO\", \"HO\")" + ", and " + decorateToStringValue(prettifier, List("howdy", "hi", "hello")) + " did not contain all of " + "(\"hello\", \"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -490,12 +490,12 @@ class ListShouldContainAllOfLogicalOrSpec extends AnyFunSpec {
       }
       
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (be (List("howdy", "hi", "hello")) or contain allOf ("HELLO", "HI"))) (decided by upperCaseStringEquality)
-        (all (hiLists) should (be (List("ho", "hello")) or contain allOf ("HELLO", "HI"))) (decided by upperCaseStringEquality)
-        (all (hiLists) should (be (List("howdy", "hi", "hello")) or contain allOf ("HELLO", "HO"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (be (List("howdy", "hi", "hello")) or contain allOf ("HELLO", "HI"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (hiLists) should (be (List("ho", "hello")) or contain allOf ("HELLO", "HI"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (hiLists) should (be (List("howdy", "hi", "hello")) or contain allOf ("HELLO", "HO"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (be (List("ho", "hello")) or contain allOf ("HELLO", "HO"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (be (List("ho", "hello")) or contain allOf ("HELLO", "HO"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, List("howdy", "hi", "hello")) + " was not equal to " + decorateToStringValue(prettifier, List("ho", "hello")) + ", and " + decorateToStringValue(prettifier, List("howdy", "hi", "hello")) + " did not contain all of " + "(\"HELLO\", \"HO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -537,12 +537,12 @@ class ListShouldContainAllOfLogicalOrSpec extends AnyFunSpec {
       }
       
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (not contain allOf ("HELLO", "HO") or not contain allOf ("hello", "ho"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (not contain allOf ("HELLO", "HI") or not contain allOf ("hello", "ho"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (not contain allOf ("HELLO", "HO") or not contain allOf ("hello", "hi"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (not contain allOf ("HELLO", "HO") or not contain allOf ("hello", "ho"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (not contain allOf ("HELLO", "HI") or not contain allOf ("hello", "ho"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (not contain allOf ("HELLO", "HO") or not contain allOf ("hello", "hi"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not contain allOf ("HELLO", "HI") or not contain allOf ("hello", "hi"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (not contain allOf ("HELLO", "HI") or not contain allOf ("hello", "hi"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, List("howdy", "hi", "hello")) + " contained all of " + "(\"HELLO\", \"HI\")" + ", and " + decorateToStringValue(prettifier, List("howdy", "hi", "hello")) + " contained all of " + "(\"hello\", \"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -591,12 +591,12 @@ class ListShouldContainAllOfLogicalOrSpec extends AnyFunSpec {
       }
       
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (not be (List("hello", "ho")) or not contain allOf ("HELLO", "HO"))) (decided by upperCaseStringEquality)
-        (all (hiLists) should (not be (List("howdy", "hello", "hi")) or not contain allOf ("HELLO", "HO"))) (decided by upperCaseStringEquality)
-        (all (hiLists) should (not be (List("hello", "ho")) or not contain allOf ("HELLO", "HI"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (not be (List("hello", "ho")) or not contain allOf ("HELLO", "HO"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (hiLists) should (not be (List("howdy", "hello", "hi")) or not contain allOf ("HELLO", "HO"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (hiLists) should (not be (List("hello", "ho")) or not contain allOf ("HELLO", "HI"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not be (List("howdy", "hi", "hello")) or not contain allOf ("HELLO", "HI"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (not be (List("howdy", "hi", "hello")) or not contain allOf ("HELLO", "HI"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, List("howdy", "hi", "hello")) + " was equal to " + decorateToStringValue(prettifier, List("howdy", "hi", "hello")) + ", and " + decorateToStringValue(prettifier, List("howdy", "hi", "hello")) + " contained all of " + "(\"HELLO\", \"HI\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }

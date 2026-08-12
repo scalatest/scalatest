@@ -85,14 +85,14 @@ class EveryShouldContainAtMostOneElementOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FAM") or contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FAM") or contain atMostOneElementOf Seq("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM") or contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FAM") or contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FAM") or contain atMostOneElementOf Seq("FIE", "FEE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM") or contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM") or contain atMostOneElementOf Seq("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM") or contain atMostOneElementOf Seq("FIE", "FEE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, FailureMessages.didNotContainAtMostOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", and " + FailureMessages.didNotContainAtMostOneElementOf(prettifier, fumList, Seq("FIE", "FEE", "FUM", "FOE")), fileName, thisLineNumber - 2)
-        (fumList should (contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FAM ") or contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FAM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FAM ") or contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FAM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
       "should do nothing when RHS contain duplicated value" in {
@@ -125,14 +125,14 @@ class EveryShouldContainAtMostOneElementOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (equal (toList) or contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
-        (fumList should (equal (fumList) or contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
-        (fumList should (equal (toList) or contain atMostOneElementOf Seq("FIE", "FEE", "FUM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (equal (toList) or contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE"))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (equal (fumList) or contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE"))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (equal (toList) or contain atMostOneElementOf Seq("FIE", "FEE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (equal (fumList) or contain atMostOneElementOf Seq("FIE", "FEE", "FUM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+          (fumList should (equal (fumList) or contain atMostOneElementOf Seq("FIE", "FEE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, FailureMessages.didNotEqual(prettifier, fumList, fumList) + ", and " + FailureMessages.didNotContainAtMostOneElementOf(prettifier, fumList, Seq("FIE", "FEE", "FUM", "FOE")), fileName, thisLineNumber - 2)
-        (fumList should (equal (toList) or contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FAM "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
+        (fumList should (equal (toList) or contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FAM "))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, after being lowerCased and trimmed)
       }
 
       "should do nothing when RHS contain duplicated value" in {
@@ -164,14 +164,14 @@ class EveryShouldContainAtMostOneElementOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (be (fumList) or contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality)
-        (fumList should (be (toList) or contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality)
-        (fumList should (be (fumList) or contain atMostOneElementOf Seq("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality)
+        (fumList should (be (fumList) or contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (be (toList) or contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (be (fumList) or contain atMostOneElementOf Seq("FIE", "FEE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (be (toList) or contain atMostOneElementOf Seq("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality)
+          (fumList should (be (toList) or contain atMostOneElementOf Seq("FIE", "FEE", "FUM", "FOE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, FailureMessages.wasNotEqualTo(prettifier, fumList, toList) + ", and " + FailureMessages.didNotContainAtMostOneElementOf(prettifier, fumList, Seq("FIE", "FEE", "FUM", "FOE")), fileName, thisLineNumber - 2)
-        (fumList should (be (fumList) or contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FAM "))) (after being lowerCased and trimmed)
+        (fumList should (be (fumList) or contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FAM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
 
       "should do nothing when RHS contain duplicated value" in {
@@ -203,14 +203,14 @@ class EveryShouldContainAtMostOneElementOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE") or be (fumList))) (decided by upperCaseStringEquality)
-        (fumList should (contain atMostOneElementOf Seq("FIE", "FEE", "FUM", "FOE") or be (fumList))) (decided by upperCaseStringEquality)
-        (fumList should (contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE") or be (toList))) (decided by upperCaseStringEquality)
+        (fumList should (contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE") or be (fumList))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (contain atMostOneElementOf Seq("FIE", "FEE", "FUM", "FOE") or be (fumList))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (contain atMostOneElementOf Seq("FIE", "FEE", "FAM", "FOE") or be (toList))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM") or be (toList))) (decided by upperCaseStringEquality)
+          (fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM") or be (toList))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, FailureMessages.didNotContainAtMostOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", and " + FailureMessages.wasNotEqualTo(prettifier, fumList, toList), fileName, thisLineNumber - 2)
-        (fumList should (contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FaM ") or be (fumList))) (after being lowerCased and trimmed)
+        (fumList should (contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FaM ") or be (fumList))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
 
       "should do nothing when RHS contain duplicated value" in {
@@ -242,14 +242,14 @@ class EveryShouldContainAtMostOneElementOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")) or not contain atMostOneElementOf (Seq("FIE", "FEE", "FUM", "FOE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUU")) or not contain atMostOneElementOf (Seq("FIE", "FEE", "FUM", "FOE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (fumList should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")) or not contain atMostOneElementOf (Seq("FIE", "FEE", "FUU", "FOE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")) or not contain atMostOneElementOf (Seq("FIE", "FEE", "FUM", "FOE")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUU")) or not contain atMostOneElementOf (Seq("FIE", "FEE", "FUM", "FOE")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")) or not contain atMostOneElementOf (Seq("FIE", "FEE", "FUU", "FOE")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUU")) or not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUU")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUU")) or not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUU")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, FailureMessages.containedAtMostOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUU")) + ", and " + FailureMessages.containedAtMostOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUU")), fileName, thisLineNumber - 2)
-        (fumList should (contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FAM ") or contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FAM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FAM ") or contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FAM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
       "should do nothing when RHS contain duplicated value" in {
@@ -282,14 +282,14 @@ class EveryShouldContainAtMostOneElementOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (not equal (fumList) or not contain atMostOneElementOf (Seq("FIE", "FEE", "FUM", "FOE")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
-        (fumList should (not equal (toList) or not contain atMostOneElementOf (Seq("FIE", "FEE", "FUM", "FOE")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
-        (fumList should (not equal (fumList) or not contain atMostOneElementOf (Seq("FIE", "FEE", "FUU", "FOE")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not equal (fumList) or not contain atMostOneElementOf (Seq("FIE", "FEE", "FUM", "FOE")))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not equal (toList) or not contain atMostOneElementOf (Seq("FIE", "FEE", "FUM", "FOE")))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not equal (fumList) or not contain atMostOneElementOf (Seq("FIE", "FEE", "FUU", "FOE")))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not equal (toList) or not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUU")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not equal (toList) or not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUU")))) (/* DOTTY-ONLY using */ decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, FailureMessages.equaled(prettifier, fumList, toList) + ", and " + FailureMessages.containedAtMostOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUU")), fileName, thisLineNumber - 2)
-        (fumList should (not contain atMostOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUM ")) or not contain atMostOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUM ")))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (not contain atMostOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUM ")) or not contain atMostOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUM ")))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
       "should do nothing when RHS contain duplicated value" in {
@@ -321,14 +321,14 @@ class EveryShouldContainAtMostOneElementOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (fumList should (not be (toList) or not contain atMostOneElementOf (Seq("FIE", "FEE", "FUM", "FOE")))) (decided by upperCaseStringEquality)
-        (fumList should (not be (fumList) or not contain atMostOneElementOf (Seq("FIE", "FEE", "FUM", "FOE")))) (decided by upperCaseStringEquality)
-        (fumList should (not be (toList) or not contain atMostOneElementOf (Seq("FIE", "FEE", "FUU", "FOE")))) (decided by upperCaseStringEquality)
+        (fumList should (not be (toList) or not contain atMostOneElementOf (Seq("FIE", "FEE", "FUM", "FOE")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (not be (fumList) or not contain atMostOneElementOf (Seq("FIE", "FEE", "FUM", "FOE")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (fumList should (not be (toList) or not contain atMostOneElementOf (Seq("FIE", "FEE", "FUU", "FOE")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not be (fumList) or not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUU")))) (decided by upperCaseStringEquality)
+          (fumList should (not be (fumList) or not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUU")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, FailureMessages.wasEqualTo(prettifier, fumList, fumList) + ", and " + FailureMessages.containedAtMostOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUU")), fileName, thisLineNumber - 2)
-        (fumList should (not contain atMostOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUM ")) or not contain atMostOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUM ")))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (not contain atMostOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUM ")) or not contain atMostOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUM ")))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
       "should do nothing when RHS contain duplicated value" in {
@@ -381,12 +381,12 @@ class EveryShouldContainAtMostOneElementOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (contain atMostOneElementOf Seq("HI", "HO") or contain atMostOneElementOf Seq("HO", "HI"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (contain atMostOneElementOf Seq("HI", "HE") or contain atMostOneElementOf Seq("HO", "HI"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (contain atMostOneElementOf Seq("HI", "HO") or contain atMostOneElementOf Seq("HI", "HE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (contain atMostOneElementOf Seq("HI", "HO") or contain atMostOneElementOf Seq("HO", "HI"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (contain atMostOneElementOf Seq("HI", "HE") or contain atMostOneElementOf Seq("HO", "HI"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (contain atMostOneElementOf Seq("HI", "HO") or contain atMostOneElementOf Seq("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
 
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (contain atMostOneElementOf Seq("HI", "HE") or contain atMostOneElementOf Seq("HE", "HI"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (contain atMostOneElementOf Seq("HI", "HE") or contain atMostOneElementOf Seq("HE", "HI"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, hiLists(0)) + " did not contain at most one element of " + decorateToStringValue(prettifier, Seq("HI", "HE")) + ", and " + decorateToStringValue(prettifier, hiLists(0)) + " did not contain at most one element of " + decorateToStringValue(prettifier, Seq("HE", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -424,12 +424,12 @@ class EveryShouldContainAtMostOneElementOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (be (Many("hi", "he")) or contain atMostOneElementOf Seq("HI", "HO"))) (decided by upperCaseStringEquality)
-        (all (hiLists) should (be (One("HO")) or contain atMostOneElementOf Seq("HI", "HO"))) (decided by upperCaseStringEquality)
-        (all (hiLists) should (be (Many("hi", "he")) or contain atMostOneElementOf Seq("HI", "HE"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (be (Many("hi", "he")) or contain atMostOneElementOf Seq("HI", "HO"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (hiLists) should (be (One("HO")) or contain atMostOneElementOf Seq("HI", "HO"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (hiLists) should (be (Many("hi", "he")) or contain atMostOneElementOf Seq("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
 
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (be (One("HO")) or contain atMostOneElementOf Seq("HI", "HE"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (be (One("HO")) or contain atMostOneElementOf Seq("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, hiLists(0)) + " was not equal to " + decorateToStringValue(prettifier, One("HO")) + ", and " + decorateToStringValue(prettifier, hiLists(0)) + " did not contain at most one element of " + decorateToStringValue(prettifier, Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -466,12 +466,12 @@ class EveryShouldContainAtMostOneElementOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (not contain atMostOneElementOf (Seq("HI", "HE")) or not contain atMostOneElementOf (Seq("HE", "HI")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (not contain atMostOneElementOf (Seq("hi", "he")) or not contain atMostOneElementOf (Seq("HE", "HI")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        (all (hiLists) should (not contain atMostOneElementOf (Seq("HI", "HE")) or not contain atMostOneElementOf (Seq("hi", "he")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (not contain atMostOneElementOf (Seq("HI", "HE")) or not contain atMostOneElementOf (Seq("HE", "HI")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (not contain atMostOneElementOf (Seq("hi", "he")) or not contain atMostOneElementOf (Seq("HE", "HI")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (all (hiLists) should (not contain atMostOneElementOf (Seq("HI", "HE")) or not contain atMostOneElementOf (Seq("hi", "he")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
 
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not contain atMostOneElementOf (Seq("HE", "HEY", "HOWDY")) or not contain atMostOneElementOf (Seq("HE", "HEY", "HOWDY")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (not contain atMostOneElementOf (Seq("HE", "HEY", "HOWDY")) or not contain atMostOneElementOf (Seq("HE", "HEY", "HOWDY")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, hiLists(0)) + " contained at most one element of " + decorateToStringValue(prettifier, Seq("HE", "HEY", "HOWDY")) + ", and " + decorateToStringValue(prettifier, hiLists(0)) + " contained at most one element of " + decorateToStringValue(prettifier, Seq("HE", "HEY", "HOWDY")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -509,12 +509,12 @@ class EveryShouldContainAtMostOneElementOfLogicalOrSpec extends AnyFreeSpec {
       }
 
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (not be (One("ho")) or not contain atMostOneElementOf (Seq("HI", "HE")))) (decided by upperCaseStringEquality)
-        (all (hiLists) should (not be (Many("hi", "he")) or not contain atMostOneElementOf (Seq("HE", "HI")))) (decided by upperCaseStringEquality)
-        (all (hiLists) should (not be (One("ho")) or not contain atMostOneElementOf (Seq("HI", "HE")))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (not be (One("ho")) or not contain atMostOneElementOf (Seq("HI", "HE")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (hiLists) should (not be (Many("hi", "he")) or not contain atMostOneElementOf (Seq("HE", "HI")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
+        (all (hiLists) should (not be (One("ho")) or not contain atMostOneElementOf (Seq("HI", "HE")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
 
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not be (Many("hi", "he")) or not contain atMostOneElementOf (Seq("HI", "HO")))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (not be (Many("hi", "he")) or not contain atMostOneElementOf (Seq("HI", "HO")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, hiLists(0)) + " was equal to " + decorateToStringValue(prettifier, Many("hi", "he")) + ", and " + decorateToStringValue(prettifier, hiLists(0)) + " contained at most one element of " + decorateToStringValue(prettifier, Seq("HI", "HO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }

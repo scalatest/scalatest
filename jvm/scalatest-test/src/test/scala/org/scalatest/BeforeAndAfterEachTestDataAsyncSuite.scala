@@ -293,7 +293,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
   }
   
   test("If super.run returns normally, but afterAll completes abruptly with an " +
-    "exception, runTest will return a status that contains that exception as an unreportedException (using BeforeAndAfterAllConfigMap).") {
+    "exception, runTest will return a status that contains that exception as an unreportedException (/* DOTTY-ONLY using */ BeforeAndAfterAllConfigMap).") {
     class MySuite extends AnyFunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       override def afterAll(cm: ConfigMap): Unit = { throw new NumberFormatException }
       test("test July") {}

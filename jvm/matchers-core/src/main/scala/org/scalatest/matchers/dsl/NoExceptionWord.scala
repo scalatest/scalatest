@@ -36,10 +36,7 @@ final class NoExceptionWord(pos: source.Position) {
    *             ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def should(beWord: BeWord): ResultOfBeWordForNoException =
-  // SKIP-DOTTY-START 
-  def should(beWord: BeWord): ResultOfBeWordForNoException = 
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def should(beWord: BeWord): ResultOfBeWordForNoException = 
     new ResultOfBeWordForNoException(pos)
   
   /**
@@ -50,10 +47,7 @@ final class NoExceptionWord(pos: source.Position) {
    *             ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def shouldBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
-  // SKIP-DOTTY-START 
-  def shouldBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
-  // SKIP-DOTTY-END  
+  /* DOTTY-ONLY infix */ def shouldBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
     try {
       thrownBy.execute()
       indicateSuccess(Resources.noExceptionWasThrown)
@@ -74,10 +68,7 @@ final class NoExceptionWord(pos: source.Position) {
    *             ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def must(beWord: BeWord): ResultOfBeWordForNoException =
-  // SKIP-DOTTY-START 
-  def must(beWord: BeWord): ResultOfBeWordForNoException =
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def must(beWord: BeWord): ResultOfBeWordForNoException =
     new ResultOfBeWordForNoException(pos)
 
   /**
@@ -88,10 +79,7 @@ final class NoExceptionWord(pos: source.Position) {
    *             ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def mustBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
-  // SKIP-DOTTY-START 
-  def mustBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
-  // SKIP-DOTTY-END  
+  /* DOTTY-ONLY infix */ def mustBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
     try {
       thrownBy.execute()
       indicateSuccess(Resources.noExceptionWasThrown)
