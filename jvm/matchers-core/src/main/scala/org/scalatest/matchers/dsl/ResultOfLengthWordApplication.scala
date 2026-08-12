@@ -28,8 +28,15 @@ import org.scalactic.Prettifier
  */
 final class ResultOfLengthWordApplication(val expectedLength: Long) {
 
-  // TODO: SCALADOC
-  def apply[T : Length](resultOfOfTypeInvocation: ResultOfOfTypeInvocation[T]): HavePropertyMatcher[T, Long] = { 
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * book should have (length (220) (of [Book]))
+   *                                ^
+   * </pre>
+   */
+  def apply[T : Length](resultOfOfTypeInvocation: ResultOfOfTypeInvocation[T]): HavePropertyMatcher[T, Long] = {
     new HavePropertyMatcher[T, Long] {
       def apply(t: T): HavePropertyMatchResult[Long] = {
         val len = implicitly[Length[T]]
@@ -45,7 +52,7 @@ final class ResultOfLengthWordApplication(val expectedLength: Long) {
   }
   
   /**
-   * Overrides toString to return "length (X)", where X is the expectedLength
+   * Returns a human-readable representation of this matcher.
    */
   override def toString: String = "length (" + Prettifier.default(expectedLength) + ")"
 }
