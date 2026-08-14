@@ -481,15 +481,6 @@ private[tools] object ArgsParser {
 
     if (dashArg != "-j" && dashArg != "-w" && dashArg != "-m" && dashArg != "-b")
       throw new IllegalArgumentException("dashArg invalid: " + dashArg)
-    /*
-    <<<<<<< .working TODOCS: Is the above the correct way to merge these?
-        if (dashArg != "-j" && dashArg != "-w" && dashArg != "-m" && dashArg != "-b")
-          throw new IllegalArgumentException("dashArg invalid: " + dashArg)
-    =======
-        if (dashArg != "-j" && dashArg != "-s" && dashArg != "-w" && dashArg != "-m" && dashArg != "-b")
-          throw new NullPointerException("dashArg invalid: " + dashArg)
-    >>>>>>> .merge-right.r3653
-    */
 
     val lb = new ListBuffer[String]
     val it = args.iterator
