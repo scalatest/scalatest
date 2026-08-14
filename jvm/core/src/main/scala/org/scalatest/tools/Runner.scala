@@ -773,10 +773,10 @@ object Runner {
         val version = org.scalatest.ScalaTestVersions.ScalaTestVersion
         val scalaVersion = org.scalatest.ScalaTestVersions.BuiltForScalaVersion
         println("ScalaTest " + version + " (Built for Scala " + scalaVersion + ")")
-        runOptionallyWithPassFailReporter(args.filter(arg => arg != "-v" && arg != "--version"), true)
+        runWithPassFailReporter(args.filter(arg => arg != "-v" && arg != "--version"))
       }
       else
-        runOptionallyWithPassFailReporter(args, true)
+        runWithPassFailReporter(args)
 
     if (result)
       System.exit(0)
@@ -799,12 +799,12 @@ object Runner {
     val originalThreadName = Thread.currentThread.getName
     try {
       Thread.currentThread.setName("ScalaTest-run")
-      runOptionallyWithPassFailReporter(args, true)
+      runWithPassFailReporter(args)
     }
     finally Thread.currentThread.setName(originalThreadName)
   }
 
-  private def runOptionallyWithPassFailReporter(args: Array[String], runWithPassFailReporter: Boolean): Boolean = {
+  private def runWithPassFailReporter(args: Array[String]): Boolean = {
 
     checkArgsForValidity(args) match {
       case Some(s) => {
@@ -889,7 +889,7 @@ object Runner {
         }
       }
 
-    val passFailReporter = if (runWithPassFailReporter) Some(new PassFailReporter) else None
+    val passFailReporter = new PassFailReporter
 
     val configMap: ConfigMap = parsePropertiesArgsIntoMap(propertiesArgs)
 
@@ -930,7 +930,7 @@ object Runner {
             membersOnlyList,
             wildcardList,
             testNGList,
-            passFailReporter,
+            Some(passFailReporter),
             concurrentConfig,
             suffixes,
             detectSlowpokes,
@@ -954,7 +954,7 @@ object Runner {
           runpathList,
           reporterConfigs,
           None,
-          passFailReporter,
+          Some(passFailReporter),
           detectSlowpokes,
           slowpokeDetectionDelay,
           slowpokeDetectionPeriod
@@ -985,10 +985,7 @@ object Runner {
       }
     }
     
-    passFailReporter match {
-      case Some(pfr) => pfr.allTestsPassed
-      case None => false
-    }
+    passFailReporter.allTestsPassed
   }
 
   // For debugging.
