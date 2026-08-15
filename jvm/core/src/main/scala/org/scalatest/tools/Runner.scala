@@ -723,7 +723,7 @@ object Runner {
   // semaphore permit. Thus, a PassFailReporter can just be used for one run, then it is
   // spent. A new PassFailReporter is therefore created each time the Runner.run() method is invoked.
   //
-  private class PassFailReporter extends Reporter {
+  private[scalatest] class PassFailReporter extends Reporter {
 
     @volatile private var failedAbortedOrStopped = false
     private val runDoneSemaphore = new Semaphore(1)
@@ -930,7 +930,7 @@ object Runner {
             membersOnlyList,
             wildcardList,
             testNGList,
-            Some(passFailReporter),
+            passFailReporter,
             concurrentConfig,
             suffixes,
             detectSlowpokes,
@@ -954,7 +954,7 @@ object Runner {
           runpathList,
           reporterConfigs,
           None,
-          Some(passFailReporter),
+          passFailReporter,
           detectSlowpokes,
           slowpokeDetectionDelay,
           slowpokeDetectionPeriod
@@ -1453,7 +1453,7 @@ object Runner {
     runpathList: List[String],
     reporterSpecs: ReporterConfigurations,
     graphicReporter: Option[Reporter],
-    passFailReporter: Option[Reporter],
+    passFailReporter: Reporter,
     detectSlowpokes: Boolean,
     slowpokeDetectionDelay: Long,
     slowpokeDetectionPeriod: Long
@@ -1463,7 +1463,7 @@ object Runner {
     try {
       Thread.currentThread.setContextClassLoader(loader)
       try {
-        val dispatchReporter = ReporterFactory.getDispatchReporter(reporterSpecs, graphicReporter, passFailReporter, loader, None, detectSlowpokes, slowpokeDetectionDelay, slowpokeDetectionPeriod)
+        val dispatchReporter = ReporterFactory.getDispatchReporter(reporterSpecs, graphicReporter, Some(passFailReporter), loader, None, detectSlowpokes, slowpokeDetectionDelay, slowpokeDetectionPeriod)
         try {
           f(loader, dispatchReporter)
         }
@@ -1483,9 +1483,7 @@ object Runner {
           graphicReporter.foreach { rep =>
             rep(runAborted)
           }
-          passFailReporter.foreach { rep =>
-            rep(runAborted)
-          }
+          passFailReporter(runAborted)
         }
       }
     }

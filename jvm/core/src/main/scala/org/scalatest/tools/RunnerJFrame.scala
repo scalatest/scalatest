@@ -94,7 +94,7 @@ private[scalatest] class RunnerJFrame(
   memberOfList: List[String], 
   beginsWithList: List[String],
   testNGList: List[String],
-  passFailReporter: Option[Reporter],
+  passFailReporter: Reporter,
   concurrentConfig: ConcurrentConfig,
   suffixes: Option[Pattern],
   detectSlowpokes: Boolean,
@@ -666,14 +666,6 @@ private[scalatest] class RunnerJFrame(
       new ActionListener() {
         def actionPerformed(ae: ActionEvent): Unit = {
           dispose()
-          // Only exit if started from main(), not run(). If starting from run(),
-          // we want to return a pass/fail status from run(). Actually, if we
-          // have a passFailReporter, then that means we want to indicate status,
-          // so that's why it is used here to determine whether or not to exit.
-          passFailReporter match {
-            case Some(_) =>
-            case None => System.exit(0)
-          }
         }
       }
     )
@@ -1603,7 +1595,7 @@ private[scalatest] class RunnerJFrame(
         runpathList,
         reporterConfigurations,
         Some(graphicRerunReporter),
-        None,
+        new Runner.PassFailReporter,
         detectSlowpokes,
         slowpokeDetectionDelay,
         slowpokeDetectionPeriod
