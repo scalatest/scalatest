@@ -24,6 +24,7 @@ import scala.collection.JavaConverters._
 import java.io.{PrintWriter, StringWriter, IOException}
 import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger, AtomicReference}
 import java.util.concurrent.{ExecutorService, Executors, LinkedBlockingQueue, ThreadFactory}
+import java.net.{ServerSocket, InetAddress}
 
 import org.scalatest.time.{Millis, Seconds, Span}
 import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Runner => SbtRunner, Status => SbtStatus, _}
@@ -665,7 +666,7 @@ class Framework extends SbtFramework {
     testSortingReporterTimeout: Span
   ) extends sbt.testing.Runner {
     val isDone = new AtomicBoolean(false)
-    val serverThread = new AtomicReference[Option[Thread]](None)
+    val serverRef = new AtomicReference[Option[(Thread, ServerSocket)]](None)
     val statusList = new LinkedBlockingQueue[Status]()
     val tracker = new Tracker
     val summaryCounter = new SummaryCounter
@@ -777,8 +778,9 @@ class Framework extends SbtFramework {
           }
         }
 
-        serverThread.get match {
-          case Some(thread) =>
+        serverRef.get match {
+          case Some((thread, serverSocket)) =>
+            serverSocket.close() // Close the server socket to unblock the server thread
             // Need to wait until the server thread is done
             thread.join()
           case None =>
@@ -816,7 +818,6 @@ class Framework extends SbtFramework {
     def remoteArgs: Array[String] = {
       import org.scalatest.events._
       import java.io.{ObjectInputStream, ObjectOutputStream}
-      import java.net.{ServerSocket, InetAddress}
 
       class SkeletonObjectInputStream(in: java.io.InputStream, loader: ClassLoader) extends ObjectInputStream(in) {
 
@@ -932,7 +933,7 @@ class Framework extends SbtFramework {
       val skeleton = new Skeleton()
       val thread = new Thread(skeleton)
       thread.start()
-      serverThread.set(Some(thread))
+      serverRef.set(Some((thread, skeleton.server)))
       Array("127.0.0.1", skeleton.port.toString)
       // Array(InetAddress.getLocalHost.getHostAddress, skeleton.port.toString)
     }
