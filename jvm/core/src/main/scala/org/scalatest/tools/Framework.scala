@@ -666,6 +666,7 @@ class Framework extends SbtFramework {
     testSortingReporterTimeout: Span
   ) extends sbt.testing.Runner {
     val isDone = new AtomicBoolean(false)
+    val runTerminated = new AtomicBoolean(false)
     val serverRef = new AtomicReference[Option[(Thread, ServerSocket)]](None)
     val statusList = new LinkedBlockingQueue[Status]()
     val tracker = new Tracker
@@ -789,7 +790,8 @@ class Framework extends SbtFramework {
         val duration = System.currentTimeMillis - runStartTime
         val summary = new Summary(summaryCounter.testsSucceededCount.get, summaryCounter.testsFailedCount.get, summaryCounter.testsIgnoredCount.get, summaryCounter.testsPendingCount.get,
                                   summaryCounter.testsCanceledCount.get, summaryCounter.suitesCompletedCount.get, summaryCounter.suitesAbortedCount.get, summaryCounter.scopesPendingCount.get)
-        dispatchReporter(RunCompleted(tracker.nextOrdinal(), Some(duration), Some(summary)))
+        if (!runTerminated.get)
+          dispatchReporter(RunCompleted(tracker.nextOrdinal(), Some(duration), Some(summary)))
         dispatchReporter.dispatchDisposeAndWaitUntilDone()
 
         execSvc.shutdown()
@@ -899,10 +901,16 @@ class Framework extends SbtFramework {
               case e: MarkupProvided => dispatchReporter(e); react()
               case e: AlertProvided => dispatchReporter(e); react()
               case e: NoteProvided => dispatchReporter(e); react()
+              // The main JVM owns the two "normal" run-level events: it fires RunStarting at runner
+              // creation and RunCompleted in `done`. The sub-process sends its own copies over the
+              // socket, so drop them here to avoid double-firing. The two "abnormal" terminal events,
+              // RunStopped and RunAborted, are only knowable from the sub-process (they carry the actual
+              // message/throwable that the main JVM cannot reproduce), so forward them to the reporters
+              // and mark the run as terminated so `done` won't also fire RunCompleted.
               case e: RunStarting => react() // just ignore test starting and continue
               case e: RunCompleted => // Sub-process completed, just let the thread terminate
-              case e: RunStopped => dispatchReporter(e)
-              case e: RunAborted => dispatchReporter(e)
+              case e: RunStopped => dispatchReporter(e); runTerminated.set(true)
+              case e: RunAborted => dispatchReporter(e); runTerminated.set(true)
             }
           }
 
@@ -917,7 +925,7 @@ class Framework extends SbtFramework {
                   // Do nothing, just let the thread terminate, this happens when `done` calls `serverSocket.close()`.
 
                 case t: IOException =>
-                  // IO read error, let's try restart server socket to see if it fixes the problem, but only try 3 times, then give up and exit the process.
+                  // IO read error, let's try restart server socket to see if it fixes the problem, but only try 3 times, then give up and abort the run.
                   println(Resources.unableToReadSerializedEvent)
                   is.get.close()
                   socket.set(server.accept())
@@ -926,7 +934,8 @@ class Framework extends SbtFramework {
               }
             else {
               println(Resources.unableToContinueRun)
-              System.exit(-1)
+              runTerminated.set(true)
+              dispatchReporter(RunAborted(tracker.nextOrdinal(), Resources.unableToContinueRun, None))
             }
         }
 
