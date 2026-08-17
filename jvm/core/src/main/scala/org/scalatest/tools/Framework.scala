@@ -781,8 +781,8 @@ class Framework extends SbtFramework {
         serverRef.get match {
           case Some((thread, serverSocket)) =>
             serverSocket.close() // Close the server socket to unblock the server thread
-            // Need to wait until the server thread is done
-            thread.join()
+            // Need to wait until the server thread is done, wait for maximum of 15 seconds.
+            thread.join(15000)
           case None =>
         }
 
