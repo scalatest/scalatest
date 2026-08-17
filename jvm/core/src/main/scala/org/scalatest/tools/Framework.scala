@@ -24,7 +24,7 @@ import scala.collection.JavaConverters._
 import java.io.{PrintWriter, StringWriter, IOException}
 import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger, AtomicReference}
 import java.util.concurrent.{ExecutorService, Executors, LinkedBlockingQueue, ThreadFactory}
-import java.net.{ServerSocket, InetAddress}
+import java.net.{ServerSocket, InetAddress, SocketException}
 
 import org.scalatest.time.{Millis, Seconds, Span}
 import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Runner => SbtRunner, Status => SbtStatus, _}
@@ -845,7 +845,8 @@ class Framework extends SbtFramework {
           }
           finally {
             is.get.close()
-            socket.get.close()
+            if (!socket.get.isClosed)  
+              socket.get.close()
 		      }
         }
 
@@ -912,8 +913,11 @@ class Framework extends SbtFramework {
                 react()
               }
               catch {
+                case _: SocketException =>
+                  // Do nothing, just let the thread terminate, this happens when `done` calls `serverSocket.close()`.
+
                 case t: IOException =>
-                  // Restart server socket
+                  // IO read error, let's try restart server socket to see if it fixes the problem, but only try 3 times, then give up and exit the process.
                   println(Resources.unableToReadSerializedEvent)
                   is.get.close()
                   socket.set(server.accept())
