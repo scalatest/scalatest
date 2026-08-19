@@ -24,7 +24,7 @@ import scala.collection.JavaConverters._
 import java.io.{PrintWriter, StringWriter, IOException}
 import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger, AtomicReference}
 import java.util.concurrent.{ExecutorService, Executors, LinkedBlockingQueue, ThreadFactory}
-import java.net.{ServerSocket, InetAddress, SocketException}
+import java.net.{ServerSocket, InetAddress}
 
 import org.scalatest.time.{Millis, Seconds, Span}
 import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Runner => SbtRunner, Status => SbtStatus, _}
@@ -667,6 +667,9 @@ class Framework extends SbtFramework {
   ) extends sbt.testing.Runner {
     val isDone = new AtomicBoolean(false)
     val runTerminated = new AtomicBoolean(false)
+    // Set just before the server socket is closed in done(), so the Skeleton thread can tell a
+    // deliberate shutdown apart from a genuine read failure, such as the forked JVM dying.
+    val isShuttingDown = new AtomicBoolean(false)
     val serverRef = new AtomicReference[Option[(Thread, ServerSocket)]](None)
     val statusList = new LinkedBlockingQueue[Status]()
     val tracker = new Tracker
@@ -781,6 +784,7 @@ class Framework extends SbtFramework {
 
         serverRef.get match {
           case Some((thread, serverSocket)) =>
+            isShuttingDown.set(true)
             serverSocket.close() // Close the server socket to unblock the server thread
             // Need to wait until the server thread is done, wait for maximum of 15 seconds.
             thread.join(15000)
@@ -842,14 +846,26 @@ class Framework extends SbtFramework {
         lazy val is = new AtomicReference(new SkeletonObjectInputStream(socket.get.getInputStream, getClass.getClassLoader))
 
         def run(): Unit = {
+          val connected = 
+            try {
+              // Force the connection up front. Once established, the finally block below can close
+              // the stream and socket without re-running accept(), which would throw SocketException
+              // if done() has already closed the server socket.
+              is.get
+              true
+            } catch {
+              case _: IOException => false
+            }
           try {
-			      (new React(server)).tryReact(0)
+            (new React(server)).tryReact()
           }
           finally {
-            is.get.close()
-            if (!socket.get.isClosed)  
-              socket.get.close()
-		      }
+            if (connected) {
+              is.get.close()
+              if (!socket.get.isClosed)
+                socket.get.close()
+            }
+          }
         }
 
         class React(server: ServerSocket) {
@@ -914,28 +930,26 @@ class Framework extends SbtFramework {
             }
           }
 
-          @annotation.tailrec
-          final def tryReact(count: Int): Unit =
-            if (count < 3)
-              try {
-                react()
-              }
-              catch {
-                case _: SocketException =>
-                  // Do nothing, just let the thread terminate, this happens when `done` calls `serverSocket.close()`.
-
-                case t: IOException =>
-                  // IO read error, let's try restart server socket to see if it fixes the problem, but only try 3 times, then give up and abort the run.
+          final def tryReact(): Unit =
+            try {
+              react()
+            }
+            catch {
+              case _: IOException =>
+                // A read failure raised after done() set isShuttingDown and closed the server
+                // socket is part of the normal shutdown, so just let the thread terminate. Any
+                // other read failure means the forked JVM is gone: ForkMain uses a single
+                // connection per fork group and never reconnects, so abort the run instead of
+                // retrying.
+                if (isShuttingDown.get) {
+                  // Do nothing, just let the thread terminate.
+                }
+                else {
                   println(Resources.unableToReadSerializedEvent)
-                  is.get.close()
-                  socket.set(server.accept())
-                  is.set(new SkeletonObjectInputStream(socket.get.getInputStream, getClass.getClassLoader))
-                  tryReact(count + 1)
-              }
-            else {
-              println(Resources.unableToContinueRun)
-              runTerminated.set(true)
-              dispatchReporter(RunAborted(tracker.nextOrdinal(), Resources.unableToContinueRun, None))
+                  println(Resources.unableToContinueRun)
+                  runTerminated.set(true)
+                  dispatchReporter(RunAborted(tracker.nextOrdinal(), Resources.unableToContinueRun, None))
+                }
             }
         }
 
@@ -945,6 +959,7 @@ class Framework extends SbtFramework {
 
       val skeleton = new Skeleton()
       val thread = new Thread(skeleton)
+      thread.setDaemon(true)
       thread.start()
       serverRef.set(Some((thread, skeleton.server)))
       Array("127.0.0.1", skeleton.port.toString)

@@ -24,6 +24,8 @@ import java.io.File
 import Retries._
 import OptionValues._
 import org.scalatest.tagobjects.Flicker
+import java.net.Socket
+import java.io.ObjectOutputStream
 
 class FrameworkSuite extends AnyFunSuite {
 
@@ -1368,6 +1370,38 @@ class FrameworkSuite extends AnyFunSuite {
             assert(recordingRep.noteProvidedEventsReceived.size === 1)
           case _ => fail("Expected to find EventRecordingReporter, but not found.")
         }
+    }
+  }
+
+  test("Framework should fire RunAborted and not RunCompleted when the forked JVM dies mid-run", Retryable) {
+    val mainRunner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    makeSureDone(mainRunner) {
+      assert(mainRunner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+      val mainScalatestRunner = mainRunner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+      val recordingRep =
+        mainScalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+          case Some(rep: EventRecordingReporter) => rep
+          case _ => fail("Expected to find EventRecordingReporter, but not found.")
+        }
+
+      // ForkMain uses a single connection per fork group and never reconnects, so a fork that
+      // dies mid-run makes the server side see EOF. Simulate it: connect and write the object
+      // stream header (as ForkMain does), then close the connection before sending any events.
+      val Array(host, portStr) = mainRunner.remoteArgs()
+      val socket = new Socket(host, portStr.toInt)
+      new ObjectOutputStream(socket.getOutputStream) // Writes the stream header
+      socket.close()
+
+      // Wait for the Skeleton thread to see the read failure and fire RunAborted before calling
+      // done(), otherwise done()'s server socket close would be classified as a normal shutdown.
+      val deadline = System.currentTimeMillis + 5000
+      while (System.currentTimeMillis < deadline && !recordingRep.eventsReceived.exists(_.isInstanceOf[org.scalatest.events.RunAborted]))
+        Thread.sleep(50)
+
+      mainScalatestRunner.done()
+
+      assert(recordingRep.eventsReceived.exists(_.isInstanceOf[org.scalatest.events.RunAborted]), "Expected a RunAborted event when the forked JVM dies mid-run, but none was fired.")
+      assert(!recordingRep.eventsReceived.exists(_.isInstanceOf[org.scalatest.events.RunCompleted]), "Expected no RunCompleted event after the run was aborted, but one was fired.")
     }
   }
 
