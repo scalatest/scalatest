@@ -1414,7 +1414,11 @@ class FrameworkSuite extends AnyFunSuite {
       // opens the server socket and starts the acceptor, then done() is called with no fork ever
       // dialing back. done() must close the server socket, unblock accept(), and return.
       assert(mainScalatestRunner.remoteArgs().length === 2)
-      val doneThread = new Thread(() => mainScalatestRunner.done())
+      val doneThread = new Thread(new Runnable {
+        def run(): Unit = {
+          mainScalatestRunner.done()
+        }
+      })
       doneThread.setDaemon(true)
       doneThread.start()
       doneThread.join(15000)
