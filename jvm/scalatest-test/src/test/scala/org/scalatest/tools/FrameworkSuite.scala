@@ -1405,6 +1405,23 @@ class FrameworkSuite extends AnyFunSuite {
     }
   }
 
+  test("Framework.done should not block forever when no fork ever connects to remoteArgs", Retryable) {
+    val mainRunner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    makeSureDone(mainRunner) {
+      assert(mainRunner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+      val mainScalatestRunner = mainRunner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+      // Exactly the shape from https://github.com/scalatest/scalatest/issues/2434: remoteArgs()
+      // opens the server socket and starts the acceptor, then done() is called with no fork ever
+      // dialing back. done() must close the server socket, unblock accept(), and return.
+      assert(mainScalatestRunner.remoteArgs().length === 2)
+      val doneThread = new Thread(() => mainScalatestRunner.done())
+      doneThread.setDaemon(true)
+      doneThread.start()
+      doneThread.join(15000)
+      assert(!doneThread.isAlive, "done() is still blocked waiting for the acceptor thread; the server socket was not closed")
+    }
+  }
+
   test("SuitedAbored fired from nested suite should be reported as error correctly") {
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
     try {
