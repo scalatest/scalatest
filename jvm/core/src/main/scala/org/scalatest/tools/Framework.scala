@@ -24,7 +24,7 @@ import scala.collection.JavaConverters._
 import java.io.{PrintWriter, StringWriter, IOException}
 import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger, AtomicReference}
 import java.util.concurrent.{ExecutorService, Executors, LinkedBlockingQueue, ThreadFactory}
-import java.net.{ServerSocket, InetAddress}
+import java.net.ServerSocket
 
 import org.scalatest.time.{Millis, Seconds, Span}
 import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Runner => SbtRunner, Status => SbtStatus, _}
@@ -918,7 +918,7 @@ class Framework extends SbtFramework {
               // RunStopped and RunAborted, are only knowable from the sub-process (they carry the actual
               // message/throwable that the main JVM cannot reproduce), so forward them to the reporters
               // and mark the run as terminated so `done` won't also fire RunCompleted.
-              case e: RunStarting => react() // just ignore test starting and continue
+              case e: RunStarting => react() // just ignore run starting and continue
               case e: RunCompleted => // Sub-process completed, just let the thread terminate
               case e: RunStopped => dispatchReporter(e); runTerminated.set(true)
               case e: RunAborted => dispatchReporter(e); runTerminated.set(true)
