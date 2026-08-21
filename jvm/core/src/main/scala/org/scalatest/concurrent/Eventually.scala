@@ -312,8 +312,8 @@ trait Eventually extends PatienceConfiguration {
   def eventually[T](timeout: Timeout, interval: Interval)(fun: => T)(implicit retrying: Retrying[T], pos: source.Position): T =
     retrying.retry(timeout.value, interval.value, pos)(fun)
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def eventually[T](timeout: Timeout, interval: Interval)(fun: => T)(using config: PatienceConfig, retrying: Retrying[T]): T = 
-  //DOTTY-ONLY   ${ Eventually.eventuallyMacro('{timeout.value}, '{interval.value}, '{fun}, '{retrying}) }
+  //DOTTY-ONLY inline def eventually[T](timeout: Timeout, interval: Interval)(fun: => T)(using config: PatienceConfig, retrying: Retrying[T], pos: source.Position): T =
+  //DOTTY-ONLY   ${ Eventually.eventuallyMacro('{timeout.value}, '{interval.value}, '{fun}, '{retrying}, '{pos}) }
 
   /**
    * Invokes the passed by-name parameter repeatedly until it either succeeds, or a configured maximum
@@ -347,8 +347,8 @@ trait Eventually extends PatienceConfiguration {
   def eventually[T](timeout: Timeout)(fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T], pos: source.Position): T =
     retrying.retry(timeout.value, config.interval, pos)(fun)
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def eventually[T](timeout: Timeout)(fun: => T)(using config: PatienceConfig, retrying: Retrying[T]): T = 
-  //DOTTY-ONLY   ${ Eventually.eventuallyMacro('{timeout.value}, '{config.interval}, '{fun}, '{retrying}) }
+  //DOTTY-ONLY inline def eventually[T](timeout: Timeout)(fun: => T)(using config: PatienceConfig, retrying: Retrying[T], pos: source.Position): T =
+  //DOTTY-ONLY   ${ Eventually.eventuallyMacro('{timeout.value}, '{config.interval}, '{fun}, '{retrying}, '{pos}) }
 
   /**
    * Invokes the passed by-name parameter repeatedly until it either succeeds, or a configured maximum
@@ -381,8 +381,8 @@ trait Eventually extends PatienceConfiguration {
   def eventually[T](interval: Interval)(fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T], pos: source.Position): T =
     retrying.retry(config.timeout, interval.value, pos)(fun) 
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def eventually[T](interval: Interval)(fun: => T)(using config: PatienceConfig, retrying: Retrying[T]): T = 
-  //DOTTY-ONLY   ${ Eventually.eventuallyMacro('{config.timeout}, '{interval.value}, '{fun}, '{retrying}) }  
+  //DOTTY-ONLY inline def eventually[T](interval: Interval)(fun: => T)(using config: PatienceConfig, retrying: Retrying[T], pos: source.Position): T =
+  //DOTTY-ONLY   ${ Eventually.eventuallyMacro('{config.timeout}, '{interval.value}, '{fun}, '{retrying}, '{pos}) }
 
   /**
    * Invokes the passed by-name parameter repeatedly until it either succeeds, or a configured maximum
@@ -414,8 +414,8 @@ trait Eventually extends PatienceConfiguration {
   def eventually[T](fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T], pos: source.Position): T =
     retrying.retry(config.timeout, config.interval, pos)(fun)  
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def eventually[T](fun: => T)(using config: PatienceConfig, retrying: Retrying[T]): T = 
-  //DOTTY-ONLY   ${ Eventually.eventuallyMacro('{config.timeout}, '{config.interval}, '{fun}, '{retrying}) }  
+  //DOTTY-ONLY inline def eventually[T](fun: => T)(using config: PatienceConfig, retrying: Retrying[T], pos: source.Position): T =
+  //DOTTY-ONLY   ${ Eventually.eventuallyMacro('{config.timeout}, '{config.interval}, '{fun}, '{retrying}, '{pos}) }
 }
 
 /**
@@ -460,8 +460,29 @@ object Eventually extends Eventually {
   //DOTTY-ONLY   retrying.retry(timeout, interval, pos)(fun)
 
   //DOTTY-ONLY import scala.quoted.*
-  //DOTTY-ONLY private[scalatest] def eventuallyMacro[T](timeout: Expr[Span], interval: Expr[Span], fun: Expr[T], retrying: Expr[Retrying[T]])(using quotes: Quotes, typeT: Type[T]): Expr[T] = {
-  //DOTTY-ONLY   source.Position.withPosition[T]('{(pos: source.Position) => callRetry(${retrying}, ${timeout}, ${interval}, pos, ${fun}) })
+  //DOTTY-ONLY private[scalatest] def eventuallyMacro[T](timeout: Expr[Span], interval: Expr[Span], fun: Expr[T], retrying: Expr[Retrying[T]], pos: Expr[source.Position])(using quotes: Quotes, typeT: Type[T]): Expr[T] = {
+  //DOTTY-ONLY   import quotes.reflect.*
+  //DOTTY-ONLY   def unwrap(term: Term): Term =
+  //DOTTY-ONLY     term match {
+  //DOTTY-ONLY       case Inlined(_, _, inner) => unwrap(inner)
+  //DOTTY-ONLY       case Block(Nil, inner) => unwrap(inner)
+  //DOTTY-ONLY       case Typed(inner, _) => unwrap(inner)
+  //DOTTY-ONLY       case _ => term
+  //DOTTY-ONLY     }
+  //DOTTY-ONLY   // A Position resolved from the inline given Position.here shows up here as a
+  //DOTTY-ONLY   // reference to a synthetic "$proxy" val created while inlining the given. In
+  //DOTTY-ONLY   // that case no caller-supplied Position exists, so keep producing the position
+  //DOTTY-ONLY   // of the eventually invocation itself via withPosition. Otherwise, respect
+  //DOTTY-ONLY   // the Position provided by the caller.
+  //DOTTY-ONLY   val isCallerProvidedPosition =
+  //DOTTY-ONLY     unwrap(pos.asTerm) match {
+  //DOTTY-ONLY       case Ident(name) => !name.contains("$proxy")
+  //DOTTY-ONLY       case _ => true
+  //DOTTY-ONLY     }
+  //DOTTY-ONLY   if (isCallerProvidedPosition)
+  //DOTTY-ONLY     '{ callRetry(${retrying}, ${timeout}, ${interval}, ${pos}, ${fun}) }
+  //DOTTY-ONLY   else
+  //DOTTY-ONLY     source.Position.withPosition[T]('{(p: source.Position) => callRetry(${retrying}, ${timeout}, ${interval}, p, ${fun}) })
   //DOTTY-ONLY }
 
 }
