@@ -640,37 +640,12 @@ object Inspectors extends Inspectors {
 
   import scala.quoted.*
 
-  // A Position resolved from the inline given Position.here shows up here as a
-  // reference to a synthetic "$proxy" val created while inlining the given. In
-  // that case no caller-supplied Position exists, so keep producing the position
-  // of the inspector invocation itself via withPosition. Otherwise, respect
-  // the Position provided by the caller.
-  private[scalatest] def withCallerPosition[RESULT](pos: Expr[source.Position], call: Expr[source.Position => RESULT])(using quotes: Quotes, typeOfT: Type[RESULT]): Expr[RESULT] = {
-    import quotes.reflect.*
-    def unwrap(term: Term): Term =
-      term match {
-        case Inlined(_, _, inner) => unwrap(inner)
-        case Block(Nil, inner) => unwrap(inner)
-        case Typed(inner, _) => unwrap(inner)
-        case _ => term
-      }
-    val isCallerProvidedPosition =
-      unwrap(pos.asTerm) match {
-        case Ident(name) => !name.contains("$proxy")
-        case _ => true
-      }
-    if (isCallerProvidedPosition)
-      '{ $call($pos) }
-    else
-      source.Position.withPosition[RESULT](call)
-  }
-
   def forAllImpl[E, C[_], ASSERTION, RESULT](xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
     asserting.forAll(collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forAllMacro[E, C[_], ASSERTION, RESULT](xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forAllImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forAllImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forAllForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -678,7 +653,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAllForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forAllForMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forAllForMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forAllForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -686,7 +661,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAllForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forAllForJMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forAllForJMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forAllForStringImpl[ASSERTION, RESULT](xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -694,7 +669,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAllForStringMacro[ASSERTION, RESULT](xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forAllForStringImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forAllForStringImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forAtLeastImpl[E, C[_], ASSERTION, RESULT](min: Int, xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -702,7 +677,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAtLeastMacro[E, C[_], ASSERTION, RESULT](min: Expr[Int], xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forAtLeastImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forAtLeastImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forAtLeastForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](min: Int, xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -710,7 +685,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAtLeastForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](min: Expr[Int], xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forAtLeastForMapImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forAtLeastForMapImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forAtLeastForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](min: Int, xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -718,7 +693,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAtLeastForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](min: Expr[Int], xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forAtLeastForJMapImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forAtLeastForJMapImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forAtLeastForStringImpl[ASSERTION, RESULT](min: Int, xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -726,7 +701,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAtLeastForStringMacro[ASSERTION, RESULT](min: Expr[Int], xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forAtLeastForStringImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forAtLeastForStringImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forAtMostImpl[E, C[_], ASSERTION, RESULT](max: Int, xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -734,7 +709,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAtMostMacro[E, C[_], ASSERTION, RESULT](max: Expr[Int], xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forAtMostImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forAtMostImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forAtMostForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](max: Int, xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -742,7 +717,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAtMostForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](max: Expr[Int], xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forAtMostForMapImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forAtMostForMapImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forAtMostForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](max: Int, xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -750,7 +725,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAtMostForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](max: Expr[Int], xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forAtMostForJMapImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forAtMostForJMapImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forAtMostForStringImpl[ASSERTION, RESULT](max: Int, xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -758,7 +733,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAtMostForStringMacro[ASSERTION, RESULT](max: Expr[Int], xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forAtMostForStringImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forAtMostForStringImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forExactlyImpl[E, C[_], ASSERTION, RESULT](succeededCount: Int, xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -766,7 +741,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forExactlyMacro[E, C[_], ASSERTION, RESULT](succeededCount: Expr[Int], xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forExactlyImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forExactlyImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forExactlyForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](succeededCount: Int, xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -774,7 +749,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forExactlyForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](succeededCount: Expr[Int], xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forExactlyForMapImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forExactlyForMapImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forExactlyForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](succeededCount: Int, xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -782,7 +757,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forExactlyForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](succeededCount: Expr[Int], xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forExactlyForJMapImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forExactlyForJMapImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forExactlyForStringImpl[ASSERTION, RESULT](succeededCount: Int, xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -790,7 +765,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forExactlyForStringMacro[ASSERTION, RESULT](succeededCount: Expr[Int], xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forExactlyForStringImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forExactlyForStringImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forNoImpl[E, C[_], ASSERTION, RESULT](xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -798,7 +773,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forNoMacro[E, C[_], ASSERTION, RESULT](xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forNoImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forNoImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forNoForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -806,7 +781,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forNoForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forNoForMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forNoForMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forNoForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -814,7 +789,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forNoForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forNoForJMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forNoForJMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forNoForStringImpl[ASSERTION, RESULT](xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -822,7 +797,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forNoForStringMacro[ASSERTION, RESULT](xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forNoForStringImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forNoForStringImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forBetweenImpl[E, C[_], ASSERTION, RESULT](from: Int, upTo: Int, xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -830,7 +805,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forBetweenMacro[E, C[_], ASSERTION, RESULT](from: Expr[Int], upTo: Expr[Int], xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forBetweenImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forBetweenImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forBetweenForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](from: Int, upTo: Int, xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -838,7 +813,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forBetweenForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](from: Expr[Int], upTo: Expr[Int], xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forBetweenForMapImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forBetweenForMapImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forBetweenForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](from: Int, upTo: Int, xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -846,7 +821,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forBetweenForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](from: Expr[Int], upTo: Expr[Int], xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forBetweenForJMapImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forBetweenForJMapImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forBetweenForStringImpl[ASSERTION, RESULT](from: Int, upTo: Int, xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -854,7 +829,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forBetweenForStringMacro[ASSERTION, RESULT](from: Expr[Int], upTo: Expr[Int], xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forBetweenForStringImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forBetweenForStringImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forEveryImpl[E, C[_], ASSERTION, RESULT](xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -862,7 +837,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forEveryMacro[E, C[_], ASSERTION, RESULT](xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forEveryImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forEveryImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forEveryForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -870,7 +845,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forEveryForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forEveryForMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forEveryForMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forEveryForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -878,7 +853,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forEveryForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forEveryForJMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forEveryForJMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
   def forEveryForStringImpl[ASSERTION, RESULT](xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -886,7 +861,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forEveryForStringMacro[ASSERTION, RESULT](xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    withCallerPosition(pos, '{ (p: source.Position) => forEveryForStringImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
+    source.Position.withCallerPosition(pos, '{ (p: source.Position) => forEveryForStringImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, p) })
   }
 
 }
