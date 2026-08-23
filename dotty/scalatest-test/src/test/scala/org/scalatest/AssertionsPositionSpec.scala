@@ -78,6 +78,22 @@ class AssertionsPositionSpec extends AnyFunSpec with Matchers {
     pendingUntilFixed(())
   }
 
+  def doAssert()(using pos: source.Position): Unit = {
+    assert(1 == 2)
+  }
+
+  def doAssertWithClue()(using pos: source.Position): Unit = {
+    assert(1 == 2, "the clue")
+  }
+
+  def doAssume()(using pos: source.Position): Unit = {
+    assume(1 == 2)
+  }
+
+  def doAssumeWithClue()(using pos: source.Position): Unit = {
+    assume(1 == 2, "the clue")
+  }
+
   describe("assertions") {
     it("should use the Position available in the enclosing scope when reporting location for fail") {
       val callerPos = source.Position("SomeCallerFile.scala", "/some/path/SomeCallerFile.scala", 42)
@@ -286,6 +302,66 @@ class AssertionsPositionSpec extends AnyFunSpec with Matchers {
         }
 
       e.position.map(_.lineNumber) should be(Some(78))
+      e.position.map(_.fileName) should be(Some("SomeCallerFile.scala"))
+    }
+
+    it("should use the Position available in the enclosing scope when reporting location for assert") {
+      val callerPos = source.Position("SomeCallerFile.scala", "/some/path/SomeCallerFile.scala", 82)
+      val e =
+        try {
+          doAssert()(using callerPos)
+          fail("Expected TestFailedException to be thrown")
+        }
+        catch {
+          case e: TestFailedException => e
+        }
+
+      e.position.map(_.lineNumber) should be(Some(82))
+      e.position.map(_.fileName) should be(Some("SomeCallerFile.scala"))
+    }
+
+    it("should use the Position available in the enclosing scope when reporting location for assert with clue") {
+      val callerPos = source.Position("SomeCallerFile.scala", "/some/path/SomeCallerFile.scala", 86)
+      val e =
+        try {
+          doAssertWithClue()(using callerPos)
+          fail("Expected TestFailedException to be thrown")
+        }
+        catch {
+          case e: TestFailedException => e
+        }
+
+      e.position.map(_.lineNumber) should be(Some(86))
+      e.position.map(_.fileName) should be(Some("SomeCallerFile.scala"))
+    }
+
+    it("should use the Position available in the enclosing scope when reporting location for assume") {
+      val callerPos = source.Position("SomeCallerFile.scala", "/some/path/SomeCallerFile.scala", 90)
+      val e =
+        try {
+          doAssume()(using callerPos)
+          fail("Expected TestCanceledException to be thrown")
+        }
+        catch {
+          case e: TestCanceledException => e
+        }
+
+      e.position.map(_.lineNumber) should be(Some(90))
+      e.position.map(_.fileName) should be(Some("SomeCallerFile.scala"))
+    }
+
+    it("should use the Position available in the enclosing scope when reporting location for assume with clue") {
+      val callerPos = source.Position("SomeCallerFile.scala", "/some/path/SomeCallerFile.scala", 94)
+      val e =
+        try {
+          doAssumeWithClue()(using callerPos)
+          fail("Expected TestCanceledException to be thrown")
+        }
+        catch {
+          case e: TestCanceledException => e
+        }
+
+      e.position.map(_.lineNumber) should be(Some(94))
       e.position.map(_.fileName) should be(Some("SomeCallerFile.scala"))
     }
   }
