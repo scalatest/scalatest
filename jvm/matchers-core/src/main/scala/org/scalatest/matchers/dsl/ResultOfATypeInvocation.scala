@@ -79,8 +79,8 @@ final class ResultOfATypeInvocation[T](val clazzTag: ClassTag[T]) {
   def shouldBe(thrownBy: ResultOfThrownByApplication)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = 
     checkThrownBy(clazz, thrownBy, pos)
   // SKIP-DOTTY-END
-  //DOTTY-ONLY infix inline def shouldBe(thrownBy: ResultOfThrownByApplication)(implicit prettifier: Prettifier): org.scalatest.Assertion =   
-  //DOTTY-ONLY   ${ org.scalatest.matchers.MatchersHelper.checkThrownByMacro('{clazz}, '{thrownBy}) }
+  //DOTTY-ONLY infix inline def shouldBe(thrownBy: ResultOfThrownByApplication)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion =   
+  //DOTTY-ONLY   ${ org.scalatest.matchers.MatchersHelper.checkThrownByMacro('{clazz}, '{thrownBy}, '{pos}) }
 
   /**
    * This method enables the following syntax:
@@ -94,8 +94,8 @@ final class ResultOfATypeInvocation[T](val clazzTag: ClassTag[T]) {
   def should(beThrownBy: ResultOfBeThrownBy)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = 
     checkBeThrownBy(clazz, beThrownBy, pos)
   // SKIP-DOTTY-END  
-  //DOTTY-ONLY infix inline def should(beThrownBy: ResultOfBeThrownBy)(implicit prettifier: Prettifier): org.scalatest.Assertion = 
-  //DOTTY-ONLY   ${ org.scalatest.matchers.MatchersHelper.checkBeThrownByMacro('{clazz}, '{beThrownBy}) }
+  //DOTTY-ONLY infix inline def should(beThrownBy: ResultOfBeThrownBy)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = 
+  //DOTTY-ONLY   ${ org.scalatest.matchers.MatchersHelper.checkBeThrownByMacro('{clazz}, '{beThrownBy}, '{pos}) }
 
   /**
    * This method enables the following syntax:
@@ -139,8 +139,8 @@ final class ResultOfATypeInvocation[T](val clazzTag: ClassTag[T]) {
   def mustBe(thrownBy: ResultOfThrownByApplication)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = 
     checkThrownBy(clazz, thrownBy, pos)
   // SKIP-DOTTY-END
-  //DOTTY-ONLY infix inline def mustBe(thrownBy: ResultOfThrownByApplication)(implicit prettifier: Prettifier): org.scalatest.Assertion = 
-  //DOTTY-ONLY   ${ org.scalatest.matchers.MatchersHelper.checkThrownByMacro('{clazz}, '{thrownBy}) }  
+  //DOTTY-ONLY infix inline def mustBe(thrownBy: ResultOfThrownByApplication)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = 
+  //DOTTY-ONLY   ${ org.scalatest.matchers.MatchersHelper.checkThrownByMacro('{clazz}, '{thrownBy}, '{pos}) }  
 
   /**
    * This method enables the following syntax:
@@ -154,8 +154,8 @@ final class ResultOfATypeInvocation[T](val clazzTag: ClassTag[T]) {
   def must(beThrownBy: ResultOfBeThrownBy)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = 
     checkBeThrownBy(clazz, beThrownBy, pos)
   // SKIP-DOTTY-END
-  //DOTTY-ONLY infix inline def must(beThrownBy: ResultOfBeThrownBy)(implicit prettifier: Prettifier): org.scalatest.Assertion = 
-  //DOTTY-ONLY   ${ org.scalatest.matchers.MatchersHelper.checkBeThrownByMacro('{clazz}, '{beThrownBy}) }
+  //DOTTY-ONLY infix inline def must(beThrownBy: ResultOfBeThrownBy)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = 
+  //DOTTY-ONLY   ${ org.scalatest.matchers.MatchersHelper.checkBeThrownByMacro('{clazz}, '{beThrownBy}, '{pos}) }
   
   override def toString: String = "a [" + clazz.getName + "]"
 }

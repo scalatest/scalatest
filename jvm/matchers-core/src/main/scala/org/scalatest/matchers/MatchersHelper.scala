@@ -357,8 +357,8 @@ private[scalatest] object MatchersHelper {
   }
 
   //DOTTY-ONLY import scala.quoted.*
-  //DOTTY-ONLY def checkThrownByMacro(clazz: Expr[Class[_]], thrownBy: Expr[ResultOfThrownByApplication])(using quotes: Quotes): Expr[Assertion] = {
-  //DOTTY-ONLY   source.Position.withPosition[Assertion]('{(pos: source.Position) => checkThrownBy(${clazz}, ${thrownBy}, pos) })
+  //DOTTY-ONLY def checkThrownByMacro(clazz: Expr[Class[_]], thrownBy: Expr[ResultOfThrownByApplication], pos: Expr[source.Position])(using quotes: Quotes): Expr[Assertion] = {
+  //DOTTY-ONLY   source.Position.withCallerPosition[Assertion](pos, '{(p: source.Position) => checkThrownBy(${clazz}, ${thrownBy}, p) })
   //DOTTY-ONLY }
 
   def checkBeThrownBy(clazz: Class[_], beThrownBy: ResultOfBeThrownBy, pos: source.Position): Assertion = {
@@ -379,8 +379,8 @@ private[scalatest] object MatchersHelper {
     }
   }
 
-  //DOTTY-ONLY def checkBeThrownByMacro(clazz: Expr[Class[_]], beThrownBy: Expr[ResultOfBeThrownBy])(using quotes: Quotes): Expr[Assertion] = {
-  //DOTTY-ONLY   source.Position.withPosition[Assertion]('{(pos: source.Position) => checkBeThrownBy(${clazz}, ${beThrownBy}, pos) })
+  //DOTTY-ONLY def checkBeThrownByMacro(clazz: Expr[Class[_]], beThrownBy: Expr[ResultOfBeThrownBy], pos: Expr[source.Position])(using quotes: Quotes): Expr[Assertion] = {
+  //DOTTY-ONLY   source.Position.withCallerPosition[Assertion](pos, '{(p: source.Position) => checkBeThrownBy(${clazz}, ${beThrownBy}, p) })
   //DOTTY-ONLY }
 
   def indicateSuccess(message: => String): Assertion = Succeeded
