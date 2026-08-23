@@ -231,8 +231,8 @@ trait TimeLimits {
     TimeLimits.failAfterImpl(timeout, signaler, prettifier, Some(pos), getStackDepthFun(pos))(fun)(timed)
   }
   // SKIP-DOTTY-END
-  //DOTTY-ONLY final inline def failAfter[T](timeout: Span)(fun: => T)(implicit signaler: Signaler, prettifier: Prettifier = implicitly[Prettifier], timed: Timed[T] = implicitly[Timed[T]]): T = 
-  //DOTTY-ONLY   ${ TimeLimits.failAfterMacro('{timeout}, '{signaler}, '{prettifier}, '{fun}, '{timed}) }
+  //DOTTY-ONLY final inline def failAfter[T](timeout: Span)(fun: => T)(implicit signaler: Signaler, prettifier: Prettifier = implicitly[Prettifier], pos: source.Position = implicitly[source.Position], timed: Timed[T] = implicitly[Timed[T]]): T = 
+  //DOTTY-ONLY   ${ TimeLimits.failAfterMacro('{timeout}, '{signaler}, '{prettifier}, '{fun}, '{timed}, '{pos}) }
 
   // TODO: Consider creating a TestCanceledDueToTimeoutException
   /**
@@ -262,8 +262,8 @@ trait TimeLimits {
     TimeLimits.cancelAfterImpl(timeout, signaler, prettifier, Some(pos), getStackDepthFun(pos))(fun)(timed)
   }
   // SKIP-DOTTY-END
-  //DOTTY-ONLY final inline def cancelAfter[T](timeout: Span)(fun: => T)(implicit signaler: Signaler, prettifier: Prettifier = implicitly[Prettifier], timed: Timed[T] = implicitly[Timed[T]]): T = 
-  //DOTTY-ONLY   ${ TimeLimits.cancelAfterMacro('{timeout}, '{signaler}, '{prettifier}, '{fun}, '{timed}) }
+  //DOTTY-ONLY final inline def cancelAfter[T](timeout: Span)(fun: => T)(implicit signaler: Signaler, prettifier: Prettifier = implicitly[Prettifier], pos: source.Position = implicitly[source.Position], timed: Timed[T] = implicitly[Timed[T]]): T = 
+  //DOTTY-ONLY   ${ TimeLimits.cancelAfterMacro('{timeout}, '{signaler}, '{prettifier}, '{fun}, '{timed}, '{pos}) }
 }
 
 /**
@@ -295,8 +295,8 @@ object TimeLimits extends TimeLimits {
 
   //DOTTY-ONLY import scala.quoted.*
 
-  //DOTTY-ONLY private[concurrent] def failAfterMacro[T](timeout: Expr[Span], signaler: Expr[Signaler], prettifier: Expr[Prettifier], fun: Expr[T], timed: Expr[Timed[T]])(using quotes: Quotes, typeT: Type[T]): Expr[T] = {
-  //DOTTY-ONLY   source.Position.withPosition[T]('{(pos: source.Position) => failAfterImpl(${timeout}, ${signaler}, ${prettifier}, Some(pos), getStackDepthFun(pos))(${fun})(${timed}) })
+  //DOTTY-ONLY private[concurrent] def failAfterMacro[T](timeout: Expr[Span], signaler: Expr[Signaler], prettifier: Expr[Prettifier], fun: Expr[T], timed: Expr[Timed[T]], pos: Expr[source.Position])(using quotes: Quotes, typeT: Type[T]): Expr[T] = {
+  //DOTTY-ONLY   source.Position.withCallerPosition[T](pos, '{(p: source.Position) => failAfterImpl(${timeout}, ${signaler}, ${prettifier}, Some(p), getStackDepthFun(p))(${fun})(${timed}) })
   //DOTTY-ONLY }
 
   private[scalatest] def cancelAfterImpl[T](timeout: Span, signaler: Signaler, prettifier: Prettifier, pos: Option[source.Position], stackDepthFun: StackDepthException => Int)(fun: => T)(implicit timed: Timed[T]): T = {
@@ -320,8 +320,8 @@ object TimeLimits extends TimeLimits {
 
   //DOTTY-ONLY import scala.quoted.*
 
-  //DOTTY-ONLY private[concurrent] def cancelAfterMacro[T](timeout: Expr[Span], signaler: Expr[Signaler], prettifier: Expr[Prettifier], fun: Expr[T], timed: Expr[Timed[T]])(using quotes: Quotes, typeT: Type[T]): Expr[T] = {
-  //DOTTY-ONLY   source.Position.withPosition[T]('{(pos: source.Position) => cancelAfterImpl(${timeout}, ${signaler}, ${prettifier}, Some(pos), getStackDepthFun(pos))(${fun})(${timed}) })
+  //DOTTY-ONLY private[concurrent] def cancelAfterMacro[T](timeout: Expr[Span], signaler: Expr[Signaler], prettifier: Expr[Prettifier], fun: Expr[T], timed: Expr[Timed[T]], pos: Expr[source.Position])(using quotes: Quotes, typeT: Type[T]): Expr[T] = {
+  //DOTTY-ONLY   source.Position.withCallerPosition[T](pos, '{(p: source.Position) => cancelAfterImpl(${timeout}, ${signaler}, ${prettifier}, Some(p), getStackDepthFun(p))(${fun})(${timed}) })
   //DOTTY-ONLY }
 
 }

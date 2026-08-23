@@ -102,7 +102,7 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with Informing with Notifying wit
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerAsyncTestImpl(testText, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   private final def registerIgnoredAsyncTestImpl(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion], pos: source.Position): Unit = {
@@ -115,7 +115,7 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with Informing with Notifying wit
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerIgnoredAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerIgnoredAsyncTestImpl(testText, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   private final def testImpl(testName: String, testTags: Tag*)(testFun: => Future[compatible.Assertion], pos: source.Position): Unit = {
@@ -141,8 +141,8 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with Informing with Notifying wit
     testImpl(testName, testTags: _*)(testFun, pos)
   }
   // SKIP-DOTTY-END
-  //DOTTY-ONLY protected inline def test(testName: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => testImpl(testName, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY protected inline def test(testName: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => testImpl(testName, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   private final def ignoreImpl(testName: String, testTags: Tag*)(testFun: => Future[compatible.Assertion], pos: source.Position): Unit = {
@@ -169,8 +169,8 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with Informing with Notifying wit
     ignoreImpl(testName, testTags: _*)(testFun, pos)
   }
   // SKIP-DOTTY-END
-  //DOTTY-ONLY protected inline def ignore(testName: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testName, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY protected inline def ignore(testName: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => ignoreImpl(testName, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   /**

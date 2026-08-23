@@ -38,11 +38,11 @@ object CompileMacro {
     }
   }
 
-  def assertTypeErrorImpl(self: Expr[_], typeChecked: Expr[List[Error]])(using Quotes): Expr[Assertion] = 
-    assertOnTypeErrorImpl(self, typeChecked)('{ _ => Succeeded })
+  def assertTypeErrorImpl(self: Expr[_], typeChecked: Expr[List[Error]], pos: Expr[source.Position])(using Quotes): Expr[Assertion] = 
+    assertOnTypeErrorImpl(self, typeChecked, pos)('{ _ => Succeeded })
 
   // parse and type check a code snippet, generate code to throw TestFailedException when type check passes or parse error
-  def assertOnTypeErrorImpl(self: Expr[_], typeChecked: Expr[List[Error]])(assertion: Expr[String => Assertion])(using Quotes): Expr[Assertion] = {
+  def assertOnTypeErrorImpl(self: Expr[_], typeChecked: Expr[List[Error]], pos: Expr[source.Position])(assertion: Expr[String => Assertion])(using Quotes): Expr[Assertion] = {
 
     import quotes.reflect.*
 
@@ -59,16 +59,16 @@ object CompileMacro {
         case Error(msg, _, _, ErrorKind.Parser) :: _ => '{
           val messageExpr = Resources.expectedTypeErrorButGotParseError(${ Expr(msg) }, ${ Expr(code) })
           ${
-            source.Position.withPosition[Assertion]('{(pos: source.Position) => 
-              throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, pos)
+            source.Position.withCallerPosition[Assertion](pos, '{(p: source.Position) =>
+              throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, p)
             })
           }
         }
         case Nil => '{
           val messageExpr = Resources.expectedTypeErrorButGotNone(${ Expr(code) })
           ${
-            source.Position.withPosition[Assertion]('{(pos: source.Position) => 
-              throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, pos)
+            source.Position.withCallerPosition[Assertion](pos, '{(p: source.Position) =>
+              throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, p)
             })
           }
         }
@@ -160,13 +160,13 @@ object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to throw TestFailedException when both parse and type check succeeded
-  def assertDoesNotCompileImpl(code: Expr[String], typeChecked: Expr[Boolean])(using Quotes): Expr[Assertion] = {
+  def assertDoesNotCompileImpl(code: Expr[String], typeChecked: Expr[Boolean], pos: Expr[source.Position])(using Quotes): Expr[Assertion] = {
     if (!typeChecked.valueOrError) '{ Succeeded }
     else '{
       val messageExpr = Resources.expectedCompileErrorButGotNone($code)
       ${
-        source.Position.withPosition[Assertion]('{(pos: source.Position) => 
-          throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, pos)
+        source.Position.withCallerPosition[Assertion](pos, '{(p: source.Position) =>
+          throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, p)
         })
       }
     }
@@ -208,7 +208,7 @@ object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to throw TestFailedException when either parse or type check fails.
-  def assertCompilesImpl(self: Expr[_], typeChecked: Expr[List[Error]])(using Quotes): Expr[Assertion] = {
+  def assertCompilesImpl(self: Expr[_], typeChecked: Expr[List[Error]], pos: Expr[source.Position])(using Quotes): Expr[Assertion] = {
 
     import quotes.reflect.*
 
@@ -224,16 +224,16 @@ object CompileMacro {
         case Error(msg, _, _, ErrorKind.Typer) :: _ => '{
           val messageExpr = Resources.expectedNoErrorButGotTypeError(${ Expr(msg) }, ${ Expr(code) })
           ${
-            source.Position.withPosition[Assertion]('{(pos: source.Position) => 
-              throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, pos)
+            source.Position.withCallerPosition[Assertion](pos, '{(p: source.Position) =>
+              throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, p)
             })
           }
         }
         case Error(msg, _, _, ErrorKind.Parser) :: _ => '{
           val messageExpr = Resources.expectedNoErrorButGotParseError(${ Expr(msg) }, ${ Expr(code) })
           ${
-            source.Position.withPosition[Assertion]('{(pos: source.Position) => 
-              throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, pos)
+            source.Position.withCallerPosition[Assertion](pos, '{(p: source.Position) =>
+              throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, p)
             })
           }
         }

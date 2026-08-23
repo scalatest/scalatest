@@ -661,8 +661,8 @@ trait Assertions extends TripleEquals  {
    *
    * @param code the snippet of code that should not type check
    */
-  transparent inline def assertTypeError(inline code: String): Assertion = {
-    ${ CompileMacro.assertTypeErrorImpl('code, '{typeCheckErrors(code)}) }
+  transparent inline def assertTypeError(inline code: String)(implicit pos: source.Position): Assertion = {
+    ${ CompileMacro.assertTypeErrorImpl('code, '{typeCheckErrors(code)}, 'pos) }
   }
 
   /**
@@ -700,8 +700,8 @@ trait Assertions extends TripleEquals  {
    * @param code the snippet of code that should not type check
    * @param assertion the assertion on the type error message
    */
-  transparent inline def assertOnTypeError(inline code: String)(inline assertion: String => Assertion): Assertion = {
-    ${ CompileMacro.assertOnTypeErrorImpl('code, '{typeCheckErrors(code)})('{assertion}) }
+  transparent inline def assertOnTypeError(inline code: String)(inline assertion: String => Assertion)(implicit pos: source.Position): Assertion = {
+    ${ CompileMacro.assertOnTypeErrorImpl('code, '{typeCheckErrors(code)}, 'pos)('{assertion}) }
   }
 
   /**
@@ -733,8 +733,8 @@ trait Assertions extends TripleEquals  {
    *
    * @param code the snippet of code that should not type check
    */
-  transparent inline def assertDoesNotCompile(inline code: String): Assertion =
-    ${ CompileMacro.assertDoesNotCompileImpl('code, '{typeChecks(code)}) }
+  transparent inline def assertDoesNotCompile(inline code: String)(implicit pos: source.Position): Assertion =
+    ${ CompileMacro.assertDoesNotCompileImpl('code, '{typeChecks(code)}, 'pos) }
 
   /**
    * Asserts that a given string snippet of code passes both the Scala parser and type checker.
@@ -755,8 +755,8 @@ trait Assertions extends TripleEquals  {
    *
    * @param code the snippet of code that should compile
    */
-  transparent inline def assertCompiles(inline code: String): Assertion =
-    ${ CompileMacro.assertCompilesImpl('code, '{typeCheckErrors(code)}) }
+  transparent inline def assertCompiles(inline code: String)(implicit pos: source.Position): Assertion =
+    ${ CompileMacro.assertCompilesImpl('code, '{typeCheckErrors(code)}, 'pos) }
 
   /**
    * Intercept and return an exception that's expected to
@@ -792,8 +792,8 @@ trait Assertions extends TripleEquals  {
    * @throws org.scalatest.exceptions.TestFailedException if the passed function does not complete abruptly with an exception
    *    that's an instance of the specified type.
    */
-  inline def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): T = 
-    ${ source.Position.withPosition[T]('{(pos: source.Position) => interceptImpl[T](f, classTag, pos) }) } 
+  inline def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], pos: source.Position): T = 
+    ${ source.Position.withCallerPosition[T]('pos, '{(p: source.Position) => interceptImpl[T](f, classTag, p) }) } 
 
   private final def interceptImpl[T <: AnyRef](f: => Any, classTag: ClassTag[T], pos: source.Position): T = {
     val clazz = classTag.runtimeClass
@@ -853,8 +853,8 @@ trait Assertions extends TripleEquals  {
    * @throws org.scalatest.exceptions.TestFailedException if the passed function does not complete abruptly with an exception
    *    that's an instance of the specified type.
    */
-  inline def assertThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): Assertion = 
-    ${ source.Position.withPosition[Assertion]('{(pos: source.Position) => assertThrowsImpl[T](f, classTag, pos) }) } 
+  inline def assertThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], pos: source.Position): Assertion = 
+    ${ source.Position.withCallerPosition[Assertion]('pos, '{(p: source.Position) => assertThrowsImpl[T](f, classTag, p) }) } 
 
   private final def assertThrowsImpl[T <: AnyRef](f: => Any, classTag: ClassTag[T], pos: source.Position): Assertion = {
     val clazz = classTag.runtimeClass
@@ -994,8 +994,8 @@ trait Assertions extends TripleEquals  {
    * @param actual the actual value, which should equal the passed <code>expected</code> value
    * @throws org.scalatest.exceptions.TestFailedException if the passed <code>actual</code> value does not equal the passed <code>expected</code> value.
    */
-  inline def assertResult[L, R](expected: L, clue: Any)(actual: R)(implicit prettifier: Prettifier, caneq: scala.CanEqual[L, R]): Assertion = 
-    ${ source.Position.withPosition[Assertion]('{(pos: source.Position) => assertResultImpl[L, R](expected, clue, actual, prettifier, pos, caneq) }) }
+  inline def assertResult[L, R](expected: L, clue: Any)(actual: R)(implicit prettifier: Prettifier, caneq: scala.CanEqual[L, R], pos: source.Position): Assertion = 
+    ${ source.Position.withCallerPosition[Assertion]('pos, '{(p: source.Position) => assertResultImpl[L, R](expected, clue, actual, prettifier, p, caneq) }) }
 
   private final def assertResultImpl[L, R](expected: L, clue: Any, actual: R, prettifier: Prettifier, pos: source.Position, caneq: scala.CanEqual[L, R]): Assertion = {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
@@ -1018,8 +1018,8 @@ trait Assertions extends TripleEquals  {
    * @param actual the actual value, which should equal the passed <code>expected</code> value
    * @throws org.scalatest.exceptions.TestFailedException if the passed <code>actual</code> value does not equal the passed <code>expected</code> value.
    */
-  inline def assertResult[L, R](expected: L)(actual: R)(implicit prettifier: Prettifier, caneq: scala.CanEqual[L, R]): Assertion = 
-    ${ source.Position.withPosition[Assertion]('{(pos: source.Position) => assertResultImpl[L, R](expected, actual, prettifier, pos, caneq) }) }
+  inline def assertResult[L, R](expected: L)(actual: R)(implicit prettifier: Prettifier, caneq: scala.CanEqual[L, R], pos: source.Position): Assertion = 
+    ${ source.Position.withCallerPosition[Assertion]('pos, '{(p: source.Position) => assertResultImpl[L, R](expected, actual, prettifier, p, caneq) }) }
 
   private final def assertResultImpl[L, R](expected: L, actual: R, prettifier: Prettifier, pos: source.Position, caneq: scala.CanEqual[L, R]): Assertion = {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
@@ -1077,8 +1077,8 @@ trait Assertions extends TripleEquals  {
   /**
    * Throws <code>TestFailedException</code> to indicate a test failed.
    */
-  inline def fail(): Nothing = 
-    ${ source.Position.withPosition[Nothing]('{(pos: source.Position) => throw newAssertionFailedException(None, None, pos, Vector.empty) }) }
+  inline def fail()(implicit pos: source.Position): Nothing = 
+    ${ source.Position.withCallerPosition[Nothing]('pos, '{(p: source.Position) => throw newAssertionFailedException(None, None, p, Vector.empty) }) }
 
   /**
    * Throws <code>TestFailedException</code>, with the passed
@@ -1088,8 +1088,8 @@ trait Assertions extends TripleEquals  {
    * @param message A message describing the failure.
    * @throws org.scalactic.exceptions.NullArgumentException if <code>message</code> is <code>null</code>
    */
-  inline def fail(message: String): Nothing = 
-    ${ source.Position.withPosition[Nothing]('{(pos: source.Position) => failImpl(message, pos) }) }
+  inline def fail(message: String)(implicit pos: source.Position): Nothing = 
+    ${ source.Position.withCallerPosition[Nothing]('pos, '{(p: source.Position) => failImpl(message, p) }) }
 
   private final def failImpl(message: String, pos: source.Position): Nothing = {
 
@@ -1107,8 +1107,8 @@ trait Assertions extends TripleEquals  {
    * @param cause A <code>Throwable</code> that indicates the cause of the failure.
    * @throws org.scalactic.exceptions.NullArgumentException if <code>message</code> or <code>cause</code> is <code>null</code>
    */
-  inline def fail(message: String, cause: Throwable): Nothing = 
-    ${ source.Position.withPosition[Nothing]('{(pos: source.Position) => failImpl(message, cause, pos) }) }
+  inline def fail(message: String, cause: Throwable)(implicit pos: source.Position): Nothing = 
+    ${ source.Position.withCallerPosition[Nothing]('pos, '{(p: source.Position) => failImpl(message, cause, p) }) }
 
   private final def failImpl(message: String, cause: Throwable, pos: source.Position): Nothing = {
 
@@ -1126,8 +1126,8 @@ trait Assertions extends TripleEquals  {
    * @param cause a <code>Throwable</code> that indicates the cause of the failure.
    * @throws org.scalactic.exceptions.NullArgumentException if <code>cause</code> is <code>null</code>
    */
-  inline def fail(cause: Throwable): Nothing = 
-    ${ source.Position.withPosition[Nothing]('{(pos: source.Position) => failImpl(cause: Throwable, pos: source.Position) }) }
+  inline def fail(cause: Throwable)(implicit pos: source.Position): Nothing = 
+    ${ source.Position.withCallerPosition[Nothing]('pos, '{(p: source.Position) => failImpl(cause: Throwable, p: source.Position) }) }
 
   private final def failImpl(cause: Throwable, pos: source.Position): Nothing = {
 
@@ -1139,8 +1139,8 @@ trait Assertions extends TripleEquals  {
   /**
    * Throws <code>TestCanceledException</code> to indicate a test was canceled.
    */
-  inline def cancel(): Nothing = 
-    ${ source.Position.withPosition[Nothing]('{(pos: source.Position) => throw newTestCanceledException(None, None, pos) }) }
+  inline def cancel()(implicit pos: source.Position): Nothing = 
+    ${ source.Position.withCallerPosition[Nothing]('pos, '{(p: source.Position) => throw newTestCanceledException(None, None, p) }) }
 
   /**
    * Throws <code>TestCanceledException</code>, with the passed
@@ -1150,8 +1150,8 @@ trait Assertions extends TripleEquals  {
    * @param message A message describing the cancellation.
    * @throws org.scalactic.exceptions.NullArgumentException if <code>message</code> is <code>null</code>
    */
-  inline def cancel(message: String): Nothing = 
-    ${ source.Position.withPosition[Nothing]('{(pos: source.Position) => cancelImpl(message, pos) }) }
+  inline def cancel(message: String)(implicit pos: source.Position): Nothing = 
+    ${ source.Position.withCallerPosition[Nothing]('pos, '{(p: source.Position) => cancelImpl(message, p) }) }
 
   private final def cancelImpl(message: String, pos: source.Position): Nothing = {
 
@@ -1169,8 +1169,8 @@ trait Assertions extends TripleEquals  {
    * @param cause A <code>Throwable</code> that indicates the cause of the failure.
    * @throws org.scalactic.exceptions.NullArgumentException if <code>message</code> or <code>cause</code> is <code>null</code>
    */
-  inline def cancel(message: String, cause: Throwable): Nothing = 
-    ${ source.Position.withPosition[Nothing]('{(pos: source.Position) => cancelImpl(message, cause, pos) }) }
+  inline def cancel(message: String, cause: Throwable)(implicit pos: source.Position): Nothing = 
+    ${ source.Position.withCallerPosition[Nothing]('pos, '{(p: source.Position) => cancelImpl(message, cause, p) }) }
 
   private final def cancelImpl(message: String, cause: Throwable, pos: source.Position): Nothing = {
 
@@ -1188,8 +1188,8 @@ trait Assertions extends TripleEquals  {
    * @param cause a <code>Throwable</code> that indicates the cause of the cancellation.
    * @throws org.scalactic.exceptions.NullArgumentException if <code>cause</code> is <code>null</code>
    */
-  inline def cancel(cause: Throwable): Nothing = 
-    ${ source.Position.withPosition[Nothing]('{(pos: source.Position) => cancelImpl(cause, pos) }) }
+  inline def cancel(cause: Throwable)(implicit pos: source.Position): Nothing = 
+    ${ source.Position.withCallerPosition[Nothing]('pos, '{(p: source.Position) => cancelImpl(cause, p) }) }
 
   private final def cancelImpl(cause: Throwable, pos: source.Position): Nothing = {
 
@@ -1338,8 +1338,8 @@ trait Assertions extends TripleEquals  {
    * @param f a block of code, which if it completes abruptly, should trigger a <code>TestPendingException</code>
    * @throws org.scalatest.exceptions.TestPendingException if the passed block of code completes abruptly with an <code>Exception</code> or <code>AssertionError</code>
    */
-  inline def pendingUntilFixed(f: => Unit): Assertion with PendingStatement = 
-    ${ source.Position.withPosition[Assertion with PendingStatement]('{(pos: source.Position) => pendingUntilFixedImpl(f, pos) }) }
+  inline def pendingUntilFixed(f: => Unit)(implicit pos: source.Position): Assertion with PendingStatement = 
+    ${ source.Position.withCallerPosition[Assertion with PendingStatement]('pos, '{(p: source.Position) => pendingUntilFixedImpl(f, p) }) }
 
   private final def pendingUntilFixedImpl(f: => Unit, pos: source.Position): Assertion with PendingStatement = {
     val isPending =

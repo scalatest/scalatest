@@ -103,7 +103,7 @@ trait AnyPropSpecLike extends TestSuite with Informing with Notifying with Alert
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerTestImpl(testText, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   private final def registerIgnoredTestImpl(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
@@ -120,7 +120,7 @@ trait AnyPropSpecLike extends TestSuite with Informing with Notifying with Alert
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerIgnoredTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerIgnoredTestImpl(testText, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   private final def propertyImpl(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
@@ -152,8 +152,8 @@ trait AnyPropSpecLike extends TestSuite with Informing with Notifying with Alert
     propertyImpl(testName, testTags: _*)(testFun, pos)
   }
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def property(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => propertyImpl(testName, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY inline def property(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => propertyImpl(testName, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   private final def ignoreImpl(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
@@ -186,8 +186,8 @@ trait AnyPropSpecLike extends TestSuite with Informing with Notifying with Alert
     ignoreImpl(testName, testTags: _*)(testFun, pos)
   }
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def ignore(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testName, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY inline def ignore(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => ignoreImpl(testName, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   /**
