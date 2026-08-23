@@ -661,8 +661,8 @@ trait Assertions extends TripleEquals  {
    *
    * @param code the snippet of code that should not type check
    */
-  transparent inline def assertTypeError(inline code: String): Assertion = {
-    ${ CompileMacro.assertTypeErrorImpl('code, '{typeCheckErrors(code)}) }
+  transparent inline def assertTypeError(inline code: String)(implicit pos: source.Position): Assertion = {
+    ${ CompileMacro.assertTypeErrorImpl('code, '{typeCheckErrors(code)}, 'pos) }
   }
 
   /**
@@ -700,8 +700,8 @@ trait Assertions extends TripleEquals  {
    * @param code the snippet of code that should not type check
    * @param assertion the assertion on the type error message
    */
-  transparent inline def assertOnTypeError(inline code: String)(inline assertion: String => Assertion): Assertion = {
-    ${ CompileMacro.assertOnTypeErrorImpl('code, '{typeCheckErrors(code)})('{assertion}) }
+  transparent inline def assertOnTypeError(inline code: String)(inline assertion: String => Assertion)(implicit pos: source.Position): Assertion = {
+    ${ CompileMacro.assertOnTypeErrorImpl('code, '{typeCheckErrors(code)}, 'pos)('{assertion}) }
   }
 
   /**
@@ -733,8 +733,8 @@ trait Assertions extends TripleEquals  {
    *
    * @param code the snippet of code that should not type check
    */
-  transparent inline def assertDoesNotCompile(inline code: String): Assertion =
-    ${ CompileMacro.assertDoesNotCompileImpl('code, '{typeChecks(code)}) }
+  transparent inline def assertDoesNotCompile(inline code: String)(implicit pos: source.Position): Assertion =
+    ${ CompileMacro.assertDoesNotCompileImpl('code, '{typeChecks(code)}, 'pos) }
 
   /**
    * Asserts that a given string snippet of code passes both the Scala parser and type checker.
@@ -755,8 +755,8 @@ trait Assertions extends TripleEquals  {
    *
    * @param code the snippet of code that should compile
    */
-  transparent inline def assertCompiles(inline code: String): Assertion =
-    ${ CompileMacro.assertCompilesImpl('code, '{typeCheckErrors(code)}) }
+  transparent inline def assertCompiles(inline code: String)(implicit pos: source.Position): Assertion =
+    ${ CompileMacro.assertCompilesImpl('code, '{typeCheckErrors(code)}, 'pos) }
 
   /**
    * Intercept and return an exception that's expected to

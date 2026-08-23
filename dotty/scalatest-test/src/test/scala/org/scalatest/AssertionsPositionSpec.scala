@@ -42,6 +42,42 @@ class AssertionsPositionSpec extends AnyFunSpec with Matchers {
     assertResult("expected")(actual)
   }
 
+  def doFailWithMessageAndCause(message: String, cause: Throwable)(using pos: source.Position): Unit = {
+    fail(message, cause)
+  }
+
+  def doFailWithCause(cause: Throwable)(using pos: source.Position): Unit = {
+    fail(cause)
+  }
+
+  def doCancelNoArgs()(using pos: source.Position): Unit = {
+    cancel()
+  }
+
+  def doCancelWithMessageAndCause(message: String, cause: Throwable)(using pos: source.Position): Unit = {
+    cancel(message, cause)
+  }
+
+  def doCancelWithCause(cause: Throwable)(using pos: source.Position): Unit = {
+    cancel(cause)
+  }
+
+  def doAssertThrows(f: => Any)(using pos: source.Position): Unit = {
+    assertThrows[RuntimeException](f)
+  }
+
+  def doAssertResultWithoutClue(actual: String)(using pos: source.Position): Unit = {
+    assertResult("expected")(actual)
+  }
+
+  def doAssertResultWithClue(actual: String)(using pos: source.Position): Unit = {
+    assertResult("expected", "the clue")(actual)
+  }
+
+  def doPendingUntilFixed()(using pos: source.Position): Unit = {
+    pendingUntilFixed(())
+  }
+
   describe("assertions") {
     it("should use the Position available in the enclosing scope when reporting location for fail") {
       val callerPos = source.Position("SomeCallerFile.scala", "/some/path/SomeCallerFile.scala", 42)
@@ -115,6 +151,141 @@ class AssertionsPositionSpec extends AnyFunSpec with Matchers {
         }
 
       e.position.map(_.lineNumber) should be(Some(46))
+      e.position.map(_.fileName) should be(Some("SomeCallerFile.scala"))
+    }
+
+    it("should use the Position available in the enclosing scope when reporting location for fail(message, cause)") {
+      val callerPos = source.Position("SomeCallerFile.scala", "/some/path/SomeCallerFile.scala", 46)
+      val e =
+        try {
+          doFailWithMessageAndCause("oops", new RuntimeException("cause"))(using callerPos)
+          fail("Expected TestFailedException to be thrown")
+        }
+        catch {
+          case e: TestFailedException => e
+        }
+
+      e.position.map(_.lineNumber) should be(Some(46))
+      e.position.map(_.fileName) should be(Some("SomeCallerFile.scala"))
+    }
+
+    it("should use the Position available in the enclosing scope when reporting location for fail(cause)") {
+      val callerPos = source.Position("SomeCallerFile.scala", "/some/path/SomeCallerFile.scala", 50)
+      val e =
+        try {
+          doFailWithCause(new RuntimeException("cause"))(using callerPos)
+          fail("Expected TestFailedException to be thrown")
+        }
+        catch {
+          case e: TestFailedException => e
+        }
+
+      e.position.map(_.lineNumber) should be(Some(50))
+      e.position.map(_.fileName) should be(Some("SomeCallerFile.scala"))
+    }
+
+    it("should use the Position available in the enclosing scope when reporting location for cancel()") {
+      val callerPos = source.Position("SomeCallerFile.scala", "/some/path/SomeCallerFile.scala", 54)
+      val e =
+        try {
+          doCancelNoArgs()(using callerPos)
+          fail("Expected TestCanceledException to be thrown")
+        }
+        catch {
+          case e: TestCanceledException => e
+        }
+
+      e.position.map(_.lineNumber) should be(Some(54))
+      e.position.map(_.fileName) should be(Some("SomeCallerFile.scala"))
+    }
+
+    it("should use the Position available in the enclosing scope when reporting location for cancel(message, cause)") {
+      val callerPos = source.Position("SomeCallerFile.scala", "/some/path/SomeCallerFile.scala", 58)
+      val e =
+        try {
+          doCancelWithMessageAndCause("canceled", new RuntimeException("cause"))(using callerPos)
+          fail("Expected TestCanceledException to be thrown")
+        }
+        catch {
+          case e: TestCanceledException => e
+        }
+
+      e.position.map(_.lineNumber) should be(Some(58))
+      e.position.map(_.fileName) should be(Some("SomeCallerFile.scala"))
+    }
+
+    it("should use the Position available in the enclosing scope when reporting location for cancel(cause)") {
+      val callerPos = source.Position("SomeCallerFile.scala", "/some/path/SomeCallerFile.scala", 62)
+      val e =
+        try {
+          doCancelWithCause(new RuntimeException("cause"))(using callerPos)
+          fail("Expected TestCanceledException to be thrown")
+        }
+        catch {
+          case e: TestCanceledException => e
+        }
+
+      e.position.map(_.lineNumber) should be(Some(62))
+      e.position.map(_.fileName) should be(Some("SomeCallerFile.scala"))
+    }
+
+    it("should use the Position available in the enclosing scope when reporting location for assertThrows") {
+      val callerPos = source.Position("SomeCallerFile.scala", "/some/path/SomeCallerFile.scala", 66)
+      val e =
+        try {
+          doAssertThrows("no exception thrown")(using callerPos)
+          fail("Expected TestFailedException to be thrown")
+        }
+        catch {
+          case e: TestFailedException => e
+        }
+
+      e.position.map(_.lineNumber) should be(Some(66))
+      e.position.map(_.fileName) should be(Some("SomeCallerFile.scala"))
+    }
+
+    it("should use the Position available in the enclosing scope when reporting location for assertResult without clue") {
+      val callerPos = source.Position("SomeCallerFile.scala", "/some/path/SomeCallerFile.scala", 70)
+      val e =
+        try {
+          doAssertResultWithoutClue("actual")(using callerPos)
+          fail("Expected TestFailedException to be thrown")
+        }
+        catch {
+          case e: TestFailedException => e
+        }
+
+      e.position.map(_.lineNumber) should be(Some(70))
+      e.position.map(_.fileName) should be(Some("SomeCallerFile.scala"))
+    }
+
+    it("should use the Position available in the enclosing scope when reporting location for assertResult with clue") {
+      val callerPos = source.Position("SomeCallerFile.scala", "/some/path/SomeCallerFile.scala", 74)
+      val e =
+        try {
+          doAssertResultWithClue("actual")(using callerPos)
+          fail("Expected TestFailedException to be thrown")
+        }
+        catch {
+          case e: TestFailedException => e
+        }
+
+      e.position.map(_.lineNumber) should be(Some(74))
+      e.position.map(_.fileName) should be(Some("SomeCallerFile.scala"))
+    }
+
+    it("should use the Position available in the enclosing scope when reporting location for pendingUntilFixed that succeeded") {
+      val callerPos = source.Position("SomeCallerFile.scala", "/some/path/SomeCallerFile.scala", 78)
+      val e =
+        try {
+          doPendingUntilFixed()(using callerPos)
+          fail("Expected TestFailedException to be thrown")
+        }
+        catch {
+          case e: TestFailedException => e
+        }
+
+      e.position.map(_.lineNumber) should be(Some(78))
       e.position.map(_.fileName) should be(Some("SomeCallerFile.scala"))
     }
   }
