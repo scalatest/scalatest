@@ -934,7 +934,7 @@ class Randomizer(val seed: Long) { thisRandomizer =>
   /**
     * Get a random Double greater than or equal to zero.
     *
-    * Note: it is possible (although rare) for this to return [[Double.NegativeInfinity]].
+    * Note: it is possible (although rare) for this to return [[Double.PositiveInfinity]].
     * If you want to avoid that, use [[nextPosZFiniteDouble]] instead.
     *
     * @return A random positive Double, and the next Randomizer to use.

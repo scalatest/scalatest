@@ -62,6 +62,38 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       a2.value shouldEqual b2.value
       a3.value shouldEqual b3.value
     }
+    it("should offer a flatMap method that shuffles edge generators when there are exactly two of them") {
+      def constGen(i: Int): Generator[Int] =
+        new Generator[Int] {
+          def nextImpl(szp: SizeParam, isValidFun: (Int, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[Int], Randomizer) =
+            (Rose(i), rnd)
+          override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Int], Randomizer) =
+            (List(i), rnd)
+        }
+      val twoEdgesGen = new Generator[Int] {
+        def nextImpl(szp: SizeParam, isValidFun: (Int, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[Int], Randomizer) =
+          (Rose(1), rnd)
+        override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Int], Randomizer) =
+          (List(1, 2), rnd)
+      }
+      val gen = twoEdgesGen.flatMap(constGen)
+      var sawOne = false
+      var sawTwo = false
+      for (seed <- 0L until 200L) {
+        val rnd = Randomizer(seed)
+        val (edges, _) = gen.initEdges(PosZInt(1), rnd)
+        edges.length shouldBe 1
+        edges.head match {
+          case 1 => sawOne = true
+          case 2 => sawTwo = true
+          case other => fail("Unexpected edge value: " + other)
+        }
+      }
+      withClue("Expected to see both possible edge values across different seeds; ") {
+        sawOne shouldBe true
+        sawTwo shouldBe true
+      }
+    }
     it("should offer a map method that composes canonicals methods") {
 
       import Generator._

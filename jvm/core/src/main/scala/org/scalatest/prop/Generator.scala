@@ -331,7 +331,7 @@ trait Generator[T] { thisGeneratorOfT =>
         // possible edges. So we shuffle the list of generators before we use them. That way from
         // run to run, different generators can get used.
         val (shuffledListOfGenOfU, nextNextRnd): (List[Generator[U]], Randomizer) =
-          if (listOfGenOfU.lengthCompare(1) > 1)
+          if (listOfGenOfU.lengthCompare(1) > 0)
             Randomizer.shuffle(listOfGenOfU, nextRnd)
           else
             (listOfGenOfU, nextRnd)
@@ -360,7 +360,7 @@ trait Generator[T] { thisGeneratorOfT =>
               }
           }
 
-          loop(listOfGenOfU, nextRnd, Set.empty)
+          loop(shuffledListOfGenOfU, nextNextRnd, Set.empty)
         }
         (listOfU, nextNextNextRnd)
       }

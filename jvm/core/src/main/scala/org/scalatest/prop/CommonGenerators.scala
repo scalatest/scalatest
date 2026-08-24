@@ -1818,7 +1818,7 @@ trait CommonGenerators {
     * The resulting [[Generator]] also has the [[HavingSize]] trait, so you can use it to generate [[Map]]s
     * with specific sizes.
     *
-    * @param genOfTuple2KV a [[Generator]] that produces Tuples of [[K]] and [[V]]
+    * @param genOfTupleKV a [[Generator]] that produces Tuples of [[K]] and [[V]]
     * @tparam K the type of the keys for the [[Map]]
     * @tparam V the type of the values for the [[Map]]
     * @return a [[Generator]] of [[Map]]s from [[K]] to [[V]]
@@ -1838,7 +1838,7 @@ trait CommonGenerators {
     * The resulting [[Generator]] also has the [[HavingSize]] trait, so you can use it to generate [[SortedMap]]s
     * with specific sizes.
     *
-    * @param genOfTuple2KV a [[Generator]] that produces Tuples of [[K]] and [[V]]
+    * @param genOfTupleKV a [[Generator]] that produces Tuples of [[K]] and [[V]]
     * @tparam K the type of the keys for the [[SortedMap]]
     * @tparam V the type of the values for the [[SortedMap]]
     * @return a [[Generator]] of [[SortedMap]]s from [[K]] to [[V]]
