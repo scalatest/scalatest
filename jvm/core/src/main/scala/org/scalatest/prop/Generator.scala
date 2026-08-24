@@ -70,9 +70,9 @@ import org.scalactic.ColCompatHelper.LazyListOrStream
   * elements. The test system will try using the Generator with a variety of sizes; you can control
   * the maximum and minimum sizes via [[Configuration]].
   *
-  * Decide whether the concept of ''size'' is relevant for your type. If it is relevant, you should mix the
-  * [[HavingSize]] or [[HavingLength]] trait into your Generator, and you'll want to take
-  * it into account in your `next` and `shrink` functions.
+   * Decide whether the concept of ''size'' is relevant for your type. If it is relevant, you should mix the
+   * [[HavingSize]] or [[HavingLength]] trait into your Generator, and take it into account in your
+   * `nextImpl` implementation.
   *
   * ===Randomization===
   *
@@ -127,12 +127,12 @@ import org.scalactic.ColCompatHelper.LazyListOrStream
   * values, to see if those also fail. So for example, if a String of length 15 causes a failure, its
   * Generator could try Strings of length 3, and then 1, and then 0, to see if those also cause failure.
   *
-  * You do ''not'' have to implement the [[Generator.shrink]] method, but it is helpful to do so when it makes sense;
-  * the test system will use that to produce smaller, easier-to-debug examples when something fails.
-  *
-  * One important rule: the values returned from `shrink` must always be smaller than -- not equal to --
-  * the values passed in. Otherwise, an infinite loop can result. Also, similar to Canonicals, the
-  * "largest" shrunken values should be returned at the front of this LazyListOrStream, with more shrunken values later.
+   * You do ''not'' have to implement the [[Generator.shrinksForValue]] method, but it is helpful to do so when it makes sense;
+   * the test system will use that to produce smaller, easier-to-debug examples when something fails.
+   *
+   * One important rule: the values returned from `shrinksForValue` must always be smaller than -- not equal to --
+   * the values passed in. Otherwise, an infinite loop can result. Also, similar to Canonicals, the
+   * "largest" shrunken values should be returned at the front of this LazyListOrStream, with more shrunken values later.
   *
   * @tparam T the type that this Generator produces
   */
@@ -273,11 +273,23 @@ trait Generator[T] { thisGeneratorOfT =>
       }
     }
 
-  // This map method can be used if the function from T to U is invertible. For example, if f
-  // is a function from Int => Option[Int] that just wraps each Int in a Some, (n: Int) => (Some(n): Option[Int]),
-  // the g function can be a function that unwraps it back to Int: (n: Option[Int]) => n.get. The point of this
-  // method is to map the Generator while preserving an interesting shrinksForValue method. To do that we need
-  // the U to T function, because shrinksToValue takes a U in the resulting Generator[U].
+  /**
+    * Maps this [[Generator]] via an invertible function, while preserving its shrinking behavior.
+    *
+    * The plain [[map]] method produces a Generator whose `shrinksForValue` is empty, because the
+    * system would have no way to translate a shrunken `U` back into a `T` to shrink further. If the
+    * mapping function `f` happens to be invertible, you can supply its inverse `g`, and this method
+    * will preserve an interesting shrinking behavior: it shrinks the original `T` values via
+    * ''this'' Generator's `shrinksForValue`, then maps each result back through `f`.
+    *
+    * For example, if `f` is a function from `Int => Option[Int]` that just wraps each `Int` in a `Some`,
+    * `(n: Int) => Some(n)`, then `g` can be a function that unwraps it back to `Int`: `(n: Option[Int]) => n.get`.
+    *
+    * @param f a function from [[T]] to [[U]]
+    * @param g the inverse of `f`, a function from [[U]] back to [[T]]
+    * @tparam U the type of Generator you want to create
+    * @return a new Generator, based on this one and the given transformation functions, that still shrinks meaningfully
+    */
   def mapInvertible[U](f: T => U, g: U => T): Generator[U] = {
     new Generator[U] { thisGeneratorOfU =>
       private val underlying: Generator[U] = thisGeneratorOfT.map(f)
@@ -435,14 +447,12 @@ trait Generator[T] { thisGeneratorOfT =>
     */
   def isValid(value: T, size: SizeParam): Boolean = true
 
-// XXX
   /**
     * Some simple, "ordinary" values of type [[T]].
     *
-    * [[canonicals]] are used for certain higher-order functions, mainly during [[shrink]].
-    * For example, when the system is trying to simplify a `List[T]`, it will look for
-    * canonical values of [[T]] to try putting into that simpler list, to see if that still
-    * causes the property to fail.
+    * [[canonicals]] are used for certain higher-order functions, mainly during shrinking. For example,
+    * when the system is trying to simplify a `List[T]`, it will look for canonical values of [[T]] to try
+    * putting into that simpler list, to see if that still causes the property to fail.
     *
     * For example, a few of the common types provide these canonicals:
     *
@@ -453,12 +463,7 @@ trait Generator[T] { thisGeneratorOfT =>
     * You do not have to provide canonicals for a Generator. By default, this simply
     * returns an empty [[LazyListOrStream]].
     *
-    * This function takes a [[Randomizer]] to use as a parameter, in case canonical generation
-    * for this type has a random element to it. If you use this [[Randomizer]], return the
-    * ''next'' one. If you don't use it, just use the passed-in one.
-    *
-    * @param rnd a [[Randomizer]] to use if this function requires any random data
-    * @return the canonical values for this type (if any), and the next [[Randomizer]]
+    * @return the canonical values for this type (if any)
     */
   def canonicals: LazyListOrStream[RoseTree[T]] = LazyListOrStream.empty
 
@@ -505,8 +510,26 @@ trait Generator[T] { thisGeneratorOfT =>
     loop(0, Randomizer.default, Nil)
   }
 
-  // Could just use an empty LazyList to say I don't have any, but I think we should differentiate between we aren't producing
-  // any from the value is already fully shrunk (like "" for String).
+  /**
+    * Offer some simpler ("smaller") alternatives to the given value, for use when shrinking a failing example.
+    *
+    * When a property check fails, the test system tries to simplify the failing values, looking for an
+    * easier-to-debug example that still causes the property to fail. It does this by repeatedly calling
+    * this method: each [[RoseTree]] in the returned stream is one possible simplification of `theValue`,
+    * which the system will try in turn, shrinking further if that alternative also fails.
+    *
+    * The alternatives must always be ''smaller'' than -- never equal to or larger than -- `theValue`,
+    * or shrinking can loop forever. Order them from "largest" to "smallest", in the same sense that
+    * [[canonicals]] are ordered. For example, an `Int` generator might shrink 100 towards 0 by offering
+    * 50 and -50, then eventually 0 itself as the final, simplest value.
+    *
+    * Return `None` if this Generator offers no shrinking for its values at all (the default).
+    * Return `Some` of an empty [[LazyListOrStream]] to indicate that `theValue` cannot be simplified any
+    * further -- for example, the empty String is already fully shrunk.
+    *
+    * @param theValue the value that caused the property to fail, to be simplified
+    * @return `Some` of a possibly-empty stream of simpler alternatives, or `None` if this Generator does not shrink
+    */
   def shrinksForValue(theValue: T): Option[LazyListOrStream[RoseTree[T]]] = None
 }
 

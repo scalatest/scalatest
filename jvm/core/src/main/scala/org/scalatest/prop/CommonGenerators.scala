@@ -2398,6 +2398,15 @@ trait CommonGenerators {
       }
     }
 
+  /**
+    * Delays construction of a [[Generator]] until it is first used.
+    *
+    * This is useful when a [[Generator]] is expensive to construct, or when defining one recursively --
+    * for example, a tree generator whose definition needs to refer to itself.
+    *
+    * @param gen the [[Generator]] to construct lazily, on first use
+    * @return a [[Generator]] that constructs and delegates to `gen` on first use
+    */
   def lazily[T](gen: => Generator[T]): Generator[T] = {
     new Generator[T] {
       private lazy val underlying: Generator[T] = gen
@@ -2406,7 +2415,6 @@ trait CommonGenerators {
 
       override def canonicals: LazyListOrStream[RoseTree[T]] = underlying.canonicals
 
-      // gens contains, for each distribution pair, weight generators.
       def nextImpl(szp: SizeParam, isValidFun: (T, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[T], Randomizer) = {
         gen.nextImpl(szp, isValidFun, rnd)
       }
