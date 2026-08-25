@@ -20,7 +20,7 @@ import org.scalactic.anyvals.PosZInt
 /**
   * This trait is mixed in to [[Generator]]s that have a well-defined notion of "size".
   *
-  * Broadly speaking, this applies when [[T]] is a type that has a `size` method. For
+  * Broadly speaking, this applies when `T` is a type that has a `size` method. For
   * example, [[Generator.setGenerator]] (also known as [[CommonGenerators.sets]]) has the
   * [[HavingSize]] trait because [[Set]] has a `size` method.
   *
@@ -88,7 +88,7 @@ trait HavingSize[T] {
     *     szp.copy(size = sz)
     *   }
     *
-    *   val sizelimitedLists = lists[Int].havingSizesDeterminedBy(limitedSize)
+    *   val sizeLimitedLists = lists[Int].havingSizesDeterminedBy(limitedSize)
     * }}}
     * This doesn't hard-code the size of the `sizeLimitedLists` [[Generator]], but
     * allows the maximum size to be clamped based on a dynamic `currentLimit` function.

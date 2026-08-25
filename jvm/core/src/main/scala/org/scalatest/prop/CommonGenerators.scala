@@ -831,15 +831,15 @@ trait CommonGenerators {
   //
 
   /**
-    * Given a list of values of type [[T]], this creates a [[Generator]] that will only
+    * Given a list of values of type `T`, this creates a [[Generator]] that will only
     * produce those values.
     *
     * The order in which the values are produced is random, based on the [[Randomizer]] passed
     * in to the `next` function. It may produce the same value multiple times.
     *
-    * @param first a value of type [[T]]
-    * @param second another value of type [[T]]
-    * @param rest more values of type [[T]], as many as you wish
+    * @param first a value of type `T`
+    * @param second another value of type `T`
+    * @param rest more values of type `T`, as many as you wish
     * @tparam T the type that will be produced by the resulting [[Generator]]
     * @return a [[Generator]] that produces exactly the specified values
     *
@@ -896,7 +896,7 @@ trait CommonGenerators {
     *   )
     * }}}
     * The total weighting is (5 + 4 + 1) = 10. So the resulting [[Generator]] will produce
-    * an even number (10 / 5) = 50% the time, an odd number (10 / 4) = 40% of the time, and zero
+    * an even number (10 / 5) = 50% of the time, an odd number (10 / 4) = 40% of the time, and zero
     * (10 / 1) = 10% of the time.
     *
     * Keep in mind that the distribution is invoked randomly, so these are rough proportions. As you
@@ -1710,7 +1710,7 @@ trait CommonGenerators {
                                                                                  genOfT: Generator[T], genOfU: Generator[U], genOfV: Generator[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] = Generator.tuple22Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]
 
   /**
-    * Given a [[Generator]] for type [[T]], this creates a [[Generator]] for [[Vector]] of [[T]].
+    * Given a [[Generator]] for type `T`, this creates a [[Generator]] for [[Vector]] of `T`.
     *
     * Note that the [[Vector]] type is considered to have a "size", so you can use the configuration parameters
     * [[Configuration.minSize]] and [[Configuration.sizeRange]] to constrain the sizes of the resulting `Vector`s
@@ -1719,7 +1719,7 @@ trait CommonGenerators {
     * The resulting [[Generator]] also has the [[HavingLength]] trait, so you can use it to generate [[Vector]]s
     * with specific lengths.
     *
-    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @param genOfT a [[Generator]] that produces values of type `T`
     * @tparam T the type to produce
     * @return a [[Generator]] that produces values of type `Vector[T]`
     *
@@ -1730,7 +1730,7 @@ trait CommonGenerators {
   /**
     * Given a `Generator[T]`, this creates a `Generator[Option[T]]`.
     *
-    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @param genOfT a [[Generator]] that produces values of type `T`
     * @tparam T the type that we are producing an Option of
     * @return a Generator that produces `Option[T]`
     *
@@ -1763,16 +1763,16 @@ trait CommonGenerators {
   /**
     * Given an existing `Generator[T]`, this creates a `Generator[List[T]]`.
     *
-    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @param genOfT a [[Generator]] that produces values of type `T`
     * @tparam T the type that we are producing a List of
-    * @return a List of values of type [[T]]
+    * @return a List of values of type `T`
     *
     * @group Collections
     */
   def lists[T](implicit genOfT: Generator[T]): Generator[List[T]] with HavingLength[List[T]] = Generator.listGenerator[T]
 
   /**
-    * Given a [[Generator]] that produces values of type [[T]], this creates one for a [[Set]] of [[T]].
+    * Given a [[Generator]] that produces values of type `T`, this creates one for a [[Set]] of `T`.
     *
     * Note that the [[Set]] type is considered to have a "size", so you can use the configuration parameters
     * [[Configuration.minSize]] and [[Configuration.sizeRange]] to constrain the sizes of the resulting `Set`s
@@ -1781,7 +1781,7 @@ trait CommonGenerators {
     * The resulting [[Generator]] also has the [[HavingSize]] trait, so you can use it to generate [[Set]]s
     * with specific sizes.
     *
-    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @param genOfT a [[Generator]] that produces values of type `T`
     * @tparam T the type to produce
     * @return a [[Generator]] that produces `Set[T]`.
     *
@@ -1790,7 +1790,7 @@ trait CommonGenerators {
   def sets[T](implicit genOfT: Generator[T]): Generator[Set[T]] with HavingSize[Set[T]] = Generator.setGenerator
 
   /**
-    * Given a [[Generator]] that produces values of type [[T]], this creates one for a [[SortedSet]] of [[T]].
+    * Given a [[Generator]] that produces values of type `T`, this creates one for a [[SortedSet]] of `T`.
     *
     * Note that the [[SortedSet]] type is considered to have a "size", so you can use the configuration parameters
     * [[Configuration.minSize]] and [[Configuration.sizeRange]] to constrain the sizes of the resulting `SortedSet`s
@@ -1799,7 +1799,7 @@ trait CommonGenerators {
     * The resulting [[Generator]] also has the [[HavingSize]] trait, so you can use it to generate [[SortedSet]]s
     * with specific sizes.
     *
-    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @param genOfT a [[Generator]] that produces values of type `T`
     * @tparam T the type to produce
     * @return a [[Generator]] that produces `SortedSet[T]`.
     *

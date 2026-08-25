@@ -45,8 +45,9 @@ import java.lang.Double.{longBitsToDouble, doubleToLongBits}
   * ''small'' numbers. There are many floating-point numbers with negative exponents,
   * so you may get more numbers in the range between -1 and 1 than expected.
   *
-  * @param seed
-  */
+   * @param seed the initial seed for this [[Randomizer]]; the same seed will produce the
+   *             same sequence of values, which makes test runs reproducible
+   */
 class Randomizer(val seed: Long) { thisRandomizer =>
 
   private[scalatest] lazy val scrambledSeed: Long =  seed
@@ -996,13 +997,13 @@ class Randomizer(val seed: Long) { thisRandomizer =>
   }
 
   /**
-    * Get a random list of elements of type [[T]].
+    * Get a random list of elements of type `T`.
     *
-    * This function requires an implicit parameter that says how to generate values of [[T]], as well
+    * This function requires an implicit parameter that says how to generate values of `T`, as well
     * as the number of them to generate. (Which may be zero.)
     *
     * @param length How many values to generate for the List.
-    * @param genOfT A [[Generator]], that provides values of type [[T]].
+    * @param genOfT A [[Generator]], that provides values of type `T`.
     * @tparam T The type to generate.
     * @return A List of values of the desired type.
     */
@@ -2200,7 +2201,7 @@ class Randomizer(val seed: Long) { thisRandomizer =>
     *
     * @param from One end of the range to select from.
     * @param to The other end of the range.
-    * @return A value from that range, inclusive of botyh ends.
+    * @return A value from that range, inclusive of both ends.
     */
   def chooseFiniteDouble(from: FiniteDouble, to: FiniteDouble): (FiniteDouble, Randomizer) = {
     val (n, nextRnd) = chooseExtRealDouble(from.value, to.value)

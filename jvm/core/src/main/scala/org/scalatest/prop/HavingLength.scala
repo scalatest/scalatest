@@ -21,7 +21,7 @@ import org.scalatest.Resources
 /**
   * This trait is mixed in to [[Generator]]s that have a well-defined notion of "length".
   *
-  * Broadly speaking, this applies when [[T]] is a type that has a `length` method. For
+  * Broadly speaking, this applies when `T` is a type that has a `length` method. For
   * example, [[Generator.listGenerator]] (also known as [[CommonGenerators.lists]]) has the
   * [[HavingLength]] trait because [[List]] has a `length` method.
   *
@@ -42,7 +42,7 @@ trait HavingLength[T] extends HavingSize[T] {
     * For example, consider:
     * {{{
     *   val stringLists: Generator[List[String]] =
-    *     Generator.ListGenerator[String]
+    *     Generator.listGenerator[String]
     *
     *   val singleStringLists: Generator[List[String]] =
     *     stringLists.havingSize(1)
@@ -65,7 +65,7 @@ trait HavingLength[T] extends HavingSize[T] {
     * For example, consider:
     * {{{
     *   val stringLists: Generator[List[String]] =
-    *     Generator.ListGenerator[String]
+    *     Generator.listGenerator[String]
     *
     *   val smallStringLists: Generator[List[String]] =
     *     stringLists.havingLengthsBetween(0, 3)
@@ -101,7 +101,7 @@ trait HavingLength[T] extends HavingSize[T] {
     *     szp.copy(size = sz)
     *   }
     *
-    *   val sizelimitedLists = lists[Int].havingLengthsDeterminedBy(limitedSize)
+    *   val sizeLimitedLists = lists[Int].havingLengthsDeterminedBy(limitedSize)
     * }}}
     * This doesn't hard-code the length of the `sizeLimitedLists` [[Generator]], but
     * allows the maximum length to be clamped based on a dynamic `currentLimit` function.
