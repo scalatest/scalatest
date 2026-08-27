@@ -929,7 +929,6 @@ trait CommonGenerators {
     }
 
     new Generator[T] {
-      private val totalWeight: Int = distribution.toMap.keys.sum
       // gens contains, for each distribution pair, weight generators.
       private val gens: Vector[Generator[T]] =
         distribution flatMap { case (w, g) =>
