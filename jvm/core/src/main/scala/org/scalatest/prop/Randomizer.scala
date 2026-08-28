@@ -140,6 +140,56 @@ class Randomizer(val seed: Long) { thisRandomizer =>
   }
 
   /**
+    * Get a random non-negative BigInt in the range `0` (inclusive) to `2` raised to the
+    * power of `bits` (exclusive).
+    *
+    * This is uniformly distributed across all `2` to the power of `bits` possible values.
+    *
+    * @param bits the number of random bits the produced BigInt may contain; must be `0` or greater
+    * @return A random BigInt in `[0, 2^bits)`, and the next Randomizer to use.
+    */
+  def nextBigInt(bits: Int): (BigInt, Randomizer) = {
+    require(bits >= 0, "bits (passed " + bits + ") must be >= 0")
+    if (bits == 0)
+      (BigInt(0), thisRandomizer)
+    else {
+      val numChunks = (bits + 31) / 32
+      var acc = BigInt(0)
+      var rnd = thisRandomizer
+      var i = 0
+      while (i < numChunks) {
+        val (word, nextRnd) = rnd.next(32)
+        val unsigned = word.toLong & 0xffffffffL
+        acc = (acc << 32) | BigInt(unsigned)
+        rnd = nextRnd
+        i += 1
+      }
+      // Drop the extra high bits, if any, so the result has exactly 'bits' bits.
+      // This is uniform because each 32-bit word is uniform, so the low bits are uniform.
+      val excess = numChunks * 32 - bits
+      val result =
+        if (excess > 0) acc >> excess
+        else acc
+      (result, rnd)
+    }
+  }
+
+  /**
+    * Get a random BigDecimal in the range `0` (inclusive) to `2` raised to the
+    * power of `bits` (exclusive).
+    *
+    * This is the BigDecimal analogue of [[nextBigInt]], producing the same range of
+    * whole-number values but as BigDecimal instances.
+    *
+    * @param bits the number of random bits the produced BigDecimal may contain; must be `0` or greater
+    * @return A random BigDecimal in `[0, 2^bits)`, and the next Randomizer to use.
+    */
+  def nextBigDecimal(bits: Int): (BigDecimal, Randomizer) = {
+    val (bigInt, nextRnd) = nextBigInt(bits)
+    (BigDecimal(bigInt), nextRnd)
+  }
+
+  /**
     * Get a random Float between 0 and 1.
     *
     * When working with Floats, you often want a value between 0 and 1 -- this sort
@@ -1307,11 +1357,18 @@ class Randomizer(val seed: Long) { thisRandomizer =>
       // Compute the total number of points on both sides of 0. This is the full range of possibilies.
       val total: BigInt = minRange + maxRange
 
-      // TODO: Consider making a nextBigInt, and then using that here.
-      val (n, nextRnd) = nextLong
-
-      // The remainder is a random value between 0 and the total number of possible results of this method.
-      val remainder: BigInt = n % total
+      // Choose a remainder uniformly in [0, total), using enough random bits to cover
+      // the whole range and rejection sampling to avoid modulo bias.
+      val numBits = total.bitLength
+      @tailrec
+      def loop(rnd: Randomizer): (BigInt, Randomizer) = {
+        val (candidate, nextRnd) = rnd.nextBigInt(numBits)
+        if (candidate < total)
+          (candidate, nextRnd)
+        else
+          loop(nextRnd)
+      }
+      val (remainder, nextRnd) = loop(thisRandomizer)
 
       // If the remainder is less than the maxRange, then we'll pick a number on the positive side. Otherwise
       // we'll pick a number on the negative side. By doing it this way, if the minRange is, say, four times
@@ -1652,6 +1709,74 @@ class Randomizer(val seed: Long) { thisRandomizer =>
       // The maximum remainder in this case is 2 ** 32 - 1, so this won't
       // overflow even if min is Int.MinValue and remainder is 2 ** 32 - 1.
       ((min + remainder).toLong, nextRnd)
+    }
+  }
+
+  /**
+    * Given a range of BigInts, chooses one of them randomly.
+    *
+    * Note that, while the ''from'' parameter is usually smaller than ''to'', that is not required; the function
+    * will handle them appropriately if they are in reverse order.
+    *
+    * The choice is inclusive: either the ''from'' or ''to'' values may be returned.
+    *
+    * The result is uniformly distributed across the integers in the range, thanks to
+    * rejection sampling (no modulo bias).
+    *
+    * @param from One end of the range to select from.
+    * @param to The other end of the range.
+    * @return A value from that range, inclusive of both ends.
+    */
+  def chooseBigInt(from: BigInt, to: BigInt): (BigInt, Randomizer) = {
+    val min = from.min(to)
+    val max = from.max(to)
+    if (min == max)
+      (min, thisRandomizer)
+    else {
+      val range = max - min + 1
+      // The number of bits needed to represent the full range. Rejection sample on
+      // this many bits so that the result is uniformly distributed across the range.
+      val numBits = range.bitLength
+      @tailrec
+      def loop(rnd: Randomizer): (BigInt, Randomizer) = {
+        val (candidate, nextRnd) = rnd.nextBigInt(numBits)
+        if (candidate < range)
+          (min + candidate, nextRnd)
+        else
+          loop(nextRnd)
+      }
+      loop(thisRandomizer)
+    }
+  }
+
+  /**
+    * Given a range of BigDecimals, chooses one of them randomly.
+    *
+    * Note that, while the ''from'' parameter is usually smaller than ''to'', that is not required; the function
+    * will handle them appropriately if they are in reverse order.
+    *
+    * The choice is inclusive: either the ''from'' or ''to'' values may be returned.
+    *
+    * Both ends are brought to the larger of their two scales, and the result is uniformly
+    * distributed across all the decimals at that scale that fall within the range.
+    *
+    * @param from One end of the range to select from.
+    * @param to The other end of the range.
+    * @return A value from that range, inclusive of both ends.
+    */
+  def chooseBigDecimal(from: BigDecimal, to: BigDecimal): (BigDecimal, Randomizer) = {
+    val min = from.min(to)
+    val max = from.max(to)
+    if (min == max)
+      (min, thisRandomizer)
+    else {
+      // Bring both ends to the larger scale so the endpoint difference is integral,
+      // and selection is uniform over the decimals at that scale within the range.
+      val scale = math.max(min.scale, max.scale)
+      val minScaled = min.bigDecimal.setScale(scale, java.math.RoundingMode.UNNECESSARY)
+      val maxScaled = max.bigDecimal.setScale(scale, java.math.RoundingMode.UNNECESSARY)
+      val (chosenUnits, nextRnd) = chooseBigInt(BigInt(minScaled.unscaledValue), BigInt(maxScaled.unscaledValue))
+      (BigDecimal(new java.math.BigDecimal(chosenUnits.bigInteger, scale)), nextRnd)
     }
   }
 

@@ -79,6 +79,84 @@ class RandomizerSpec extends AnyFunSpec with Matchers {
         succeed
       }
     }
+    it("should offer a nextBigInt method that produces a non-negative BigInt of the requested number of bits") {
+      an [IllegalArgumentException] should be thrownBy Randomizer(100).nextBigInt(-1)
+
+      val (ba, ra) = Randomizer(100).nextBigInt(0)
+      ba shouldEqual BigInt(0)
+
+      val (bb, rb) = ra.nextBigInt(1)
+      bb should (be >= BigInt(0) and be < BigInt(2))
+
+      val (bc, rc) = rb.nextBigInt(64)
+      bc should (be >= BigInt(0) and be < (BigInt(1) << 64))
+
+      val (bd, _) = rc.nextBigInt(200)
+      bd should (be >= BigInt(0) and be < (BigInt(1) << 200))
+    }
+
+    it("should offer a chooseBigInt method that produces BigInt values between from and to") {
+      // Exercise a variety of ranges, including negatives and very large values.
+      val ranges: List[(BigInt, BigInt)] = List(
+        (BigInt(-100), BigInt(-10)),
+        (BigInt(-5), BigInt(5)),
+        (BigInt(0), BigInt(10)),
+        (BigInt(100), BigInt(1000)),
+        (BigInt(-10), BigInt(10)),
+        (BigInt(1) << 100, (BigInt(1) << 100) + 1000)
+      )
+      ranges.foreach { case (i, j) =>
+        var rnd = Randomizer.default
+        (0 to 100).foreach { _ =>
+          val (k, nextRandomizer) = rnd.chooseBigInt(i, j)
+          val min = i.min(j)
+          val max = i.max(j)
+          k should be <= max
+          k should be >= min
+          rnd = nextRandomizer
+        }
+      }
+    }
+
+    it("should offer a nextBigDecimal method that produces a non-negative BigDecimal of the requested number of bits") {
+      an [IllegalArgumentException] should be thrownBy Randomizer(100).nextBigDecimal(-1)
+
+      val (ba, ra) = Randomizer(100).nextBigDecimal(0)
+      ba shouldEqual BigDecimal(0)
+
+      val (bb, rb) = ra.nextBigDecimal(1)
+      bb should (be >= BigDecimal(0) and be < BigDecimal(2))
+
+      val upperBound64 = BigDecimal(BigInt(1) << 64)
+      val (bc, rc) = rb.nextBigDecimal(64)
+      bc should (be >= BigDecimal(0) and be < upperBound64)
+
+      val (bd, _) = rc.nextBigDecimal(200)
+      bd should be >= BigDecimal(0)
+    }
+
+    it("should offer a chooseBigDecimal method that produces BigDecimal values between from and to") {
+      val ranges: List[(BigDecimal, BigDecimal)] = List(
+        (BigDecimal(BigInt(-100)), BigDecimal(BigInt(-10))),
+        (BigDecimal(BigInt(-5)), BigDecimal(BigInt(5))),
+        (BigDecimal(BigInt(0)), BigDecimal(BigInt(10))),
+        (BigDecimal(0.5), BigDecimal(9.9)),
+        (BigDecimal(BigInt(-10)), BigDecimal(BigInt(10))),
+        (BigDecimal(BigInt(1) << 100), BigDecimal(BigInt(1) << 100) + BigDecimal(16))
+      )
+      ranges.foreach { case (i, j) =>
+        var rnd = Randomizer.default
+        (0 to 100).foreach { _ =>
+          val (k, nextRandomizer) = rnd.chooseBigDecimal(i, j)
+          val min = i.min(j)
+          val max = i.max(j)
+          k should be <= max
+          k should be >= min
+          rnd = nextRandomizer
+        }
+      }
+    }
+
     it("should offer a nextString method that produces a String of the requested 0 or greater size") {
 
       """Randomizer(100).nextString(-1)""" shouldNot compile
