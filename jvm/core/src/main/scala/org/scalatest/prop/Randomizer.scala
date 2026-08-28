@@ -464,6 +464,9 @@ class Randomizer(val seed: Long) { thisRandomizer =>
     * Note: it is possible (although rare) for this to return [[Float.PositiveInfinity]].
     * If you want to avoid that, use [[nextPosZFiniteFloat]] instead.
     *
+    * Also note that `PosZ` includes negative zero (`-0.0f`), because `-0.0f` is
+    * neither positive nor negative in IEEE 754.
+    *
     * @return A random positive Float, and the next Randomizer to use.
     */
   def nextPosZFloat: (PosZFloat, Randomizer) = {
@@ -842,6 +845,9 @@ class Randomizer(val seed: Long) { thisRandomizer =>
     * Note: it is possible (although rare) for this to return [[Double.NegativeInfinity]].
     * If you want to avoid that, use [[nextNegZFiniteDouble]] instead.
     *
+    * Also note that `NegZ` includes positive zero (`0.0`), because `0.0` is
+    * neither positive nor negative in IEEE 754.
+    *
     * @return A random negative-or-zero Double, and the next Randomizer to use.
     */
   def nextNegZDouble: (NegZDouble, Randomizer) = {
@@ -872,13 +878,14 @@ class Randomizer(val seed: Long) { thisRandomizer =>
     (NegZFiniteDouble.ensuringValid(negZFinite), r)
   }
 
-  // TODO: probably mention that NegZ can include posivie 0.0, and that PosZ can
-  // include -0.0 in the docs.
   /**
     * Get a random Float less than or equal to zero.
     *
     * Note: it is possible (although rare) for this to return [[Float.NegativeInfinity]].
     * If you want to avoid that, use [[nextNegZFiniteFloat]] instead.
+    *
+    * Also note that `NegZ` includes positive zero (`0.0f`), because `0.0f` is
+    * neither positive nor negative in IEEE 754.
     *
     * @return A random negative-or-zero Float, and the next Randomizer to use.
     */
@@ -938,6 +945,9 @@ class Randomizer(val seed: Long) { thisRandomizer =>
     * Note: it is possible (although rare) for this to return [[Double.PositiveInfinity]].
     * If you want to avoid that, use [[nextPosZFiniteDouble]] instead.
     *
+    * Also note that `PosZ` includes negative zero (`-0.0`), because `-0.0` is
+    * neither positive nor negative in IEEE 754.
+    *
     * @return A random positive Double, and the next Randomizer to use.
     */
   def nextPosZDouble: (PosZDouble, Randomizer) = {
@@ -948,7 +958,6 @@ class Randomizer(val seed: Long) { thisRandomizer =>
     // res31: Double = 0.0
     //
     // scala> PosZDouble(-0.0)
-    // TODO: Re-verify all of these PosZ ones. I am copying and changing the comment.
     // res0: org.scalactic.anyvals.PosZDouble = PosZDouble(-0.0)
     val (candidate, r) = nextExtRealDoubleValue
     val posZ = forcePosZDoubleValue(candidate)

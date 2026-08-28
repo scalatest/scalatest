@@ -982,7 +982,7 @@ trait CommonGenerators {
       def nextImpl(szp: SizeParam, isValidFun: (T, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[T], Randomizer) = {
         val (nextInt, nextRandomizer) = rnd.chooseInt(0, distributees.length - 1)
         val nextGen = distributees(nextInt)
-        nextGen.nextImpl(szp, isValidFun, nextRandomizer) // TODO: Is it correct to pass size and maxSize here?
+        nextGen.nextImpl(szp, isValidFun, nextRandomizer)
       }
     }
   }

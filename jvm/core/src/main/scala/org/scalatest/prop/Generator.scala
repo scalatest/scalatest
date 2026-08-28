@@ -3359,7 +3359,7 @@ object Generator {
           }
           resLazyListOrStream(value)
         }
-      } // TODO Confirm OK without Roses. I.e., will the last one have an empty shrinks method?
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroInt], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroIntEdges, rnd)
@@ -3417,7 +3417,7 @@ object Generator {
           }
           resLazyListOrStream(value)
         }
-      } // TODO Confirm OK without Roses. I.e., will the last one have an empty shrinks method?
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroLong], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroLongEdges, rnd)
@@ -3841,7 +3841,7 @@ object Generator {
           }
           resLazyListOrStream(value)
         }
-      } // TODO: Confirm OK with no Roses.
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegLong], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negLongEdges, rnd)
@@ -4237,7 +4237,7 @@ object Generator {
           }
           resLazyListOrStream(value)
         }
-      } // TODO Confirm OK with no Rose.
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZInt], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZIntEdges, rnd)
@@ -4297,7 +4297,7 @@ object Generator {
           }
           resLazyListOrStream(value)
         }
-      } // TODO Confirm OK no Rose.
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZLong], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZLongEdges, rnd)
@@ -4408,7 +4408,6 @@ object Generator {
 
       // For strings, we won't shrink the characters.  We could, but the trees could get really big. Just cut the length of
       // the list in half and try both halves each round, using the same characters.
-      // TODO: Write a test for this shrinks implementation.
       case class NextRoseTree(value: String)(sizeParam: SizeParam, isValidFun: (String, SizeParam) => Boolean) extends RoseTree[String] {
         def shrinks: LazyListOrStream[RoseTree[String]] = {
           def resLazyListOrStream(theValue: String): LazyListOrStream[RoseTree[String]] = {
@@ -4473,7 +4472,6 @@ object Generator {
       // For lists, we won't bother shrinking the elements. We could, but the trees could get very big.
       // So we will just cut the length of the list in half and try both
       // halves each round, using the same elements.
-      // TODO: Write a test for this shrinks implementation.
       case class NextRoseTree(value: List[T], sizeParam: SizeParam, isValidFun: (List[T], SizeParam) => Boolean) extends RoseTree[List[T]] {
         def shrinks: LazyListOrStream[RoseTree[List[T]]] = {
           def resLazyListOrStream(theValue: List[T]): LazyListOrStream[RoseTree[List[T]]] = {
@@ -5954,9 +5952,6 @@ object Generator {
       def nextImpl(szp: SizeParam, isValidFun: (Either[L, R], SizeParam) => Boolean, rnd: Randomizer): (RoseTree[Either[L, R]], Randomizer) = {
         val (nextInt, nextRnd) = rnd.nextInt
         if (nextInt % 4 == 0) {
-          // TODO: Here I was not sure if I should just map the RoseTree or takes
-          // its value and wrap that in a shrink call. Might be the same thing ultimately.
-          // Will check that later. Actually I'll try mapping first.
           val (nextRoseTreeOfL, _, nextRnd) = genOfL.filter(l => isValidFun(Left(l), szp)).next(szp, Nil, rnd)
           (nextRoseTreeOfL.map(l => Left(l)), nextRnd)
         }
