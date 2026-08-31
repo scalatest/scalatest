@@ -143,13 +143,21 @@ trait CommonGenerators {
     import ord.mkOrderingOps
     require(from <= to)
     new Generator[T] {
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[T], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[T]], Randomizer) = {
         // Start with the edges of the underlying generator:
         val (base, nextRnd) = gen.initEdges(maxLength, rnd)
         // Snip away anything out of range:
-        val valueEdges = base.filter(i => i >= from && i <= to)
-        // Add the boundaries as edges for our new filter:
-        val fromToEdges = (from :: to :: valueEdges).distinct // distinct in case from equals to, and/or overlaps a value edge
+        val valueEdges = base.filter(rt => rt.value >= from && rt.value <= to)
+        // Add the boundaries as edges for our new filter. Dedupe by value (in case from equals
+        // to, and/or overlaps a value edge); RoseTree uses referential equality, so fold manually.
+        val fromToEdges = {
+          val combined = Rose(from) :: Rose(to) :: valueEdges
+          combined.foldLeft((List.empty[RoseTree[T]], Set.empty[T])) {
+            case ((acc, seen), rt) =>
+              if (seen.contains(rt.value)) (acc, seen)
+              else (acc :+ rt, seen + rt.value)
+          }._1
+        }
         val (allEdges, nextNextRnd) = Randomizer.shuffle(fromToEdges, nextRnd)
         (allEdges.take(maxLength), nextNextRnd)
       }
@@ -2358,7 +2366,7 @@ trait CommonGenerators {
 
     val (initEdges, rnd1) = genOfA.initEdges(100, Randomizer.default)
     @tailrec
-    def loop(currentCount: Int, edges: List[A], rnd: Randomizer, acc: Map[String, PosZInt]): Map[String, PosZInt] = {
+    def loop(currentCount: Int, edges: List[RoseTree[A]], rnd: Randomizer, acc: Map[String, PosZInt]): Map[String, PosZInt] = {
       if (currentCount >= count) acc
       else {
         val (nextRoseTreeOfA, nextEdges, nextRnd) = genOfA.next(SizeParam(PosZInt(0), PosZInt(100), PosZInt(100)), edges, rnd) // TODO: I think this need to mimic forAll.
@@ -2402,7 +2410,7 @@ trait CommonGenerators {
     new Generator[T] {
       private lazy val underlying: Generator[T] = gen
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[T], Randomizer) = underlying.initEdges(maxLength, rnd)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[T]], Randomizer) = underlying.initEdges(maxLength, rnd)
 
       override def canonicals: LazyListOrStream[RoseTree[T]] = underlying.canonicals
 

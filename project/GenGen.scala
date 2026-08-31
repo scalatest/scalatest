@@ -3609,7 +3609,7 @@ $okayAssertions$
       |  }
       |
       |  def nextImpl(szp: SizeParam, isValidFun: ($lastType$, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[$lastType$], Randomizer) = underlying.nextImpl(szp, isValidFun, rnd)
-      |  override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[$lastType$], Randomizer) = underlying.initEdges(maxLength, rnd)
+      |  override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[$lastType$]], Randomizer) = underlying.initEdges(maxLength, rnd)
       |  override def map[Z](f: ($lastType$) => Z): Generator[Z] = underlying.map(f)
       |  override def flatMap[Z](f: ($lastType$) => Generator[Z]): Generator[Z] = underlying.flatMap(f)
       |  override def canonicals: LazyListOrStream[RoseTree[$lastType$]] = underlying.canonicals
