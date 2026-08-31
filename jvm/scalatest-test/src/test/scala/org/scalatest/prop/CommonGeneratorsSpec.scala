@@ -113,7 +113,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[Byte] = bytesBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -123,7 +123,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = bytes.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = bytes.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -136,7 +136,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[Byte] = bytesBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -190,7 +190,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[Short] = shortsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -200,7 +200,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = shorts.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = shorts.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -213,7 +213,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[Short] = shortsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -267,7 +267,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[Int] = intsBetween(min, max) 
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -277,7 +277,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = ints.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = ints.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         // sortedEdges: List[Int] = List(-2147483648, -1, 0, 1, 2147483647)
         val sortedEdges = edges.sorted
         // res5: List[List[Int]] = List(List(-2147483648, -1), List(-2147483648, 0), List(-2147483648, 1),
@@ -294,7 +294,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[Int] = intsBetween(from, to) 
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -348,7 +348,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[Long] = longsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -358,7 +358,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = longs.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = longs.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -371,7 +371,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[Long] = longsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -425,7 +425,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[Char] = charsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -435,7 +435,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = chars.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = chars.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -448,7 +448,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[Char] = charsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -502,7 +502,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[Float] = floatsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -512,7 +512,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = floats.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = floats.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -525,7 +525,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[Float] = floatsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -579,7 +579,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[Double] = doublesBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -589,7 +589,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = doubles.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = doubles.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -602,7 +602,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[Double] = doublesBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -659,7 +659,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[PosInt] = posIntsBetween(min, max) 
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should (have length 1 or have length 2)
           edges should contain (min)
           edges should contain (max)
@@ -669,7 +669,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = posInts.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = posInts.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         // sortedEdges: List[Int] = List(-2147483648, -1, 0, 1, 2147483647)
         val sortedEdges = edges.sorted
         // res5: List[List[Int]] = List(List(-2147483648, -1), List(-2147483648, 0), List(-2147483648, 1),
@@ -686,7 +686,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[PosInt] = posIntsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -740,7 +740,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[PosLong] = posLongsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -750,7 +750,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = posLongs.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = posLongs.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -763,7 +763,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[PosLong] = posLongsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -817,7 +817,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[PosFloat] = posFloatsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -827,7 +827,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = posFloats.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = posFloats.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -840,7 +840,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[PosFloat] = posFloatsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -894,7 +894,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[PosFiniteFloat] = posFiniteFloatsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -904,7 +904,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = posFiniteFloats.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = posFiniteFloats.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -917,7 +917,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[PosFiniteFloat] = posFiniteFloatsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -971,7 +971,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[PosDouble] = posDoublesBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -982,7 +982,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = posDoubles.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = posDoubles.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -995,7 +995,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[PosDouble] = posDoublesBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -1049,7 +1049,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[PosFiniteDouble] = posFiniteDoublesBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -1060,7 +1060,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = posFiniteDoubles.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = posFiniteDoubles.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -1073,7 +1073,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[PosFiniteDouble] = posFiniteDoublesBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -1128,7 +1128,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[PosZInt] = posZIntsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should (have length 1 or have length 2 or have length 3)
           edges should contain (min)
           edges should contain (max)
@@ -1138,7 +1138,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = posZInts.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = posZInts.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -1151,7 +1151,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[PosZInt] = posZIntsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -1205,7 +1205,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[PosZLong] = posZLongsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -1215,7 +1215,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = posZLongs.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = posZLongs.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -1228,7 +1228,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[PosZLong] = posZLongsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -1282,7 +1282,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[PosZFloat] = posZFloatsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -1292,7 +1292,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = posZFloats.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = posZFloats.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -1305,7 +1305,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[PosZFloat] = posZFloatsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -1359,7 +1359,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[PosZFiniteFloat] = posZFiniteFloatsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -1369,7 +1369,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = posZFiniteFloats.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = posZFiniteFloats.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -1382,7 +1382,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[PosZFiniteFloat] = posZFiniteFloatsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -1436,7 +1436,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[PosZDouble] = posZDoublesBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -1447,7 +1447,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = posZDoubles.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = posZDoubles.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -1460,7 +1460,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[PosZDouble] = posZDoublesBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -1514,7 +1514,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[PosZFiniteDouble] = posZFiniteDoublesBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -1525,7 +1525,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = posZFiniteDoubles.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = posZFiniteDoubles.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -1538,7 +1538,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[PosZFiniteDouble] = posZFiniteDoublesBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -1595,7 +1595,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[NegInt] = negIntsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should (have length 1 or have length 2)
           edges should contain (min)
           edges should contain (max)
@@ -1605,7 +1605,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = negInts.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = negInts.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -1618,7 +1618,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NegInt] = negIntsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -1672,7 +1672,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[NegLong] = negLongsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -1682,7 +1682,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = negLongs.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = negLongs.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -1695,7 +1695,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NegLong] = negLongsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -1749,7 +1749,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[NegFloat] = negFloatsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -1759,7 +1759,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = negFloats.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = negFloats.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -1772,7 +1772,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NegFloat] = negFloatsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -1826,7 +1826,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[NegFiniteFloat] = negFiniteFloatsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -1836,7 +1836,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = negFiniteFloats.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = negFiniteFloats.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -1849,7 +1849,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NegFiniteFloat] = negFiniteFloatsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -1903,7 +1903,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[NegDouble] = negDoublesBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -1914,7 +1914,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = negDoubles.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = negDoubles.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -1927,7 +1927,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NegDouble] = negDoublesBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -1981,7 +1981,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[NegFiniteDouble] = negFiniteDoublesBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -1992,7 +1992,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = negFiniteDoubles.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = negFiniteDoubles.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -2005,7 +2005,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NegFiniteDouble] = negFiniteDoublesBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -2060,7 +2060,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[NegZInt] = negZIntsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should (have length 1 or have length 2 or have length 3)
           edges should contain (min)
           edges should contain (max)
@@ -2070,7 +2070,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = negZInts.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = negZInts.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -2083,7 +2083,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NegZInt] = negZIntsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -2137,7 +2137,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[NegZLong] = negZLongsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -2147,7 +2147,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = negZLongs.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = negZLongs.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -2160,7 +2160,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NegZLong] = negZLongsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -2214,7 +2214,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[NegZFloat] = negZFloatsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -2224,7 +2224,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = negZFloats.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = negZFloats.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -2237,7 +2237,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NegZFloat] = negZFloatsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -2291,7 +2291,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[NegZFiniteFloat] = negZFiniteFloatsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -2301,7 +2301,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = negZFiniteFloats.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = negZFiniteFloats.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -2314,7 +2314,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NegZFiniteFloat] = negZFiniteFloatsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -2368,7 +2368,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[NegZDouble] = negZDoublesBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -2379,7 +2379,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = negZDoubles.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = negZDoubles.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -2392,7 +2392,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NegZDouble] = negZDoublesBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -2446,7 +2446,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[NegZFiniteDouble] = negZFiniteDoublesBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -2457,7 +2457,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = negZFiniteDoubles.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = negZFiniteDoubles.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -2470,7 +2470,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NegZFiniteDouble] = negZFiniteDoublesBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -2527,7 +2527,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[NonZeroInt] = nonZeroIntsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should (have length 1 or have length 2 or have length 3 or have length 4)
           edges should contain (min)
           edges should contain (max)
@@ -2537,7 +2537,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = nonZeroInts.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = nonZeroInts.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -2550,7 +2550,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NonZeroInt] = nonZeroIntsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -2604,7 +2604,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[NonZeroLong] = nonZeroLongsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -2614,7 +2614,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = nonZeroLongs.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = nonZeroLongs.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -2627,7 +2627,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NonZeroLong] = nonZeroLongsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -2681,7 +2681,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[NonZeroFloat] = nonZeroFloatsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -2691,7 +2691,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = nonZeroFloats.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = nonZeroFloats.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -2704,7 +2704,7 @@ class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NonZeroFloat] = nonZeroFloatsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -2778,7 +2778,7 @@ If it doesn't show up for a while, please delete this comment.
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[NonZeroFiniteFloat] = nonZeroFiniteFloatsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -2788,7 +2788,7 @@ If it doesn't show up for a while, please delete this comment.
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = nonZeroFiniteFloats.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = nonZeroFiniteFloats.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -2801,7 +2801,7 @@ If it doesn't show up for a while, please delete this comment.
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NonZeroFiniteFloat] = nonZeroFiniteFloatsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -2855,7 +2855,7 @@ If it doesn't show up for a while, please delete this comment.
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[NonZeroDouble] = nonZeroDoublesBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -2866,7 +2866,7 @@ If it doesn't show up for a while, please delete this comment.
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = nonZeroDoubles.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = nonZeroDoubles.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -2879,7 +2879,7 @@ If it doesn't show up for a while, please delete this comment.
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NonZeroDouble] = nonZeroDoublesBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -2933,7 +2933,7 @@ If it doesn't show up for a while, please delete this comment.
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[NonZeroFiniteDouble] = nonZeroFiniteDoublesBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -2944,7 +2944,7 @@ If it doesn't show up for a while, please delete this comment.
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = nonZeroFiniteDoubles.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = nonZeroFiniteDoubles.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -2957,7 +2957,7 @@ If it doesn't show up for a while, please delete this comment.
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[NonZeroFiniteDouble] = nonZeroFiniteDoublesBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -3011,7 +3011,7 @@ If it doesn't show up for a while, please delete this comment.
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[FiniteFloat] = finiteFloatsBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -3021,7 +3021,7 @@ If it doesn't show up for a while, please delete this comment.
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = finiteFloats.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = finiteFloats.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -3034,7 +3034,7 @@ If it doesn't show up for a while, please delete this comment.
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[FiniteFloat] = finiteFloatsBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -3088,7 +3088,7 @@ If it doesn't show up for a while, please delete this comment.
 
         forAll (minMaxPairs) { case (min, max) =>
           val minMaxGen: Generator[FiniteDouble] = finiteDoublesBetween(min, max)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges.length should (be >= 1 or be <= 7)
           edges should contain (min)
           edges should contain (max)
@@ -3099,7 +3099,7 @@ If it doesn't show up for a while, please delete this comment.
 
         import org.scalatest.Inspectors._
 
-        val (edges, rnd1) = finiteDoubles.initEdges(100, Randomizer.default)
+        val (edges, rnd1) = { val t = finiteDoubles.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
         val sortedEdges = edges.sorted
         val combos = sortedEdges.combinations(2).toList
 
@@ -3112,7 +3112,7 @@ If it doesn't show up for a while, please delete this comment.
         forAll (combos) { case List(from, to) =>
           val requiredEdges = included(from, to)
           val minMaxGen: Generator[FiniteDouble] = finiteDoublesBetween(from, to)
-          val (edges, _) = minMaxGen.initEdges(100, Randomizer.default)
+          val (edges, _) = { val t = minMaxGen.initEdges(100, Randomizer.default); (t._1.map(_.value), t._2) }
           edges should contain allElementsOf requiredEdges
           val outOfBoundsEdges = sortedEdges.filter(i => i < from || i > to)
           edges should contain noElementsOf outOfBoundsEdges
@@ -3278,7 +3278,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3292,7 +3292,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3306,7 +3306,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3320,7 +3320,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3334,7 +3334,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3348,7 +3348,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3362,7 +3362,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3376,7 +3376,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3399,7 +3399,7 @@ If it doesn't show up for a while, please delete this comment.
       val rnd = Randomizer.default
       val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
       val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-      implicitGenEdges shouldEqual namedGenEdges
+      implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
       val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
       val namedGenSamples = samplesForGen(namedGen, 100, rnd)
       implicitGenSamples shouldEqual namedGenSamples
@@ -3432,7 +3432,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3530,7 +3530,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3544,7 +3544,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3558,7 +3558,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3572,7 +3572,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3586,7 +3586,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3600,7 +3600,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3614,7 +3614,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3628,7 +3628,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3642,7 +3642,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3656,7 +3656,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3670,7 +3670,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3684,7 +3684,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3698,7 +3698,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -3712,7 +3712,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -3726,7 +3726,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -3740,7 +3740,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -3754,7 +3754,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -3768,7 +3768,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -3782,7 +3782,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -3796,7 +3796,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -3810,7 +3810,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -3824,7 +3824,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -3838,7 +3838,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -3852,7 +3852,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -3866,7 +3866,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3880,7 +3880,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3894,7 +3894,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3908,7 +3908,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3922,7 +3922,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3936,7 +3936,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3950,7 +3950,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3964,7 +3964,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3978,7 +3978,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -3992,7 +3992,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4006,7 +4006,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4020,7 +4020,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4034,7 +4034,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4048,7 +4048,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4062,7 +4062,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4076,7 +4076,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4090,7 +4090,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4104,7 +4104,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4118,7 +4118,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4132,7 +4132,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4146,7 +4146,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4160,7 +4160,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4174,7 +4174,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4188,7 +4188,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4202,7 +4202,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4216,7 +4216,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4230,7 +4230,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4244,7 +4244,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4258,7 +4258,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4272,7 +4272,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4286,7 +4286,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4300,7 +4300,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4314,7 +4314,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4328,7 +4328,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4342,7 +4342,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4356,7 +4356,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4370,7 +4370,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4384,7 +4384,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4398,7 +4398,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4412,7 +4412,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4426,7 +4426,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4440,7 +4440,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges.map(_.value) shouldEqual namedGenEdges
+        implicitGenEdges.map(rt => rt.value.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples.map(_.value) shouldEqual namedGenSamples
@@ -4455,7 +4455,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4469,7 +4469,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4483,7 +4483,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4497,7 +4497,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4511,7 +4511,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4525,7 +4525,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4539,7 +4539,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4553,7 +4553,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4567,7 +4567,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4581,7 +4581,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4595,7 +4595,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4609,7 +4609,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4623,7 +4623,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4637,7 +4637,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4651,7 +4651,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4665,7 +4665,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4679,7 +4679,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4693,7 +4693,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4707,7 +4707,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4721,7 +4721,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4735,7 +4735,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4749,7 +4749,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4763,7 +4763,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 1, rnd)
         val namedGenSamples = samplesForGen(namedGen, 1, rnd)
         // We can't actually compare the functions themselves, which don't have
@@ -4783,7 +4783,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         // We can't actually compare the functions themselves, which don't have
@@ -4804,7 +4804,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4818,7 +4818,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4832,7 +4832,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4846,7 +4846,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -4860,7 +4860,7 @@ If it doesn't show up for a while, please delete this comment.
         val rnd = Randomizer.default
         val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
         val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
-        implicitGenEdges shouldEqual namedGenEdges
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
         val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
         val namedGenSamples = samplesForGen(namedGen, 100, rnd)
         implicitGenSamples shouldEqual namedGenSamples
@@ -5487,7 +5487,7 @@ If it doesn't show up for a while, please delete this comment.
       // maxLength: PosZInt, rnd: Randomizer): (List[T], Randomizer) = (Nil, rnd)
       val (lazyEdges, _) = lazyGen.initEdges(100, stableRnd)
       val (eagerEdges, _) = eagerGen.initEdges(100, stableRnd)
-      lazyEdges shouldEqual eagerEdges
+      lazyEdges.map(_.value) shouldEqual eagerEdges.map(_.value)
 
       // (Iterator[T], Randomizer)
       val lazyCanonicalsIt = lazyGen.canonicals
