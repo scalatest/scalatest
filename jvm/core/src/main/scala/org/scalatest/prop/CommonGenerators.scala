@@ -2347,34 +2347,60 @@ trait CommonGenerators {
     *
     * @param count the number of values to generate
     * @param genOfA the [[Generator]] to use
+    * @param minSize the minimum size to pass to the [[Generator]] (defaults to `PosZInt(0)`)
+    * @param sizeRange the range added to `minSize` to derive the maximum size (defaults to `PosZInt(100)`)
     * @param pf a [[PartialFunction]] that takes the generated values, and sorts them into "buckets" by String names
     * @tparam A the type to be generated
     * @return statistics on how many values wound up in each bucket
     *
     * @group Tools
     */
-  // classify will need to use the same sizing algo as forAll, and same edges approach
-  def classify[A](count: PosInt, genOfA: Generator[A])(pf: PartialFunction[A, String]): Classification = {
+  def classify[A](count: PosInt, genOfA: Generator[A], minSize: PosZInt = PosZInt(0), sizeRange: PosZInt = PosZInt(100))(pf: PartialFunction[A, String]): Classification = {
+    val maxSize = PosZInt.ensuringValid(minSize.value + sizeRange.value)
 
-    val (initEdges, rnd1) = genOfA.initEdges(100, Randomizer.default)
+    // Mimic forAll's sizing: precompute a sequence of sizes with calcSizes, consume them in order,
+    // then fall back to choosing random sizes between minSize and maxSize.
+    val initRnd = Randomizer.default
+    val (initialSizes, afterSizesRnd) = calcSizes(minSize, maxSize, initRnd)
+    val (initEdges, rnd1) = genOfA.initEdges(PosZInt.ensuringValid(count / 5), afterSizesRnd)
     @tailrec
-    def loop(currentCount: Int, edges: List[A], rnd: Randomizer, acc: Map[String, PosZInt]): Map[String, PosZInt] = {
+    def loop(currentCount: Int, edges: List[A], rnd: Randomizer, sizes: List[PosZInt], acc: Map[String, PosZInt]): Map[String, PosZInt] = {
       if (currentCount >= count) acc
       else {
-        val (nextRoseTreeOfA, nextEdges, nextRnd) = genOfA.next(SizeParam(PosZInt(0), PosZInt(100), PosZInt(100)), edges, rnd) // TODO: I think this need to mimic forAll.
-        if (pf.isDefinedAt(nextRoseTreeOfA.value)) {
-          val category = pf(nextRoseTreeOfA.value)
-          val prevTotal = acc.getOrElse(category, PosZInt(0))
-          val nextAcc = acc + (category -> PosZInt.ensuringValid(prevTotal + 1))
-          loop(currentCount + 1, nextEdges, nextRnd, nextAcc)
-        }
-        else {
-          loop(currentCount + 1, nextEdges, nextRnd, acc)
-        }
+        val (size, nextSizes, nextRnd) =
+          sizes match {
+            case head :: tail => (head, tail, rnd)
+            case Nil =>
+              val (sz, nextNextRnd) = rnd.choosePosZInt(minSize, maxSize)
+              (sz, Nil, nextNextRnd)
+          }
+        val (nextRoseTreeOfA, nextEdges, nextNextRnd) = genOfA.next(SizeParam(PosZInt(0), maxSize, size), edges, nextRnd)
+        val nextAcc =
+          if (pf.isDefinedAt(nextRoseTreeOfA.value)) {
+            val category = pf(nextRoseTreeOfA.value)
+            val prevTotal = acc.getOrElse(category, PosZInt(0))
+            acc + (category -> PosZInt.ensuringValid(prevTotal + 1))
+          }
+          else acc
+        loop(currentCount + 1, nextEdges, nextNextRnd, nextSizes, nextAcc)
       }
     }
-    val theMap = loop(0, initEdges, rnd1, Map.empty)
+    val theMap = loop(0, initEdges, rnd1, initialSizes, Map.empty)
     Classification(count, theMap)
+  }
+
+  private def calcSizes(minSize: PosZInt, maxSize: PosZInt, initRndm: Randomizer): (List[PosZInt], Randomizer) = {
+    @tailrec
+    def sizesLoop(sizes: List[PosZInt], szCount: Int, rndm: Randomizer): (List[PosZInt], Randomizer) = {
+      sizes match {
+        case Nil => sizesLoop(List(minSize), 1, rndm)
+        case szs if szCount < 10 =>
+          val (nextSize, nextRndm) = rndm.choosePosZInt(minSize, maxSize)
+          sizesLoop(nextSize :: sizes, szCount + 1, nextRndm)
+        case _ => (sizes.sorted, rndm)
+      }
+    }
+    sizesLoop(Nil, 0, initRndm)
   }
 
   /**
