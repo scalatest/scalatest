@@ -875,10 +875,6 @@ trait CommonGenerators {
       }
     }
 
-  // TODO: I wonder if I could get rid of the edges pattern match
-  // by moving this to a different method. Then next is just next
-  // in the distributed stuff. I could then do the pattern match
-  // once and forall in a final method, nextEdge.
   /**
     * Given a number of [[Generator]]s, and the weightings for each one, this creates a [[Generator]]
     * that invokes each of its components according to its weighting.
