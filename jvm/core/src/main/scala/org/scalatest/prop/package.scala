@@ -452,7 +452,7 @@ package object prop {
     *
     * This is mainly helpful when generating random Functions -- since the inputs for a test run are
     * complex, you need more than a simple random seed to reproduce the same results. In order to make
-    * this more useful, the `toString` of a instance of a Function [[Generator]] shows how to invoke
+    * this more useful, the `toString` of an instance of a Function [[Generator]] shows how to invoke
     * `valueOf()` to reproduce the same result.
     *
     * @param first The first parameter to use for calculating the seed.

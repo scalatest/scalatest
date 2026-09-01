@@ -202,68 +202,17 @@ object RoseTree {
   }
 }
 
-// Terminal node of a RoseTree is a Rose.
+/**
+ * A terminal node of a [[RoseTree]]; holds a value of type `T` and has no child nodes.
+ *
+ * Because a `Rose` has no children, its `shrinks` list is always empty: a shrink search
+ * stops when it reaches a `Rose`.
+ *
+ * @tparam T the type of value contained in this node
+ * @param value the value contained in this node
+ */
 case class Rose[T](value: T) extends RoseTree[T] {
   def shrinks: LazyListOrStream[RoseTree[T]] = LazyListOrStream.empty
   override def toString: String = s"Rose($value)"
 }
-
-
-/*
-import org.scalatest.prop._
-
-def unfold[a](rt: RoseTree[a], indent: String = ""): Unit = {
-  println(s"$indent ${rt.value}")
-  val roseTrees = rt.shrinks
-  roseTrees.foreach(t => unfold(t, s"$indent  "))
-}
-
-case class RoseBush[T](o: T, shr: T => List[RoseTree[T]]) extends RoseTree[T] {
-  val value: T = o
-  def shrinks: LazyList[RoseTree[T]] = LazyList.from(shr(o))
-}
-
-def intShr: Int => List[RoseTree[Int]] = { (n: Int) =>
-  @tailrec
-  def loop(n: Int, acc: List[Int]): List[Int] = {
-    val half = n / 2
-    if (half == 0)
-      0 :: acc
-    else
-      loop(half, half :: acc)
-  }
-  val roseTrees = if (n > 0) loop(n, Nil).reverse.map(x => RoseBush(x, intShr)) else List.empty
-  roseTrees
-}
-
-def charShr: Char => List[RoseTree[Char]] = { (c: Char) =>
-  val roseTrees = if (c > 'A' && c <= 'Z') ('A' to (c - 1).toChar).toList.reverse.map(x => RoseBush(x, charShr)) else List.empty
-  roseTrees
-}
-
-scala> for {
-         c <- RoseBush('B', charShr)
-         i <- RoseBush(6, intShr)
-       } yield (c, i)
-res5: org.scalatest.prop.RoseTree[(Char, Int)] = RoseTree((B,6),org.scalatest.prop.RoseTree$$Lambda$12440/1544455474@1a80e1d9)
-
-scala> unfold(res5)
- (B,6)
-   (A,6)
-     (A,3)
-       (A,1)
-         (A,0)
-       (A,0)
-     (A,1)
-       (A,0)
-     (A,0)
-   (B,3)
-     (B,1)
-       (B,0)
-     (B,0)
-   (B,1)
-     (B,0)
-   (B,0)
-*/
-
 

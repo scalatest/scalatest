@@ -62,6 +62,38 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       a2.value shouldEqual b2.value
       a3.value shouldEqual b3.value
     }
+    it("should offer a flatMap method that shuffles edge generators when there are exactly two of them") {
+      def constGen(i: Int): Generator[Int] =
+        new Generator[Int] {
+          def nextImpl(szp: SizeParam, isValidFun: (Int, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[Int], Randomizer) =
+            (Rose(i), rnd)
+          override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Int], Randomizer) =
+            (List(i), rnd)
+        }
+      val twoEdgesGen = new Generator[Int] {
+        def nextImpl(szp: SizeParam, isValidFun: (Int, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[Int], Randomizer) =
+          (Rose(1), rnd)
+        override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Int], Randomizer) =
+          (List(1, 2), rnd)
+      }
+      val gen = twoEdgesGen.flatMap(constGen)
+      var sawOne = false
+      var sawTwo = false
+      for (seed <- 0L until 200L) {
+        val rnd = Randomizer(seed)
+        val (edges, _) = gen.initEdges(PosZInt(1), rnd)
+        edges.length shouldBe 1
+        edges.head match {
+          case 1 => sawOne = true
+          case 2 => sawTwo = true
+          case other => fail("Unexpected edge value: " + other)
+        }
+      }
+      withClue("Expected to see both possible edge values across different seeds; ") {
+        sawOne shouldBe true
+        sawTwo shouldBe true
+      }
+    }
     it("should offer a map method that composes canonicals methods") {
 
       import Generator._
@@ -4354,7 +4386,39 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         classification.percentages("Left").value should be (25 +- 2)
       }
 
-      // TODO. Why does this not fail? Make sure it is correct.
+      it("should shrink Either via mapping correctly for arbitrary values") {
+        import GeneratorDrivenPropertyChecks._
+        import Generator._
+        forAll { (shrinkRoseTree: RoseTree[Either[Int, String]]) =>
+          val eitherValue = shrinkRoseTree.value
+          val shrinks: LazyListOrStream[Either[Int, String]] = shrinkRoseTree.shrinks.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          eitherValue match {
+            case Left(l) =>
+              if (l == 0)
+                shrinks shouldBe empty
+              else {
+                shrinks should not be empty
+                inspectAll(shrinks) { s =>
+                  s shouldBe a [Left[_, _]]
+                }
+                val shrunkValues = shrinks.map(_.left.get)
+                shrunkValues.distinct.length shouldEqual shrunkValues.length
+              }
+            case Right(r) =>
+              if (r.isEmpty)
+                shrinks shouldBe empty
+              else {
+                shrinks should not be empty
+                inspectAll(shrinks) { s =>
+                  s shouldBe a [Right[_, _]]
+                  s.right.get.length should be < r.length
+                }
+              }
+          }
+        }
+      }
+
       it("should use the base types to shrink") {
         import Generator._
         val rGen = intGenerator
@@ -5743,6 +5807,27 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       //DOTTY-ONLY   shape <- genShape
       //DOTTY-ONLY } yield Box(color, shape)
       //DOTTY-ONLY """ should compile
+    }
+
+    it("should evenly distribute across generators and pass size through") {
+      import CommonGenerators.evenly
+      import GeneratorDrivenPropertyChecks._
+
+      val genA: Generator[Int] = Generator.intGenerator
+      val genB: Generator[Int] = Generator.intGenerator
+      val genC: Generator[Int] = Generator.intGenerator
+
+      val gen = evenly(genA, genB, genC)
+
+      // Verify that evenly produces valid values and passes size through
+      // without error, by running many iterations with different size params
+      val rnd = Randomizer.default
+      val results = (0 to 100).foldLeft((List.empty[Int], rnd)) { case ((acc, r), _) =>
+        val (result, _, nextRnd) = gen.next(SizeParam(PosZInt(0), PosZInt(100), PosZInt(50)), Nil, r)
+        (result.value :: acc, nextRnd)
+      }
+      results._1 should not be empty
+      results._1.length shouldEqual 101
     }
   }
 }

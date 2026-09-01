@@ -82,13 +82,11 @@ trait Configuration {
     *
     * Duplicate [[PropertyCheckConfigParam]] entries are not permitted in the `configParams` list.
     *
-    * TODO: should this function be public? It feels like an internal implementation detail -- I think it should be private.
-    *
     * @param configParams optionally, some parameters that differ from the provided `c`
     * @param c a configuration object, describing how to run property evaluations
     * @return a fully-set-up [[Configuration.Parameter]] object, ready to evaluate properties with.
     */
-  def getParameter(configParams: Seq[PropertyCheckConfigParam], config: PropertyCheckConfiguration): Configuration.Parameter = {
+  private[scalatest] def getParameter(configParams: Seq[PropertyCheckConfigParam], config: PropertyCheckConfiguration): Configuration.Parameter = {
 
     var minSuccessful: Option[Int] = None
     var maxDiscardedFactor: Option[Double] = None
@@ -187,7 +185,8 @@ trait Configuration {
 object Configuration extends Configuration {
 
   /**
-    * Internal utility functions for configuration management.
+    * Internal utility functions for converting between old-style discard-count
+    * configuration and the new-style [[MaxDiscardedFactor]] ratio.
     */
   object PropertyCheckConfiguration {
     /**
@@ -202,9 +201,6 @@ object Configuration extends Configuration {
 
     /**
       * Compute the actual number of discards allowed for this run.
-      *
-      * Note that this function appears to be used only in one place, in a test. It really should be
-      * merged with the version in [[Configuration]].
       *
       * @param maxDiscardedRatio the maximum number of discards, as a multiplier of the minimum number of
       *                          successful evaluations
@@ -381,19 +377,6 @@ object Configuration extends Configuration {
   }
 
   /**
-    * Compute the newer MaxDiscardedFactor from the older parameters.
-    *
-    * TODO: is this actually used anywhere? All calls I find seem to be using the version in
-    * [[PropertyCheckConfiguration]] instead.
-    *
-    * @param minSuccessful the minimum number of successful evaluations
-    * @param maxDiscarded the maximum number that may be discarded
-    * @return the newer-style ratio
-    */
-  private[scalatest] def calculateMaxDiscardedFactor(minSuccessful: Int, maxDiscarded: Int): Double =
-    ((maxDiscarded + 1): Double) / (minSuccessful: Double)
-
-  /**
     * Compute the number of discarded evaluation attempts that will be considered to be exhausted. This is a
     * multiple of two config parameters.
     *
@@ -402,6 +385,6 @@ object Configuration extends Configuration {
     * @return how many discarded evaluations to allow in this run
     */
   private[scalatest] def calculateMaxDiscarded(maxDiscardedRatio: Double, minSuccessful: Int): Double =
-    (maxDiscardedRatio * minSuccessful) - 1
+    PropertyCheckConfiguration.calculateMaxDiscarded(maxDiscardedRatio, minSuccessful)
 
 }

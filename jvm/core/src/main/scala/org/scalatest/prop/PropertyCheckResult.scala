@@ -49,11 +49,18 @@ object PropertyCheckResult {
     * Note that this does *not* mean that the check failed. No falsifying examples were found. The problem is that
     * the property rejected so many of the generated parameters that it looks a bit iffy.
     *
-    * TODO: describe how constraints work in this check environment, and precisely how discarding works.
+    * A generated value is ''discarded'' when it fails the property's preconditions rather than the property itself:
+    * in <code>GeneratorDrivenPropertyChecks</code>, this happens when a <code>whenever</code> clause evaluates to
+    * false (which completes abruptly with <code>DiscardedEvaluationException</code>). Discarded evaluations do not
+    * count as successes, but they are allowed in moderation: once the number of discards exceeds
+    * <code>maxDiscardedFactor</code> times <code>minSuccessful</code>, the check gives up and reports
+    * [[Exhausted]], rather than risk running forever on a property whose preconditions reject most inputs.
     *
     * @param succeeded How many generated values succeeded.
     * @param discarded How many generated values were rejected as not satisfying the property's preconditions.
-    * @param names TODO: how does this parameter different from argsPassed?
+    * @param names The names of the property function's parameters, as supplied by the checking code. These pair up
+    *              positionally with `argsPassed`: an argument whose name is unknown is given `None` in its
+    *              [[PropertyArgument]].
     * @param argsPassed The arguments passed into this check.
     * @param initSeed The random seed used for this check. This seed is used by the checking code, to pass in to
     *                 calls to [[Randomizer]]. Reusing the same seed for subsequent runs should produce the same
@@ -73,7 +80,9 @@ object PropertyCheckResult {
     *
     * @param succeeded The number of generated values passed the property before the failure.
     * @param ex The exception that was thrown by the property, if any.
-    * @param names TODO: how does this parameter differ from argsPassed?
+    * @param names The names of the property function's parameters, as supplied by the checking code. These pair up
+    *              positionally with `argsPassed`: an argument whose name is unknown is given `None` in its
+    *              [[PropertyArgument]].
     * @param argsPassed The arguments passed into this check.
     * @param initSeed The random seed used for this check. This seed is used by the checking code, to pass into
     *                 calls to [[Randomizer]]. Reusing the same seed for subsequent runs should produce the same
