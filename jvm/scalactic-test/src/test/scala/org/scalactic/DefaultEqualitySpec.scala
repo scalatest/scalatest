@@ -16,6 +16,7 @@
 package org.scalactic
 
 import org.scalatest._
+import org.scalactic.anyvals.NonEmptyArray
 
 class DefaultEqualitySpec extends funspec.AnyFunSpec with NonImplicitAssertions {
 
@@ -47,6 +48,44 @@ class DefaultEqualitySpec extends funspec.AnyFunSpec with NonImplicitAssertions 
       assert((new DefaultEquality[Array[Int]]).areEqual(a, v))
       assert((new DefaultEquality[Vector[Int]]).areEqual(v, a))
       assert((new DefaultEquality[Array[Int]]).areEqual(a, b))
+    }
+
+    it("should compare an Array on the left against an Array and a NonEmptyArray and other on the right") {
+      val a = Array(1, 2, 3)
+      val b = Array(1, 2, 3)
+      val nea = NonEmptyArray(1, 2, 3)
+      val v = Vector(1, 2, 3)
+      assert((new DefaultEquality[Array[Int]]).areEqual(a, nea))
+      assert((new DefaultEquality[Array[Int]]).areEqual(a, b))
+      assert((new DefaultEquality[Array[Int]]).areEqual(a, v))
+      assert(!(new DefaultEquality[Array[Int]]).areEqual(a, NonEmptyArray(1, 2, 4)))
+      assert(!(new DefaultEquality[Array[Int]]).areEqual(a, Array(1, 2, 4)))
+    }
+
+    it("should compare a NonEmptyArray on the left against an Array, a NonEmptyArray, and other on the right") {
+      val nea = NonEmptyArray(1, 2, 3)
+      val b = Array(1, 2, 3)
+      val b2 = Array(1, 2, 4)
+      val otherNea = NonEmptyArray(1, 2, 3)
+      val otherNea2 = NonEmptyArray(1, 2, 4)
+      val v = Vector(1, 2, 3)
+      assert((new DefaultEquality[NonEmptyArray[Int]]).areEqual(nea, b))
+      assert((new DefaultEquality[NonEmptyArray[Int]]).areEqual(nea, otherNea))
+      assert((new DefaultEquality[NonEmptyArray[Int]]).areEqual(nea, v))
+      assert(!(new DefaultEquality[NonEmptyArray[Int]]).areEqual(nea, b2))
+      assert(!(new DefaultEquality[NonEmptyArray[Int]]).areEqual(nea, otherNea2))
+      assert(!(new DefaultEquality[NonEmptyArray[Int]]).areEqual(nea, Vector(1, 2, 4)))
+    }
+
+    it("should compare a non-array left side against a NonEmptyArray on the right") {
+      val v = Vector(1, 2, 3)
+      val nea = NonEmptyArray(1, 2, 3)
+      val nea2 = NonEmptyArray(1, 2, 4)
+      val a = Array(1, 2, 3)
+      assert((new DefaultEquality[Vector[Int]]).areEqual(v, nea))
+      assert((new DefaultEquality[Vector[Int]]).areEqual(v, nea2) == false)
+      assert((new DefaultEquality[Vector[Int]]).areEqual(v, a))
+      assert((new DefaultEquality[Vector[Int]]).areEqual(v, Vector(1, 2, 3)))
     }
 
     it("should have a pretty toString") {
