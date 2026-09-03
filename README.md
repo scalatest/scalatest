@@ -104,6 +104,18 @@ $ sbt -Dscalatest.skip.jdk.check=true ++2.11.12 scalatestTestNative/test:compile
 $ sbt -Dscalatest.skip.jdk.check=true ++2.11.12 scalatestTestNative/test
 ```
 
+### Test Coverage
+
+To run tests and generate test coverage reports: 
+
+```bash
+sbt clean coverage test
+sbt clean coverage test
+sbt coverageReport      # per-subproject reports
+sbt coverageAggregate   # merged report
+```
+
+
 ### Building Examples
 
 You can build examples project using this command: 
