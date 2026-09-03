@@ -110,7 +110,6 @@ To run tests and generate test coverage reports:
 
 ```bash
 sbt clean coverage test
-sbt clean coverage test
 sbt coverageReport      # per-subproject reports
 sbt coverageAggregate   # merged report
 ```
