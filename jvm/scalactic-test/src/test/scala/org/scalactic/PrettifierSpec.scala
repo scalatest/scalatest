@@ -456,6 +456,76 @@ class PrettifierSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
       prettifier(("John Lee", 35)) should be ("(\"John Lee\", 35)")
     }
 
+    it("should truncate Many") {
+      val prettifier = Prettifier.truncateAt(SizeLimit(2))
+      prettifier(Many(1, 2, 3)) shouldBe "Many(1, 2, ...)"
+      prettifier(Many(1, 2)) shouldBe "Many(1, 2)"
+    }
+
+    it("should truncate Array") {
+      val prettifier = Prettifier.truncateAt(SizeLimit(2))
+      prettifier(Array(1, 2, 3)) shouldBe "Array(1, 2, ...)"
+      prettifier(Array(1, 2)) shouldBe "Array(1, 2)"
+    }
+
+    it("should truncate WrappedArray") {
+      val prettifier = Prettifier.truncateAt(SizeLimit(2))
+      prettifier(scala.collection.mutable.WrappedArray.make(Array(1, 2, 3))) shouldBe "Array(1, 2, ...)"
+      prettifier(scala.collection.mutable.WrappedArray.make(Array(1, 2))) shouldBe "Array(1, 2)"
+    }
+
+    it("should truncate ArrayOps") {
+      val prettifier = Prettifier.truncateAt(SizeLimit(2))
+      prettifier(new scala.collection.ArrayOps(Array(1, 2, 3))) shouldBe "Array(1, 2, ...)"
+      prettifier(new scala.collection.ArrayOps(Array(1, 2))) shouldBe "Array(1, 2)"
+    }
+
+    it("should truncate GenMap") {
+      val prettifier = Prettifier.truncateAt(SizeLimit(2))
+      prettifier(scala.collection.immutable.ListMap(1 -> "a", 2 -> "b", 3 -> "c")) shouldBe "ListMap(1 -> \"a\", 2 -> \"b\", ...)"
+      prettifier(scala.collection.immutable.ListMap(1 -> "a")) shouldBe "ListMap(1 -> \"a\")"
+    }
+
+    it("should pretty print xml") {
+      val prettifier = Prettifier.truncateAt(SizeLimit(2))
+      prettifier(<a>1</a>) shouldBe "<a>1</a>"
+    }
+
+    it("should truncate java.util.Collection") {
+      val prettifier = Prettifier.truncateAt(SizeLimit(2))
+      prettifier(java.util.Arrays.asList(1, 2, 3)) shouldBe "[1, 2, ...]"
+      prettifier(java.util.Arrays.asList(1, 2)) shouldBe "[1, 2]"
+    }
+
+    it("should use java.util.Collection's toString when it does not match the standard form") {
+      val prettifier = Prettifier.truncateAt(SizeLimit(2))
+      val coll = new java.util.AbstractCollection[Int] {
+        def size = 0
+        def iterator = java.util.Collections.emptyIterator[Int]()
+        override def toString = "custom-collection"
+      }
+      prettifier(coll) shouldBe "custom-collection"
+    }
+
+    it("should truncate java.util.Map") {
+      val prettifier = Prettifier.truncateAt(SizeLimit(2))
+      val map = new java.util.LinkedHashMap[Int, Int]()
+      map.put(1, 1)
+      map.put(2, 2)
+      map.put(3, 3)
+      prettifier(map) shouldBe "{1=1, 2=2, ...}"
+      prettifier(new java.util.LinkedHashMap[Int, Int]()) shouldBe "{}"
+    }
+
+    it("should use java.util.Map's toString when it does not match the standard form") {
+      val prettifier = Prettifier.truncateAt(SizeLimit(2))
+      val map = new java.util.AbstractMap[Int, Int] {
+        def entrySet = java.util.Collections.emptySet[java.util.Map.Entry[Int, Int]]()
+        override def toString = "custom-map"
+      }
+      prettifier(map) shouldBe "custom-map"
+    }
+
     it("should support custom Differ") {
       val d = 
         new Differ {
