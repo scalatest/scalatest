@@ -5410,17 +5410,42 @@ object NonEmpties {
         string
 
     /**
-      * Optionally construct a <code>NonEmptyString</code> containing the characters, if any, of a given <code>GenSeq</code>.
       *
-      * @param seq the <code>GenSeq</code> of <code>Char</code> with which to construct a <code>NonEmptyString</code>
-      * @return a <code>NonEmptyString</code> containing the elements of the given <code>GenSeq</code>, if non-empty, wrapped in
-      *     a <code>Some</code>; else <code>None</code> if the <code>GenSeq</code> is empty
+      * A factory/assertion method that produces a <code>NonEmptyString</code>
+      * given a valid <code>IterableOnce[Char]</code> value, or throws
+      * <code>AssertionError</code>, if given an invalid <code>IterableOnce[Char]</code> value.
+      *
+      * Note: you should use this method only when you are convinced that it will
+      * always succeed, i.e., never throw an exception. It is good practice to
+      * add a comment near the invocation of this method indicating ''why'' you
+      * think it will always succeed to document your reasoning. If you are not
+      * sure an `ensuringValid` call will always succeed, you should use one of
+      * the other factory or validation methods provided on this object instead:
+      * `from'.
+      *
+      * @param seq the <code>IterableOnce[Char]</code> to check to see if it is valid.
+      * @return the <code>NonEmptyString</code> if the passed characters are valid.
+      * @throws AssertionError if the passed <code>IterableOnce</code> is empty.
       */
-    def from[T](seq: GenSeq[Char]): Option[NonEmptyString] =
-      seq.headOption match {
-        case None => None
-        case Some(first) => Some(seq.mkString)
-      }  
+    def ensuringValid(seq: IterableOnce[Char]): NonEmptyString = {
+      val string = seq.iterator.mkString
+      if (string.length == 0)
+        throw new AssertionError(Resources.nonEmptyStringEmpty)
+      else
+        string
+    }
+
+    /**
+      * Optionally construct a <code>NonEmptyString</code> containing the characters, if any, of a given <code>IterableOnce</code>.
+      *
+      * @param seq the <code>IterableOnce</code> of <code>Char</code> with which to construct a <code>NonEmptyString</code>
+      * @return a <code>NonEmptyString</code> containing the elements of the given <code>IterableOnce</code>, if non-empty, wrapped in
+      *     a <code>Some</code>; else <code>None</code> if the <code>IterableOnce</code> is empty
+      */
+    def from(seq: IterableOnce[Char]): Option[NonEmptyString] = {
+      val string = seq.iterator.mkString
+      if (string.length == 0) None else Some(string)
+    }
 
     given Conversion[NonEmptyString, PartialFunction[Int, Char]] with {
       def apply(nonEmptyString: NonEmptyString): PartialFunction[Int, Char] =
