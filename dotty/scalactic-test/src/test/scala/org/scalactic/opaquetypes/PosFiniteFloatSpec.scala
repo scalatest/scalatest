@@ -216,8 +216,7 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
         "takesPosFiniteFloat(8L)" shouldNot compile
         "takesPosFiniteFloat(8.0F)" should compile
         takesPosFiniteFloat(8.0F) shouldEqual 8.0F
-        "takesPosFiniteFloat(8.0)" should compile
-        takesPosFiniteFloat(8.0) shouldEqual 8.0
+        "takesPosFiniteFloat(8.0)" shouldNot compile
       }
 
       it("should not compile when 0 is passed in") {

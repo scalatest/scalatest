@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,10 @@ import NonZeroDoubles.NonZeroDouble
 
 object PosLongs {
 
+  /** Opaque type representing any non-negative Long value (>= 0L). */
   opaque type PosZLong = Long
 
+  /** Companion object for the [[PosZLong]] opaque type. */
   object PosZLong {
 
     /** Compile-time factory for creating a [[PosZLong]] from an integer literal.
@@ -86,9 +88,20 @@ object PosLongs {
     */
     def isValid(value: Long): Boolean = value >= 0  
 
+    /** Create a [[PosZLong]] if the given Long is valid (>= 0).
+      *
+      * @param l the Long to inspect
+      * @return Some([[PosZLong]]) if the given Long is >= 0, else None
+      */
     def from(l: Long): Option[PosZLong] =
       if (isValid(l)) Some(l) else None
 
+    /** Create a [[PosZLong]], throwing an AssertionError if the given Long is invalid.
+      *
+      * @param l the Long to inspect
+      * @return the [[PosZLong]] if the given Long is >= 0
+      * @throws AssertionError if the given Long is less than 0
+      */
     def ensuringValid(l: Long): PosZLong = 
       if (!isValid(l)) 
         throw new AssertionError(Resources.invalidPosZLong)
@@ -399,6 +412,7 @@ object PosLongs {
 
   }
 
+  /** Opaque type representing any strictly positive Long value (> 0L). */
   opaque type PosLong <: PosZLong = Long
 
   trait PosLongConversionsLowPriority {
@@ -408,6 +422,7 @@ object PosLongs {
     }
   }
 
+  /** Companion object for the [[PosLong]] opaque type. */
   object PosLong extends PosLongConversionsLowPriority {
 
     /** Convert a [[PosLong]] to a plain Long (unwrap). */

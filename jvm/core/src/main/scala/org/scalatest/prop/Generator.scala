@@ -561,7 +561,6 @@ object Generator {
   //
   // TBD: should canonicals also be listed here? It seems a bit asymmetrical that edges and canonicals are
   // handled differently.
-  //
 
   private[prop] val byteEdges = List(Byte.MinValue, -1.toByte, 0.toByte, 1.toByte, Byte.MaxValue)
   private[prop] val shortEdges = List(Short.MinValue, -1.toShort, 0.toShort, 1.toShort, Short.MaxValue)
@@ -1806,7 +1805,7 @@ object Generator {
   //DOTTY-ONLY given Generator[PosFiniteFloat] = posFiniteFloatGenerator
 
   /**
-    * A [[Generator]] that produces Floats, excluding infinity.
+    * A [[Generator]] that produces FiniteFloats, excluding infinity and NaN.
     */
   // SKIP-DOTTY-START
   implicit val finiteFloatGenerator: Generator[FiniteFloat] =
@@ -1885,7 +1884,13 @@ object Generator {
   //DOTTY-ONLY /**
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[FiniteFloat]] values.
   //DOTTY-ONLY   */
-  //DOTTY-ONLY given Generator[FiniteFloat] = finiteFloatGenerator  
+  //DOTTY-ONLY given Generator[FiniteFloat] = finiteFloatGenerator
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[org.scalactic.opaquetypes.FiniteFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given opaqueFiniteFloatGenerator: Generator[org.scalactic.opaquetypes.FiniteFloat] =
+  //DOTTY-ONLY   finiteFloatGenerator.map(f => org.scalactic.opaquetypes.FiniteFloat.ensuringValid(f.value))
 
   /**
     * A [[Generator]] that produces Doubles, excluding infinity.
@@ -1968,6 +1973,11 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[FiniteDouble]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[FiniteDouble] = finiteDoubleGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.FiniteDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesFiniteDoubleGenerator: Generator[org.scalactic.opaquetypes.FiniteDouble] =
+  //DOTTY-ONLY   finiteDoubleGenerator.map(d => org.scalactic.opaquetypes.FiniteDouble.ensuringValid(d.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_FiniteDouble: Generator[org.scalactic.opaquetypes.FiniteDouble] = opaquetypesFiniteDoubleGenerator
 
   /**
     * A [[Generator]] that produces positive Floats, including zero and infinity.
@@ -2660,6 +2670,53 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosFiniteDouble]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[PosFiniteDouble] = posFiniteDoubleGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.PosDoubles.PosFiniteDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesPosFiniteDoubleGenerator: Generator[org.scalactic.opaquetypes.PosDoubles.PosFiniteDouble] =
+  //DOTTY-ONLY   new Generator[org.scalactic.opaquetypes.PosDoubles.PosFiniteDouble] {
+  //DOTTY-ONLY
+  //DOTTY-ONLY   import org.scalactic.opaquetypes.PosDoubles.PosFiniteDouble
+  //DOTTY-ONLY
+  //DOTTY-ONLY     case class NextRoseTree(value: PosFiniteDouble, sizeParam: SizeParam, isValidFun: (PosFiniteDouble, SizeParam) => Boolean) extends RoseTree[PosFiniteDouble] {
+  //DOTTY-ONLY       def shrinks: LazyListOrStream[RoseTree[PosFiniteDouble]] = {
+  //DOTTY-ONLY         def resLazyListOrStream(theValue: PosFiniteDouble): LazyListOrStream[RoseTree[PosFiniteDouble]] = {
+  //DOTTY-ONLY           val dv: Double = theValue.value
+  //DOTTY-ONLY           if (dv == 1.0) LazyListOrStream.empty
+  //DOTTY-ONLY           else {
+  //DOTTY-ONLY             val nearest = PosFiniteDouble.ensuringValid(math.max(1.0, math.floor(dv)))
+  //DOTTY-ONLY             if (isValidFun(nearest, sizeParam)) Rose(nearest) #:: LazyListOrStream.empty
+  //DOTTY-ONLY             else LazyListOrStream.empty
+  //DOTTY-ONLY           }
+  //DOTTY-ONLY         }
+  //DOTTY-ONLY         resLazyListOrStream(value)
+  //DOTTY-ONLY       }
+  //DOTTY-ONLY     }
+  //DOTTY-ONLY
+  //DOTTY-ONLY     private val edges: List[PosFiniteDouble] = List(PosFiniteDouble.ensuringValid(1.0), PosFiniteDouble.ensuringValid(Double.MaxValue))
+  //DOTTY-ONLY
+  //DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosFiniteDouble], Randomizer) = {
+  //DOTTY-ONLY       val (allEdges, nextRnd) = Randomizer.shuffle(edges, rnd)
+  //DOTTY-ONLY       (allEdges.take(maxLength), nextRnd)
+  //DOTTY-ONLY     }
+  //DOTTY-ONLY
+  //DOTTY-ONLY     override def roseTreeOfEdge(edge: PosFiniteDouble, sizeParam: SizeParam, isValidFun: (PosFiniteDouble, SizeParam) => Boolean): RoseTree[PosFiniteDouble] =
+  //DOTTY-ONLY       NextRoseTree(edge, sizeParam, isValidFun)
+  //DOTTY-ONLY
+  //DOTTY-ONLY     def nextImpl(szp: SizeParam, isValidFun: (PosFiniteDouble, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[PosFiniteDouble], Randomizer) = {
+  //DOTTY-ONLY       val (anyPosFiniteDouble, rnd2) = rnd.nextPosFiniteDouble
+  //DOTTY-ONLY       val p = PosFiniteDouble.ensuringValid(anyPosFiniteDouble.value)
+  //DOTTY-ONLY       (NextRoseTree(p, szp, isValidFun), rnd2)
+  //DOTTY-ONLY     }
+  //DOTTY-ONLY
+  //DOTTY-ONLY     override def canonicals: LazyListOrStream[RoseTree[PosFiniteDouble]] =
+  //DOTTY-ONLY       LazyListOrStream(PosFiniteDouble.ensuringValid(1.0)).map(v => Rose(v))
+  //DOTTY-ONLY
+  //DOTTY-ONLY     override def toString = "Generator[org.scalactic.opaquetypes.PosDoubles.PosFiniteDouble]"
+  //DOTTY-ONLY
+  //DOTTY-ONLY     override def shrinksForValue(valueToShrink: PosFiniteDouble): Option[LazyListOrStream[RoseTree[PosFiniteDouble]]] =
+  //DOTTY-ONLY       Some(NextRoseTree(valueToShrink, SizeParam(PosZInt.ensuringValid(1), PosZInt.ensuringValid(0), PosZInt.ensuringValid(1)), isValid).shrinks)
+  //DOTTY-ONLY   }
+  //DOTTY-ONLY given given_Generator_opaquetypes_PosFiniteDouble: Generator[org.scalactic.opaquetypes.PosDoubles.PosFiniteDouble] = opaquetypesPosFiniteDoubleGenerator
 
   /**
     * A [[Generator]] that produces positive Doubles, including zero and infinity.
@@ -3371,6 +3428,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NonZeroInt] = nonZeroIntGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NonZeroInts.NonZeroInt independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNonZeroIntGenerator: Generator[org.scalactic.opaquetypes.NonZeroInts.NonZeroInt] =
+  //DOTTY-ONLY   nonZeroIntGenerator.map(i => org.scalactic.opaquetypes.NonZeroInts.NonZeroInt.ensuringValid(i.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NonZeroInt: Generator[org.scalactic.opaquetypes.NonZeroInts.NonZeroInt] = opaquetypesNonZeroIntGenerator
+
   /**
     * A [[Generator]] that produces Longs, excluding zero.
     */
@@ -3428,6 +3490,21 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NonZeroLong]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NonZeroLong] = nonZeroLongGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NonZeroLongs.NonZeroLong independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNonZeroLongGenerator: Generator[org.scalactic.opaquetypes.NonZeroLongs.NonZeroLong] =
+  //DOTTY-ONLY   nonZeroLongGenerator.map(l => org.scalactic.opaquetypes.NonZeroLongs.NonZeroLong.ensuringValid(l.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NonZeroLong: Generator[org.scalactic.opaquetypes.NonZeroLongs.NonZeroLong] = opaquetypesNonZeroLongGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NonZeroFloats.NonZeroFloat independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNonZeroFloatGenerator: Generator[org.scalactic.opaquetypes.NonZeroFloats.NonZeroFloat] =
+  //DOTTY-ONLY   nonZeroFloatGenerator.map(f => org.scalactic.opaquetypes.NonZeroFloats.NonZeroFloat.ensuringValid(f.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NonZeroFloat: Generator[org.scalactic.opaquetypes.NonZeroFloats.NonZeroFloat] = opaquetypesNonZeroFloatGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NonZeroDoubles.NonZeroDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNonZeroDoubleGenerator: Generator[org.scalactic.opaquetypes.NonZeroDoubles.NonZeroDouble] =
+  //DOTTY-ONLY   nonZeroDoubleGenerator.map(d => org.scalactic.opaquetypes.NonZeroDoubles.NonZeroDouble.ensuringValid(d.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NonZeroDouble: Generator[org.scalactic.opaquetypes.NonZeroDoubles.NonZeroDouble] = opaquetypesNonZeroDoubleGenerator
 
   /**
     * A [[Generator]] that produces negative Doubles, excluding zero but including infinity.
@@ -3507,6 +3584,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegDouble] = negDoubleGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegDoubles.NegDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegDoubleGenerator: Generator[org.scalactic.opaquetypes.NegDoubles.NegDouble] =
+  //DOTTY-ONLY   negDoubleGenerator.map(f => org.scalactic.opaquetypes.NegDoubles.NegDouble.ensuringValid(f.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegDouble: Generator[org.scalactic.opaquetypes.NegDoubles.NegDouble] = opaquetypesNegDoubleGenerator
+
   /**
     * A [[Generator]] that produces negative Doubles, excluding zero and infinity.
     */
@@ -3580,6 +3662,11 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegFiniteDouble]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegFiniteDouble] = negFiniteDoubleGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegDoubles.NegFiniteDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegFiniteDoubleGenerator: Generator[org.scalactic.opaquetypes.NegDoubles.NegFiniteDouble] =
+  //DOTTY-ONLY   negFiniteDoubleGenerator.map(f => org.scalactic.opaquetypes.NegDoubles.NegFiniteDouble.ensuringValid(f.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegFiniteDouble: Generator[org.scalactic.opaquetypes.NegDoubles.NegFiniteDouble] = opaquetypesNegFiniteDoubleGenerator
 
   /**
     * A [[Generator]] that produces negative Floats, excluding zero but including infinity.
@@ -3659,6 +3746,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegFloat] = negFloatGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegFloats.NegFloat independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegFloatGenerator: Generator[org.scalactic.opaquetypes.NegFloats.NegFloat] =
+  //DOTTY-ONLY   negFloatGenerator.map(f => org.scalactic.opaquetypes.NegFloats.NegFloat.ensuringValid(f.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegFloat: Generator[org.scalactic.opaquetypes.NegFloats.NegFloat] = opaquetypesNegFloatGenerator
+
   /**
     * A [[Generator]] that produces negative Floats, excluding zero and infinity.
     */
@@ -3733,6 +3825,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegFiniteFloat] = negFiniteFloatGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegFloats.NegFiniteFloat independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegFiniteFloatGenerator: Generator[org.scalactic.opaquetypes.NegFloats.NegFiniteFloat] =
+  //DOTTY-ONLY   negFiniteFloatGenerator.map(f => org.scalactic.opaquetypes.NegFloats.NegFiniteFloat.ensuringValid(f.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegFiniteFloat: Generator[org.scalactic.opaquetypes.NegFloats.NegFiniteFloat] = opaquetypesNegFiniteFloatGenerator
+
   /**
     * A [[Generator]] that produces negative Ints, excluding zero.
     */
@@ -3793,6 +3890,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegInt] = negIntGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegInts.NegInt independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegIntGenerator: Generator[org.scalactic.opaquetypes.NegInts.NegInt] =
+  //DOTTY-ONLY   negIntGenerator.map(i => org.scalactic.opaquetypes.NegInts.NegInt.ensuringValid(i.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegInt: Generator[org.scalactic.opaquetypes.NegInts.NegInt] = opaquetypesNegIntGenerator
+
   /**
     * A [[Generator]] that produces negative Longs, excluding zero.
     */
@@ -3852,6 +3954,11 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegLong]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegLong] = negLongGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegLongs.NegLong independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegLongGenerator: Generator[org.scalactic.opaquetypes.NegLongs.NegLong] =
+  //DOTTY-ONLY   negLongGenerator.map(l => org.scalactic.opaquetypes.NegLongs.NegLong.ensuringValid(l.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegLong: Generator[org.scalactic.opaquetypes.NegLongs.NegLong] = opaquetypesNegLongGenerator
 
   /**
     * A [[Generator]] that produces negative Doubles, including zero and infinity.
@@ -3939,6 +4046,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegZDouble] = negZDoubleGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegDoubles.NegZDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegZDoubleGenerator: Generator[org.scalactic.opaquetypes.NegDoubles.NegZDouble] =
+  //DOTTY-ONLY   negZDoubleGenerator.map(d => org.scalactic.opaquetypes.NegDoubles.NegZDouble.ensuringValid(d.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegZDouble: Generator[org.scalactic.opaquetypes.NegDoubles.NegZDouble] = opaquetypesNegZDoubleGenerator
+
   /**
     * A [[Generator]] that produces negative Doubles, including zero but excluding infinity.
     */
@@ -4020,6 +4132,11 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegZFiniteDouble]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegZFiniteDouble] = negZFiniteDoubleGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegDoubles.NegZFiniteDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegZFiniteDoubleGenerator: Generator[org.scalactic.opaquetypes.NegDoubles.NegZFiniteDouble] =
+  //DOTTY-ONLY   negZFiniteDoubleGenerator.map(d => org.scalactic.opaquetypes.NegDoubles.NegZFiniteDouble.ensuringValid(d.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegZFiniteDouble: Generator[org.scalactic.opaquetypes.NegDoubles.NegZFiniteDouble] = opaquetypesNegZFiniteDoubleGenerator
 
   /**
     * A [[Generator]] that produces negative Floats, including zero and infinity.
@@ -4107,6 +4224,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegZFloat] = negZFloatGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegFloats.NegZFloat independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegZFloatGenerator: Generator[org.scalactic.opaquetypes.NegFloats.NegZFloat] =
+  //DOTTY-ONLY   negZFloatGenerator.map(f => org.scalactic.opaquetypes.NegFloats.NegZFloat.ensuringValid(f.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegZFloat: Generator[org.scalactic.opaquetypes.NegFloats.NegZFloat] = opaquetypesNegZFloatGenerator
+
   /**
     * A [[Generator]] that produces negative Floats, including zero but excluding infinity.
     */
@@ -4189,6 +4311,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegZFiniteFloat] = negZFiniteFloatGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegFloats.NegZFiniteFloat independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegZFiniteFloatGenerator: Generator[org.scalactic.opaquetypes.NegFloats.NegZFiniteFloat] =
+  //DOTTY-ONLY   negZFiniteFloatGenerator.map(f => org.scalactic.opaquetypes.NegFloats.NegZFiniteFloat.ensuringValid(f.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegZFiniteFloat: Generator[org.scalactic.opaquetypes.NegFloats.NegZFiniteFloat] = opaquetypesNegZFiniteFloatGenerator
+
   /**
     * A [[Generator]] that produces negative Ints, including zero.
     */
@@ -4248,6 +4375,11 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegZInt]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegZInt] = negZIntGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegInts.NegZInt independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegZIntGenerator: Generator[org.scalactic.opaquetypes.NegInts.NegZInt] =
+  //DOTTY-ONLY   negZIntGenerator.map(i => org.scalactic.opaquetypes.NegInts.NegZInt.ensuringValid(i.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegZInt: Generator[org.scalactic.opaquetypes.NegInts.NegZInt] = opaquetypesNegZIntGenerator
 
   /**
     * A [[Generator]] that produces negative Longs, including zero.
@@ -4309,6 +4441,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegZLong] = negZLongGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegLongs.NegZLong independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegZLongGenerator: Generator[org.scalactic.opaquetypes.NegLongs.NegZLong] =
+  //DOTTY-ONLY   negZLongGenerator.map(i => org.scalactic.opaquetypes.NegLongs.NegZLong.ensuringValid(i.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegZLong: Generator[org.scalactic.opaquetypes.NegLongs.NegZLong] = opaquetypesNegZLongGenerator
+
   /**
     * A [[Generator]] that produces Chars, but only the ones that represent digits.
     */
@@ -4368,6 +4505,11 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NumericChar]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NumericChar] = numericCharGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.Numerics.NumericChar independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNumericCharGenerator: Generator[org.scalactic.opaquetypes.Numerics.NumericChar] =
+  //DOTTY-ONLY   numericCharGenerator.map(c => org.scalactic.opaquetypes.Numerics.NumericChar.ensuringValid(c.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NumericChar: Generator[org.scalactic.opaquetypes.Numerics.NumericChar] = opaquetypesNumericCharGenerator
 
   // Should throw IAE on negative size in all generators, even the ones that ignore size.
   /**
