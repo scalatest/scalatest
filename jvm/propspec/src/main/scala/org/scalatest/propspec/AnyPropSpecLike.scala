@@ -23,6 +23,8 @@ import Suite.autoTagClassAnnotations
  * Implementation trait for class <code>AnyPropSpec</code>, which represents
  * a suite of property-based tests.
  * 
+ * The expected type of a test in this trait is <code>Any</code>.
+ * 
  * <p>
  * <a href="AnyPropSpec.html"><code>AnyPropSpec</code></a> is a class, not a trait,
  * to minimize compile time given there is a slight compiler overhead to

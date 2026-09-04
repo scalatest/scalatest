@@ -30,6 +30,8 @@ import verbs.BehaveWord
  * a sister class to <code>org.scalatest.funspec.AnyFunSpec</code> that can pass a
  * fixture object into its tests.
  *
+ * The expected type of a test in this trait is <code>Fixture => Any</code>.
+ *
  * <p>
  * <a href="FixtureAnyFunSpec.html"><code>FixtureAnyFunSpec</code></a> is a class,
  * not a trait, to minimize compile time given there is a slight compiler

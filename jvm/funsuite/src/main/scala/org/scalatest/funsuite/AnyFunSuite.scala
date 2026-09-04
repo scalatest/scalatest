@@ -21,6 +21,8 @@ import org.scalatest.{Suite, Finders}
   * A suite of tests in which each test is represented as a function value. The &ldquo;<code>Fun</code>&rdquo; in <code>AnyFunSuite</code> stands
   * for &ldquo;function.&rdquo;
   *
+  * The expected type of a test in this class is <code>Any</code>.
+  *
   * <table><tr><td class="usage">
   * <strong>Recommended Usage</strong>:
   * For teams coming from xUnit, <code>AnyFunSuite</code> feels comfortable and familiar while still giving some benefits of BDD: <code>AnyFunSuite</code> makes it easy to

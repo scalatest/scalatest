@@ -24,6 +24,8 @@ import org.scalatest.Suite.autoTagClassAnnotations
   * a sister class to <code>org.scalatest.funsuite.AnyFunSuite</code> that can pass a
   * fixture object into its tests.
   *
+  * The expected type of a test in this trait is <code>Fixture => Any</code>.
+  *
   * <p>
   * <a href="FixtureAnyFunSuite.html"><code>FixtureAnyFunSuite</code></a> is a class,
   * not a trait, to minimize compile time given there is a slight compiler
