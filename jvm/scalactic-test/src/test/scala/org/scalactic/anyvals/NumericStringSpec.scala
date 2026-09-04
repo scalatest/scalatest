@@ -34,7 +34,7 @@ class NumericStringSpec extends funspec.AnyFunSpec with matchers.should.Matchers
   import prop._
 
   implicit val numericStringGen: Generator[NumericString] =
-    for (cs <- lists[Char](specificValues('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'))) yield {
+    for (cs <- lists[Char](/*DOTTY-ONLY using */ specificValues('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'))) yield {
       if (cs.isEmpty) NumericString("000")
       else NumericString.ensuringValid(cs.mkString)
     }
