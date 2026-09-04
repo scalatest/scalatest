@@ -208,6 +208,41 @@ class TripleEqualsSpec extends funspec.AnyFunSpec with NonImplicitAssertions {
       }
     }
 
+    describe("with a CheckingEqualizer") {
+
+      it("should compare using === and !== with a Constraint") {
+
+        new TripleEquals {
+
+          val ce = new CheckingEqualizer[Super](super1)
+
+          implicit val eqSup: Equality[Super] = Equality.default[Super]
+          val supSubConstraint: Super CanEqual Sub = unconstrainedEquality[Super, Sub]
+
+          assert(ce.===[Sub](sub1)(supSubConstraint))
+          assert(ce.!==[Sub](sub2)(supSubConstraint))
+        }
+      }
+
+      it("should compare against a Spread with === and !==") {
+
+        import org.scalactic.Tolerance._
+
+        new TripleEquals {
+
+          val ce = new CheckingEqualizer[Double](2.0)
+
+          assert(ce === (2.0 +- 0.1))
+          assert(!(ce === (5.0 +- 0.1)))
+          assert(ce !== (5.0 +- 0.1))
+          assert(!(ce !== (2.0 +- 0.1)))
+
+          assert(!(ce === (null: TripleEqualsSupport.Spread[Double])))
+          assert(ce !== (null: TripleEqualsSupport.Spread[Double]))
+        }
+      }
+    }
+
     describe("with TypeCheckedTripleEquals") {
 
 /*
