@@ -19,7 +19,7 @@ import org.scalactic.ColCompatHelper.Iterable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
-import org.scalactic.{Every, One, Many, StringNormalizations}
+import org.scalactic.{Every, One, Many, StringNormalizations, Resources}
 import org.scalactic.UnitSpec
 import org.scalactic.NormalizingEquality
 
@@ -144,6 +144,20 @@ class NonEmptyListSpec extends UnitSpec {
     the [IndexOutOfBoundsException] thrownBy {
       NonEmptyList(1, 2, 3)(3)
     } should have message "3"
+  }
+  it should "offer an ensuringValid factory method that" in {
+    NonEmptyList.ensuringValid(List(1)) shouldBe NonEmptyList(1)
+    NonEmptyList.ensuringValid(List(1, 2, 3)) shouldBe NonEmptyList(1, 2, 3)
+    NonEmptyList.ensuringValid(Vector(1)) shouldBe NonEmptyList(1)
+    NonEmptyList.ensuringValid(Vector(1, 2, 3)) shouldBe NonEmptyList(1, 2, 3)
+
+    the [AssertionError] thrownBy {
+      NonEmptyList.ensuringValid(List.empty[String])
+    } should have message Resources.nonEmptyListEmpty
+
+    the [AssertionError] thrownBy {
+      NonEmptyList.ensuringValid(Vector.empty[Int])
+    } should have message Resources.nonEmptyListEmpty
   }
   it should "have a length method" in {
     NonEmptyList(1).length shouldBe 1

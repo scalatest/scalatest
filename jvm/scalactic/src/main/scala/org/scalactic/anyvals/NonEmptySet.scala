@@ -24,6 +24,7 @@ import scala.reflect.ClassTag
 import scala.collection.immutable
 import scala.collection.mutable.ArrayBuffer
 import org.scalactic.Every
+import org.scalactic.Resources
 
 
 // Can't be a LinearSeq[T] because Builder would be able to create an empty one.
@@ -1058,6 +1059,19 @@ object NonEmptySet {
     set.headOption match {
       case None => None
       case Some(first) => Some(new NonEmptySet(scala.collection.immutable.Set.empty[T] ++ set))
+    }
+
+  /**
+    * Construct a <code>NonEmptySet</code> containing the elements of a given <code>GenSet</code>.
+    *
+    * @param set the <code>GenSet</code> with which to construct a <code>NonEmptySet</code>
+    * @return a <code>NonEmptySet</code> containing the elements of the given <code>GenSet</code>
+    * @throws AssertionError if the passed <code>GenSet</code> is empty
+    */
+  def ensuringValid[T](set: GenSet[T]): NonEmptySet[T] =
+    set.headOption match {
+      case None => throw new AssertionError(Resources.nonEmptySetEmpty)
+      case Some(first) => new NonEmptySet(scala.collection.immutable.Set.empty[T] ++ set)
     }
 
   import scala.language.implicitConversions
