@@ -38,7 +38,7 @@ final class IncludeWord {
    *                       ^
    * </pre>
    */ 
-  def apply(expectedSubstring: String): Matcher[String] =
+  /* DOTTY-ONLY infix */ def apply(expectedSubstring: String): Matcher[String] =
     new Matcher[String] {
       def apply(left: String): MatchResult =
         MatchResult(
@@ -59,10 +59,7 @@ final class IncludeWord {
    *                         ^
    * </pre>
    */
-  //DOTTY-ONLY infix def regex[T <: String](right: T): Matcher[T] = regex(right.r)
-  // SKIP-DOTTY-START 
-  def regex[T <: String](right: T): Matcher[T] = regex(right.r)
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def regex[T <: String](right: T): Matcher[T] = regex(right.r)
   
   /**
    * This method enables the following syntax:
@@ -72,10 +69,7 @@ final class IncludeWord {
    *                             ^
    * </pre>
    */
-  //DOTTY-ONLY infix def regex(regexWithGroups: RegexWithGroups) = 
-  // SKIP-DOTTY-START 	
-  def regex(regexWithGroups: RegexWithGroups) = 
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def regex(regexWithGroups: RegexWithGroups) = 
     new Matcher[String] {
       def apply(left: String): MatchResult = 
         includeRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
@@ -91,10 +85,7 @@ final class IncludeWord {
    *                        ^
    * </pre>
    */
-  //DOTTY-ONLY infix def regex(expectedRegex: Regex): Matcher[String] =
-  // SKIP-DOTTY-START 
-  def regex(expectedRegex: Regex): Matcher[String] =
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def regex(expectedRegex: Regex): Matcher[String] =
     new Matcher[String] {
       def apply(left: String): MatchResult =
         MatchResult(

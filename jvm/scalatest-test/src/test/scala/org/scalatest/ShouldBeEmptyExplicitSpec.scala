@@ -60,12 +60,12 @@ class ShouldBeEmptyExplicitSpec extends AnyFunSpec {
     describe("when work with 'list should be (empty)'") {
       
       it("should do nothing when list is empty") {
-        (emptyThing should be (empty)) (emptiness)
+        (emptyThing should be (empty)) (/* DOTTY-ONLY using */ emptiness)
       }
       
       it("should throw TestFailedException with correct stack depth when list is not empty") {
         val caught1 = intercept[TestFailedException] {
-          (nonEmptyThing should be (empty)) (emptiness)
+          (nonEmptyThing should be (empty)) (/* DOTTY-ONLY using */ emptiness)
         }
         assert(caught1.message === Some(wasNotEmpty(nonEmptyThing)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -77,12 +77,12 @@ class ShouldBeEmptyExplicitSpec extends AnyFunSpec {
     describe("when work with 'list should not be empty'") {
       
       it("should do nothing when list is not empty") {
-        (nonEmptyThing should not be empty) (emptiness)
+        (nonEmptyThing should not be empty) (/* DOTTY-ONLY using */ emptiness)
       }
       
       it("should throw TestFailedException with correct stack depth when list is empty") {
         val caught1 = intercept[TestFailedException] {
-          (emptyThing should not be empty) (emptiness)
+          (emptyThing should not be empty) (/* DOTTY-ONLY using */ emptiness)
         }
         assert(caught1.message === Some(wasEmpty(emptyThing)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -93,12 +93,12 @@ class ShouldBeEmptyExplicitSpec extends AnyFunSpec {
     describe("when work with 'list shouldBe empty'") {
       
       it("should do nothing when list is empty") {
-        (emptyThing shouldBe empty) (emptiness)
+        (emptyThing shouldBe empty) (/* DOTTY-ONLY using */ emptiness)
       }
       
       it("should throw TestFailedException with correct stack depth when list is not empty") {
         val caught1 = intercept[TestFailedException] {
-          (nonEmptyThing shouldBe empty) (emptiness)
+          (nonEmptyThing shouldBe empty) (/* DOTTY-ONLY using */ emptiness)
         }
         assert(caught1.message === Some(wasNotEmpty(nonEmptyThing)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -110,12 +110,12 @@ class ShouldBeEmptyExplicitSpec extends AnyFunSpec {
     describe("when work with 'list shouldNot be (empty)'") {
       
       it("should do nothing when list is not empty") {
-        (nonEmptyThing shouldNot be (empty)) (emptiness)
+        (nonEmptyThing shouldNot be (empty)) (/* DOTTY-ONLY using */ emptiness)
       }
       
       it("should throw TestFailedException with correct stack depth when list is empty") {
         val caught1 = intercept[TestFailedException] {
-          (emptyThing shouldNot be (empty)) (emptiness)
+          (emptyThing shouldNot be (empty)) (/* DOTTY-ONLY using */ emptiness)
         }
         assert(caught1.message === Some(wasEmpty(emptyThing)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -127,13 +127,13 @@ class ShouldBeEmptyExplicitSpec extends AnyFunSpec {
     describe("when work with 'all(xs) should be (empty)'") {
       
       it("should do nothing when all(xs) is empty") {
-        (all(List(emptyThing)) should be (empty)) (emptiness)
+        (all(List(emptyThing)) should be (empty)) (/* DOTTY-ONLY using */ emptiness)
       }
       
       it("should throw TestFailedException with correct stack depth when all(xs) is not empty") {
         val left1 = List(nonEmptyThing)
         val caught1 = intercept[TestFailedException] {
-          (all(left1) should be (empty)) (emptiness)
+          (all(left1) should be (empty)) (/* DOTTY-ONLY using */ emptiness)
         }
         assert(caught1.message === Some(allError(left1, wasNotEmpty(nonEmptyThing), thisLineNumber - 2)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -145,13 +145,13 @@ class ShouldBeEmptyExplicitSpec extends AnyFunSpec {
     describe("when work with 'all(xs) should not be empty'") {
       
       it("should do nothing when all(xs) is not empty") {
-        (all(List(nonEmptyThing)) should not be empty) (emptiness)
+        (all(List(nonEmptyThing)) should not be empty) (/* DOTTY-ONLY using */ emptiness)
       }
       
       it("should throw TestFailedException with correct stack depth when all(xs) is empty") {
         val left1 = List(emptyThing)
         val caught1 = intercept[TestFailedException] {
-          (all(left1) should not be empty) (emptiness)
+          (all(left1) should not be empty) (/* DOTTY-ONLY using */ emptiness)
         }
         assert(caught1.message === Some(allError(left1, wasEmpty(emptyThing), thisLineNumber - 2)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -163,13 +163,13 @@ class ShouldBeEmptyExplicitSpec extends AnyFunSpec {
     describe("when work with 'all(xs) shouldBe empty'") {
       
       it("should do nothing when all(xs) is empty") {
-        (all(List(emptyThing)) shouldBe empty) (emptiness)
+        (all(List(emptyThing)) shouldBe empty) (/* DOTTY-ONLY using */ emptiness)
       }
       
       it("should throw TestFailedException with correct stack depth when all(xs) is not empty") {
         val left1 = List(nonEmptyThing)
         val caught1 = intercept[TestFailedException] {
-          (all(left1) shouldBe empty) (emptiness)
+          (all(left1) shouldBe empty) (/* DOTTY-ONLY using */ emptiness)
         }
         assert(caught1.message === Some(allError(left1, wasNotEmpty(nonEmptyThing), thisLineNumber - 2)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -180,13 +180,13 @@ class ShouldBeEmptyExplicitSpec extends AnyFunSpec {
     describe("when work with 'all(xs) shouldNot be (empty)'") {
       
       it("should do nothing when all(xs) is not empty") {
-        (all(List(nonEmptyThing)) shouldNot be (empty)) (emptiness)
+        (all(List(nonEmptyThing)) shouldNot be (empty)) (/* DOTTY-ONLY using */ emptiness)
       }
       
       it("should throw TestFailedException with correct stack depth when all(xs) is empty") {
         val left1 = List(emptyThing)
         val caught1 = intercept[TestFailedException] {
-          (all(left1) shouldNot be (empty)) (emptiness)
+          (all(left1) shouldNot be (empty)) (/* DOTTY-ONLY using */ emptiness)
         }
         assert(caught1.message === Some(allError(left1, wasEmpty(emptyThing), thisLineNumber - 2)))
         assert(caught1.failedCodeFileName === Some(fileName))

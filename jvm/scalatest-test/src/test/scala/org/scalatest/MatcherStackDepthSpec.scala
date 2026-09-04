@@ -436,9 +436,9 @@ class MatcherStackDepthSpec extends AnyFunSuite with Matchers {
     e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
-  test("""(List("Hi", "Di", "Ho") should contain ("dee")) (after being lowerCased)""") {
+  test("""(List("Hi", "Di", "Ho") should contain ("dee")) (/* DOTTY-ONLY using */ after being lowerCased)""") {
     val e = intercept[exceptions.TestFailedException] {
-      (List("Hi", "Di", "Ho") should contain ("dee")) (after being lowerCased)
+      (List("Hi", "Di", "Ho") should contain ("dee")) (/* DOTTY-ONLY using */ after being lowerCased)
     }
     e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
     e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
@@ -476,9 +476,9 @@ class MatcherStackDepthSpec extends AnyFunSuite with Matchers {
     e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
-  test("""(Array("Doe", "Re", "Me") should contain oneOf ("X", "RAY", "BEAM")) (after being lowerCased)""") {
+  test("""(Array("Doe", "Re", "Me") should contain oneOf ("X", "RAY", "BEAM")) (/* DOTTY-ONLY using */ after being lowerCased)""") {
     val e = intercept[exceptions.TestFailedException] {
-      (Array("Doe", "Re", "Me") should contain oneOf ("X", "RAY", "BEAM")) (after being lowerCased)
+      (Array("Doe", "Re", "Me") should contain oneOf ("X", "RAY", "BEAM")) (/* DOTTY-ONLY using */ after being lowerCased)
     }
     e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
     e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
@@ -508,9 +508,9 @@ class MatcherStackDepthSpec extends AnyFunSuite with Matchers {
     e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
-  test("""(Array("Doe", "Ray", "Me") should contain oneElementOf List("X", "RAX", "BEAM")) (after being lowerCased)""") {
+  test("""(Array("Doe", "Ray", "Me") should contain oneElementOf List("X", "RAX", "BEAM")) (/* DOTTY-ONLY using */ after being lowerCased)""") {
     val e = intercept[exceptions.TestFailedException] {
-      (Array("Doe", "Ray", "Me") should contain oneElementOf List("X", "RAX", "BEAM")) (after being lowerCased)
+      (Array("Doe", "Ray", "Me") should contain oneElementOf List("X", "RAX", "BEAM")) (/* DOTTY-ONLY using */ after being lowerCased)
     }
     e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
     e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
@@ -590,9 +590,9 @@ class MatcherStackDepthSpec extends AnyFunSuite with Matchers {
     e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
-  test("""(Vector(" A", "B ") should contain atLeastOneOf ("d ", "o", "g")) (after being lowerCased and trimmed)""") {
+  test("""(Vector(" A", "B ") should contain atLeastOneOf ("d ", "o", "g")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)""") {
     val e = intercept[exceptions.TestFailedException] {
-      (Vector(" A", "B ") should contain atLeastOneOf ("d ", "o", "g")) (after being lowerCased and trimmed)
+      (Vector(" A", "B ") should contain atLeastOneOf ("d ", "o", "g")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
     }
     e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
     e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
@@ -622,9 +622,9 @@ class MatcherStackDepthSpec extends AnyFunSuite with Matchers {
     e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
-  test("""(Vector(" A", "B ") should contain atLeastOneElementOf List("d ", "o", "g")) (after being lowerCased and trimmed)""") {
+  test("""(Vector(" A", "B ") should contain atLeastOneElementOf List("d ", "o", "g")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)""") {
     val e = intercept[exceptions.TestFailedException] {
-      (Vector(" A", "B ") should contain atLeastOneElementOf List("d ", "o", "g")) (after being lowerCased and trimmed)
+      (Vector(" A", "B ") should contain atLeastOneElementOf List("d ", "o", "g")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
     }
     e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
     e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
