@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ final class ContainWord {
    *                     ^
    * </pre>
    **/
-  def apply(nullValue: Null): MatcherFactory1[Any, Containing] =
+  /* DOTTY-ONLY infix */ def apply(nullValue: Null): MatcherFactory1[Any, Containing] =
     new MatcherFactory1[Any, Containing] {
       def matcher[U <: Any : Containing]: Matcher[U] =
         new Matcher[U] {
@@ -71,7 +71,7 @@ final class ContainWord {
    *                             ^
    * </pre>
    **/ 
-  def apply(expectedElement: Any): MatcherFactory1[Any, Containing] =
+  /* DOTTY-ONLY infix */ def apply(expectedElement: Any): MatcherFactory1[Any, Containing] =
     new MatcherFactory1[Any, Containing] {
       def matcher[U <: Any : Containing]: Matcher[U] = 
         new Matcher[U] {
@@ -90,7 +90,7 @@ final class ContainWord {
       override def toString: String = "contain (" + Prettifier.default(expectedElement) + ")"
     }
 
-  def apply(expectedElement: String): MatcherFactory1[Any, Containing] =
+  /* DOTTY-ONLY infix */ def apply(expectedElement: String): MatcherFactory1[Any, Containing] =
     new MatcherFactory1[Any, Containing] {
       def matcher[U <: Any : Containing]: Matcher[U] = 
         new Matcher[U] {
@@ -136,10 +136,7 @@ final class ContainWord {
    * This will enable the matcher returned by this method to be used against any <code>Map</code> that has
    * the inferred key type.
    */
-  //DOTTY-ONLY infix def key[K](expectedKey: Any): MatcherFactory1[Any, KeyMapping] = 
-  // SKIP-DOTTY-START 
-  def key[K](expectedKey: Any): MatcherFactory1[Any, KeyMapping] =
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def key[K](expectedKey: Any): MatcherFactory1[Any, KeyMapping] =
     new MatcherFactory1[Any, KeyMapping] {
       def matcher[U <: Any : KeyMapping]: Matcher[U] = 
         new Matcher[U] {
@@ -186,10 +183,7 @@ final class ContainWord {
    * the inferred value type.
    *
    */
-  //DOTTY-ONLY infix def value[K](expectedValue: Any): MatcherFactory1[Any, ValueMapping] =
-  // SKIP-DOTTY-START 
-  def value[K](expectedValue: Any): MatcherFactory1[Any, ValueMapping] =
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def value[K](expectedValue: Any): MatcherFactory1[Any, ValueMapping] =
     new MatcherFactory1[Any, ValueMapping] {
       def matcher[U <: Any : ValueMapping]: Matcher[U] = 
         new Matcher[U] {
@@ -216,10 +210,7 @@ final class ContainWord {
    *                                ^
    * </pre>
    **/
-  //DOTTY-ONLY infix private[scalatest] def a[T](aMatcher: AMatcher[T]): Matcher[Iterable[T]] =
-  // SKIP-DOTTY-START 
-  private[scalatest] def a[T](aMatcher: AMatcher[T]): Matcher[Iterable[T]] =
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ private[scalatest] def a[T](aMatcher: AMatcher[T]): Matcher[Iterable[T]] =
     new Matcher[Iterable[T]] {
       def apply(left: Iterable[T]): MatchResult = {
         val matched = left.find(aMatcher(_).matches)
@@ -242,10 +233,7 @@ final class ContainWord {
    *                                ^
    * </pre>
    **/
-  //DOTTY-ONLY infix private[scalatest] def an[T](anMatcher: AnMatcher[T]): Matcher[Iterable[T]] =
-  // SKIP-DOTTY-START 
-  private[scalatest] def an[T](anMatcher: AnMatcher[T]): Matcher[Iterable[T]] =
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ private[scalatest] def an[T](anMatcher: AnMatcher[T]): Matcher[Iterable[T]] =
     new Matcher[Iterable[T]] {
       def apply(left: Iterable[T]): MatchResult = {
         val matched = left.find(anMatcher(_).matches)
@@ -260,7 +248,7 @@ final class ContainWord {
       override def toString: String = "contain an " + Prettifier.default(anMatcher)
     }
 
-  //DOTTY-ONLY infix def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Containing] = {
+  //DOTTY-ONLY infix def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(using prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Containing] = {
   // SKIP-DOTTY-START
   def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Containing] = {
   // SKIP-DOTTY-END  
@@ -286,10 +274,7 @@ final class ContainWord {
     }
   }
 
-  //DOTTY-ONLY infix def oneElementOf(elements: Iterable[Any]): MatcherFactory1[Any, Containing] = {
-  // SKIP-DOTTY-START
-  def oneElementOf(elements: Iterable[Any]): MatcherFactory1[Any, Containing] = {
-  // SKIP-DOTTY-END  
+  /* DOTTY-ONLY infix */ def oneElementOf(elements: Iterable[Any]): MatcherFactory1[Any, Containing] = {
     val right = elements.toList
     new MatcherFactory1[Any, Containing] {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
@@ -310,7 +295,7 @@ final class ContainWord {
     }
   }
 
-  //DOTTY-ONLY infix def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
+  //DOTTY-ONLY infix def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(using prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
   // SKIP-DOTTY-START
   def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
   // SKIP-DOTTY-END  
@@ -336,10 +321,7 @@ final class ContainWord {
     }
   }
 
-  //DOTTY-ONLY infix def atLeastOneElementOf(elements: Iterable[Any]): MatcherFactory1[Any, Aggregating] = {
-  // SKIP-DOTTY-START
-  def atLeastOneElementOf(elements: Iterable[Any]): MatcherFactory1[Any, Aggregating] = {
-  // SKIP-DOTTY-END  
+  /* DOTTY-ONLY infix */ def atLeastOneElementOf(elements: Iterable[Any]): MatcherFactory1[Any, Aggregating] = {
     val right = elements.toList
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
@@ -360,7 +342,7 @@ final class ContainWord {
     }
   }
   
-  //DOTTY-ONLY infix def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Containing] = {
+  //DOTTY-ONLY infix def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(using prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Containing] = {
   // SKIP-DOTTY-START
   def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Containing] = {
   // SKIP-DOTTY-END  
@@ -456,7 +438,7 @@ final class ContainWord {
     }
   }
   
-  //DOTTY-ONLY infix def only(right: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
+  //DOTTY-ONLY infix def only(right: Any*)(using prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
   // SKIP-DOTTY-START
   def only(right: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
   // SKIP-DOTTY-END  
@@ -484,7 +466,7 @@ final class ContainWord {
     }
   }
 
-  //DOTTY-ONLY infix def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Sequencing] = {
+  //DOTTY-ONLY infix def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*)(using prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Sequencing] = {
   // SKIP-DOTTY-START
   def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Sequencing] = {
   // SKIP-DOTTY-END  
@@ -510,7 +492,7 @@ final class ContainWord {
     }
   }
   
-  //DOTTY-ONLY infix def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
+  //DOTTY-ONLY infix def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(using prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
   // SKIP-DOTTY-START
   def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
   // SKIP-DOTTY-END
@@ -560,7 +542,7 @@ final class ContainWord {
     }
   }
   
-  //DOTTY-ONLY infix def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Sequencing] = {
+  //DOTTY-ONLY infix def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(using prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Sequencing] = {
   // SKIP-DOTTY-START
   def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Sequencing] = {
   // SKIP-DOTTY-END  
@@ -586,10 +568,7 @@ final class ContainWord {
     }
   }
 
-  //DOTTY-ONLY infix def inOrderElementsOf(elements: Iterable[Any]): MatcherFactory1[Any, Sequencing] = {
-  // SKIP-DOTTY-START
-  def inOrderElementsOf(elements: Iterable[Any]): MatcherFactory1[Any, Sequencing] = {
-  // SKIP-DOTTY-END  
+  /* DOTTY-ONLY infix */ def inOrderElementsOf(elements: Iterable[Any]): MatcherFactory1[Any, Sequencing] = {
     val right = elements.toList
     new MatcherFactory1[Any, Sequencing] {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
@@ -610,7 +589,7 @@ final class ContainWord {
     }
   }
   
-  //DOTTY-ONLY infix def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
+  //DOTTY-ONLY infix def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(using prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
   // SKIP-DOTTY-START
   def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
   // SKIP-DOTTY-END  
@@ -636,10 +615,7 @@ final class ContainWord {
     }
   }
 
-  //DOTTY-ONLY infix def atMostOneElementOf(elements: Iterable[Any]): MatcherFactory1[Any, Aggregating] = {
-  // SKIP-DOTTY-START
-  def atMostOneElementOf(elements: Iterable[Any]): MatcherFactory1[Any, Aggregating] = {
-  // SKIP-DOTTY-END  
+  /* DOTTY-ONLY infix */ def atMostOneElementOf(elements: Iterable[Any]): MatcherFactory1[Any, Aggregating] = {
     val right = elements.toList
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,12 +58,12 @@ class ShouldExistExplicitSpec extends AnyFunSpec {
   describe("The exist syntax when used with File") {
     
     it("should do nothing when the file exists") {
-      (something should exist) (existence)
+      (something should exist) (/* DOTTY-ONLY using */ existence)
     }
     
     it("should throw TFE with correct stack depth and message when the file does not exist") {
       val e = intercept[exceptions.TestFailedException] {
-        (nothing should exist) (existence)
+        (nothing should exist) (/* DOTTY-ONLY using */ existence)
       }
       assert(e.message === Some(doesNotExist(nothing)))
       assert(e.failedCodeFileName === Some(fileName))
@@ -71,12 +71,12 @@ class ShouldExistExplicitSpec extends AnyFunSpec {
     }
     
     it("should do nothing when it is used with not and the file does not exists") {
-      (nothing should not (exist)) (existence)
+      (nothing should not (exist)) (/* DOTTY-ONLY using */ existence)
     }
     
     it("should throw TFE with correct stack depth and message when it is used with not and  the file exists") {
       val e = intercept[exceptions.TestFailedException] {
-        (something should not (exist)) (existence)
+        (something should not (exist)) (/* DOTTY-ONLY using */ existence)
       }
       assert(e.message === Some(exists(something)))
       assert(e.failedCodeFileName === Some(fileName))
@@ -84,12 +84,12 @@ class ShouldExistExplicitSpec extends AnyFunSpec {
     }
     
     it("should do nothing when it is used with shouldNot and the file does not exists") {
-      (nothing shouldNot exist) (existence)
+      (nothing shouldNot exist) (/* DOTTY-ONLY using */ existence)
     }
     
     it("should throw TFE with correct stack depth and message when it is used with shouldNot and  the file exists") {
       val e = intercept[exceptions.TestFailedException] {
-        (something shouldNot exist) (existence)
+        (something shouldNot exist) (/* DOTTY-ONLY using */ existence)
       }
       assert(e.message === Some(exists(something)))
       assert(e.failedCodeFileName === Some(fileName))
@@ -100,13 +100,13 @@ class ShouldExistExplicitSpec extends AnyFunSpec {
   describe("The exist syntax when used with all(xs)") {
     
     it("should do nothing when the file exists") {
-      (all(List(something)) should exist) (existence)
+      (all(List(something)) should exist) (/* DOTTY-ONLY using */ existence)
     }
     
     it("should throw TFE with correct stack depth and message when the file does not exist") {
       val left = List(nothing)
       val e = intercept[exceptions.TestFailedException] {
-        (all(left) should exist) (existence)
+        (all(left) should exist) (/* DOTTY-ONLY using */ existence)
       }
       assert(e.message === Some(allError(left, doesNotExist(nothing), thisLineNumber - 2)))
       assert(e.failedCodeFileName === Some(fileName))
@@ -114,13 +114,13 @@ class ShouldExistExplicitSpec extends AnyFunSpec {
     }
     
     it("should do nothing when it is used with not and the file does not exists") {
-      (all(List(nothing)) should not (exist)) (existence)
+      (all(List(nothing)) should not (exist)) (/* DOTTY-ONLY using */ existence)
     }
     
     it("should throw TFE with correct stack depth and message when it is used with not and  the file exists") {
       val left = List(something)
       val e = intercept[exceptions.TestFailedException] {
-        (all(left) should not (exist)) (existence)
+        (all(left) should not (exist)) (/* DOTTY-ONLY using */ existence)
       }
       assert(e.message === Some(allError(left, exists(something), thisLineNumber - 2)))
       assert(e.failedCodeFileName === Some(fileName))
@@ -128,13 +128,13 @@ class ShouldExistExplicitSpec extends AnyFunSpec {
     }
     
     it("should do nothing when it is used with shouldNot and the file does not exists") {
-      (all(List(nothing)) shouldNot exist) (existence)
+      (all(List(nothing)) shouldNot exist) (/* DOTTY-ONLY using */ existence)
     }
     
     it("should throw TFE with correct stack depth and message when it is used with shouldNot and  the file exists") {
       val left = List(something)
       val e = intercept[exceptions.TestFailedException] {
-        (all(left) shouldNot exist) (existence)
+        (all(left) shouldNot exist) (/* DOTTY-ONLY using */ existence)
       }
       assert(e.message === Some(allError(left, exists(something), thisLineNumber - 2)))
       assert(e.failedCodeFileName === Some(fileName))

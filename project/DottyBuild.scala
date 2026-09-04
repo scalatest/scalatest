@@ -18,7 +18,7 @@ trait DottyBuild { this: BuildCommons =>
 
   // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.27/
   // lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.3.7")
+  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.3.8")
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     scalacOptions ++= List("-noindent", "-Xprint-suspension"/*, "-source", "future"*/)
@@ -208,6 +208,111 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).enablePlugins(ScalaNativePlugin)
 
+  lazy val scalatestDocDotty = project.in(file("dotty/scalatest-doc"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Documentation",
+      name := "scalatest-doc-dotty",
+      organization := "org.scalatest",
+      libraryDependencies ++= scalatestLibraryDependencies,
+      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
+      sourceDirectory := baseDirectory.value / "../../scalatest-doc/src/main",
+      javaSourceManaged := target.value / "java",
+      Compile / sourceGenerators += {
+        Def.task {
+          GenScalaTestDoc.genJava((Compile / javaSourceManaged).value, version.value, scalaVersion.value) ++
+          GenModulesDotty.genScalaTestCore((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
+          GenModulesDotty.genScalaTestMatchersCore((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
+          GenScalaTestDocDotty.genScala((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
+          GenTable.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          GenConfigMap.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJVM.genResources((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJVM.genFailureMessages((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          GenVersions.genScalaTestVersions((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          GenCompatibleClasses.genScalaTestMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "tools", version.value, scalaVersion.value) ++
+          GenFactoriesDotty.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "matchers" / "dsl", version.value, scalaVersion.value) ++
+          GenMatchers.genMainForDotty((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          GenGen.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
+          GenModulesDotty.apply("featurespec")((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
+          GenModulesDotty.apply("flatspec")((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
+          GenModulesDotty.apply("freespec")((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
+          GenModulesDotty.apply("funsuite")((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
+          GenModulesDotty.apply("funspec")((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
+          GenModulesDotty.apply("propspec")((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
+          GenModulesDotty.apply("refspec", Seq("org/scalatest/refspec"))((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
+          GenModulesDotty.apply("wordspec")((Compile / sourceManaged).value, version.value, scalaVersion.value)
+        }.taskValue
+      },
+      Compile / doc / sources :=
+        genDocSources((Compile / sources).value,
+                       Seq((Compile / sourceManaged).value,
+                           (Compile / scalaSource).value,
+                           (Compile / javaSource).value),
+                       docsrcDir.value),
+      docTaskSetting,
+      Compile / unmanagedResourceDirectories += baseDirectory.value / "../../scalatest-doc/src/main/html",
+      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+    ).dependsOn(
+      scalacticDotty
+    )
+
+  lazy val scalacticDocDotty = project.in(file("dotty/scalactic-doc"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(scalacticDocSettings: _*)
+    .settings(
+      projectTitle := "Scalactic Documentation",
+      name := "scalactic-doc-dotty",
+      organization := "org.scalactic",
+      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
+      sourceDirectory := baseDirectory.value / "../../jvm/scalactic/src/main",
+      javaSourceManaged := target.value / "java",
+      Compile / sourceGenerators += {
+        Def.task {
+          GenScalacticDocDotty.genScala((Compile / sourceManaged).value, version.value, scalaVersion.value)
+        }.taskValue
+      },
+      Compile / doc / sources :=
+        genDocSources((Compile / sources).value,
+                       Seq((Compile / sourceManaged).value,
+                           (Compile / scalaSource).value,
+                           (Compile / javaSource).value),
+                       docsrcDir.value),
+      docTaskSetting,
+      Compile / unmanagedResourceDirectories += baseDirectory.value / "../../jvm/scalactic/src/main/html",
+      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalactic",
+      "org.scalactic.anyvals",
+      "org.scalactic.opaquetypes",
+      "org.scalactic.exceptions",
+      "org.scalactic.source"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "org.scalactic.*",
+      "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "Scalactic Doc Dotty",
+      "Bundle-Description" -> "Scalactic is an open-source library for Scala projects.",
+      "Bundle-DocURL" -> "http://www.scalactic.org/",
+      "Bundle-Vendor" -> "Artima, Inc."
+    )
+  ).dependsOn(
+    scalacticDotty
+  )
+
   lazy val scalatestCoreDotty = project.in(file("dotty/core"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
@@ -373,7 +478,7 @@ trait DottyBuild { this: BuildCommons =>
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
       libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.4.0",
-      libraryDependencies += ("org.scala-native" %%% "test-interface" % nativeVersion),
+      libraryDependencies += ("org.scala-native" %%% "test-interface-sbt-defs" % nativeVersion),
       packageManagedSources,
       Compile / sourceGenerators += Def.task {
         GenScalaTestDotty.genScalaNative((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
@@ -1180,7 +1285,7 @@ trait DottyBuild { this: BuildCommons =>
         organization := "org.scalatest",
         moduleName := "scalatest-app",
         //libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
-        libraryDependencies += ("org.scala-native" %%% "test-interface" % nativeVersion),
+        libraryDependencies += ("org.scala-native" %%% "test-interface-sbt-defs" % nativeVersion),
         // include the scalacticDottyNative classes and resources in the jar
         Compile / packageBin / mappings ++= (scalacticDottyNative / Compile / packageBin / mappings).value,
         // include the scalacticDottyNative sources in the source jar

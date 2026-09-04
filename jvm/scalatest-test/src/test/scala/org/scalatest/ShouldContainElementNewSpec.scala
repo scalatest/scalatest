@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,9 +57,9 @@ class ShouldContainElementNewSpec extends AnyFunSpec with Explicitly {
         e2.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 5))
 
-        (Vector(2, 2) should contain (2)) (decided by defaultEquality[Int])
+        (Vector(2, 2) should contain (2)) (/* DOTTY-ONLY using */ decided by defaultEquality[Int])
         val e3 = intercept[TestFailedException] {
-          (Vector(2, 2) should not contain (2)) (decided by defaultEquality[Int])
+          (Vector(2, 2) should not contain (2)) (/* DOTTY-ONLY using */ decided by defaultEquality[Int])
         }
 
         e3.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
@@ -90,9 +90,9 @@ class ShouldContainElementNewSpec extends AnyFunSpec with Explicitly {
         e2.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 5))
 
-        ("22" should contain ('2')) (decided by defaultEquality[Char])
+        ("22" should contain ('2')) (/* DOTTY-ONLY using */ decided by defaultEquality[Char])
         val e3 = intercept[TestFailedException] {
-          ("22" should not contain ('2')) (decided by defaultEquality[Char])
+          ("22" should not contain ('2')) (/* DOTTY-ONLY using */ decided by defaultEquality[Char])
         }
 
         e3.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
@@ -123,9 +123,9 @@ class ShouldContainElementNewSpec extends AnyFunSpec with Explicitly {
         e2.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 5))
 
-        (Array(2, 2) should contain (2)) (decided by defaultEquality[Int])
+        (Array(2, 2) should contain (2)) (/* DOTTY-ONLY using */ decided by defaultEquality[Int])
         val e3 = intercept[TestFailedException] {
-          (Array(2, 2) should not contain (2)) (decided by defaultEquality[Int])
+          (Array(2, 2) should not contain (2)) (/* DOTTY-ONLY using */ decided by defaultEquality[Int])
         }
 
         e3.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
@@ -160,9 +160,9 @@ class ShouldContainElementNewSpec extends AnyFunSpec with Explicitly {
         e2.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 5))
 
-        (javaSet should contain (2)) (decided by defaultEquality[Int])
+        (javaSet should contain (2)) (/* DOTTY-ONLY using */ decided by defaultEquality[Int])
         val e3 = intercept[TestFailedException] {
-          (javaSet should not contain (2)) (decided by defaultEquality[Int])
+          (javaSet should not contain (2)) (/* DOTTY-ONLY using */ decided by defaultEquality[Int])
         }
 
         e3.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))

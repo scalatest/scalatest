@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import org.scalactic.ColCompatHelper.Iterable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
-import org.scalactic.{Every, One, Many, StringNormalizations}
+import org.scalactic.{Every, One, Many, StringNormalizations, Resources}
 import org.scalactic.UnitSpec
 import org.scalactic.NormalizingEquality
 
@@ -51,6 +51,14 @@ class NonEmptyMapSpec extends UnitSpec {
     NonEmptyMap.from(Map(1 -> "one").par) shouldBe Some(NonEmptyMap(1 -> "one"))
     NonEmptyMap.from(Map(1 -> "one", 2 -> "two", 3 -> "three").par) shouldBe Some(NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three"))
     // SKIP-SCALATESTJS,NATIVE-END
+  }
+  it should "offer an ensuringValid factory method that" in {
+    NonEmptyMap.ensuringValid(Map(1 -> "one")) shouldBe NonEmptyMap(1 -> "one")
+    NonEmptyMap.ensuringValid(Map(1 -> "one", 2 -> "two", 3 -> "three")) shouldBe NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three")
+
+    the [AssertionError] thrownBy {
+      NonEmptyMap.ensuringValid(Map.empty[Int, String])
+    } should have message Resources.nonEmptyMapEmpty
   }
   it can "be deconstructed with NonEmptyMap" in {
     NonEmptyMap(1 -> "one") match {

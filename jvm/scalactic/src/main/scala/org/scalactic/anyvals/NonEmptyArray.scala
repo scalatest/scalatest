@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1498,6 +1498,19 @@ object NonEmptyArray {
     seq.headOption match {
       case None => None
       case Some(first) => Some(new NonEmptyArray((Array.empty[T] :+ first) ++ seq.tail))
+    }
+
+  /**
+    * Construct a <code>NonEmptyArray</code> containing the elements of a given <code>GenSeq</code>, throwing an <code>AssertionError</code> if the <code>GenSeq</code> is empty.
+    *
+    * @param seq the <code>GenSeq</code> with which to construct a <code>NonEmptyArray</code>
+    * @return a <code>NonEmptyArray</code> containing the elements of the given <code>GenSeq</code>
+    * @throws AssertionError if the passed <code>GenSeq</code> is empty
+    */
+  def ensuringValid[T](seq: GenSeq[T])(implicit classTag: ClassTag[T]): NonEmptyArray[T] =
+    seq.headOption match {
+      case None => throw new AssertionError(Resources.nonEmptyArrayEmpty)
+      case Some(first) => new NonEmptyArray((Array.empty[T] :+ first) ++ seq.tail)
     }
 
   import scala.language.implicitConversions

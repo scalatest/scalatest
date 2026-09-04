@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,47 +74,47 @@ class ShouldBeReadableLogicalOrExplicitSpec extends AnyFunSpec {
       
       it("should do nothing when file is readable") {
         
-        (book should (be (readable) or be (book))) (readability)
-        (stone should (be (readable) or be (stone))) (readability)
-        (book should (be (readable) or be (stone))) (readability)
+        (book should (be (readable) or be (book))) (/* DOTTY-ONLY using */ readability)
+        (stone should (be (readable) or be (stone))) (/* DOTTY-ONLY using */ readability)
+        (book should (be (readable) or be (stone))) (/* DOTTY-ONLY using */ readability)
         
-        (book should (be (book) or be (readable))) (readability)
-        (book should (be (stone) or be (readable))) (readability)
-        (stone should (be (stone) or be (readable))) (readability)
+        (book should (be (book) or be (readable))) (/* DOTTY-ONLY using */ readability)
+        (book should (be (stone) or be (readable))) (/* DOTTY-ONLY using */ readability)
+        (stone should (be (stone) or be (readable))) (/* DOTTY-ONLY using */ readability)
         
-        (book should (be (readable) or equal (book))) (readability, defaultEquality)
-        (stone should (be (readable) or equal (stone))) (readability, defaultEquality)
-        (book should (be (readable) or equal (stone))) (readability, defaultEquality)
+        (book should (be (readable) or equal (book))) (/* DOTTY-ONLY using */ readability, defaultEquality)
+        (stone should (be (readable) or equal (stone))) (/* DOTTY-ONLY using */ readability, defaultEquality)
+        (book should (be (readable) or equal (stone))) (/* DOTTY-ONLY using */ readability, defaultEquality)
         
-        (book should (equal (book) or be (readable))) (defaultEquality, readability)
-        (book should (equal (stone) or be (readable))) (defaultEquality, readability)
-        (stone should (equal (stone) or be (readable))) (defaultEquality, readability)
+        (book should (equal (book) or be (readable))) (/* DOTTY-ONLY using */ defaultEquality, readability)
+        (book should (equal (stone) or be (readable))) (/* DOTTY-ONLY using */ defaultEquality, readability)
+        (stone should (equal (stone) or be (readable))) (/* DOTTY-ONLY using */ defaultEquality, readability)
       }
       
       it("should throw TestFailedException with correct stack depth when file is not readable") {
         val caught1 = intercept[TestFailedException] {
-          (stone should (be (readable) or be (book))) (readability)
+          (stone should (be (readable) or be (book))) (/* DOTTY-ONLY using */ readability)
         }
         assert(caught1.message === Some(wasNotReadable(stone) + ", and " + wasNotEqualTo(stone, book)))
         assert(caught1.failedCodeFileName === Some(fileName))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
-          (stone should (be (book) or be (readable))) (readability)
+          (stone should (be (book) or be (readable))) (/* DOTTY-ONLY using */ readability)
         }
         assert(caught2.message === Some(wasNotEqualTo(stone, book) + ", and " + wasNotReadable(stone)))
         assert(caught2.failedCodeFileName === Some(fileName))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
-          (stone should (be (readable) or equal (book))) (readability, defaultEquality)
+          (stone should (be (readable) or equal (book))) (/* DOTTY-ONLY using */ readability, defaultEquality)
         }
         assert(caught3.message === Some(wasNotReadable(stone) + ", and " + didNotEqual(stone, book)))
         assert(caught3.failedCodeFileName === Some(fileName))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
-          (stone should (equal (book) or be (readable))) (defaultEquality, readability)
+          (stone should (equal (book) or be (readable))) (/* DOTTY-ONLY using */ defaultEquality, readability)
         }
         assert(caught4.message === Some(didNotEqual(stone, book) + ", and " + wasNotReadable(stone)))
         assert(caught4.failedCodeFileName === Some(fileName))
@@ -125,47 +125,47 @@ class ShouldBeReadableLogicalOrExplicitSpec extends AnyFunSpec {
     describe("when work with 'file should not be readable'") {
       
       it("should do nothing when file is not readable") {
-        (stone should (not be readable or not be book)) (readability)
-        (book should (not be readable or not be stone)) (readability)
-        (stone should (not be readable or not be stone)) (readability)
+        (stone should (not be readable or not be book)) (/* DOTTY-ONLY using */ readability)
+        (book should (not be readable or not be stone)) (/* DOTTY-ONLY using */ readability)
+        (stone should (not be readable or not be stone)) (/* DOTTY-ONLY using */ readability)
         
-        (stone should (not be book or not be readable)) (readability)
-        (stone should (not be stone or not be readable)) (readability)
-        (book should (not be stone or not be readable)) (readability)
+        (stone should (not be book or not be readable)) (/* DOTTY-ONLY using */ readability)
+        (stone should (not be stone or not be readable)) (/* DOTTY-ONLY using */ readability)
+        (book should (not be stone or not be readable)) (/* DOTTY-ONLY using */ readability)
         
-        (stone should (not be readable or not equal book)) (readability, defaultEquality)
-        (book should (not be readable or not equal stone)) (readability, defaultEquality)
-        (stone should (not be readable or not equal stone)) (readability, defaultEquality)
+        (stone should (not be readable or not equal book)) (/* DOTTY-ONLY using */ readability, defaultEquality)
+        (book should (not be readable or not equal stone)) (/* DOTTY-ONLY using */ readability, defaultEquality)
+        (stone should (not be readable or not equal stone)) (/* DOTTY-ONLY using */ readability, defaultEquality)
         
-        (stone should (not equal book or not be readable)) (defaultEquality, readability)
-        (stone should (not equal stone or not be readable)) (defaultEquality, readability)
-        (book should (not equal stone or not be readable)) (defaultEquality, readability)
+        (stone should (not equal book or not be readable)) (/* DOTTY-ONLY using */ defaultEquality, readability)
+        (stone should (not equal stone or not be readable)) (/* DOTTY-ONLY using */ defaultEquality, readability)
+        (book should (not equal stone or not be readable)) (/* DOTTY-ONLY using */ defaultEquality, readability)
       }
       
       it("should throw TestFailedException with correct stack depth when file is readable") {
         val caught1 = intercept[TestFailedException] {
-          (book should (not be readable or not be book)) (readability)
+          (book should (not be readable or not be book)) (/* DOTTY-ONLY using */ readability)
         }
         assert(caught1.message === Some(wasReadable(book) + ", and " + wasEqualTo(book, book)))
         assert(caught1.failedCodeFileName === Some(fileName))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
-          (book should (not be book or not be readable)) (readability)
+          (book should (not be book or not be readable)) (/* DOTTY-ONLY using */ readability)
         }
         assert(caught2.message === Some(wasEqualTo(book, book) + ", and " + wasReadable(book)))
         assert(caught2.failedCodeFileName === Some(fileName))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
-          (book should (not be readable or not equal book)) (readability, defaultEquality)
+          (book should (not be readable or not equal book)) (/* DOTTY-ONLY using */ readability, defaultEquality)
         }
         assert(caught3.message === Some(wasReadable(book) + ", and " + equaled(book, book)))
         assert(caught3.failedCodeFileName === Some(fileName))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
-          (book should (not equal book or not be readable)) (defaultEquality, readability)
+          (book should (not equal book or not be readable)) (/* DOTTY-ONLY using */ defaultEquality, readability)
         }
         assert(caught4.message === Some(equaled(book, book) + ", and " + wasReadable(book)))
         assert(caught4.failedCodeFileName === Some(fileName))
@@ -176,27 +176,27 @@ class ShouldBeReadableLogicalOrExplicitSpec extends AnyFunSpec {
     describe("when work with 'all(xs) should be (readable)'") {
       
       it("should do nothing when all(xs) is readable") {
-        (all(List(book)) should (be (readable) or be (book))) (readability)
-        (all(List(stone)) should (be (readable) or be (stone))) (readability)
-        (all(List(book)) should (be (readable) or be (stone))) (readability)
+        (all(List(book)) should (be (readable) or be (book))) (/* DOTTY-ONLY using */ readability)
+        (all(List(stone)) should (be (readable) or be (stone))) (/* DOTTY-ONLY using */ readability)
+        (all(List(book)) should (be (readable) or be (stone))) (/* DOTTY-ONLY using */ readability)
         
-        (all(List(book)) should (be (book) or be (readable))) (readability)
-        (all(List(book)) should (be (stone) or be (readable))) (readability)
-        (all(List(stone)) should (be (stone) or be (readable))) (readability)
+        (all(List(book)) should (be (book) or be (readable))) (/* DOTTY-ONLY using */ readability)
+        (all(List(book)) should (be (stone) or be (readable))) (/* DOTTY-ONLY using */ readability)
+        (all(List(stone)) should (be (stone) or be (readable))) (/* DOTTY-ONLY using */ readability)
         
-        (all(List(book)) should (be (readable) or equal (book))) (readability, defaultEquality)
-        (all(List(stone)) should (be (readable) or equal (stone))) (readability, defaultEquality)
-        (all(List(book)) should (be (readable) or equal (stone))) (readability, defaultEquality)
+        (all(List(book)) should (be (readable) or equal (book))) (/* DOTTY-ONLY using */ readability, defaultEquality)
+        (all(List(stone)) should (be (readable) or equal (stone))) (/* DOTTY-ONLY using */ readability, defaultEquality)
+        (all(List(book)) should (be (readable) or equal (stone))) (/* DOTTY-ONLY using */ readability, defaultEquality)
         
-        (all(List(book)) should (equal (book) or be (readable))) (defaultEquality, readability)
-        (all(List(book)) should (equal (stone) or be (readable))) (defaultEquality, readability)
-        (all(List(stone)) should (equal (stone) or be (readable))) (defaultEquality, readability)
+        (all(List(book)) should (equal (book) or be (readable))) (/* DOTTY-ONLY using */ defaultEquality, readability)
+        (all(List(book)) should (equal (stone) or be (readable))) (/* DOTTY-ONLY using */ defaultEquality, readability)
+        (all(List(stone)) should (equal (stone) or be (readable))) (/* DOTTY-ONLY using */ defaultEquality, readability)
       }
       
       it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val left1 = List(stone)
         val caught1 = intercept[TestFailedException] {
-          (all(left1) should (be (book) or be (readable))) (readability)
+          (all(left1) should (be (book) or be (readable))) (/* DOTTY-ONLY using */ readability)
         }
         assert(caught1.message === Some(allError(wasNotEqualTo(stone, book) + ", and " + wasNotReadable(stone), thisLineNumber - 2, left1)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -204,7 +204,7 @@ class ShouldBeReadableLogicalOrExplicitSpec extends AnyFunSpec {
         
         val left2 = List(stone)
         val caught2 = intercept[TestFailedException] {
-          (all(left2) should (be (readable) or be (book))) (readability)
+          (all(left2) should (be (readable) or be (book))) (/* DOTTY-ONLY using */ readability)
         }
         assert(caught2.message === Some(allError(wasNotReadable(stone) + ", and " + wasNotEqualTo(stone, book), thisLineNumber - 2, left2)))
         assert(caught2.failedCodeFileName === Some(fileName))
@@ -212,7 +212,7 @@ class ShouldBeReadableLogicalOrExplicitSpec extends AnyFunSpec {
         
         val left3 = List(stone)
         val caught3 = intercept[TestFailedException] {
-          (all(left3) should (equal (book) or be (readable))) (defaultEquality, readability)
+          (all(left3) should (equal (book) or be (readable))) (/* DOTTY-ONLY using */ defaultEquality, readability)
         }
         assert(caught3.message === Some(allError(didNotEqual(stone, book) + ", and " + wasNotReadable(stone), thisLineNumber - 2, left3)))
         assert(caught3.failedCodeFileName === Some(fileName))
@@ -220,7 +220,7 @@ class ShouldBeReadableLogicalOrExplicitSpec extends AnyFunSpec {
         
         val left4 = List(stone)
         val caught4 = intercept[TestFailedException] {
-          (all(left4) should (be (readable) or equal (book))) (readability, defaultEquality)
+          (all(left4) should (be (readable) or equal (book))) (/* DOTTY-ONLY using */ readability, defaultEquality)
         }
         assert(caught4.message === Some(allError(wasNotReadable(stone) + ", and " + didNotEqual(stone, book), thisLineNumber - 2, left4)))
         assert(caught4.failedCodeFileName === Some(fileName))
@@ -230,27 +230,27 @@ class ShouldBeReadableLogicalOrExplicitSpec extends AnyFunSpec {
     
     describe("when work with 'all(xs) should not be sorted'") {
       it("should do nothing when xs is not sorted") {
-        (all(List(stone)) should (not be readable or not be book)) (readability)
-        (all(List(book)) should (not be readable or not be stone)) (readability)
-        (all(List(stone)) should (not be readable or not be stone)) (readability)
+        (all(List(stone)) should (not be readable or not be book)) (/* DOTTY-ONLY using */ readability)
+        (all(List(book)) should (not be readable or not be stone)) (/* DOTTY-ONLY using */ readability)
+        (all(List(stone)) should (not be readable or not be stone)) (/* DOTTY-ONLY using */ readability)
         
-        (all(List(stone)) should (not be book or not be readable)) (readability)
-        (all(List(stone)) should (not be stone or not be readable)) (readability)
-        (all(List(book)) should (not be stone or not be readable)) (readability)
+        (all(List(stone)) should (not be book or not be readable)) (/* DOTTY-ONLY using */ readability)
+        (all(List(stone)) should (not be stone or not be readable)) (/* DOTTY-ONLY using */ readability)
+        (all(List(book)) should (not be stone or not be readable)) (/* DOTTY-ONLY using */ readability)
         
-        (all(List(stone)) should (not be readable or not equal book)) (readability, defaultEquality)
-        (all(List(book)) should (not be readable or not equal stone)) (readability, defaultEquality)
-        (all(List(stone)) should (not be readable or not equal stone)) (readability, defaultEquality)
+        (all(List(stone)) should (not be readable or not equal book)) (/* DOTTY-ONLY using */ readability, defaultEquality)
+        (all(List(book)) should (not be readable or not equal stone)) (/* DOTTY-ONLY using */ readability, defaultEquality)
+        (all(List(stone)) should (not be readable or not equal stone)) (/* DOTTY-ONLY using */ readability, defaultEquality)
         
-        (all(List(stone)) should (not equal book or not be readable)) (defaultEquality, readability)
-        (all(List(stone)) should (not equal stone or not be readable)) (defaultEquality, readability)
-        (all(List(book)) should (not equal stone or not be readable)) (defaultEquality, readability)
+        (all(List(stone)) should (not equal book or not be readable)) (/* DOTTY-ONLY using */ defaultEquality, readability)
+        (all(List(stone)) should (not equal stone or not be readable)) (/* DOTTY-ONLY using */ defaultEquality, readability)
+        (all(List(book)) should (not equal stone or not be readable)) (/* DOTTY-ONLY using */ defaultEquality, readability)
       }
       
       it("should throw TestFailedException with correct stack depth when xs is not sorted") {
         val left1 = List(book)
         val caught1 = intercept[TestFailedException] {
-          (all(left1) should (not be book or not be readable)) (readability)
+          (all(left1) should (not be book or not be readable)) (/* DOTTY-ONLY using */ readability)
         }
         assert(caught1.message === Some(allError(wasEqualTo(book, book) + ", and " + wasReadable(book), thisLineNumber - 2, left1)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -258,7 +258,7 @@ class ShouldBeReadableLogicalOrExplicitSpec extends AnyFunSpec {
         
         val left2 = List(book)
         val caught2 = intercept[TestFailedException] {
-          (all(left2) should (not be readable or not be book)) (readability)
+          (all(left2) should (not be readable or not be book)) (/* DOTTY-ONLY using */ readability)
         }
         assert(caught2.message === Some(allError(wasReadable(book) + ", and " + wasEqualTo(book, book), thisLineNumber - 2, left2)))
         assert(caught2.failedCodeFileName === Some(fileName))
@@ -266,7 +266,7 @@ class ShouldBeReadableLogicalOrExplicitSpec extends AnyFunSpec {
         
         val left3 = List(book)
         val caught3 = intercept[TestFailedException] {
-          (all(left3) should (not equal book or not be readable)) (defaultEquality, readability)
+          (all(left3) should (not equal book or not be readable)) (/* DOTTY-ONLY using */ defaultEquality, readability)
         }
         assert(caught3.message === Some(allError(equaled(book, book) + ", and " + wasReadable(book), thisLineNumber - 2, left3)))
         assert(caught3.failedCodeFileName === Some(fileName))
@@ -274,7 +274,7 @@ class ShouldBeReadableLogicalOrExplicitSpec extends AnyFunSpec {
         
         val left4 = List(book)
         val caught4 = intercept[TestFailedException] {
-          (all(left4) should (not be readable or not equal book)) (readability, defaultEquality)
+          (all(left4) should (not be readable or not equal book)) (/* DOTTY-ONLY using */ readability, defaultEquality)
         }
         assert(caught4.message === Some(allError(wasReadable(book) + ", and " + equaled(book, book), thisLineNumber - 2, left4)))
         assert(caught4.failedCodeFileName === Some(fileName))

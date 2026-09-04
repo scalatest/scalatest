@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -271,7 +271,7 @@ class BeforeAndAfterEachTestDataSuite extends AnyFunSuite {
   }
   
   test("If super.run returns normally, but afterAll completes abruptly with an " +
-    "exception, runTest will return a status that contains that exception as an unreportedException (using BeforeAndAfterAllConfigMap).") {
+    "exception, runTest will return a status that contains that exception as an unreportedException (/* DOTTY-ONLY using */ BeforeAndAfterAllConfigMap).") {
     class MySuite extends AnyFunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       override def afterAll(cm: ConfigMap): Unit = { throw new NumberFormatException }
       test("test July") {}

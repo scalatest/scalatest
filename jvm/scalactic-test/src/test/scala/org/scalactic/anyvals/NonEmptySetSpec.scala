@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import org.scalactic.ColCompatHelper.Iterable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
-import org.scalactic.{Every, One, Many, StringNormalizations}
+import org.scalactic.{Every, One, Many, StringNormalizations, Resources}
 import org.scalactic.UnitSpec
 import org.scalactic.NormalizingEquality
 
@@ -53,6 +53,20 @@ class NonEmptySetSpec extends UnitSpec {
     NonEmptySet.from(Set("1").par) shouldBe Some(NonEmptySet("1"))
     NonEmptySet.from(Set(1, 2, 3).par) shouldBe Some(NonEmptySet(1, 2, 3))
     // SKIP-SCALATESTJS,NATIVE-END
+  }
+  it should "offer an ensuringValid factory method that" in {
+    NonEmptySet.ensuringValid(Set(1)) shouldBe NonEmptySet(1)
+    NonEmptySet.ensuringValid(Set(1, 2, 3)) shouldBe NonEmptySet(1, 2, 3)
+    NonEmptySet.ensuringValid(Vector(1).toSet) shouldBe NonEmptySet(1)
+    NonEmptySet.ensuringValid(Vector(1, 2, 3).toSet) shouldBe NonEmptySet(1, 2, 3)
+
+    the [AssertionError] thrownBy {
+      NonEmptySet.ensuringValid(Set.empty[String])
+    } should have message Resources.nonEmptySetEmpty
+
+    the [AssertionError] thrownBy {
+      NonEmptySet.ensuringValid(Set.empty[Int])
+    } should have message Resources.nonEmptySetEmpty
   }
   it can "be constructed with null elements" in {
     noException should be thrownBy NonEmptySet("hi", null, "ho")

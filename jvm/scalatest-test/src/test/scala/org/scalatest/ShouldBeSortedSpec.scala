@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -128,7 +128,7 @@ class ShouldBeSortedSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           outOfOrderInts should be (sorted)
         }
-        outOfOrderInts should be (sorted) (trueSortable)
+        (outOfOrderInts should be (sorted)) (/* DOTTY-ONLY using */ trueSortable)
       }
       
     }
@@ -219,7 +219,7 @@ class ShouldBeSortedSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           orderedInts should not be sorted
         }
-        (orderedInts should not be (sorted)) (falseSortable)
+        (orderedInts should not be (sorted)) (/* DOTTY-ONLY using */ falseSortable)
       }
     }
     
@@ -280,7 +280,7 @@ class ShouldBeSortedSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           outOfOrderInts shouldBe sorted
         }
-        (outOfOrderInts shouldBe (sorted)) (trueSortable)
+        (outOfOrderInts shouldBe (sorted)) (/* DOTTY-ONLY using */ trueSortable)
       }
       
     }
@@ -371,7 +371,7 @@ class ShouldBeSortedSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           orderedInts shouldNot be (sorted)
         }
-        orderedInts shouldNot be (sorted) (falseSortable)
+        (orderedInts shouldNot be (sorted)) (/* DOTTY-ONLY using */ falseSortable)
       }
     }
     
@@ -435,7 +435,7 @@ class ShouldBeSortedSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all(List(outOfOrderInts)) should be (sorted)
         }
-        all(List(outOfOrderInts)) should be (sorted) (trueSortable)
+        (all(List(outOfOrderInts)) should be (sorted)) (/* DOTTY-ONLY using */ trueSortable)
       }
     }
     
@@ -533,7 +533,7 @@ class ShouldBeSortedSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all(List(orderedInts)) should not be sorted
         }
-        (all(List(orderedInts)) should not be (sorted)) (falseSortable)
+        (all(List(orderedInts)) should not be (sorted)) (/* DOTTY-ONLY using */ falseSortable)
       }
     }
     
@@ -597,7 +597,7 @@ class ShouldBeSortedSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all(List(outOfOrderInts)) shouldBe sorted
         }
-        (all(List(outOfOrderInts)) shouldBe (sorted)) (trueSortable)
+        (all(List(outOfOrderInts)) shouldBe (sorted)) (/* DOTTY-ONLY using */ trueSortable)
       }
       
     }
@@ -696,7 +696,7 @@ class ShouldBeSortedSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all(List(orderedInts)) shouldNot be (sorted)
         }
-        all(List(orderedInts)) shouldNot be (sorted) (falseSortable)
+        (all(List(orderedInts)) shouldNot be (sorted)) (/* DOTTY-ONLY using */ falseSortable)
       }
     }
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,12 +66,12 @@ class ShouldBeWritableExplicitSpec extends AnyFunSpec {
     describe("when work with 'file should be (writable)'") {
       
       it("should do nothing when file is writable") {
-        (book should be (writable)) (writability)
+        (book should be (writable)) (/* DOTTY-ONLY using */ writability)
       }
       
       it("should throw TestFailedException with correct stack depth when file is not writable") {
         val caught1 = intercept[TestFailedException] {
-          (stone should be (writable)) (writability)
+          (stone should be (writable)) (/* DOTTY-ONLY using */ writability)
         }
         assert(caught1.message === Some(wasNotWritable(stone)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -83,12 +83,12 @@ class ShouldBeWritableExplicitSpec extends AnyFunSpec {
     describe("when work with 'file should not be writable'") {
       
       it("should do nothing when file is not writable") {
-        (stone should not be writable) (writability)
+        (stone should not be writable) (/* DOTTY-ONLY using */ writability)
       }
       
       it("should throw TestFailedException with correct stack depth when file is writable") {
         val caught1 = intercept[TestFailedException] {
-          (book should not be writable) (writability)
+          (book should not be writable) (/* DOTTY-ONLY using */ writability)
         }
         assert(caught1.message === Some(wasWritable(book)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -99,12 +99,12 @@ class ShouldBeWritableExplicitSpec extends AnyFunSpec {
     describe("when work with 'file shouldBe writable'") {
       
       it("should do nothing when file is writable") {
-        (book shouldBe writable) (writability)
+        (book shouldBe writable) (/* DOTTY-ONLY using */ writability)
       }
       
       it("should throw TestFailedException with correct stack depth when file is not writable") {
         val caught1 = intercept[TestFailedException] {
-          (stone shouldBe writable) (writability)
+          (stone shouldBe writable) (/* DOTTY-ONLY using */ writability)
         }
         assert(caught1.message === Some(wasNotWritable(stone)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -116,12 +116,12 @@ class ShouldBeWritableExplicitSpec extends AnyFunSpec {
     describe("when work with 'file shouldNot be (writable)'") {
       
       it("should do nothing when file is not writable") {
-        (stone shouldNot be (writable)) (writability)
+        (stone shouldNot be (writable)) (/* DOTTY-ONLY using */ writability)
       }
       
       it("should throw TestFailedException with correct stack depth when file is writable") {
         val caught1 = intercept[TestFailedException] {
-          (book shouldNot be (writable)) (writability)
+          (book shouldNot be (writable)) (/* DOTTY-ONLY using */ writability)
         }
         assert(caught1.message === Some(wasWritable(book)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -133,13 +133,13 @@ class ShouldBeWritableExplicitSpec extends AnyFunSpec {
     describe("when work with 'all(xs) should be (writable)'") {
       
       it("should do nothing when all(xs) is writable") {
-        (all(List(book)) should be (writable)) (writability)
+        (all(List(book)) should be (writable)) (/* DOTTY-ONLY using */ writability)
       }
       
       it("should throw TestFailedException with correct stack depth when all(xs) is not writable") {
         val left1 = List(stone)
         val caught1 = intercept[TestFailedException] {
-          (all(left1) should be (writable)) (writability)
+          (all(left1) should be (writable)) (/* DOTTY-ONLY using */ writability)
         }
         assert(caught1.message === Some(allError(left1, wasNotWritable(stone), thisLineNumber - 2)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -151,13 +151,13 @@ class ShouldBeWritableExplicitSpec extends AnyFunSpec {
     describe("when work with 'all(xs) should not be writable'") {
       
       it("should do nothing when all(xs) is not writable") {
-        (all(List(stone)) should not be writable) (writability)
+        (all(List(stone)) should not be writable) (/* DOTTY-ONLY using */ writability)
       }
       
       it("should throw TestFailedException with correct stack depth when all(xs) is writable") {
         val left1 = List(book)
         val caught1 = intercept[TestFailedException] {
-          (all(left1) should not be writable) (writability)
+          (all(left1) should not be writable) (/* DOTTY-ONLY using */ writability)
         }
         assert(caught1.message === Some(allError(left1, wasWritable(book), thisLineNumber - 2)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -169,13 +169,13 @@ class ShouldBeWritableExplicitSpec extends AnyFunSpec {
     describe("when work with 'all(xs) shouldBe writable'") {
       
       it("should do nothing when all(xs) is writable") {
-        (all(List(book)) shouldBe writable) (writability)
+        (all(List(book)) shouldBe writable) (/* DOTTY-ONLY using */ writability)
       }
       
       it("should throw TestFailedException with correct stack depth when all(xs) is not writable") {
         val left1 = List(stone)
         val caught1 = intercept[TestFailedException] {
-          (all(left1) shouldBe writable) (writability)
+          (all(left1) shouldBe writable) (/* DOTTY-ONLY using */ writability)
         }
         assert(caught1.message === Some(allError(left1, wasNotWritable(stone), thisLineNumber - 2)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -186,13 +186,13 @@ class ShouldBeWritableExplicitSpec extends AnyFunSpec {
     describe("when work with 'all(xs) shouldNot be (writable)'") {
       
       it("should do nothing when all(xs) is not writable") {
-        (all(List(stone)) shouldNot be (writable)) (writability)
+        (all(List(stone)) shouldNot be (writable)) (/* DOTTY-ONLY using */ writability)
       }
       
       it("should throw TestFailedException with correct stack depth when all(xs) is writable") {
         val left1 = List(book)
         val caught1 = intercept[TestFailedException] {
-          (all(left1) shouldNot be (writable)) (writability)
+          (all(left1) shouldNot be (writable)) (/* DOTTY-ONLY using */ writability)
         }
         assert(caught1.message === Some(allError(left1, wasWritable(book), thisLineNumber - 2)))
         assert(caught1.failedCodeFileName === Some(fileName))

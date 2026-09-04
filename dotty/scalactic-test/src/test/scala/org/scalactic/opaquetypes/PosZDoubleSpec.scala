@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 import scala.util.{Try, Success, Failure}
 
-import PosDoubles.{PosZDouble, PosDouble, PosZFiniteDouble}
+import PosDoubles.{PosZDouble, PosZFiniteDouble}
 import NegDoubles.NegZDouble
 
 trait PosZDoubleSpecSupport {
@@ -275,20 +275,20 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
 
     it("should offer a unary + method that is consistent with Double") {
       forAll { (p: PosZDouble) =>
-        (+p).toDouble shouldEqual (+(p.toDouble))
+        (+p).value shouldEqual (+(p.value))
       }
     }
 
     it("should offer a unary - method that returns NegZDouble") {
       forAll { (p: PosZDouble) =>
-        (-p) shouldEqual (NegZDouble.ensuringValid(-(p.toDouble)))
+        (-p) shouldEqual (NegZDouble.ensuringValid(-(p.value)))
       }
     }
 
     it("should offer a 'plus' method that takes a PosZDouble and returns a PosDouble") {
 
       forAll { (posZDouble1: PosZDouble, posZDouble2: PosZDouble) =>
-        (posZDouble1 plus posZDouble2) should === (PosZDouble.ensuringValid(posZDouble1.toDouble + posZDouble2.toDouble))
+        (posZDouble1 plus posZDouble2) should === (PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value))
       }
 
       val examples =
@@ -319,41 +319,40 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
 
     it("should offer 'min' and 'max' methods that are consistent with Double") {
       forAll { (pzdouble1: PosZDouble, pzdouble2: PosZDouble) =>
-        pzdouble1.max(pzdouble2).toDouble shouldEqual pzdouble1.toDouble.max(pzdouble2.toDouble)
-        pzdouble1.min(pzdouble2).toDouble shouldEqual pzdouble1.toDouble.min(pzdouble2.toDouble)
+        pzdouble1.max(pzdouble2).value shouldEqual pzdouble1.value.max(pzdouble2.value)
+        pzdouble1.min(pzdouble2).value shouldEqual pzdouble1.value.min(pzdouble2.value)
       }
     }
 
     it("should offer an 'isWhole' method that is consistent with Double") {
       forAll { (pzdouble: PosZDouble) =>
-        pzdouble.isWhole shouldEqual pzdouble.toDouble.isWhole
+        pzdouble.isWhole shouldEqual pzdouble.value.isWhole
       }
     }
 
     it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Double") {
       forAll { (pzdouble: PosZDouble) =>
-        pzdouble.round.toDouble shouldEqual pzdouble.toDouble.round
-        pzdouble.ceil.toDouble shouldEqual pzdouble.toDouble.ceil
-        pzdouble.floor.toDouble shouldEqual pzdouble.toDouble.floor
+        pzdouble.round.toDouble shouldEqual pzdouble.value.round
+        pzdouble.ceil.value shouldEqual pzdouble.value.ceil
+        pzdouble.floor.value shouldEqual pzdouble.value.floor
       }
     }
 
     it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Double") {
       forAll { (pzdouble: PosZDouble) =>
-        pzdouble.toRadians shouldEqual pzdouble.toDouble.toRadians
+        pzdouble.toRadians shouldEqual pzdouble.value.toRadians
       }
     }
 
     it("should offer widening methods for basic types that are consistent with Double") {
       forAll { (pzdouble: PosZDouble) =>
         def widen(value: Double): Double = value
-        widen(pzdouble) shouldEqual widen(pzdouble.toDouble)
+        widen(pzdouble.value) shouldEqual widen(pzdouble.value)
       }
     }
     it("should offer an ensuringValid method that takes a Double => Double, throwing AssertionError if the result is invalid") {
       PosZDouble(33.0).ensuringValid(_ + 1.0) shouldEqual PosZDouble(34.0)
-      PosZDouble(33.0).ensuringValid(_ => Double.PositiveInfinity) shouldEqual PosZDouble.ensuringValid(Double.PositiveInfinity)
-      an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ - PosZDouble.MaxValue - 1) }
+      an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ - PosZDouble.MaxValue.value - 1) }
       an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
       // SKIP-DOTTY-START
       // https://github.com/lampepfl/dotty/issues/6710

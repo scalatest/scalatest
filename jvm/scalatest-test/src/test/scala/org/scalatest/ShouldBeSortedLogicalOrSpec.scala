@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -153,7 +153,7 @@ class ShouldBeSortedLogicalOrSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           outOfOrderInts should (be (sorted) or equal (orderedInts))
         }
-        (outOfOrderInts should (be (sorted) or equal (orderedInts))) (trueSortable, defaultEquality)
+        (outOfOrderInts should (be (sorted) or equal (orderedInts))) (/* DOTTY-ONLY using */ trueSortable, defaultEquality)
       }
     }
     
@@ -226,7 +226,7 @@ class ShouldBeSortedLogicalOrSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           orderedInts should (not be (sorted) or not equal (orderedInts))
         }
-        (orderedInts should (not be (sorted) or not equal (orderedInts))) (falseSortable, defaultEquality)
+        (orderedInts should (not be (sorted) or not equal (orderedInts))) (/* DOTTY-ONLY using */ falseSortable, defaultEquality)
       }
     }
     
@@ -311,7 +311,7 @@ class ShouldBeSortedLogicalOrSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all(List(outOfOrderInts)) should (be (sorted) or equal (orderedInts))
         }
-        (all(List(outOfOrderInts)) should (be (sorted) or equal (orderedInts))) (trueSortable, defaultEquality)
+        (all(List(outOfOrderInts)) should (be (sorted) or equal (orderedInts))) (/* DOTTY-ONLY using */ trueSortable, defaultEquality)
       }
     }
     
@@ -392,7 +392,7 @@ class ShouldBeSortedLogicalOrSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all(List(orderedInts)) should (not be (sorted) or not equal (orderedInts))
         }
-        (all(List(orderedInts)) should (not be (sorted) or not equal (orderedInts))) (falseSortable, defaultEquality)
+        (all(List(orderedInts)) should (not be (sorted) or not equal (orderedInts))) (/* DOTTY-ONLY using */ falseSortable, defaultEquality)
       }
     }
     
