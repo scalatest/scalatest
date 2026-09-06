@@ -866,4 +866,17 @@ class AccumulationSpec extends UnitSpec with Accumulation with TypeCheckedTriple
     // which throws ClassCastException because a Vector is not a Set. Reproduces the bug:
     convertGenSetOnceToCombinable3(Set.empty[Bad[Every[Int]]]).combined shouldBe Good(Set.empty[Int])
   }
+
+  it should "cover the IterableOnce combined branch paths" in {
+    // Line 58: convertIterableOnceToCombinable — (Bad, Bad) in foldLeft needs a covariant
+    // IterableOnce whose element type is a plain G Or Every[ERR] (G != Nothing), so the
+    // more-specific Bad-only overload is not chosen. A List with a Good followed by two Bads
+    // makes the accumulator Bad on the second element and Bad ++ Bad on the third.
+    (List(Good(1), Bad(One(2)), Bad(One(3))): List[Int Or Every[Int]]).combined shouldBe Bad(Every(2, 3))
+
+    // Line 77 (convertIterableOnceToCombinable3): the empty case now builds
+    //   Iterable.empty[Nothing].asInstanceOf[ITRONCE[Nothing]]
+    // where immutable.Iterable.empty is a List, so the cast to List is safe.
+    convertIterableOnceToCombinable3(List.empty[Bad[Every[Int]]]).combined shouldBe Good(List.empty[Int])
+  }
 }
