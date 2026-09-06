@@ -247,6 +247,17 @@ class PrettifierSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
     it("should pretty print array ops") {
       Prettifier.default(ArrayHelper.arrayOpsOfInt(Array(1, 2, 3))) should be ("Array(1, 2, 3)")
     }
+    it("should report Array as the className of a deep-wrapped array") {
+      // className is protected[this] in Scala 2.13 collections, so it is only
+      // observable through toString, which uses mkString(className + "(" ... ).
+      ArrayHelper.deep(Array(1, 2, 3)).toString should be ("Array(1, 2, 3)")
+    }
+    it("should handle nested arrays in a deep-wrapped array") {
+      val wrapped = ArrayHelper.deep(Array(Array(1, 2), Array(3)))
+      wrapped.length should be (2)
+      wrapped(0).toString should be ("Array(1, 2)")
+      wrapped(1).toString should be ("Array(3)")
+    }
     it("should show null as \"null\"") {
       Prettifier.default(null) should be ("null")
     }
