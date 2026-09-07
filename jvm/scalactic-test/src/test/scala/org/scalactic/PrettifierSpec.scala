@@ -99,6 +99,9 @@ class PrettifierSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
     it("should show null as \"null\"") {
       Prettifier.basic(null) should be ("null")
     }
+    it("should render null as \"null\" inside arrays") {
+      Prettifier.basic(Array("1", null)) should be ("Array(1, null)")
+    }
     it("should clarify the Unit value") {
       Prettifier.basic(()) should be ("<(), the Unit value>")
     }
