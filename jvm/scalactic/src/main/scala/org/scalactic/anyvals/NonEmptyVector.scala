@@ -151,7 +151,7 @@ import org.scalactic.Every
   *
   * @tparam T the type of elements contained in this <code>NonEmptyVector</code>
   */
-//DOTTY-ONLY @deprecated("Please use org.scalactic.opaques.NonEmptyVector.", "3.3.0")  
+//DOTTY-ONLY @deprecated("Please use org.scalactic.opaquetypes.NonEmptyVector.", "3.3.0")  
 final class NonEmptyVector[+T] private (val toVector: Vector[T]) extends AnyVal {
 
   /**
@@ -1559,7 +1559,7 @@ final class NonEmptyVector[+T] private (val toVector: Vector[T]) extends AnyVal 
 /**
   * Companion object for class <code>NonEmptyVector</code>.
   */
-//DOTTY-ONLY @deprecated("Please use org.scalactic.opaques.NonEmptyVector.", "3.3.0")  
+//DOTTY-ONLY @deprecated("Please use org.scalactic.opaquetypes.NonEmptyVector.", "3.3.0")  
 object NonEmptyVector {
 
   /**

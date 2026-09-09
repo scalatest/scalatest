@@ -15,7 +15,7 @@ import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 trait JsBuild { this: BuildCommons =>
 
   private lazy val jsSharedSettings = Seq(
-    crossScalaVersions := Seq("2.13.17", "2.12.20")
+    crossScalaVersions := Seq("2.13.18", "2.12.21")
   )
 
   lazy val deleteJsDependenciesTask = taskKey[Unit]("Delete JS_DEPENDENCIES")
@@ -209,7 +209,7 @@ trait JsBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task{
           GenCommonTestJS.genMain((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
-          GenCompatibleClasses.genTest((Compile / sourceManaged).value, version.value, scalaVersion.value)
+          GenCompatibleClasses.genTest((Compile / sourceManaged).value, version.value, scalaVersion.value, scalaJS = true)
         }.taskValue
       },
       publishArtifact := false,

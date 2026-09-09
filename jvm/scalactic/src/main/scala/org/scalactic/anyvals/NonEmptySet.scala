@@ -151,7 +151,7 @@ import org.scalactic.Every
   *
   * @tparam T the type of elements contained in this <code>NonEmptySet</code>
   */
-//DOTTY-ONLY @deprecated("Please use org.scalactic.opaques.NonEmptySet.", "3.3.0")  
+//DOTTY-ONLY @deprecated("Please use org.scalactic.opaquetypes.NonEmptySet.", "3.3.0")  
 final class NonEmptySet[T] private (val toSet: Set[T]) extends AnyVal {
 
   /**
@@ -1022,7 +1022,7 @@ final class NonEmptySet[T] private (val toSet: Set[T]) extends AnyVal {
 /**
   * Companion object for class <code>NonEmptySet</code>.
   */
-//DOTTY-ONLY @deprecated("Please use org.scalactic.opaques.NonEmptySet.", "3.3.0")  
+//DOTTY-ONLY @deprecated("Please use org.scalactic.opaquetypes.NonEmptySet.", "3.3.0")  
 object NonEmptySet {
 
   /**

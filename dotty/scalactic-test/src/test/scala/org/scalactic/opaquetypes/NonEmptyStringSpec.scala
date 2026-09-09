@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic.opaques
+package org.scalactic.opaquetypes
 
 import org.scalactic.ColCompatHelper.Iterable
 import scala.collection.mutable.Buffer
@@ -22,8 +22,9 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
 import org.scalactic.NormalizingEquality
+import org.scalactic.Resources
 
-import org.scalactic.opaques.NonEmptyStrings.NonEmptyString
+import org.scalactic.opaquetypes.NonEmptyStrings.NonEmptyString
 
 class NonEmptyStringSpec extends UnitSpec {
   "A NonEmptyString" can "be constructed with one character" in {
@@ -57,6 +58,12 @@ class NonEmptyStringSpec extends UnitSpec {
     threesie2(0) shouldBe '1'
     threesie2(1) shouldBe '2'
     threesie2(2) shouldBe '3'
+  }
+  it can "be constructed with ensuringValid method" in {
+    NonEmptyString.ensuringValid("hi") shouldBe NonEmptyString("hi")
+    the [AssertionError] thrownBy {
+      NonEmptyString.ensuringValid("")
+    } should have message Resources.nonEmptyStringEmpty
   }
   it can "be constructed from a Iterable via the from method on NonEmptyString singleton" in {
     NonEmptyString.from("") shouldBe None

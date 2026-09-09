@@ -121,7 +121,7 @@ import org.scalactic.{Every, Resources}
   *
   * @tparam T the type of elements contained in this <code>NonEmptyArray</code>
   */
-//DOTTY-ONLY @deprecated("Please use org.scalactic.opaques.NonEmptyArray.", "3.3.0")
+//DOTTY-ONLY @deprecated("Please use org.scalactic.opaquetypes.NonEmptyArray.", "3.3.0")
 final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
 
   /**
@@ -220,7 +220,11 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     *
     * @return the element of this <code>NonEmptyArray</code> at index <code>idx</code>, where 0 indicates the first element.
     */
-  final def apply(idx: Int): T = toArray(idx)
+  final def apply(idx: Int): T = {
+    if (idx < 0 || idx >= toArray.length)
+      throw new IndexOutOfBoundsException(Resources.indexOutOfBounds(idx, toArray.length))
+    toArray(idx)
+  }
 
   /**
     * Finds the first element of this <code>NonEmptyArray</code> for which the given partial function is defined, if any, and applies the partial function to it.
@@ -1458,7 +1462,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
 /**
   * Companion object for class <code>NonEmptyArray</code>.
   */
-//DOTTY-ONLY @deprecated("Please use org.scalactic.opaques.NonEmptyArray.", "3.3.0")  
+//DOTTY-ONLY @deprecated("Please use org.scalactic.opaquetypes.NonEmptyArray.", "3.3.0")  
 object NonEmptyArray {
 
   /**

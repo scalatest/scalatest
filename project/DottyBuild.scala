@@ -18,7 +18,7 @@ trait DottyBuild { this: BuildCommons =>
 
   // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.27/
   // lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.3.6")
+  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.3.7")
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     scalacOptions ++= List("-noindent", "-Xprint-suspension"/*, "-source", "future"*/)
@@ -72,7 +72,7 @@ trait DottyBuild { this: BuildCommons =>
     OsgiKeys.exportPackage := Seq(
       "org.scalactic",
       "org.scalactic.anyvals",
-      "org.scalactic.opaques",
+      "org.scalactic.opaquetypes",
       "org.scalactic.exceptions",
       "org.scalactic.source"
     ),
@@ -130,7 +130,7 @@ trait DottyBuild { this: BuildCommons =>
     OsgiKeys.exportPackage := Seq(
       "org.scalactic",
       "org.scalactic.anyvals",
-      "org.scalactic.opaques",
+      "org.scalactic.opaquetypes",
       "org.scalactic.exceptions",
       "org.scalactic.source"
     ),
@@ -188,7 +188,7 @@ trait DottyBuild { this: BuildCommons =>
     OsgiKeys.exportPackage := Seq(
       "org.scalactic",
       "org.scalactic.anyvals",
-      "org.scalactic.opaques",
+      "org.scalactic.opaquetypes",
       "org.scalactic.exceptions",
       "org.scalactic.source"
     ),
@@ -995,7 +995,7 @@ trait DottyBuild { this: BuildCommons =>
         "org.scalatest.wordspec",
         "org.scalactic",
         "org.scalactic.anyvals",
-        "org.scalactic.opaques",
+        "org.scalactic.opaquetypes",
         "org.scalactic.exceptions",
         "org.scalactic.source"
       ),
@@ -1135,7 +1135,7 @@ trait DottyBuild { this: BuildCommons =>
         "org.scalatest.wordspec",
         "org.scalactic",
         "org.scalactic.anyvals",
-        "org.scalactic.opaques",
+        "org.scalactic.opaquetypes",
         "org.scalactic.exceptions",
         "org.scalactic.source"
       ),
@@ -1273,7 +1273,7 @@ trait DottyBuild { this: BuildCommons =>
           "org.scalatest.wordspec",
           "org.scalactic",
           "org.scalactic.anyvals",
-          "org.scalactic.opaques",
+          "org.scalactic.opaquetypes",
           "org.scalactic.exceptions",
           "org.scalactic.source"
         ),

@@ -22,6 +22,7 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
 import org.scalactic.NormalizingEquality
+import org.scalactic.Resources
 
 import org.scalatest.CompatParColls.Converters._
 
@@ -78,6 +79,10 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123")(1) shouldEqual '2'
     NonEmptyString("hi")(0) shouldEqual 'h'
     NonEmptyString("789")(2) shouldEqual '9'
+
+    the [AssertionError] thrownBy {
+      NonEmptyString("")
+    } should have message Resources.nonEmptyStringEmpty
 
     // SKIP-SCALATESTJS,NATIVE-START
     val iobe = 
