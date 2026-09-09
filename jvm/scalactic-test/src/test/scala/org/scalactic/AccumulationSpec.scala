@@ -770,4 +770,113 @@ class AccumulationSpec extends UnitSpec with Accumulation with TypeCheckedTriple
     gimme22("abcdefghijklmnopqrstuv", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v') shouldBe Good(X22(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1))
     gimme22("z", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v') shouldBe Bad(Every('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v'))
   }
+
+  it should "cover the remaining withGoodCurried branch paths for all arities" in {
+    // Arity 2: first arg Bad, second Good (covers line 489: funOrError Bad + last Good)
+    gimme2("b", 'a', 'b') shouldBe Bad(One('a'))
+
+    // Arity 3: first Bad, rest Good (line 531) and all-but-last Good, last Bad (line 535)
+    gimme3("bc", 'a', 'b', 'c') shouldBe Bad(One('a'))
+    gimme3("ab", 'a', 'b', 'c') shouldBe Bad(One('c'))
+
+    // Arity 4
+    gimme4("bcd", 'a', 'b', 'c', 'd') shouldBe Bad(One('a'))
+    gimme4("abc", 'a', 'b', 'c', 'd') shouldBe Bad(One('d'))
+
+    // Arity 5
+    gimme5("bcde", 'a', 'b', 'c', 'd', 'e') shouldBe Bad(One('a'))
+    gimme5("abcd", 'a', 'b', 'c', 'd', 'e') shouldBe Bad(One('e'))
+
+    // Arity 6
+    gimme6("bcdef", 'a', 'b', 'c', 'd', 'e', 'f') shouldBe Bad(One('a'))
+    gimme6("abcde", 'a', 'b', 'c', 'd', 'e', 'f') shouldBe Bad(One('f'))
+
+    // Arity 7
+    gimme7("bcdefg", 'a', 'b', 'c', 'd', 'e', 'f', 'g') shouldBe Bad(One('a'))
+    gimme7("abcdef", 'a', 'b', 'c', 'd', 'e', 'f', 'g') shouldBe Bad(One('g'))
+
+    // Arity 8
+    gimme8("bcdefgh", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h') shouldBe Bad(One('a'))
+    gimme8("abcdefg", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h') shouldBe Bad(One('h'))
+
+    // Arity 9
+    gimme9("bcdefghi", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i') shouldBe Bad(One('a'))
+    gimme9("abcdefgh", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i') shouldBe Bad(One('i'))
+
+    // Arity 10
+    gimme10("bcdefghij", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j') shouldBe Bad(One('a'))
+    gimme10("abcdefghi", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j') shouldBe Bad(One('j'))
+
+    // Arity 11
+    gimme11("bcdefghijk", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k') shouldBe Bad(One('a'))
+    gimme11("abcdefghij", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k') shouldBe Bad(One('k'))
+
+    // Arity 12
+    gimme12("bcdefghijkl", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l') shouldBe Bad(One('a'))
+    gimme12("abcdefghijk", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l') shouldBe Bad(One('l'))
+
+    // Arity 13
+    gimme13("bcdefghijklm", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm') shouldBe Bad(One('a'))
+    gimme13("abcdefghijkl", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm') shouldBe Bad(One('m'))
+
+    // Arity 14
+    gimme14("bcdefghijklmn", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n') shouldBe Bad(One('a'))
+    gimme14("abcdefghijklm", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n') shouldBe Bad(One('n'))
+
+    // Arity 15
+    gimme15("bcdefghijklmno", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o') shouldBe Bad(One('a'))
+    gimme15("abcdefghijklmn", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o') shouldBe Bad(One('o'))
+
+    // Arity 16
+    gimme16("bcdefghijklmnop", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p') shouldBe Bad(One('a'))
+    gimme16("abcdefghijklmno", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p') shouldBe Bad(One('p'))
+
+    // Arity 17
+    gimme17("bcdefghijklmnopq", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q') shouldBe Bad(One('a'))
+    gimme17("abcdefghijklmnop", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q') shouldBe Bad(One('q'))
+
+    // Arity 18
+    gimme18("bcdefghijklmnopqr", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r') shouldBe Bad(One('a'))
+    gimme18("abcdefghijklmnopq", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r') shouldBe Bad(One('r'))
+
+    // Arity 19
+    gimme19("bcdefghijklmnopqrs", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's') shouldBe Bad(One('a'))
+    gimme19("abcdefghijklmnopqr", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's') shouldBe Bad(One('s'))
+
+    // Arity 20
+    gimme20("bcdefghijklmnopqrst", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't') shouldBe Bad(One('a'))
+    gimme20("abcdefghijklmnopqrs", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't') shouldBe Bad(One('t'))
+
+    // Arity 21
+    gimme21("bcdefghijklmnopqrstu", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u') shouldBe Bad(One('a'))
+    gimme21("abcdefghijklmnopqrst", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u') shouldBe Bad(One('u'))
+
+    // Arity 22
+    gimme22("bcdefghijklmnopqrstuv", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v') shouldBe Bad(One('a'))
+    gimme22("abcdefghijklmnopqrstu", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v') shouldBe Bad(One('v'))
+  }
+
+  it should "cover the GenSet combined branch paths" in {
+    // Line 224: convertGenSetToCombinable — (Bad, Bad) in foldLeft needs a mixed Set
+    // with at least 2 Bad elements so the accumulator is Bad when the second Bad arrives.
+    (Set(Good(1), Bad(One(2)), Bad(One(3))): Set[Int Or Every[Int]]).combined shouldBe Bad(Every(2, 3))
+
+    // Line 284 (convertGenSetOnceToCombinable3): the empty case previously built
+    //   Vector.empty[Nothing].asInstanceOf[SET[Nothing]]
+    // which throws ClassCastException because a Vector is not a Set. Reproduces the bug:
+    convertGenSetOnceToCombinable3(Set.empty[Bad[Every[Int]]]).combined shouldBe Good(Set.empty[Int])
+  }
+
+  it should "cover the IterableOnce combined branch paths" in {
+    // Line 58: convertIterableOnceToCombinable — (Bad, Bad) in foldLeft needs a covariant
+    // IterableOnce whose element type is a plain G Or Every[ERR] (G != Nothing), so the
+    // more-specific Bad-only overload is not chosen. A List with a Good followed by two Bads
+    // makes the accumulator Bad on the second element and Bad ++ Bad on the third.
+    (List(Good(1), Bad(One(2)), Bad(One(3))): List[Int Or Every[Int]]).combined shouldBe Bad(Every(2, 3))
+
+    // Line 77 (convertIterableOnceToCombinable3): the empty case now builds
+    //   Iterable.empty[Nothing].asInstanceOf[ITRONCE[Nothing]]
+    // where immutable.Iterable.empty is a List, so the cast to List is safe.
+    convertIterableOnceToCombinable3(List.empty[Bad[Every[Int]]]).combined shouldBe Good(List.empty[Int])
+  }
 }

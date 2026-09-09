@@ -217,6 +217,13 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     Good(12).toEither shouldBe Right(12)
     Bad(12).toEither shouldBe Left(12)
   }
+  it can "throw a NoSuchElementException on get of a Bad" in {
+    val e = intercept[NoSuchElementException] {
+      Bad("oops").get
+    }
+    e.getMessage shouldBe "Bad(oops).get"
+    (Good(12): Int Or String).get shouldBe 12
+  }
   it can "be used with accumulating" in {
     Good(12).orBad[Int].accumulating shouldBe Good(12).orBad[Every[Int]]
     Good[Int].orBad(12).accumulating shouldBe Good[Int].orBad(One(12))

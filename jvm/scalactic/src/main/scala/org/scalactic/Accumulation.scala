@@ -74,7 +74,7 @@ trait AccumulationLowPriorityImplicits {
       override def combined: Or[ITRONCE[Nothing], Every[E]] = {
         val either: Either[Every[E], ITRONCE[Nothing]] =
           if (xs.isEmpty)
-            Right(Vector.empty[Nothing].asInstanceOf[ITRONCE[Nothing]])
+            Right(Iterable.empty[Nothing].asInstanceOf[ITRONCE[Nothing]])
           else {
             val i = xs.toIterable
             Left(
@@ -281,7 +281,7 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
       override def combined: Or[SET[Nothing], EVERY[E]] = {
         val either: Either[EVERY[E], SET[Nothing]] =
           if (xs.isEmpty)
-            Right(Vector.empty[Nothing].asInstanceOf[SET[Nothing]])
+            Right(Set.empty[Nothing].asInstanceOf[SET[Nothing]])
           else {
             val i = xs.toIterable
             Left(
