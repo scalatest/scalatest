@@ -196,4 +196,34 @@ class BoolSpec extends AnyFunSpec {
       assert(pipeResult.value)
     }
   }
+
+  describe("Bool") {
+
+    it("should negate via unary_!, producing a NotBool") {
+      val result = !simpleBool(true)
+      assert(result.isInstanceOf[NotBool])
+      assert(!result.value)
+      assert((!simpleBool(false)).value)
+    }
+
+    it("should produce an UnaryMacroBool from a Bool via unaryMacroBool") {
+      val result = Bool.unaryMacroBool(List(1), "isEmpty", simpleBool(true), prettifier)
+      assert(result.isInstanceOf[UnaryMacroBool])
+      assert(result.value)
+    }
+
+    it("should produce an IsInstanceOfMacroBool from a Bool via isInstanceOfMacroBool") {
+      val result = Bool.isInstanceOfMacroBool("hi", "isInstanceOf", "String", simpleBool(true), prettifier)
+      assert(result.isInstanceOf[IsInstanceOfMacroBool])
+      assert(result.value)
+    }
+
+    it("should construct mid sentence negated failure messages with and without args") {
+      val withArgs = new SimpleMacroBool(false, "theBool", prettifier)
+      assert(withArgs.midSentenceNegatedFailureMessage == "theBool was true")
+
+      val noArgs = new SimpleMacroBool(false, "", prettifier)
+      assert(noArgs.midSentenceNegatedFailureMessage == "Expression was true")
+    }
+  }
 }
