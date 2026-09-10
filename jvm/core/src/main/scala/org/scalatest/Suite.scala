@@ -2121,7 +2121,10 @@ used for test events like succeeded/failed, etc.
       for (m <- theSuite.getClass.getMethods; if isTestMethod(m))
         yield if (takesInformer(m)) m.getName + InformerInParens else m.getName
 
+    //DOTTY-ONLY val result = TreeSet(testNameArray*)(using EncodedOrdering)
+    // SKIP-DOTTY-START
     val result = TreeSet(testNameArray: _*)(EncodedOrdering)
+    // SKIP-DOTTY-END
     if (result.size != testNameArray.length) {
       throw new NotAllowedException("Howdy", 0)
     }
