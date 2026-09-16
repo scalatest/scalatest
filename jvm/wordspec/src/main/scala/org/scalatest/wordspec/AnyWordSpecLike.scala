@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ import verbs.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord,
 /**
  * Implementation trait for class <code>AnyWordSpec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
  * are combined with text that specifies the behavior the tests verify.
+ * 
+ * The expected type of a test in this trait is <code>Any</code>.
  * 
  * <p>
  * <a href="AnyWordSpec.html"><code>AnyWordSpec</code></a> is a class, not a trait, to minimize compile time given there is a slight compiler overhead to

@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ final class EndWithWord {
    *                        ^
    * </pre>
    */ 
-  def apply(right: String): Matcher[String] =
+  /* DOTTY-ONLY infix */ def apply(right: String): Matcher[String] =
     new Matcher[String] {
       def apply(left: String): MatchResult =
         MatchResult(
@@ -60,11 +60,8 @@ final class EndWithWord {
    *                        ^
    * </pre>
    */
-  //DOTTY-ONLY infix def regex[T <: String](right: T): Matcher[T] = regex(right.r)
-  // SKIP-DOTTY-START 
-  def regex[T <: String](right: T): Matcher[T] = regex(right.r)
-  // SKIP-DOTTY-END
-  
+  /* DOTTY-ONLY infix */ def regex[T <: String](right: T): Matcher[T] = regex(right.r)
+
   /**
    * This method enables the following syntax:
    *
@@ -73,16 +70,12 @@ final class EndWithWord {
    *                             ^
    * </pre>
    */
-  //DOTTY-ONLY infix def regex(regexWithGroups: RegexWithGroups) = 
-  // SKIP-DOTTY-START 	
-  def regex(regexWithGroups: RegexWithGroups) = 
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def regex(regexWithGroups: RegexWithGroups) = 
     new Matcher[String] {
       def apply(left: String): MatchResult = 
         endWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       override def toString: String = "endWith regex " + Prettifier.default(regexWithGroups)
     }
-  // SKIP-DOTTY-END  
 
   /**
    * This method enables the following syntax:
@@ -93,10 +86,7 @@ final class EndWithWord {
    *                        ^
    * </pre>
    */
-  //DOTTY-ONLY infix def regex(rightRegex: Regex): Matcher[String] = 
-  // SKIP-DOTTY-START 
-  def regex(rightRegex: Regex): Matcher[String] =
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def regex(rightRegex: Regex): Matcher[String] =
     new Matcher[String] {
       def apply(left: String): MatchResult = {
         val allMatches = rightRegex.findAllIn(left)

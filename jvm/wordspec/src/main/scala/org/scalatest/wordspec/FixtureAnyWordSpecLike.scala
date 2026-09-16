@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,8 @@ StringVerbBlockRegistration, SubjectWithAfterWordRegistration}
  * Implementation trait for class <code>FixtureAnyWordSpec</code>, which is
  * a sister class to <a href="AnyWordSpec.html"><code>org.scalatest.wordspec.AnyWordSpec</code></a> that can pass a
  * fixture object into its tests.
+ *
+ * The expected type of a test in this trait is <code>Fixture => Any</code>.
  *
  * <p>
  * <a href="FixtureAnyWordSpec.html"><code>FixtureAnyWordSpec</code></a> is a class,

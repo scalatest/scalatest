@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -152,21 +152,21 @@ class TheSameElementsAsContainMatcherEqualitySpec extends AnyFunSpec with Explic
     it("should take custom explicit equality in scope when 'should contain and should contain' is used") {
       val equality = new TrimEquality
       
-      (List("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") and contain theSameElementsAs List("1 ", "2 ", " 3"))) (equality, equality)
-      (Set("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") and contain theSameElementsAs List("1 ", "2 ", " 3"))) (equality, equality)
-      (Array("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") and contain theSameElementsAs List("1 ", "2 ", " 3"))) (equality, equality)
+      (List("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") and contain theSameElementsAs List("1 ", "2 ", " 3"))) (/* DOTTY-ONLY using */ equality, equality)
+      (Set("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") and contain theSameElementsAs List("1 ", "2 ", " 3"))) (/* DOTTY-ONLY using */ equality, equality)
+      (Array("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") and contain theSameElementsAs List("1 ", "2 ", " 3"))) (/* DOTTY-ONLY using */ equality, equality)
 
       val mapEquality = new MapTrimEquality
       
-      (Map(1 -> "one ", 2 -> "two", 3 -> " three") should (contain theSameElementsAs Map(1 -> " one", 2 -> " two", 3 -> "three ") and contain theSameElementsAs Map(1 -> "one ", 2 -> "two ", 3 -> " three"))) (mapEquality, mapEquality)
+      (Map(1 -> "one ", 2 -> "two", 3 -> " three") should (contain theSameElementsAs Map(1 -> " one", 2 -> " two", 3 -> "three ") and contain theSameElementsAs Map(1 -> "one ", 2 -> "two ", 3 -> " three"))) (/* DOTTY-ONLY using */ mapEquality, mapEquality)
 
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") and contain theSameElementsAs List("1 ", "2 ", " 3"))) (equality, equality)
-      (javaSet("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") and contain theSameElementsAs List("1 ", "2 ", " 3"))) (equality, equality)
+      (javaList("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") and contain theSameElementsAs List("1 ", "2 ", " 3"))) (/* DOTTY-ONLY using */ equality, equality)
+      (javaSet("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") and contain theSameElementsAs List("1 ", "2 ", " 3"))) (/* DOTTY-ONLY using */ equality, equality)
 
       val javaMapEquality = new JavaMapTrimEquality
       
-      (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) and contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three")))) (javaMapEquality, javaMapEquality)
+      (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) and contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three")))) (/* DOTTY-ONLY using */ javaMapEquality, javaMapEquality)
       // SKIP-SCALATESTJS,NATIVE-END
     }
     
@@ -210,21 +210,21 @@ class TheSameElementsAsContainMatcherEqualitySpec extends AnyFunSpec with Explic
     it("should take custom explicit equality in scope when 'should contain or should contain' is used") {
       val equality = new TrimEquality
       
-      (List("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") or contain theSameElementsAs List("1 ", "2 ", " 3"))) (equality, equality)
-      (Set("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") or contain theSameElementsAs List("1 ", "2 ", " 3"))) (equality, equality)
-      (Array("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") or contain theSameElementsAs List("1 ", "2 ", " 3"))) (equality, equality)
+      (List("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") or contain theSameElementsAs List("1 ", "2 ", " 3"))) (/* DOTTY-ONLY using */ equality, equality)
+      (Set("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") or contain theSameElementsAs List("1 ", "2 ", " 3"))) (/* DOTTY-ONLY using */ equality, equality)
+      (Array("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") or contain theSameElementsAs List("1 ", "2 ", " 3"))) (/* DOTTY-ONLY using */ equality, equality)
 
       val mapEquality = new MapTrimEquality
       
-      (Map(1 -> "one ", 2 -> "two", 3 -> " three") should (contain theSameElementsAs Map(1 -> " one", 2 -> " two", 3 -> "three ") or contain theSameElementsAs Map(1 -> "one ", 2 -> "two ", 3 -> " three"))) (mapEquality, mapEquality)
+      (Map(1 -> "one ", 2 -> "two", 3 -> " three") should (contain theSameElementsAs Map(1 -> " one", 2 -> " two", 3 -> "three ") or contain theSameElementsAs Map(1 -> "one ", 2 -> "two ", 3 -> " three"))) (/* DOTTY-ONLY using */ mapEquality, mapEquality)
 
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") or contain theSameElementsAs List("1 ", "2 ", " 3"))) (equality, equality)
-      (javaSet("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") or contain theSameElementsAs List("1 ", "2 ", " 3"))) (equality, equality)
+      (javaList("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") or contain theSameElementsAs List("1 ", "2 ", " 3"))) (/* DOTTY-ONLY using */ equality, equality)
+      (javaSet("1 ", "2", " 3") should (contain theSameElementsAs List(" 1", " 2", "3 ") or contain theSameElementsAs List("1 ", "2 ", " 3"))) (/* DOTTY-ONLY using */ equality, equality)
 
       val javaMapEquality = new JavaMapTrimEquality
       
-      (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) or contain theSameElementsAs Map(1 -> "one ", 2 -> "two ", 3 -> " three"))) (javaMapEquality, javaMapEquality)
+      (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) or contain theSameElementsAs Map(1 -> "one ", 2 -> "two ", 3 -> " three"))) (/* DOTTY-ONLY using */ javaMapEquality, javaMapEquality)
       // SKIP-SCALATESTJS,NATIVE-END
     }
       
@@ -352,18 +352,18 @@ class TheSameElementsAsContainMatcherEqualitySpec extends AnyFunSpec with Explic
         
     it("should take passed in custom explicit equality when 'should contain' is used") {
       val equality = new TrimEquality
-      (List("1 ", "2", " 3") should contain theSameElementsAs List("1", "2 ", "3")) (equality)
-      (Set("1 ", "2", " 3") should contain theSameElementsAs List("1", "2 ", "3")) (equality)
-      (Array("1 ", "2", " 3") should contain theSameElementsAs List("1", "2 ", "3")) (equality)
+      (List("1 ", "2", " 3") should contain theSameElementsAs List("1", "2 ", "3")) (/* DOTTY-ONLY using */ equality)
+      (Set("1 ", "2", " 3") should contain theSameElementsAs List("1", "2 ", "3")) (/* DOTTY-ONLY using */ equality)
+      (Array("1 ", "2", " 3") should contain theSameElementsAs List("1", "2 ", "3")) (/* DOTTY-ONLY using */ equality)
 
       val mapEquality = new MapTrimEquality
-      (Map(1 -> "one ", 2 -> "two", 3 -> " three") should contain theSameElementsAs Map(1 -> "one", 2 -> " two", 3 -> "three")) (mapEquality)
+      (Map(1 -> "one ", 2 -> "two", 3 -> " three") should contain theSameElementsAs Map(1 -> "one", 2 -> " two", 3 -> "three")) (/* DOTTY-ONLY using */ mapEquality)
 
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList("1 ", "2", " 3") should contain theSameElementsAs List("1", "2 ", "3")) (equality)
+      (javaList("1 ", "2", " 3") should contain theSameElementsAs List("1", "2 ", "3")) (/* DOTTY-ONLY using */ equality)
 
       val javaMapEquality = new JavaMapTrimEquality
-      (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should contain theSameElementsAs List(Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))) (javaMapEquality)
+      (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should contain theSameElementsAs List(Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))) (/* DOTTY-ONLY using */ javaMapEquality)
       // SKIP-SCALATESTJS,NATIVE-END
     }
       
@@ -390,21 +390,21 @@ class TheSameElementsAsContainMatcherEqualitySpec extends AnyFunSpec with Explic
       val left1 = List(1, 2, 3)
       val right1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should contain theSameElementsAs right1) (equality)
+        (left1 should contain theSameElementsAs right1) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldContainStackDepth(e1, left1, right1, thisLineNumber - 2)
         
       val left2 = Set(1, 2, 3)
       val right2 = List(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should contain theSameElementsAs right2) (equality)
+        (left2 should contain theSameElementsAs right2) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldContainStackDepth(e2, left2, right2, thisLineNumber - 2)
         
       val left3 = Array(1, 2, 3)
       val right3 = List(1, 2, 3)
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should contain theSameElementsAs right3) (equality)
+        (left3 should contain theSameElementsAs right3) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldContainStackDepth(e3, left3, right3, thisLineNumber - 2)
         
@@ -413,7 +413,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends AnyFunSpec with Explic
       val left4 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val right4 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        (left4 should contain theSameElementsAs right4) (mapEquality)
+        (left4 should contain theSameElementsAs right4) (/* DOTTY-ONLY using */ mapEquality)
       }
       checkShouldContainStackDepth(e4, left4, right4, thisLineNumber - 2)
 
@@ -421,7 +421,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends AnyFunSpec with Explic
       val left5 = javaList(1, 2, 3)
       val right5 = List(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
-        (left5 should contain theSameElementsAs right5) (equality)
+        (left5 should contain theSameElementsAs right5) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldContainStackDepth(e5, left5, right5, thisLineNumber - 2)
 
@@ -430,7 +430,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends AnyFunSpec with Explic
       val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val right6 = List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
-        (left6 should contain theSameElementsAs right6) (javaMapEquality)
+        (left6 should contain theSameElementsAs right6) (/* DOTTY-ONLY using */ javaMapEquality)
       }
       checkShouldContainStackDepth(e6, left6, right6, thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END

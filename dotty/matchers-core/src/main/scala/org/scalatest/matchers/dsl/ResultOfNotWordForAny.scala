@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                   ^
    * </pre>
    **/
-  infix def equal(right: Any)(implicit equality: Equality[T]): Assertion = {
+  infix def equal(right: Any)(using equality: Equality[T]): Assertion = {
     if (equality.areEqual(left, right) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.didNotEqual(prettifier, left, right) else FailureMessages.equaled(prettifier, left, right), None, pos)
     else
@@ -263,7 +263,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                       ^
    * </pre>
    **/
-  infix def be[U](resultOfDefinedAt: ResultOfDefinedAt[U])(implicit ev: T <:< PartialFunction[U, _]): Assertion = {
+  infix def be[U](resultOfDefinedAt: ResultOfDefinedAt[U])(using ev: T <:< PartialFunction[U, _]): Assertion = {
     if (left.isDefinedAt(resultOfDefinedAt.right) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.wasNotDefinedAt(prettifier, left, resultOfDefinedAt.right) else FailureMessages.wasDefinedAt(prettifier, left, resultOfDefinedAt.right), None, pos)
     else
@@ -304,7 +304,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    * Enables parentheses to be placed around <code>length (N)</code> in expressions of the
    * form: <code>should not have (length (N))</code>.
    */
-  infix def have(resultOfLengthWordApplication: ResultOfLengthWordApplication)(implicit len: Length[T]): Assertion = {
+  infix def have(resultOfLengthWordApplication: ResultOfLengthWordApplication)(using len: Length[T]): Assertion = {
     val right = resultOfLengthWordApplication.expectedLength
     val leftLength = len.lengthOf(left)
     if ((leftLength == right) != shouldBeTrue)
@@ -317,7 +317,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    * Enables parentheses to be placed around <code>size (N)</code> in expressions of the
    * form: <code>should not have (size (N))</code>.
    */
-  infix def have(resultOfSizeWordApplication: ResultOfSizeWordApplication)(implicit sz: Size[T]): Assertion = {
+  infix def have(resultOfSizeWordApplication: ResultOfSizeWordApplication)(using sz: Size[T]): Assertion = {
     val right = resultOfSizeWordApplication.expectedSize
     val leftSize = sz.sizeOf(left)
     if ((leftSize == right) != shouldBeTrue)
@@ -438,7 +438,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
     }
   }
 
-  infix def have(resultOfMessageWordApplication: ResultOfMessageWordApplication)(implicit messaging: Messaging[T]): Assertion = {
+  infix def have(resultOfMessageWordApplication: ResultOfMessageWordApplication)(using messaging: Messaging[T]): Assertion = {
     val right = resultOfMessageWordApplication.expectedMessage
     val actualMessage = messaging.messageOf(left)
     if ((actualMessage == right) != shouldBeTrue)
@@ -455,7 +455,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                   ^
    * </pre>
    **/
-  infix def contain(nullValue: Null)(implicit containing: Containing[T]): Assertion = {
+  infix def contain(nullValue: Null)(using containing: Containing[T]): Assertion = {
     if (containing.contains(left, null) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainNull(prettifier, left) else FailureMessages.containedNull(prettifier, left), None, pos)
     else
@@ -470,7 +470,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                   ^
    * </pre>
    **/
-  infix def contain(expectedElement: Any)(implicit containing: Containing[T]): Assertion = {
+  infix def contain(expectedElement: Any)(using containing: Containing[T]): Assertion = {
     val right = expectedElement
     if (containing.contains(left, right) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainExpectedElement(prettifier, left, right) else FailureMessages.containedExpectedElement(prettifier, left, right), None, pos)
@@ -486,7 +486,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                ^
    * </pre>
    **/
-  infix def be(o: Null)(implicit ev: T <:< AnyRef): Assertion = {
+  infix def be(o: Null)(using ev: T <:< AnyRef): Assertion = {
     if ((left == null) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.wasNotNull(prettifier, left) else FailureMessages.wasNull, None, pos)
     else
@@ -502,7 +502,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                  ^
    * </pre>
    **/
-  infix def be(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, pos: source.Position): Assertion = {
+  infix def be(symbol: Symbol)(using toAnyRef: T <:< AnyRef, prettifier: Prettifier, pos: source.Position): Assertion = {
     val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, false, false, prettifier, pos)
     if (matcherResult.matches != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
@@ -520,7 +520,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                      ^
    * </pre>
    **/
-  infix def be(bePropertyMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef): Assertion = {
+  infix def be(bePropertyMatcher: BePropertyMatcher[T])(using ev: T <:< AnyRef): Assertion = {
     val result = bePropertyMatcher(left)
     if (result.matches != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.wasNot(prettifier, left, UnquotedString(result.propertyName)) else FailureMessages.was(prettifier, left, UnquotedString(result.propertyName)), None, pos)
@@ -537,7 +537,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                        ^
    * </pre>
    **/
-  infix def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, pos: source.Position): Assertion = {
+  infix def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(using toAnyRef: T <:< AnyRef, prettifier: Prettifier, pos: source.Position): Assertion = {
     val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), resultOfAWordApplication.symbol, true, true, prettifier, pos)
     if (matcherResult.matches != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
@@ -555,7 +555,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                        ^
    * </pre>
    **/
-  infix def be[U >: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {
+  infix def be[U >: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U])(using ev: T <:< AnyRef): Assertion = {
     val result = resultOfAWordApplication.bePropertyMatcher(left)
     if (result.matches != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.wasNotA(prettifier, left, UnquotedString(result.propertyName)) else FailureMessages.wasA(prettifier, left, UnquotedString(result.propertyName)), None, pos)
@@ -572,7 +572,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                     ^
    * </pre>
    **/
-  infix def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, pos: source.Position): Assertion = {
+  infix def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(using toAnyRef: T <:< AnyRef, prettifier: Prettifier, pos: source.Position): Assertion = {
     val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), resultOfAnWordApplication.symbol, true, false, prettifier, pos)
     if (matcherResult.matches != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
@@ -590,7 +590,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                     ^
    * </pre>
    **/
-  infix def be[U >: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {
+  infix def be[U >: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U])(using ev: T <:< AnyRef): Assertion = {
     val result = resultOfAnWordApplication.bePropertyMatcher(left)
     if (result.matches != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.wasNotAn(prettifier, left, UnquotedString(result.propertyName)) else FailureMessages.wasAn(prettifier, left, UnquotedString(result.propertyName)), None, pos)
@@ -606,7 +606,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                        ^
    * </pre>
    **/
-  infix def be(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+  infix def be(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(using toAnyRef: T <:< AnyRef): Assertion = {
     if ((resultOfSameInstanceAsApplication.right eq toAnyRef(left)) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.wasNotSameInstanceAs(prettifier, left, resultOfSameInstanceAsApplication.right) else FailureMessages.wasSameInstanceAs(prettifier, left, resultOfSameInstanceAsApplication.right), None, pos)
     else
@@ -621,7 +621,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                  ^
    * </pre>
    **/
-  infix def be[U](sortedWord: SortedWord)(implicit sortable: Sortable[T]): Assertion = {
+  infix def be[U](sortedWord: SortedWord)(using sortable: Sortable[T]): Assertion = {
     if (sortable.isSorted(left) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.wasNotSorted(prettifier, left) else FailureMessages.wasSorted(prettifier, left), None, pos)
     else
@@ -636,7 +636,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                    ^
    * </pre>
    **/
-  infix def be[U](readableWord: ReadableWord)(implicit readability: Readability[T]): Assertion = {
+  infix def be[U](readableWord: ReadableWord)(using readability: Readability[T]): Assertion = {
     if (readability.isReadable(left) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.wasNotReadable(prettifier, left) else FailureMessages.wasReadable(prettifier, left), None, pos)
     else
@@ -651,7 +651,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                    ^
    * </pre>
    **/
-  infix def be[U](writableWord: WritableWord)(implicit writability: Writability[T]): Assertion = {
+  infix def be[U](writableWord: WritableWord)(using writability: Writability[T]): Assertion = {
     if (writability.isWritable(left) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.wasNotWritable(prettifier, left) else FailureMessages.wasWritable(prettifier, left), None, pos)
     else
@@ -666,7 +666,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                    ^
    * </pre>
    **/
-  infix def be[U](emptyWord: EmptyWord)(implicit emptiness: Emptiness[T]): Assertion = {
+  infix def be[U](emptyWord: EmptyWord)(using emptiness: Emptiness[T]): Assertion = {
     if (emptiness.isEmpty(left) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.wasNotEmpty(prettifier, left) else FailureMessages.wasEmpty(prettifier, left), None, pos)
     else
@@ -681,14 +681,14 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                      ^
    * </pre>
    **/
-  infix def be[U](definedWord: DefinedWord)(implicit definition: Definition[T]): Assertion = {
+  infix def be[U](definedWord: DefinedWord)(using definition: Definition[T]): Assertion = {
     if (definition.isDefined(left) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.wasNotDefined(prettifier, left) else FailureMessages.wasDefined(prettifier, left), None, pos)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasDefined(prettifier, left), FailureMessages.wasNotDefined(prettifier, left))
   }
 
-  infix def contain(newOneOf: ResultOfOneOfApplication)(implicit containing: Containing[T]): Assertion = {
+  infix def contain(newOneOf: ResultOfOneOfApplication)(using containing: Containing[T]): Assertion = {
 
     val right = newOneOf.right
 
@@ -709,7 +709,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
       )
   }
 
-  infix def contain(oneElementOf: ResultOfOneElementOfApplication)(implicit evidence: Containing[T]): Assertion = {
+  infix def contain(oneElementOf: ResultOfOneElementOfApplication)(using evidence: Containing[T]): Assertion = {
 
     val right = oneElementOf.right
 
@@ -750,7 +750,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
       indicateSuccess(shouldBeTrue, FailureMessages.containedAtLeastOneElementOf(prettifier, left, right), FailureMessages.didNotContainAtLeastOneElementOf(prettifier, left, right))
   }
 
-  infix def contain(noneOf: ResultOfNoneOfApplication)(implicit containing: Containing[T]): Assertion = {
+  infix def contain(noneOf: ResultOfNoneOfApplication)(using containing: Containing[T]): Assertion = {
 
     val right = noneOf.right
 
@@ -771,7 +771,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
       )
   }
 
-  infix def contain(noElementsOf: ResultOfNoElementsOfApplication)(implicit containing: Containing[T]): Assertion = {
+  infix def contain(noElementsOf: ResultOfNoElementsOfApplication)(using containing: Containing[T]): Assertion = {
 
     val right = noElementsOf.right
 
@@ -791,7 +791,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
       indicateSuccess(shouldBeTrue, FailureMessages.containedSameElements(prettifier, left, right), FailureMessages.didNotContainSameElements(prettifier, left, right))
   }
 
-  infix def contain(theSameElementsInOrderAs: ResultOfTheSameElementsInOrderAsApplication)(implicit sequencing: Sequencing[T]): Assertion = {
+  infix def contain(theSameElementsInOrderAs: ResultOfTheSameElementsInOrderAsApplication)(using sequencing: Sequencing[T]): Assertion = {
 
     val right = theSameElementsInOrderAs.right
 
@@ -835,7 +835,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
       )
   }
 
-  infix def contain(only: ResultOfInOrderOnlyApplication)(implicit sequencing: Sequencing[T]): Assertion = {
+  infix def contain(only: ResultOfInOrderOnlyApplication)(using sequencing: Sequencing[T]): Assertion = {
     val right = only.right
     if (sequencing.containsInOrderOnly(left, right) != shouldBeTrue)
       indicateFailure(
@@ -883,7 +883,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
       indicateSuccess(shouldBeTrue, FailureMessages.containedAllElementsOf(prettifier, left, right), FailureMessages.didNotContainAllElementsOf(prettifier, left, right))
   }
 
-  infix def contain(only: ResultOfInOrderApplication)(implicit sequencing: Sequencing[T]): Assertion = {
+  infix def contain(only: ResultOfInOrderApplication)(using sequencing: Sequencing[T]): Assertion = {
 
     val right = only.right
     if (sequencing.containsInOrder(left, right) != shouldBeTrue)
@@ -903,7 +903,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
       )
   }
 
-  infix def contain(only: ResultOfInOrderElementsOfApplication)(implicit sequencing: Sequencing[T]): Assertion = {
+  infix def contain(only: ResultOfInOrderElementsOfApplication)(using sequencing: Sequencing[T]): Assertion = {
 
     val right = only.right
     if (sequencing.containsInOrder(left, right.distinct) != shouldBeTrue)
@@ -943,14 +943,14 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
       indicateSuccess(shouldBeTrue, FailureMessages.containedAtMostOneElementOf(prettifier, left, right), FailureMessages.didNotContainAtMostOneElementOf(prettifier, left, right))
   }
 
-  infix def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication)(implicit keyMapping: KeyMapping[T]): Assertion = {
+  infix def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication)(using keyMapping: KeyMapping[T]): Assertion = {
     val right = resultOfKeyWordApplication.expectedKey
     if (keyMapping.containsKey(left, right) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainKey(prettifier, left, right) else FailureMessages.containedKey(prettifier, left, right), None, pos)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedKey(prettifier, left, right), FailureMessages.didNotContainKey(prettifier, left, right))
   }
-  infix def contain(resultOfValueWordApplication: ResultOfValueWordApplication)(implicit valueMapping: ValueMapping[T]): Assertion = {
+  infix def contain(resultOfValueWordApplication: ResultOfValueWordApplication)(using valueMapping: ValueMapping[T]): Assertion = {
     val right = resultOfValueWordApplication.expectedValue
     if (valueMapping.containsValue(left, right) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainValue(prettifier, left, right) else FailureMessages.containedValue(prettifier, left, right), None, pos)
@@ -971,7 +971,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    * or a <code>scala.util.matching.Regex</code>.
    * </p>
    */
-  infix def fullyMatch(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
+  infix def fullyMatch(resultOfRegexWordApplication: ResultOfRegexWordApplication)(using ev: T <:< String): Assertion = {
     val result = fullyMatchRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
     if (result.matches != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, pos)
@@ -992,7 +992,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    * or a <code>scala.util.matching.Regex</code>.
    * </p>
    */
-  infix def include(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
+  infix def include(resultOfRegexWordApplication: ResultOfRegexWordApplication)(using ev: T <:< String): Assertion = {
     val result = includeRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
     if (result.matches != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, pos)
@@ -1008,7 +1008,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                   ^
    * </pre>
    **/
-  infix def include(expectedSubstring: String)(implicit ev: T <:< String): Assertion = {
+  infix def include(expectedSubstring: String)(using ev: T <:< String): Assertion = {
     if ((left.indexOf(expectedSubstring) >= 0) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.didNotIncludeSubstring(prettifier, left, expectedSubstring) else FailureMessages.includedSubstring(prettifier, left, expectedSubstring), None, pos)
     else
@@ -1028,7 +1028,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    * or a <code>scala.util.matching.Regex</code>.
    * </p>
    */
-  infix def startWith(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
+  infix def startWith(resultOfRegexWordApplication: ResultOfRegexWordApplication)(using ev: T <:< String): Assertion = {
     val result = startWithRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
     if (result.matches != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, pos)
@@ -1044,7 +1044,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                    ^
    * </pre>
    **/
-  infix def startWith(expectedSubstring: String)(implicit ev: T <:< String): Assertion = {
+  infix def startWith(expectedSubstring: String)(using ev: T <:< String): Assertion = {
     if ((left.indexOf(expectedSubstring) == 0) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.didNotStartWith(prettifier, left, expectedSubstring) else FailureMessages.startedWith(prettifier, left, expectedSubstring), None, pos)
     else
@@ -1059,7 +1059,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                     ^
    * </pre>
    **/
-  infix def endWith(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
+  infix def endWith(resultOfRegexWordApplication: ResultOfRegexWordApplication)(using ev: T <:< String): Assertion = {
     val result = endWithRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
     if (result.matches != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, pos)
@@ -1075,7 +1075,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                    ^
    * </pre>
    **/
-  infix def endWith(expectedSubstring: String)(implicit ev: T <:< String): Assertion = {
+  infix def endWith(expectedSubstring: String)(using ev: T <:< String): Assertion = {
     if ((left endsWith expectedSubstring) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.didNotEndWith(prettifier, left, expectedSubstring) else FailureMessages.endedWith(prettifier, left, expectedSubstring), None, pos)
     else
