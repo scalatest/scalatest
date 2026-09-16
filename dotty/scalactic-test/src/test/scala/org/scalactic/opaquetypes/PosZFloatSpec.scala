@@ -201,22 +201,32 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
 
     describe("when created with apply method") {
 
-      it("should compile when 8 is passed in") {
-        "PosZFloat(8)" should compile
-        PosZFloat(8).value shouldEqual 8.0F
-        "PosZFloat(8L)" should compile
-        PosZFloat(8L).value shouldEqual 8.0F
+      it("should compile when 8.0F is passed in") {
         "PosZFloat(8.0F)" should compile
         PosZFloat(8.0F).value shouldEqual 8.0F
       }
 
-      it("should compile when 0 is passed in") {
-        "PosZFloat(0)" should compile
-        PosZFloat(0).value shouldEqual 0.0F
-        "PosZFloat(0L)" should compile
-        PosZFloat(0L).value shouldEqual 0.0F
+      it("should not compile when 8 is passed in (precision loss prevention)") {
+        "PosZFloat(8)" shouldNot compile
+      }
+
+      it("should compile when 8L is passed in") {
+        "PosZFloat(8L)" should compile
+        PosZFloat(8L).value shouldEqual 8.0F
+      }
+
+      it("should compile when 0.0F is passed in") {
         "PosZFloat(0.0F)" should compile
         PosZFloat(0.0F).value shouldEqual 0.0F
+      }
+
+      it("should not compile when 0 is passed in (precision loss prevention)") {
+        "PosZFloat(0)" shouldNot compile
+      }
+
+      it("should compile when 0L is passed in") {
+        "PosZFloat(0L)" should compile
+        PosZFloat(0L).value shouldEqual 0.0F
       }
 
       it("should not compile when -8 is passed in") {
@@ -238,17 +248,21 @@ class PosZFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
 
       def takesPosZFloat(pos: PosZFloat): Float = pos.value
 
-      it("should not compile when 8 is passed in") {
+      it("should not compile when 8 is passed in (precision loss prevention)") {
         "takesPosZFloat(8)" shouldNot compile
-        "takesPosZFloat(8L)" shouldNot compile
+      }
+
+      it("should compile when 8L is passed in") {
         "takesPosZFloat(8L) shouldEqual 8.0F" shouldNot compile
         "takesPosZFloat(8.0F)" should compile
         takesPosZFloat(8.0F) shouldEqual 8.0F
       }
 
-      it("should not compile when 0 is passed in") {
+      it("should not compile when 0 is passed in (precision loss prevention)") {
         "takesPosZFloat(0)" shouldNot compile
-        "takesPosZFloat(0L)" shouldNot compile
+      }
+
+      it("should compile when 0L is passed in") {
         "takesPosZFloat(0L) shouldEqual 0.0F" shouldNot compile
         "takesPosZFloat(0.0F)" should compile
         takesPosZFloat(0.0F) shouldEqual 0.0F
