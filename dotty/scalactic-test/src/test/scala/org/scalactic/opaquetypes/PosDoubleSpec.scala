@@ -178,8 +178,6 @@ class PosDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       it("should compile when 8 is passed in") {
         "PosDouble(8)" should compile
         PosDouble(8).value shouldEqual 8.0
-        "PosDouble(8L)" should compile
-        PosDouble(8L).value shouldEqual 8.0
         "PosDouble(8.0F)" should compile
         PosDouble(8.0F).value shouldEqual 8.0
         "PosDouble(8.0)" should compile
@@ -217,8 +215,6 @@ class PosDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
       it("should compile when 8 is passed in") {
         "takesPosDouble(8)" should compile
         takesPosDouble(8) shouldEqual 8.0
-        "takesPosDouble(8L)" should compile
-        takesPosDouble(8L) shouldEqual 8.0
         "takesPosDouble(8.0F)" should compile
         takesPosDouble(8.0F) shouldEqual 8.0
         "takesPosDouble(8.0)" should compile
@@ -253,18 +249,17 @@ class PosDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
 
     it("should offer a unary + method that is consistent with Double") {
       forAll { (p: PosDouble) =>
-        (+p).toDouble shouldEqual (+(p.toDouble))
+        (+p).value shouldEqual (+(p.value))
       }
     }
 
     it("should offer a unary - method that returns NegDouble") {
       forAll { (p: PosDouble) =>
-        (-p) shouldEqual (NegDouble.ensuringValid(-(p.toDouble)))
+        (-p) shouldEqual (NegDouble.ensuringValid(-(p.value)))
       }
     }
 
     it("should offer a 'plus' method that takes a PosZDouble and returns a PosDouble") {
-
       forAll { (posDouble: PosDouble, posZDouble: PosZDouble) =>
         (posDouble plus posZDouble) should === (PosDouble.ensuringValid(posDouble.value + posZDouble.value))
       }
@@ -296,49 +291,48 @@ class PosDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wit
 
     it("should offer 'min' and 'max' methods that are consistent with Double") {
       forAll { (pdouble1: PosDouble, pdouble2: PosDouble) =>
-        pdouble1.max(pdouble2).toDouble shouldEqual pdouble1.toDouble.max(pdouble2.toDouble)
-        pdouble1.min(pdouble2).toDouble shouldEqual pdouble1.toDouble.min(pdouble2.toDouble)
+        pdouble1.max(pdouble2).value shouldEqual pdouble1.value.max(pdouble2.value)
+        pdouble1.min(pdouble2).value shouldEqual pdouble1.value.min(pdouble2.value)
       }
     }
 
     it("should offer an 'isWhole' method that is consistent with Double") {
       forAll { (pdouble: PosDouble) =>
-        pdouble.isWhole shouldEqual pdouble.toDouble.isWhole
+        pdouble.isWhole shouldEqual pdouble.value.isWhole
       }
     }
 
     it("should offer 'round', 'ceil', and 'floor' methods that are consistent with Double") {
       forAll { (pdouble: PosDouble) =>
-        pdouble.round.toDouble shouldEqual pdouble.toDouble.round
-        pdouble.ceil.toDouble shouldEqual pdouble.toDouble.ceil
-        pdouble.floor.toDouble shouldEqual pdouble.toDouble.floor
+        pdouble.round.toDouble shouldEqual pdouble.value.round
+        pdouble.ceil.value shouldEqual pdouble.value.ceil
+        pdouble.floor.value shouldEqual pdouble.value.floor
       }
     }
 
     it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Double") {
       forAll { (pdouble: PosDouble) =>
-        pdouble.toRadians shouldEqual pdouble.toDouble.toRadians
+        pdouble.toRadians shouldEqual pdouble.value.toRadians
       }
     }
 
     it("should offer widening methods for basic types that are consistent with Double") {
       forAll { (pdouble: PosDouble) =>
         def widen(value: Double): Double = value
-        widen(pdouble) shouldEqual widen(pdouble.toDouble)
+        widen(pdouble) shouldEqual widen(pdouble.value)
       }
       forAll { (pdouble: PosDouble) =>
         def widen(value: PosZDouble): PosZDouble = value
-        widen(pdouble) shouldEqual widen(PosZDouble.from(pdouble.toDouble).get)
+        widen(pdouble) shouldEqual widen(PosZDouble.from(pdouble.value).get)
       }
       forAll { (pdouble: PosDouble) =>
         def widen(value: NonZeroDouble): NonZeroDouble = value
-        widen(pdouble) shouldEqual widen(NonZeroDouble.from(pdouble.toDouble).get)
+        widen(pdouble) shouldEqual widen(NonZeroDouble.from(pdouble.value).get)
       }
     }
-
     it("should offer an ensuringValid method that takes a Double => Double, throwing AssertionError if the result is invalid") {
       PosDouble(33.0).ensuringValid(_ + 1.0) shouldEqual PosDouble(34.0)
-      PosDouble(33.0).ensuringValid(_ => Double.PositiveInfinity) shouldEqual PosDouble.ensuringValid(Double.PositiveInfinity)
+      an [AssertionError] should be thrownBy { PosDouble(33.0).ensuringValid(_ => Double.PositiveInfinity) }
       an [AssertionError] should be thrownBy { PosDouble.MaxValue.ensuringValid(_ - PosDouble.MaxValue) }
       an [AssertionError] should be thrownBy { PosDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
     }
