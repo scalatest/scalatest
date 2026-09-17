@@ -175,7 +175,7 @@ class BeforeAndAfterEachAllSuite extends AnyFunSuite {
   }
 
   test("if super.runTest returns normally, but afterEach completes abruptly with an " +
-    "exception, runTest will return a status that contains that exception as an unreportedException (using BeforeAndAfterAllConfigMap).") {
+    "exception, runTest will return a status that contains that exception as an unreportedException (/* DOTTY-ONLY using */ BeforeAndAfterAllConfigMap).") {
 
     class MySuite extends AnyFunSpec with BeforeAndAfterEach with BeforeAndAfterAllConfigMap {
       override def afterEach(): Unit = { throw new NumberFormatException }
@@ -264,7 +264,7 @@ class BeforeAndAfterEachAllSuite extends AnyFunSuite {
   }
 
   test("If super.run returns normally, but afterAll completes abruptly with an " +
-    "exception, the status returned by run will contain that exception as its unreportedException (using BeforeAndAfterAllConfigMap).") {
+    "exception, the status returned by run will contain that exception as its unreportedException (/* DOTTY-ONLY using */ BeforeAndAfterAllConfigMap).") {
 
     class MySuite extends AnyFunSpec with BeforeAndAfterEach with BeforeAndAfterAllConfigMap {
       override def afterAll(cm: ConfigMap): Unit = { throw new NumberFormatException }

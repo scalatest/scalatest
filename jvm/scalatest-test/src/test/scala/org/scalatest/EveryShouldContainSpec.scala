@@ -66,15 +66,15 @@ class EveryShouldContainSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           caseLists should contain ("HI")
         }
-        (caseLists should contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
-        (caseLists should contain ("HI")) (after being lowerCased)
-        (caseLists should contain ("HI ")) (after being lowerCased and trimmed)
+        (caseLists should contain ("HI")) (/* DOTTY-ONLY using */ decided by defaultEquality afterBeing lowerCased)
+        (caseLists should contain ("HI")) (/* DOTTY-ONLY using */ after being lowerCased)
+        (caseLists should contain ("HI ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
 
         {
           implicit val e = new Equality[String] {
             def areEqual(a: String, b: Any): Boolean = a != b
           }
-          (xs should contain ("hi")) (decided by defaultEquality[String])
+          (xs should contain ("hi")) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         }
       }
       it("should minimize normalization if an implicit NormalizingEquality is in scope") {
@@ -153,13 +153,13 @@ class EveryShouldContainSpec extends AnyFunSpec {
       it("should use an explicitly provided Equality") {
         caseLists should not contain "HI"
         caseLists should not contain "HI "
-        (caseLists should not contain "HI ") (decided by defaultEquality afterBeing lowerCased)
-        (caseLists should not contain "HI ") (after being lowerCased)
+        (caseLists should not contain "HI ") (/* DOTTY-ONLY using */ decided by defaultEquality afterBeing lowerCased)
+        (caseLists should not contain "HI ") (/* DOTTY-ONLY using */ after being lowerCased)
         intercept[TestFailedException] {
-          (caseLists should not contain "HI") (decided by defaultEquality afterBeing lowerCased)
+          (caseLists should not contain "HI") (/* DOTTY-ONLY using */ decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (caseLists should not contain "HI ") (after being lowerCased and trimmed)
+          (caseLists should not contain "HI ") (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should minimize normalization if an implicit NormalizingEquality is in scope") {
@@ -231,16 +231,16 @@ class EveryShouldContainSpec extends AnyFunSpec {
       it("should use an explicitly provided Equality") {
         caseLists should not (contain ("HI"))
         caseLists should not (contain ("HI "))
-        (caseLists should not (contain ("HI "))) (decided by defaultEquality afterBeing lowerCased)
-        (caseLists should not (contain ("HI "))) (after being lowerCased)
+        (caseLists should not (contain ("HI "))) (/* DOTTY-ONLY using */ decided by defaultEquality afterBeing lowerCased)
+        (caseLists should not (contain ("HI "))) (/* DOTTY-ONLY using */ after being lowerCased)
         intercept[TestFailedException] {
-          (caseLists should not (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
+          (caseLists should not (contain ("HI"))) (/* DOTTY-ONLY using */ decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (caseLists should not (contain ("HI"))) (after being lowerCased)
+          (caseLists should not (contain ("HI"))) (/* DOTTY-ONLY using */ after being lowerCased)
         }
         intercept[TestFailedException] {
-          (caseLists should not (contain ("HI "))) (after being lowerCased and trimmed)
+          (caseLists should not (contain ("HI "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should minimize normalization if an implicit NormalizingEquality is in scope") {
@@ -311,16 +311,16 @@ class EveryShouldContainSpec extends AnyFunSpec {
       it("should use an explicitly provided Equality") {
         caseLists should (not contain "HI")
         caseLists should (not contain "HI ")
-        (caseLists should (not contain "HI ")) (decided by defaultEquality afterBeing lowerCased)
-        (caseLists should (not contain "HI ")) (after being lowerCased)
+        (caseLists should (not contain "HI ")) (/* DOTTY-ONLY using */ decided by defaultEquality afterBeing lowerCased)
+        (caseLists should (not contain "HI ")) (/* DOTTY-ONLY using */ after being lowerCased)
         intercept[TestFailedException] {
-          (caseLists should (not contain "HI")) (decided by defaultEquality afterBeing lowerCased)
+          (caseLists should (not contain "HI")) (/* DOTTY-ONLY using */ decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (caseLists should (not contain "HI")) (after being lowerCased)
+          (caseLists should (not contain "HI")) (/* DOTTY-ONLY using */ after being lowerCased)
         }
         intercept[TestFailedException] {
-          (caseLists should (not contain "HI ")) (after being lowerCased and trimmed)
+          (caseLists should (not contain "HI ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should minimize normalization if an implicit NormalizingEquality is in scope") {
@@ -391,13 +391,13 @@ class EveryShouldContainSpec extends AnyFunSpec {
       it("should use an explicitly provided Equality") {
         caseLists shouldNot contain ("HI")
         caseLists shouldNot contain ("HI ")
-        (caseLists shouldNot contain ("HI ")) (decided by defaultEquality afterBeing lowerCased)
-        (caseLists shouldNot contain ("HI ")) (after being lowerCased)
+        (caseLists shouldNot contain ("HI ")) (/* DOTTY-ONLY using */ decided by defaultEquality afterBeing lowerCased)
+        (caseLists shouldNot contain ("HI ")) (/* DOTTY-ONLY using */ after being lowerCased)
         intercept[TestFailedException] {
-          (caseLists shouldNot contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
+          (caseLists shouldNot contain ("HI")) (/* DOTTY-ONLY using */ decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (caseLists shouldNot contain ("HI ")) (after being lowerCased and trimmed)
+          (caseLists shouldNot contain ("HI ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should minimize normalization if an implicit NormalizingEquality is in scope") {
@@ -469,16 +469,16 @@ class EveryShouldContainSpec extends AnyFunSpec {
       it("should use an explicitly provided Equality") {
         caseLists shouldNot (contain ("HI"))
         caseLists shouldNot (contain ("HI "))
-        (caseLists shouldNot (contain ("HI "))) (decided by defaultEquality afterBeing lowerCased)
-        (caseLists shouldNot (contain ("HI "))) (after being lowerCased)
+        (caseLists shouldNot (contain ("HI "))) (/* DOTTY-ONLY using */ decided by defaultEquality afterBeing lowerCased)
+        (caseLists shouldNot (contain ("HI "))) (/* DOTTY-ONLY using */ after being lowerCased)
         intercept[TestFailedException] {
-          (caseLists shouldNot (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
+          (caseLists shouldNot (contain ("HI"))) (/* DOTTY-ONLY using */ decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (caseLists shouldNot (contain ("HI"))) (after being lowerCased)
+          (caseLists shouldNot (contain ("HI"))) (/* DOTTY-ONLY using */ after being lowerCased)
         }
         intercept[TestFailedException] {
-          (caseLists shouldNot (contain ("HI "))) (after being lowerCased and trimmed)
+          (caseLists shouldNot (contain ("HI "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should minimize normalization if an implicit NormalizingEquality is in scope") {
@@ -586,8 +586,8 @@ class EveryShouldContainSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should contain ("HI ")
         }
-        (all (hiLists) should contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
-        (all (hiLists) should contain ("HI ")) (after being trimmed and lowerCased)
+        (all (hiLists) should contain ("HI")) (/* DOTTY-ONLY using */ decided by defaultEquality afterBeing lowerCased)
+        (all (hiLists) should contain ("HI ")) (/* DOTTY-ONLY using */ after being trimmed and lowerCased)
       }
       it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         val hiHeHoLists: List[List[String]] = List(List("hi", "he", "ho"), List("hi", "he", "ho"), List("hi", "he", "ho"))
@@ -666,10 +666,10 @@ class EveryShouldContainSpec extends AnyFunSpec {
         all (hiLists) should not contain "HI"
         all (hiLists) should not contain "HI "
         intercept[TestFailedException] {
-          (all (hiLists) should not contain "HI") (decided by defaultEquality afterBeing lowerCased)
+          (all (hiLists) should not contain "HI") (/* DOTTY-ONLY using */ decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (all (hiLists) should not contain "HI ") (after being trimmed and lowerCased)
+          (all (hiLists) should not contain "HI ") (/* DOTTY-ONLY using */ after being trimmed and lowerCased)
         }
       }
       it("should do nothing when used with null and LHS did not contain null value") {
@@ -725,10 +725,10 @@ class EveryShouldContainSpec extends AnyFunSpec {
         all (hiLists) should not (contain ("HI"))
         all (hiLists) should not (contain ("HI "))
         intercept[TestFailedException] {
-          (all (hiLists) should not (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
+          (all (hiLists) should not (contain ("HI"))) (/* DOTTY-ONLY using */ decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (all (hiLists) should not (contain ("HI "))) (after being trimmed and lowerCased)
+          (all (hiLists) should not (contain ("HI "))) (/* DOTTY-ONLY using */ after being trimmed and lowerCased)
         }
       }
       it("should do nothing when used with null and LHS did not contain null value") {
@@ -784,10 +784,10 @@ class EveryShouldContainSpec extends AnyFunSpec {
         all (hiLists) should (not contain "HI")
         all (hiLists) should (not contain "HI ")
         intercept[TestFailedException] {
-          (all (hiLists) should (not contain "HI")) (decided by defaultEquality afterBeing lowerCased)
+          (all (hiLists) should (not contain "HI")) (/* DOTTY-ONLY using */ decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (all (hiLists) should (not contain "HI ")) (after being trimmed and lowerCased)
+          (all (hiLists) should (not contain "HI ")) (/* DOTTY-ONLY using */ after being trimmed and lowerCased)
         }
       }
       it("should do nothing when used with null and LHS did not contain null value") {
@@ -844,10 +844,10 @@ class EveryShouldContainSpec extends AnyFunSpec {
         all (hiLists) shouldNot contain ("HI")
         all (hiLists) shouldNot contain ("HI ")
         intercept[TestFailedException] {
-          (all (hiLists) shouldNot contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
+          (all (hiLists) shouldNot contain ("HI")) (/* DOTTY-ONLY using */ decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (all (hiLists) shouldNot contain ("HI ")) (after being trimmed and lowerCased)
+          (all (hiLists) shouldNot contain ("HI ")) (/* DOTTY-ONLY using */ after being trimmed and lowerCased)
         }
       }
       it("should do nothing when used with null and LHS did not contain null value") {
@@ -903,10 +903,10 @@ class EveryShouldContainSpec extends AnyFunSpec {
         all (hiLists) shouldNot (contain ("HI"))
         all (hiLists) shouldNot (contain ("HI "))
         intercept[TestFailedException] {
-          (all (hiLists) shouldNot (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
+          (all (hiLists) shouldNot (contain ("HI"))) (/* DOTTY-ONLY using */ decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (all (hiLists) shouldNot (contain ("HI "))) (after being trimmed and lowerCased)
+          (all (hiLists) shouldNot (contain ("HI "))) (/* DOTTY-ONLY using */ after being trimmed and lowerCased)
         }
       }
       it("should do nothing when used with null and LHS did not contain null value") {

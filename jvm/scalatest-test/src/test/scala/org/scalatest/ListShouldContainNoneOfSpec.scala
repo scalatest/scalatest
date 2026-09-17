@@ -67,14 +67,14 @@ class ListShouldContainNoneOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should contain noneOf ("FEE", "FAM", "FOE", "FU")) (decided by upperCaseEquality)
+        (fumList should contain noneOf ("FEE", "FAM", "FOE", "FU")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (fumList should contain noneOf ("FEE", "FUM", "FOE", "FU")) (decided by upperCaseEquality)
+          (fumList should contain noneOf ("FEE", "FUM", "FOE", "FU")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
         intercept[TestFailedException] {
-          (fumList should contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
+          (fumList should contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
-        (fumList should contain noneOf (" FEE ", " FIE ", " FOE ", " FAM ")) (after being lowerCased and trimmed)
+        (fumList should contain noneOf (" FEE ", " FIE ", " FOE ", " FAM ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -112,13 +112,13 @@ class ListShouldContainNoneOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should (contain noneOf ("FEE", "FAM", "FOE", "FU"))) (decided by upperCaseEquality)
+        (fumList should (contain noneOf ("FEE", "FAM", "FOE", "FU"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (fumList should (contain noneOf ("FEE", "FUM", "FOE", "FU"))) (decided by upperCaseEquality)
+          (fumList should (contain noneOf ("FEE", "FUM", "FOE", "FU"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
         fumList should (contain noneOf (" FEE ", " FIE ", " FOE ", " FUM "))
         intercept[TestFailedException] {
-          (fumList should (contain noneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
+          (fumList should (contain noneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -156,11 +156,11 @@ class ListShouldContainNoneOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should not contain noneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseEquality)
+        (fumList should not contain noneOf ("FEE", "FIE", "FOE", "FUM")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (fumList should not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
+          (fumList should not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
-        (fumList should not contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
+        (fumList should not contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           fumList should not contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")
         }
@@ -194,11 +194,11 @@ class ListShouldContainNoneOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList should (not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
+        (toList should (not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (toList should (not contain noneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
+          (toList should (not contain noneOf ("happy", "birthday", "to", "you"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
-        (toList should (not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+        (toList should (not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           toList should (not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
@@ -232,11 +232,11 @@ class ListShouldContainNoneOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList shouldNot contain noneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseEquality)
+        (fumList shouldNot contain noneOf ("FEE", "FIE", "FOE", "FUM")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (fumList shouldNot contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
+          (fumList shouldNot contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
-        (fumList shouldNot contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
+        (fumList shouldNot contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           fumList shouldNot contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")
         }
@@ -270,11 +270,11 @@ class ListShouldContainNoneOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList shouldNot (contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
+        (toList shouldNot (contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (toList shouldNot (contain noneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
+          (toList shouldNot (contain noneOf ("happy", "birthday", "to", "you"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
-        (toList shouldNot (contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+        (toList shouldNot (contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           toList shouldNot (contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
@@ -332,14 +332,14 @@ class ListShouldContainNoneOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should contain noneOf ("hi", "he")) (decided by upperCaseEquality)
+        (all (hiLists) should contain noneOf ("hi", "he")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should contain noneOf ("HI", "HE")) (decided by upperCaseEquality)
+          (all (hiLists) should contain noneOf ("HI", "HE")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
         implicit val ise = upperCaseEquality
-        (all (hiLists) should contain noneOf ("ho", "he")) (decided by defaultEquality[String])
+        (all (hiLists) should contain noneOf ("ho", "he")) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should contain noneOf ("hi", "he")) (decided by defaultEquality[String])
+          (all (hiLists) should contain noneOf ("hi", "he")) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -385,14 +385,14 @@ class ListShouldContainNoneOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (contain noneOf ("hi", "he"))) (decided by upperCaseEquality)
+        (all (hiLists) should (contain noneOf ("hi", "he"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should (contain noneOf ("HI", "HE"))) (decided by upperCaseEquality)
+          (all (hiLists) should (contain noneOf ("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
         implicit val ise = upperCaseEquality
-        (all (hiLists) should (contain noneOf ("ho", "he"))) (decided by defaultEquality[String])
+        (all (hiLists) should (contain noneOf ("ho", "he"))) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should (contain noneOf ("hi", "he"))) (decided by defaultEquality[String])
+          (all (hiLists) should (contain noneOf ("hi", "he"))) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -426,11 +426,11 @@ class ListShouldContainNoneOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
+        (all (toLists) should not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (toLists) should not contain noneOf ("happy", "birthday", "to", "you")) (decided by upperCaseEquality)
+          (all (toLists) should not contain noneOf ("happy", "birthday", "to", "you")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
-        (all (toLists) should not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
+        (all (toLists) should not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           all (toLists) should not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         }
@@ -466,11 +466,11 @@ class ListShouldContainNoneOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should (not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
+        (all (toLists) should (not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (toLists) should (not contain noneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
+          (all (toLists) should (not contain noneOf ("happy", "birthday", "to", "you"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
-        (all (toLists) should (not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+        (all (toLists) should (not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           all (toLists) should (not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
@@ -506,11 +506,11 @@ class ListShouldContainNoneOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
+        (all (toLists) shouldNot contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain noneOf ("happy", "birthday", "to", "you")) (decided by upperCaseEquality)
+          (all (toLists) shouldNot contain noneOf ("happy", "birthday", "to", "you")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
-        (all (toLists) shouldNot contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
+        (all (toLists) shouldNot contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           all (toLists) shouldNot contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         }
@@ -546,11 +546,11 @@ class ListShouldContainNoneOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot  (contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
+        (all (toLists) shouldNot  (contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain noneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
+          (all (toLists) shouldNot (contain noneOf ("happy", "birthday", "to", "you"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
-        (all (toLists) shouldNot  (contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+        (all (toLists) shouldNot  (contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           all (toLists) shouldNot (contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }

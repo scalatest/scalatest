@@ -147,19 +147,19 @@ class TheSameElementsInOrderAsContainMatcherEqualitySpec extends AnyFunSpec with
     
     it("should take passed in custom explicit equality when 'should contain' is used") {
       implicit val equality = new TrimEquality
-      (List("1 ", " 2", "3 ") should contain theSameElementsInOrderAs List(" 1", "2 ", " 3")) (equality)
-      (Array("1 ", " 2", "3 ") should contain theSameElementsInOrderAs List(" 1", "2 ", " 3")) (equality)
+      (List("1 ", " 2", "3 ") should contain theSameElementsInOrderAs List(" 1", "2 ", " 3")) (/* DOTTY-ONLY using */ equality)
+      (Array("1 ", " 2", "3 ") should contain theSameElementsInOrderAs List(" 1", "2 ", " 3")) (/* DOTTY-ONLY using */ equality)
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList("1 ", " 2", "3 ") should contain theSameElementsInOrderAs List(" 1", "2 ", " 3")) (equality)
+      (javaList("1 ", " 2", "3 ") should contain theSameElementsInOrderAs List(" 1", "2 ", " 3")) (/* DOTTY-ONLY using */ equality)
       // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should take passed in custom explicit equality when 'should not contain' is used") {
       implicit val equality = new FalseEquality
-      (List(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3))) (equality)
-      (Array(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3))) (equality)
+      (List(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3))) (/* DOTTY-ONLY using */ equality)
+      (Array(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3))) (/* DOTTY-ONLY using */ equality)
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3))) (equality)
+      (javaList(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3))) (/* DOTTY-ONLY using */ equality)
       // SKIP-SCALATESTJS,NATIVE-END
     }
     
@@ -169,14 +169,14 @@ class TheSameElementsInOrderAsContainMatcherEqualitySpec extends AnyFunSpec with
       val left1 = List(1, 2, 3)
       val right1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should contain theSameElementsInOrderAs right1) (equality)
+        (left1 should contain theSameElementsInOrderAs right1) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldContainStackDepth(e1, left1, right1, thisLineNumber - 2)
         
       val left2 = Array(1, 2, 3)
       val right2 = List(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should contain theSameElementsInOrderAs right2) (equality)
+        (left2 should contain theSameElementsInOrderAs right2) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldContainStackDepth(e2, left2, right2, thisLineNumber - 2)
 
@@ -184,7 +184,7 @@ class TheSameElementsInOrderAsContainMatcherEqualitySpec extends AnyFunSpec with
       val left3 = javaList(1, 2, 3)
       val right3 = List(1, 2, 3)
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should contain theSameElementsInOrderAs right3) (equality)
+        (left3 should contain theSameElementsInOrderAs right3) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldContainStackDepth(e3, left3, right3, thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END
@@ -196,14 +196,14 @@ class TheSameElementsInOrderAsContainMatcherEqualitySpec extends AnyFunSpec with
       val left1 = List("1 ", " 2", "3 ")
       val right1 = List("1", "2 ", " 3")
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should not contain theSameElementsInOrderAs (right1)) (equality)
+        (left1 should not contain theSameElementsInOrderAs (right1)) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldNotContainStackDepth(e1, left1, right1, thisLineNumber - 2)
         
       val left2 = Array("1 ", " 2", "3 ")
       val right2 = List("1", "2 ", " 3")
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should not contain theSameElementsInOrderAs (right2)) (equality)
+        (left2 should not contain theSameElementsInOrderAs (right2)) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldNotContainStackDepth(e2, left2, right2, thisLineNumber - 2)
 
@@ -211,7 +211,7 @@ class TheSameElementsInOrderAsContainMatcherEqualitySpec extends AnyFunSpec with
       val left3 = javaList("1 ", " 2", "3 ")
       val right3 = List("1", "2 ", " 3")
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should not contain theSameElementsInOrderAs (right3)) (equality)
+        (left3 should not contain theSameElementsInOrderAs (right3)) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldNotContainStackDepth(e3, left3, right3, thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END

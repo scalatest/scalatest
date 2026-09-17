@@ -76,12 +76,12 @@ class ListShouldContainAtMostOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FAM")) (decided by upperCaseStringEquality)
+        (fumList should contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FAM")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
+          (fumList should contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
-          (fumList should contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
+          (fumList should contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
 
         }
         fumList should contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")
@@ -117,12 +117,12 @@ class ListShouldContainAtMostOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FAM"))) (decided by upperCaseStringEquality)
+        (fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FAM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+          (fumList should (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
-          (fumList should (contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
+          (fumList should (contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
         fumList should (contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))
       }
@@ -189,11 +189,11 @@ class ListShouldContainAtMostOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality)
+        (fumList should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FAM")))) (decided by upperCaseStringEquality)
+          (fumList should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FAM")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
-        (fumList should (not contain atMostOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUM ")))) (after being lowerCased and trimmed)
+        (fumList should (not contain atMostOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUM ")))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           fumList should (not contain atMostOneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUM ")))
         }
@@ -222,11 +222,11 @@ class ListShouldContainAtMostOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList shouldNot contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
+        (fumList shouldNot contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList shouldNot contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FAM")) (decided by upperCaseStringEquality)
+          (fumList shouldNot contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FAM")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
-        (fumList shouldNot contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
+        (fumList shouldNot contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           fumList shouldNot contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")
         }
@@ -255,11 +255,11 @@ class ListShouldContainAtMostOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList shouldNot (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+        (fumList shouldNot (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList shouldNot (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FAM"))) (decided by upperCaseStringEquality)
+          (fumList shouldNot (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FAM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
-        (fumList shouldNot (contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
+        (fumList shouldNot (contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           fumList shouldNot (contain atMostOneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))
         }
@@ -313,14 +313,14 @@ class ListShouldContainAtMostOneElementOfSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should contain atMostOneElementOf Seq("hi", "ho")) (decided by upperCaseStringEquality)
+        (all (hiLists) should contain atMostOneElementOf Seq("hi", "ho")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should contain atMostOneElementOf Seq("hi", "he")) (decided by upperCaseStringEquality)
+          (all (hiLists) should contain atMostOneElementOf Seq("hi", "he")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should contain atMostOneElementOf Seq("hi", "HE")) (decided by defaultEquality[String])
+        (all (hiLists) should contain atMostOneElementOf Seq("hi", "HE")) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should contain atMostOneElementOf Seq("hi", "he")) (decided by defaultEquality[String])
+          (all (hiLists) should contain atMostOneElementOf Seq("hi", "he")) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         }
       }
 
@@ -363,14 +363,14 @@ class ListShouldContainAtMostOneElementOfSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (contain atMostOneElementOf Seq("hi", "ho"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (contain atMostOneElementOf Seq("hi", "ho"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should (contain atMostOneElementOf Seq("hi", "he"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (contain atMostOneElementOf Seq("hi", "he"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should (contain atMostOneElementOf Seq("hi", "HE"))) (decided by defaultEquality[String])
+        (all (hiLists) should (contain atMostOneElementOf Seq("hi", "HE"))) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should (contain atMostOneElementOf Seq("hi", "he"))) (decided by defaultEquality[String])
+          (all (hiLists) should (contain atMostOneElementOf Seq("hi", "he"))) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         }
       }
 
@@ -401,11 +401,11 @@ class ListShouldContainAtMostOneElementOfSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (all (toLists) should not contain atMostOneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+        (all (toLists) should not contain atMostOneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+          (all (toLists) should not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
-        (all (toLists) should not contain atMostOneElementOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+        (all (toLists) should not contain atMostOneElementOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           all (toLists) should not contain atMostOneElementOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
@@ -437,11 +437,11 @@ class ListShouldContainAtMostOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should (not contain atMostOneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseStringEquality)
+        (all (toLists) should (not contain atMostOneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality)
+          (all (toLists) should (not contain atMostOneElementOf (Seq("FEE", "FIE", "FOE", "FUM")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
-        (all (toLists) should (not contain atMostOneElementOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
+        (all (toLists) should (not contain atMostOneElementOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           all (toLists) should (not contain atMostOneElementOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
         }
@@ -473,11 +473,11 @@ class ListShouldContainAtMostOneElementOfSpec extends AnyFunSpec {
       }
 
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot contain atMostOneElementOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
+        (all (toLists) shouldNot contain atMostOneElementOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
+          (all (toLists) shouldNot contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
-        (all (toLists) shouldNot contain atMostOneElementOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
+        (all (toLists) shouldNot contain atMostOneElementOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           all (toLists) shouldNot contain atMostOneElementOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         }
@@ -509,11 +509,11 @@ class ListShouldContainAtMostOneElementOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot (contain atMostOneElementOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+        (all (toLists) shouldNot (contain atMostOneElementOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+          (all (toLists) shouldNot (contain atMostOneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
-        (all (toLists) shouldNot (contain atMostOneElementOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+        (all (toLists) shouldNot (contain atMostOneElementOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           all (toLists) shouldNot (contain atMostOneElementOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }

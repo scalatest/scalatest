@@ -43,7 +43,7 @@ final class ResultOfLessThanOrEqualToComparison[T : Ordering](val right: T) {
    *                 ^  ... invoked by this be method
    * </pre>
    */ 
-  def apply(left: T): Boolean = {
+  /* DOTTY-ONLY infix */ def apply(left: T): Boolean = {
     val ordering = implicitly[Ordering[T]]
     ordering.lteq(left, right) // left <= right
   }

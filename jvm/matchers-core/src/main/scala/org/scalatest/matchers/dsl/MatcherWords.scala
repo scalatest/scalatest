@@ -179,8 +179,11 @@ trait MatcherWords {
    * ^
    * </pre>
    **/
+  //DOTTY-ONLY def noException(implicit pos: source.Position) = new NoExceptionWord(pos)
+  // SKIP-DOTTY-START
   def noException(implicit pos: source.Position) = new NoExceptionWord(pos)
-  
+  // SKIP-DOTTY-END
+
   /**
    * This field enables the following syntax: 
    *
@@ -290,7 +293,10 @@ trait MatcherWords {
    * </p>
    *
    */
+  //DOTTY-ONLY def equal(right: Any): MatcherFactory1[Any, Equality] =
+  // SKIP-DOTTY-START 
   def equal(right: Any): MatcherFactory1[Any, Equality] =
+  // SKIP-DOTTY-END 
     new MatcherFactory1[Any, Equality] {
       def matcher[T <: Any : Equality]: Matcher[T] = {
         val equality = implicitly[Equality[T]]

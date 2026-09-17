@@ -76,14 +76,14 @@ class ListShouldContainInOrderElementsOfSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should contain inOrderElementsOf Seq("FUM", "FOE", "FIE", "FEE")) (decided by upperCaseStringEquality)
+        (fumList should contain inOrderElementsOf Seq("FUM", "FOE", "FIE", "FEE")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should contain inOrderElementsOf Seq("fee", "fie", "foe", "fum")) (decided by upperCaseStringEquality)
+          (fumList should contain inOrderElementsOf Seq("fee", "fie", "foe", "fum")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
           fumList should contain inOrderElementsOf Seq(" FUM ", " FOE ", " FIE ", " FEE ")
         }
-        (fumList should contain inOrderElementsOf Seq(" FUM ", " FOE ", " FIE ", " FEE ")) (after being lowerCased and trimmed)
+        (fumList should contain inOrderElementsOf Seq(" FUM ", " FOE ", " FIE ", " FEE ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
       it("should do nothing when RHS contain duplicated value") {
         fumList should contain inOrderElementsOf Seq("fum", "fum", "foe", "fie", "fee")
@@ -114,14 +114,14 @@ class ListShouldContainInOrderElementsOfSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should (contain inOrderElementsOf Seq("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
+        (fumList should (contain inOrderElementsOf Seq("FUM", "FOE", "FIE", "FEE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should (contain inOrderElementsOf Seq("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
+          (fumList should (contain inOrderElementsOf Seq("fee", "fie", "foe", "fum"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
           fumList should (contain inOrderElementsOf Seq(" FUM ", " FOE ", " FIE ", " FEE "))
         }
-        (fumList should (contain inOrderElementsOf Seq(" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed)
+        (fumList should (contain inOrderElementsOf Seq(" FUM ", " FOE ", " FIE ", " FEE "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
       it("should do nothing when RHS contain duplicated value") {
         fumList should (contain inOrderElementsOf Seq("fum", "fum", "foe", "fie", "fum"))
@@ -153,13 +153,13 @@ class ListShouldContainInOrderElementsOfSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList should not contain inOrderElementsOf (Seq("YOU", "TO", "BIRTHDAY", "HAPPY"))) (decided by upperCaseStringEquality)
+        (toList should not contain inOrderElementsOf (Seq("YOU", "TO", "BIRTHDAY", "HAPPY"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should not contain inOrderElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+          (toList should not contain inOrderElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         toList should not contain inOrderElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList should not contain inOrderElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+          (toList should not contain inOrderElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should do nothing when RHS contain duplicated value") {
@@ -186,13 +186,13 @@ class ListShouldContainInOrderElementsOfSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList should (not contain inOrderElementsOf (Seq("YOU", "TO", "BIRTHDAY", "HAPPY")))) (decided by upperCaseStringEquality)
+        (toList should (not contain inOrderElementsOf (Seq("YOU", "TO", "BIRTHDAY", "HAPPY")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should (not contain inOrderElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseStringEquality)
+          (toList should (not contain inOrderElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         toList should (not contain inOrderElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
         intercept[TestFailedException] {
-          (toList should (not contain inOrderElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
+          (toList should (not contain inOrderElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should do nothing when RHS contain duplicated value") {
@@ -219,13 +219,13 @@ class ListShouldContainInOrderElementsOfSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList shouldNot contain inOrderElementsOf Seq("YOU", "TO", "BIRTHDAY", "HAPPY")) (decided by upperCaseStringEquality)
+        (toList shouldNot contain inOrderElementsOf Seq("YOU", "TO", "BIRTHDAY", "HAPPY")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList shouldNot contain inOrderElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
+          (toList shouldNot contain inOrderElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         toList shouldNot contain inOrderElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         intercept[TestFailedException] {
-          (toList shouldNot contain inOrderElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
+          (toList shouldNot contain inOrderElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should do nothing when RHS contain duplicated value") {
@@ -252,13 +252,13 @@ class ListShouldContainInOrderElementsOfSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList shouldNot (contain inOrderElementsOf Seq("YOU", "TO", "BIRTHDAY", "HAPPY"))) (decided by upperCaseStringEquality)
+        (toList shouldNot (contain inOrderElementsOf Seq("YOU", "TO", "BIRTHDAY", "HAPPY"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList shouldNot (contain inOrderElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+          (toList shouldNot (contain inOrderElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         toList shouldNot (contain inOrderElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList shouldNot (contain inOrderElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+          (toList shouldNot (contain inOrderElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should do nothing when RHS contain duplicated value") {
@@ -317,14 +317,14 @@ class ListShouldContainInOrderElementsOfSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should contain inOrderElementsOf Seq("HI", "HE")) (decided by upperCaseStringEquality)
+        (all (hiLists) should contain inOrderElementsOf Seq("HI", "HE")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should contain inOrderElementsOf Seq("HI", "HO")) (decided by upperCaseStringEquality)
+          (all (hiLists) should contain inOrderElementsOf Seq("HI", "HO")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should contain inOrderElementsOf Seq("hi", "he")) (decided by defaultEquality[String])
+        (all (hiLists) should contain inOrderElementsOf Seq("hi", "he")) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should contain inOrderElementsOf Seq("hi", "ho")) (decided by defaultEquality[String])
+          (all (hiLists) should contain inOrderElementsOf Seq("hi", "ho")) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         }
       }
       it("should do nothing when RHS contain duplicated value") {
@@ -375,14 +375,14 @@ class ListShouldContainInOrderElementsOfSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (contain inOrderElementsOf Seq("HI", "HE"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (contain inOrderElementsOf Seq("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should (contain inOrderElementsOf Seq("HI", "HO"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (contain inOrderElementsOf Seq("HI", "HO"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should (contain inOrderElementsOf Seq("hi", "he"))) (decided by defaultEquality[String])
+        (all (hiLists) should (contain inOrderElementsOf Seq("hi", "he"))) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should (contain inOrderElementsOf Seq("he", "hi"))) (decided by defaultEquality[String])
+          (all (hiLists) should (contain inOrderElementsOf Seq("he", "hi"))) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         }
       }
       it("should do nothing when RHS contain duplicated value") {
@@ -411,13 +411,13 @@ class ListShouldContainInOrderElementsOfSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should not contain inOrderElementsOf (Seq("YOU", "TO"))) (decided by upperCaseStringEquality)
+        (all (toLists) should not contain inOrderElementsOf (Seq("YOU", "TO"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should not contain inOrderElementsOf (Seq("TO", "YOU"))) (decided by upperCaseStringEquality)
+          (all (toLists) should not contain inOrderElementsOf (Seq("TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         all (toLists) should not contain inOrderElementsOf (Seq(" TO ", " YOU "))
         intercept[TestFailedException] {
-          (all (toLists) should not contain inOrderElementsOf (Seq(" TO ", " YOU "))) (after being lowerCased and trimmed)
+          (all (toLists) should not contain inOrderElementsOf (Seq(" TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should do nothing when RHS contain duplicated value") {
@@ -446,13 +446,13 @@ class ListShouldContainInOrderElementsOfSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should (not contain inOrderElementsOf (Seq("YOU", "TO")))) (decided by upperCaseStringEquality)
+        (all (toLists) should (not contain inOrderElementsOf (Seq("YOU", "TO")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should (not contain inOrderElementsOf (Seq("TO", "YOU")))) (decided by upperCaseStringEquality)
+          (all (toLists) should (not contain inOrderElementsOf (Seq("TO", "YOU")))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         all (toLists) should (not contain inOrderElementsOf (Seq(" TO ", " YOU ")))
         intercept[TestFailedException] {
-          (all (toLists) should (not contain inOrderElementsOf (Seq(" TO ", " YOU ")))) (after being lowerCased and trimmed)
+          (all (toLists) should (not contain inOrderElementsOf (Seq(" TO ", " YOU ")))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should do nothing when RHS contain duplicated value") {
@@ -481,13 +481,13 @@ class ListShouldContainInOrderElementsOfSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot contain inOrderElementsOf Seq("YOU", "TO")) (decided by upperCaseStringEquality)
+        (all (toLists) shouldNot contain inOrderElementsOf Seq("YOU", "TO")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain inOrderElementsOf Seq("TO", "YOU")) (decided by upperCaseStringEquality)
+          (all (toLists) shouldNot contain inOrderElementsOf Seq("TO", "YOU")) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot contain inOrderElementsOf Seq(" TO ", " YOU ")
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain inOrderElementsOf Seq(" TO ", " YOU ")) (after being lowerCased and trimmed)
+          (all (toLists) shouldNot contain inOrderElementsOf Seq(" TO ", " YOU ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should do nothing when RHS contain duplicated value") {
@@ -516,13 +516,13 @@ class ListShouldContainInOrderElementsOfSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot (contain inOrderElementsOf Seq("YOU", "TO"))) (decided by upperCaseStringEquality)
+        (all (toLists) shouldNot (contain inOrderElementsOf Seq("YOU", "TO"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain inOrderElementsOf Seq("TO", "YOU"))) (decided by upperCaseStringEquality)
+          (all (toLists) shouldNot (contain inOrderElementsOf Seq("TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot (contain inOrderElementsOf Seq(" TO ", " YOU "))
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain inOrderElementsOf Seq(" TO ", " YOU "))) (after being lowerCased and trimmed)
+          (all (toLists) shouldNot (contain inOrderElementsOf Seq(" TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should do nothing when RHS contain duplicated value") {

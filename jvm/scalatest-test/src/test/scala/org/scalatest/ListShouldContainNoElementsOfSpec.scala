@@ -64,14 +64,14 @@ class ListShouldContainNoElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should contain noElementsOf Seq("FEE", "FAM", "FOE", "FU")) (decided by upperCaseEquality)
+        (fumList should contain noElementsOf Seq("FEE", "FAM", "FOE", "FU")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (fumList should contain noElementsOf Seq("FEE", "FUM", "FOE", "FU")) (decided by upperCaseEquality)
+          (fumList should contain noElementsOf Seq("FEE", "FUM", "FOE", "FU")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
         intercept[TestFailedException] {
-          (fumList should contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
+          (fumList should contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
-        (fumList should contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FAM ")) (after being lowerCased and trimmed)
+        (fumList should contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FAM ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
       }
       it("should allow RHS to contain duplicated value") {
         fumList should contain noElementsOf Seq("fee", "fie", "foe", "fie", "fam")
@@ -104,13 +104,13 @@ class ListShouldContainNoElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should (contain noElementsOf Seq("FEE", "FAM", "FOE", "FU"))) (decided by upperCaseEquality)
+        (fumList should (contain noElementsOf Seq("FEE", "FAM", "FOE", "FU"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (fumList should (contain noElementsOf Seq("FEE", "FUM", "FOE", "FU"))) (decided by upperCaseEquality)
+          (fumList should (contain noElementsOf Seq("FEE", "FUM", "FOE", "FU"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
         fumList should (contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))
         intercept[TestFailedException] {
-          (fumList should (contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
+          (fumList should (contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         }
       }
       it("should allow RHS to contain duplicated value") {
@@ -143,11 +143,11 @@ class ListShouldContainNoElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList should not contain noElementsOf (Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseEquality)
+        (fumList should not contain noElementsOf (Seq("FEE", "FIE", "FOE", "FUM"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (fumList should not contain noElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
+          (fumList should not contain noElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
-        (fumList should not contain noElementsOf (Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
+        (fumList should not contain noElementsOf (Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           fumList should not contain noElementsOf (Seq(" FEE ", " FIE ", " FOE ", " FUM "))
         }
@@ -176,11 +176,11 @@ class ListShouldContainNoElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList should (not contain noElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseEquality)
+        (toList should (not contain noElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (toList should (not contain noElementsOf (Seq("happy", "birthday", "to", "you")))) (decided by upperCaseEquality)
+          (toList should (not contain noElementsOf (Seq("happy", "birthday", "to", "you")))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
-        (toList should (not contain noElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
+        (toList should (not contain noElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           toList should (not contain noElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
         }
@@ -209,11 +209,11 @@ class ListShouldContainNoElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (fumList shouldNot contain noElementsOf Seq("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseEquality)
+        (fumList shouldNot contain noElementsOf Seq("FEE", "FIE", "FOE", "FUM")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (fumList shouldNot contain noElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
+          (fumList shouldNot contain noElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
-        (fumList shouldNot contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
+        (fumList shouldNot contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           fumList shouldNot contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")
         }
@@ -242,11 +242,11 @@ class ListShouldContainNoElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (toList shouldNot (contain noElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
+        (toList shouldNot (contain noElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (toList shouldNot (contain noElementsOf Seq("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
+          (toList shouldNot (contain noElementsOf Seq("happy", "birthday", "to", "you"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
-        (toList shouldNot (contain noElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+        (toList shouldNot (contain noElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           toList shouldNot (contain noElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
@@ -299,14 +299,14 @@ class ListShouldContainNoElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should contain noElementsOf Seq("hi", "he")) (decided by upperCaseEquality)
+        (all (hiLists) should contain noElementsOf Seq("hi", "he")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should contain noElementsOf Seq("HI", "HE")) (decided by upperCaseEquality)
+          (all (hiLists) should contain noElementsOf Seq("HI", "HE")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
         implicit val ise = upperCaseEquality
-        (all (hiLists) should contain noElementsOf Seq("ho", "he")) (decided by defaultEquality[String])
+        (all (hiLists) should contain noElementsOf Seq("ho", "he")) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should contain noElementsOf Seq("hi", "he")) (decided by defaultEquality[String])
+          (all (hiLists) should contain noElementsOf Seq("hi", "he")) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         }
       }
       it("should allow RHS to contain duplicated value") {
@@ -347,14 +347,14 @@ class ListShouldContainNoElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (hiLists) should (contain noElementsOf Seq("hi", "he"))) (decided by upperCaseEquality)
+        (all (hiLists) should (contain noElementsOf Seq("hi", "he"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should (contain noElementsOf Seq("HI", "HE"))) (decided by upperCaseEquality)
+          (all (hiLists) should (contain noElementsOf Seq("HI", "HE"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
         implicit val ise = upperCaseEquality
-        (all (hiLists) should (contain noElementsOf Seq("ho", "he"))) (decided by defaultEquality[String])
+        (all (hiLists) should (contain noElementsOf Seq("ho", "he"))) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should (contain noElementsOf Seq("hi", "he"))) (decided by defaultEquality[String])
+          (all (hiLists) should (contain noElementsOf Seq("hi", "he"))) (/* DOTTY-ONLY using */ decided by defaultEquality[String])
         }
       }
       it("should allow RHS to contain duplicated value") {
@@ -383,11 +383,11 @@ class ListShouldContainNoElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should not contain noElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
+        (all (toLists) should not contain noElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (toLists) should not contain noElementsOf (Seq("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
+          (all (toLists) should not contain noElementsOf (Seq("happy", "birthday", "to", "you"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
-        (all (toLists) should not contain noElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+        (all (toLists) should not contain noElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           all (toLists) should not contain noElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
@@ -418,11 +418,11 @@ class ListShouldContainNoElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) should (not contain noElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseEquality)
+        (all (toLists) should (not contain noElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (toLists) should (not contain noElementsOf (Seq("happy", "birthday", "to", "you")))) (decided by upperCaseEquality)
+          (all (toLists) should (not contain noElementsOf (Seq("happy", "birthday", "to", "you")))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
-        (all (toLists) should (not contain noElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
+        (all (toLists) should (not contain noElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           all (toLists) should (not contain noElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
         }
@@ -453,11 +453,11 @@ class ListShouldContainNoElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot contain noElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
+        (all (toLists) shouldNot contain noElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain noElementsOf Seq("happy", "birthday", "to", "you")) (decided by upperCaseEquality)
+          (all (toLists) shouldNot contain noElementsOf Seq("happy", "birthday", "to", "you")) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
-        (all (toLists) shouldNot contain noElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
+        (all (toLists) shouldNot contain noElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           all (toLists) shouldNot contain noElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         }
@@ -488,11 +488,11 @@ class ListShouldContainNoElementsOfSpec extends AnyFunSpec {
         }
       }
       it("should use an explicitly provided Equality") {
-        (all (toLists) shouldNot  (contain noElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
+        (all (toLists) shouldNot  (contain noElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain noElementsOf Seq("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
+          (all (toLists) shouldNot (contain noElementsOf Seq("happy", "birthday", "to", "you"))) (/* DOTTY-ONLY using */ decided by upperCaseEquality)
         }
-        (all (toLists) shouldNot  (contain noElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+        (all (toLists) shouldNot  (contain noElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (/* DOTTY-ONLY using */ after being lowerCased and trimmed)
         intercept[TestFailedException] {
           all (toLists) shouldNot (contain noElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }

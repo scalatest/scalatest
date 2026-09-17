@@ -26,10 +26,7 @@ final class ResultOfBeThrownBy(codeList: IndexedSeq[() => Unit]) {
 
   final class ResultOfAndBeWord {
 
-    //DOTTY-ONLY infix def thrownBy(code: => Unit) =
-    // SKIP-DOTTY-START
-    def thrownBy(code: => Unit) = 
-    // SKIP-DOTTY-END
+    /* DOTTY-ONLY infix */ def thrownBy(code: => Unit) = 
       new ResultOfBeThrownBy(codeList :+ (() => code))
 
   }
@@ -42,10 +39,7 @@ final class ResultOfBeThrownBy(codeList: IndexedSeq[() => Unit]) {
    *                         ^
    * </pre>
    */
-  //DOTTY-ONLY infix def and(beWord: BeWord) =
-  // SKIP-DOTTY-START 
-  def and(beWord: BeWord) = 
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def and(beWord: BeWord) = 
     new ResultOfAndBeWord
 
   private[scalatest] lazy val throwables: IndexedSeq[Option[Throwable]] =

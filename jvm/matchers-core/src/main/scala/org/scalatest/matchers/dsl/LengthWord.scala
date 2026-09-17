@@ -31,7 +31,7 @@ final class LengthWord {
    *                             ^
    * </pre>
    */ 
-  def apply(expectedLength: Long): ResultOfLengthWordApplication = new ResultOfLengthWordApplication(expectedLength)
+  /* DOTTY-ONLY infix */ def apply(expectedLength: Long): ResultOfLengthWordApplication = new ResultOfLengthWordApplication(expectedLength)
   
   /**
    * Overrides toString to return "length"

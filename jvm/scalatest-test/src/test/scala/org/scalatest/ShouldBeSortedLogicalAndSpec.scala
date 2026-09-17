@@ -153,7 +153,7 @@ class ShouldBeSortedLogicalAndSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           outOfOrderInts should (be (sorted) and equal (outOfOrderInts))
         }
-        (outOfOrderInts should (be (sorted) and equal (outOfOrderInts))) (trueSortable, defaultEquality)
+        (outOfOrderInts should (be (sorted) and equal (outOfOrderInts))) (/* DOTTY-ONLY using */ trueSortable, defaultEquality)
       }
     }
     
@@ -229,7 +229,7 @@ class ShouldBeSortedLogicalAndSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           orderedInts should (not be (sorted) and not equal (outOfOrderInts))
         }
-        (orderedInts should (not be (sorted) and not equal (outOfOrderInts))) (falseSortable, defaultEquality)
+        (orderedInts should (not be (sorted) and not equal (outOfOrderInts))) (/* DOTTY-ONLY using */ falseSortable, defaultEquality)
       }
     }
     
@@ -314,7 +314,7 @@ class ShouldBeSortedLogicalAndSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all(List(outOfOrderInts)) should (be (sorted) and equal (outOfOrderInts))
         }
-        (all(List(outOfOrderInts)) should (be (sorted) and equal (outOfOrderInts))) (trueSortable, defaultEquality)
+        (all(List(outOfOrderInts)) should (be (sorted) and equal (outOfOrderInts))) (/* DOTTY-ONLY using */ trueSortable, defaultEquality)
       }
     }
     
@@ -395,7 +395,7 @@ class ShouldBeSortedLogicalAndSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all(List(orderedInts)) should (not be (sorted) and not equal (outOfOrderInts))
         }
-        (all(List(orderedInts)) should (not be (sorted) and not equal (outOfOrderInts))) (falseSortable, defaultEquality)
+        (all(List(orderedInts)) should (not be (sorted) and not equal (outOfOrderInts))) (/* DOTTY-ONLY using */ falseSortable, defaultEquality)
       }
     }
     

@@ -41,10 +41,7 @@ final class ResultOfTheTypeInvocation[T](clazzTag: ClassTag[T], pos: source.Posi
    *                                     ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def thrownBy(fun: => Any): T = {
-  // SKIP-DOTTY-START 
-  def thrownBy(fun: => Any): T = {
-  // SKIP-DOTTY-END  
+  /* DOTTY-ONLY infix */ def thrownBy(fun: => Any): T = {
     checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, pos)
   }
   

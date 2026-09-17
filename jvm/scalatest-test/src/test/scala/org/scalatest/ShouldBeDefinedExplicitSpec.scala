@@ -61,12 +61,12 @@ class ShouldBeDefinedExplicitSpec extends AnyFunSpec {
     describe("when work with 'thing should be (defined)'") {
       
       it("should do nothing when thing is defined") {
-        (something should be (defined)) (definition)
+        (something should be (defined)) (/* DOTTY-ONLY using */ definition)
       }
       
       it("should throw TestFailedException with correct stack depth when thing is not defined") {
         val caught1 = intercept[TestFailedException] {
-          (nothing should be (defined)) (definition)
+          (nothing should be (defined)) (/* DOTTY-ONLY using */ definition)
         }
         assert(caught1.message === Some(wasNotDefined(nothing)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -78,12 +78,12 @@ class ShouldBeDefinedExplicitSpec extends AnyFunSpec {
     describe("when work with 'thing should not be defined'") {
       
       it("should do nothing when thing is not defined") {
-        (nothing should not be defined) (definition)
+        (nothing should not be defined) (/* DOTTY-ONLY using */ definition)
       }
       
       it("should throw TestFailedException with correct stack depth when thing is defined") {
         val caught1 = intercept[TestFailedException] {
-          (something should not be defined) (definition)
+          (something should not be defined) (/* DOTTY-ONLY using */ definition)
         }
         assert(caught1.message === Some(wasDefined(something)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -94,12 +94,12 @@ class ShouldBeDefinedExplicitSpec extends AnyFunSpec {
     describe("when work with 'thing shouldBe defined'") {
       
       it("should do nothing when thing is defined") {
-        (something shouldBe defined) (definition)
+        (something shouldBe defined) (/* DOTTY-ONLY using */ definition)
       }
       
       it("should throw TestFailedException with correct stack depth when thing is not defined") {
         val caught1 = intercept[TestFailedException] {
-          (nothing shouldBe defined) (definition)
+          (nothing shouldBe defined) (/* DOTTY-ONLY using */ definition)
         }
         assert(caught1.message === Some(wasNotDefined(nothing)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -111,12 +111,12 @@ class ShouldBeDefinedExplicitSpec extends AnyFunSpec {
     describe("when work with 'thing shouldNot be (defined)'") {
       
       it("should do nothing when thing is not defined") {
-        (nothing shouldNot be (defined)) (definition)
+        (nothing shouldNot be (defined)) (/* DOTTY-ONLY using */ definition)
       }
       
       it("should throw TestFailedException with correct stack depth when thing is defined") {
         val caught1 = intercept[TestFailedException] {
-          (something shouldNot be (defined)) (definition)
+          (something shouldNot be (defined)) (/* DOTTY-ONLY using */ definition)
         }
         assert(caught1.message === Some(wasDefined(something)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -128,13 +128,13 @@ class ShouldBeDefinedExplicitSpec extends AnyFunSpec {
     describe("when work with 'all(xs) should be (defined)'") {
       
       it("should do nothing when all(xs) is defined") {
-        (all(List(something)) should be (defined)) (definition)
+        (all(List(something)) should be (defined)) (/* DOTTY-ONLY using */ definition)
       }
       
       it("should throw TestFailedException with correct stack depth when all(xs) is not defined") {
         val left1 = List(nothing)
         val caught1 = intercept[TestFailedException] {
-          (all(left1) should be (defined)) (definition)
+          (all(left1) should be (defined)) (/* DOTTY-ONLY using */ definition)
         }
         assert(caught1.message === Some(allError(left1, wasNotDefined(nothing), thisLineNumber - 2)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -146,13 +146,13 @@ class ShouldBeDefinedExplicitSpec extends AnyFunSpec {
     describe("when work with 'all(xs) should not be defined'") {
       
       it("should do nothing when all(xs) is not defined") {
-        (all(List(nothing)) should not be defined) (definition)
+        (all(List(nothing)) should not be defined) (/* DOTTY-ONLY using */ definition)
       }
       
       it("should throw TestFailedException with correct stack depth when all(xs) is defined") {
         val left1 = List(something)
         val caught1 = intercept[TestFailedException] {
-          (all(left1) should not be defined) (definition)
+          (all(left1) should not be defined) (/* DOTTY-ONLY using */ definition)
         }
         assert(caught1.message === Some(allError(left1, wasDefined(something), thisLineNumber - 2)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -164,13 +164,13 @@ class ShouldBeDefinedExplicitSpec extends AnyFunSpec {
     describe("when work with 'all(xs) shouldBe defined'") {
       
       it("should do nothing when all(xs) is defined") {
-        (all(List(something)) shouldBe defined) (definition)
+        (all(List(something)) shouldBe defined) (/* DOTTY-ONLY using */ definition)
       }
       
       it("should throw TestFailedException with correct stack depth when all(xs) is not defined") {
         val left1 = List(nothing)
         val caught1 = intercept[TestFailedException] {
-          (all(left1) shouldBe defined) (definition)
+          (all(left1) shouldBe defined) (/* DOTTY-ONLY using */ definition)
         }
         assert(caught1.message === Some(allError(left1, wasNotDefined(nothing), thisLineNumber - 2)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -181,13 +181,13 @@ class ShouldBeDefinedExplicitSpec extends AnyFunSpec {
     describe("when work with 'all(xs) shouldNot be (defined)'") {
       
       it("should do nothing when all(xs) is not defined") {
-        (all(List(nothing)) shouldNot be (defined)) (definition)
+        (all(List(nothing)) shouldNot be (defined)) (/* DOTTY-ONLY using */ definition)
       }
       
       it("should throw TestFailedException with correct stack depth when all(xs) is defined") {
         val left1 = List(something)
         val caught1 = intercept[TestFailedException] {
-          (all(left1) shouldNot be (defined)) (definition)
+          (all(left1) shouldNot be (defined)) (/* DOTTY-ONLY using */ definition)
         }
         assert(caught1.message === Some(allError(left1, wasDefined(something), thisLineNumber - 2)))
         assert(caught1.failedCodeFileName === Some(fileName))

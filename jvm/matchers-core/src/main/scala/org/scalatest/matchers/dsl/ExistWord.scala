@@ -57,10 +57,7 @@ final class ExistWord {
    *                    ^
    * </pre>
    */
-  //DOTTY-ONLY infix def and[TYPECLASS1[_]](anotherMatcherFactory: MatcherFactory1[Any, TYPECLASS1]): MatcherFactory2[Any, Existence, TYPECLASS1] = 
-  // SKIP-DOTTY-START 
-  def and[TYPECLASS1[_]](anotherMatcherFactory: MatcherFactory1[Any, TYPECLASS1]): MatcherFactory2[Any, Existence, TYPECLASS1] = 
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def and[TYPECLASS1[_]](anotherMatcherFactory: MatcherFactory1[Any, TYPECLASS1]): MatcherFactory2[Any, Existence, TYPECLASS1] = 
     matcherFactory.and(anotherMatcherFactory)
   
   /**
@@ -71,10 +68,7 @@ final class ExistWord {
    *                    ^
    * </pre>
    */
-  //DOTTY-ONLY infix def and(anotherMatcher: Matcher[Any]): MatcherFactory1[Any, Existence] = 
-  // SKIP-DOTTY-START 
-  def and(anotherMatcher: Matcher[Any]): MatcherFactory1[Any, Existence] = 
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def and(anotherMatcher: Matcher[Any]): MatcherFactory1[Any, Existence] = 
     matcherFactory.and(anotherMatcher)  
     
   /**
@@ -85,10 +79,7 @@ final class ExistWord {
    *                    ^
    * </pre>
    */
-  //DOTTY-ONLY infix def or[TYPECLASS1[_]](anotherMatcherFactory: MatcherFactory1[Any, TYPECLASS1]): MatcherFactory2[Any, Existence, TYPECLASS1] =  
-  // SKIP-DOTTY-START 
-  def or[TYPECLASS1[_]](anotherMatcherFactory: MatcherFactory1[Any, TYPECLASS1]): MatcherFactory2[Any, Existence, TYPECLASS1] = 
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def or[TYPECLASS1[_]](anotherMatcherFactory: MatcherFactory1[Any, TYPECLASS1]): MatcherFactory2[Any, Existence, TYPECLASS1] = 
     matcherFactory.or(anotherMatcherFactory)
     
   /**
@@ -99,9 +90,6 @@ final class ExistWord {
    *                    ^
    * </pre>
    */
-  //DOTTY-ONLY infix def or(anotherMatcher: Matcher[Any]): MatcherFactory1[Any, Existence] = 
-  // SKIP-DOTTY-START 
-  def or(anotherMatcher: Matcher[Any]): MatcherFactory1[Any, Existence] = 
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def or(anotherMatcher: Matcher[Any]): MatcherFactory1[Any, Existence] = 
     matcherFactory.or(anotherMatcher)
 }
