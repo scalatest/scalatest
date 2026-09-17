@@ -27,6 +27,8 @@ import org.scalatest.exceptions._
  * in which tests are nested inside text clauses denoted with the dash
  * operator (<code>-</code>).
  * 
+ * The expected type of a test in this trait is <code>Any</code>.
+ * 
  * <p>
  * <a href="AnyFreeSpec.html"><code>AnyFreeSpec</code></a> is a class, not a trait,
  * to minimize compile time given there is a slight compiler overhead to
