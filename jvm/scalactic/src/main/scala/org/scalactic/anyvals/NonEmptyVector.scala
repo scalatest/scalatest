@@ -24,6 +24,7 @@ import scala.reflect.ClassTag
 import scala.collection.immutable
 import scala.collection.mutable.ArrayBuffer
 import org.scalactic.Every
+import org.scalactic.Resources
 
 
 // Can't be a LinearSeq[T] because Builder would be able to create an empty one.
@@ -1595,6 +1596,19 @@ object NonEmptyVector {
     seq.headOption match {
       case None => None
       case Some(first) => Some(new NonEmptyVector(Vector(first) ++ seq.tail.toVector))
+    }
+
+  /**
+    * Construct a <code>NonEmptyVector</code> containing the elements of a given <code>GenSeq</code>.
+    *
+    * @param seq the <code>GenSeq</code> with which to construct a <code>NonEmptyVector</code>
+    * @return a <code>NonEmptyVector</code> containing the elements of the given <code>GenSeq</code>
+    * @throws AssertionError if the passed <code>GenSeq</code> is empty
+    */
+  def ensuringValid[T](seq: GenSeq[T]): NonEmptyVector[T] =
+    seq.headOption match {
+      case None => throw new AssertionError(Resources.nonEmptyVectorEmpty)
+      case Some(first) => new NonEmptyVector(Vector(first) ++ seq.tail.toVector)
     }
 
   import scala.language.implicitConversions

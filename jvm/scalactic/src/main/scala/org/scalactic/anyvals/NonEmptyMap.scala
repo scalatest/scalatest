@@ -24,6 +24,7 @@ import scala.reflect.ClassTag
 import scala.collection.immutable
 import scala.collection.mutable.ArrayBuffer
 import org.scalactic.Every
+import org.scalactic.Resources
 
 
 // Can't be a LinearSeq[T] because Builder would be able to create an empty one.
@@ -942,6 +943,21 @@ object NonEmptyMap {
     map.headOption match {
       case None => None
       case Some(first) => Some(new NonEmptyMap(scala.collection.immutable.Map.empty[K, V] ++ map))
+    }
+
+  /**
+    * Construct a <code>NonEmptyMap</code> containing the elements of a given <code>GenMap</code>, throwing an <code>AssertionError</code> if the <code>GenMap</code> is empty.
+    *
+    * @tparam K the type of the key contained in the new <code>NonEmptyMap</code>
+    * @tparam V the type of the value contained in the new <code>NonEmptyMap</code>
+    * @param map the <code>GenMap</code> with which to construct a <code>NonEmptyMap</code>
+    * @return a <code>NonEmptyMap</code> containing the elements of the given <code>GenMap</code>
+    * @throws AssertionError if the passed <code>GenMap</code> is empty
+    */
+  def ensuringValid[K, V](map: scala.collection.GenMap[K, V]): NonEmptyMap[K, V] =
+    map.headOption match {
+      case None => throw new AssertionError(Resources.nonEmptyMapEmpty)
+      case Some(first) => new NonEmptyMap(scala.collection.immutable.Map.empty[K, V] ++ map)
     }
 
   import scala.language.implicitConversions
