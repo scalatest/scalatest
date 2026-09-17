@@ -19,7 +19,7 @@ import org.scalactic.ColCompatHelper.Iterable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
-import org.scalactic.{Every, One, Many, StringNormalizations}
+import org.scalactic.{Every, One, Many, StringNormalizations, Resources}
 import org.scalactic.UnitSpec
 import org.scalactic.NormalizingEquality
 
@@ -51,6 +51,20 @@ class NonEmptyVectorSpec extends UnitSpec {
     NonEmptyVector.from(Vector("1").par) shouldBe Some(NonEmptyVector("1"))
     NonEmptyVector.from(Vector(1, 2, 3).par) shouldBe Some(NonEmptyVector(1, 2, 3))
     // SKIP-SCALATESTJS,NATIVE-END
+  }
+  it should "offer an ensuringValid factory method that" in {
+    NonEmptyVector.ensuringValid(Vector(1)) shouldBe NonEmptyVector(1)
+    NonEmptyVector.ensuringValid(Vector(1, 2, 3)) shouldBe NonEmptyVector(1, 2, 3)
+    NonEmptyVector.ensuringValid(List(1)) shouldBe NonEmptyVector(1)
+    NonEmptyVector.ensuringValid(List(1, 2, 3)) shouldBe NonEmptyVector(1, 2, 3)
+
+    the [AssertionError] thrownBy {
+      NonEmptyVector.ensuringValid(Vector.empty[String])
+    } should have message Resources.nonEmptyVectorEmpty
+
+    the [AssertionError] thrownBy {
+      NonEmptyVector.ensuringValid(List.empty[Int])
+    } should have message Resources.nonEmptyVectorEmpty
   }
   it can "be constructed with null elements" in {
     noException should be thrownBy NonEmptyVector("hi", null, "ho")
