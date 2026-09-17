@@ -21,6 +21,8 @@ import org.scalatest.{Suite, Finders}
  * Facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
  * are nested inside text clauses denoted with the dash operator (<code>-</code>).
  *
+ * The expected type of a test in this class is <code>Any</code>.
+ *
  * <p>
  * <code>AnyFreeSpec</code> is so named because unlike classes such as <code>AnyWordSpec</code>, <code>AnyFlatSpec</code>, and <code>AnyFunSpec</code>,
  * it is enforces no structure on the text. You are free to compose text however you like. (A <code>AnyFreeSpec</code> is like free-verse poetry as

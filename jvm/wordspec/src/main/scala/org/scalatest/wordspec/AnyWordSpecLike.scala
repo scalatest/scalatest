@@ -26,6 +26,8 @@ import verbs.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord,
  * Implementation trait for class <code>AnyWordSpec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
  * are combined with text that specifies the behavior the tests verify.
  * 
+ * The expected type of a test in this trait is <code>Any</code>.
+ * 
  * <p>
  * <a href="AnyWordSpec.html"><code>AnyWordSpec</code></a> is a class, not a trait, to minimize compile time given there is a slight compiler overhead to
  * mixing in traits compared to extending classes. If you need to mix the behavior of <code>AnyWordSpec</code>

@@ -27,6 +27,8 @@ import org.scalatest.exceptions._
  * in which tests are combined with text that specifies the behavior the tests
  * verify.
  * 
+ * The expected type of a test in this trait is <code>Any</code>.
+ * 
  * <p>
  * <a href="AnyFunSpec.html"><code>AnyFunSpec</code></a> is a class, not a trait,
  * to minimize compile time given there is a slight compiler overhead to
