@@ -4962,32 +4962,23 @@ If it doesn't show up for a while, please delete this comment.
       // users. Having their tests fail when they upgrade to 2.13 might help them prevent bugs from escaping to production.
       "produces generators given construct and deconstruct functions for 1 type" in {
         case class Person(age: Int)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p => p.age } (posZIntValues)
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf[Int, Person](Person.apply) { p => p.age } (posZIntValues)
+        val persons = instancesOf/*DOTTY-ONLY [Int, Person] */(Person) { p => p.age } (/*DOTTY-ONLY using */ posZIntValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(ag) => ag should be >= 0 } // A contrived property check to do something with the generator
       }
       "produces generators given construct and deconstruct functions for 2 types" in {
         case class Person(name: String, age: Int)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf(Person/*DOTTY-ONLY .apply */) { p =>
           (p.name, p.age)
-        } (strings, posZIntValues)
+        } (/*DOTTY-ONLY using */ strings, posZIntValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag) => ag should be >= 0 } // A contrived property check to do something with the generator
       }
       "produces generators given construct and deconstruct functions for 3 types" in {
         case class Person(name: String, age: Int, attr3: Long)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Person] */(Person/*DOTTY-ONLY .apply */) { p =>
           (p.name, p.age, p.attr3)
-        } (strings, posZIntValues, posZLongValues)
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3) =>
           ag should be >= 0
@@ -4996,12 +4987,9 @@ If it doesn't show up for a while, please delete this comment.
       }
       "produces generators given construct and deconstruct functions for 4 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Double, Person] */(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4)
-        } (strings, posZIntValues, posZLongValues, posDoubleValues)
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues, posDoubleValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4) =>
           ag should be >= 0
@@ -5011,12 +4999,9 @@ If it doesn't show up for a while, please delete this comment.
       }
       "produces generators given construct and deconstruct functions for 5 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Double, Float, Person] */(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5)
-        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues)
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5) =>
           ag should be >= 0
@@ -5027,12 +5012,9 @@ If it doesn't show up for a while, please delete this comment.
       }
       "produces generators given construct and deconstruct functions for 6 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Double, Float, Int, Person] */(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6)
-        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues)
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6) =>
           ag should be >= 0
@@ -5044,12 +5026,9 @@ If it doesn't show up for a while, please delete this comment.
       }
       "produces generators given construct and deconstruct functions for 7 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Double, Float, Int, Long, Person] */(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7)
-        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues)
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7) =>
           ag should be >= 0
@@ -5062,12 +5041,9 @@ If it doesn't show up for a while, please delete this comment.
       }
       "produces generators given construct and deconstruct functions for 8 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Double, Float, Int, Long, Double, Person] */(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8)
-        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues)
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8) =>
           ag should be >= 0
@@ -5081,12 +5057,9 @@ If it doesn't show up for a while, please delete this comment.
       }
       "produces generators given construct and deconstruct functions for 9 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Double, Float, Int, Long, Double, Float, Person] */(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9)
-        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues)
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9) =>
           ag should be >= 0
@@ -5101,12 +5074,9 @@ If it doesn't show up for a while, please delete this comment.
       }
       "produces generators given construct and deconstruct functions for 10 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Double, Float, Int, Long, Double, Float, Int, Person] */(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10)
-        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues)
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10) =>
           ag should be >= 0
@@ -5122,12 +5092,9 @@ If it doesn't show up for a while, please delete this comment.
       }
       "produces generators given construct and deconstruct functions for 11 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Person] */(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11)
-        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues)
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11) =>
           ag should be >= 0
@@ -5144,12 +5111,9 @@ If it doesn't show up for a while, please delete this comment.
       }
       "produces generators given construct and deconstruct functions for 12 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Person] */(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12)
-        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues)
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12) =>
           ag should be >= 0
@@ -5167,12 +5131,9 @@ If it doesn't show up for a while, please delete this comment.
       }
       "produces generators given construct and deconstruct functions for 13 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Float, Person] */(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13)
-        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues)
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13) =>
           ag should be >= 0
@@ -5191,12 +5152,9 @@ If it doesn't show up for a while, please delete this comment.
       }
       "produces generators given construct and deconstruct functions for 14 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Float, Int, Person] */(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14)
-        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues)
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13, attr14) =>
           ag should be >= 0
@@ -5216,12 +5174,9 @@ If it doesn't show up for a while, please delete this comment.
       }
       "produces generators given construct and deconstruct functions for 15 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int, attr15: Long)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Person] */(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14, p.attr15)
-        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues)
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13, attr14, attr15) =>
           ag should be >= 0
@@ -5243,12 +5198,9 @@ If it doesn't show up for a while, please delete this comment.
       "produces generators given construct and deconstruct functions for 16 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int, attr15: Long,
                           attr16: Double)
-        // SKIP-DOTTY-START                  
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Person] */(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14, p.attr15, p.attr16)
-        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
           posDoubleValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13, attr14, attr15, attr16) =>
@@ -5272,12 +5224,9 @@ If it doesn't show up for a while, please delete this comment.
       "produces generators given construct and deconstruct functions for 17 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int, attr15: Long,
                           attr16: Double, attr17: Float)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Float, Person] */(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14, p.attr15, p.attr16, p.attr17)
-        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
           posDoubleValues, posFloatValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13, attr14, attr15, attr16, attr17) =>
@@ -5302,12 +5251,9 @@ If it doesn't show up for a while, please delete this comment.
       "produces generators given construct and deconstruct functions for 18 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int, attr15: Long,
                           attr16: Double, attr17: Float, attr18: Int)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Float, Int, Person] */(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14, p.attr15, p.attr16, p.attr17, p.attr18)
-        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
           posDoubleValues, posFloatValues, posZIntValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13, attr14, attr15, attr16, attr17, attr18) =>
@@ -5333,12 +5279,9 @@ If it doesn't show up for a while, please delete this comment.
       "produces generators given construct and deconstruct functions for 19 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int, attr15: Long,
                           attr16: Double, attr17: Float, attr18: Int, attr19: Long)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Person] */(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14, p.attr15, p.attr16, p.attr17, p.attr18, p.attr19)
-        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
           posDoubleValues, posFloatValues, posZIntValues, posZLongValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13, attr14, attr15, attr16, attr17, attr18, attr19) =>
@@ -5365,12 +5308,9 @@ If it doesn't show up for a while, please delete this comment.
       "produces generators given construct and deconstruct functions for 20 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int, attr15: Long,
                           attr16: Double, attr17: Float, attr18: Int, attr19: Long, attr20: Double)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Person] */(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14, p.attr15, p.attr16, p.attr17, p.attr18, p.attr19, p.attr20)
-        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
           posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13, attr14, attr15, attr16, attr17, attr18, attr19, attr20) =>
@@ -5398,12 +5338,9 @@ If it doesn't show up for a while, please delete this comment.
       "produces generators given construct and deconstruct functions for 21 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int, attr15: Long,
                           attr16: Double, attr17: Float, attr18: Int, attr19: Long, attr20: Double, attr21: Float)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Float, Person] */(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14, p.attr15, p.attr16, p.attr17, p.attr18, p.attr19, p.attr20, p.attr21)
-        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
           posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13, attr14, attr15, attr16, attr17, attr18, attr19, attr20, attr21) =>
@@ -5432,12 +5369,9 @@ If it doesn't show up for a while, please delete this comment.
       "produces generators given construct and deconstruct functions for 22 types" in {
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int, attr15: Long,
                           attr16: Double, attr17: Float, attr18: Int, attr19: Long, attr20: Double, attr21: Float, attr22: Int)
-        // SKIP-DOTTY-START
-        val persons = instancesOf(Person) { p =>
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val persons = instancesOf(Person.apply) { p =>
+        val persons = instancesOf/*DOTTY-ONLY [String, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Float, Int, Long, Double, Float, Int, Person] */(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14, p.attr15, p.attr16, p.attr17, p.attr18, p.attr19, p.attr20, p.attr21, p.attr22)
-        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
+        } (/*DOTTY-ONLY using */ strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
           posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13, attr14, attr15, attr16, attr17, attr18, attr19, attr20, attr21, attr22) =>

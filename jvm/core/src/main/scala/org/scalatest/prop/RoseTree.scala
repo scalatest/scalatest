@@ -85,7 +85,10 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
    * @tparam E the type of additional data returned in case of failure
    * @return a future optional error data, if a shrunken or simplified case was found during the search
    */
+  // SKIP-DOTTY-START  
   def shrinkSearchForFuture[E](fun: T => Future[Option[E]])(implicit execContext: ExecutionContext): Future[Option[(T, E)]] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def shrinkSearchForFuture[E](fun: T => Future[Option[E]])(using execContext: ExecutionContext): Future[Option[(T, E)]] = {
     def shrinkLoop(lastFailure: Option[(RoseTree[T], E)], pending: LazyListOrStream[RoseTree[T]], count: Int): Future[Option[(RoseTree[T], E)]] = {
       if (count < maximumIterationCount) 
         pending match {
