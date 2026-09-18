@@ -30,7 +30,11 @@ object GenScalacticDocDotty {
         "Position.scala",  // Re-implemented
         "TypeInfo.scala"  // Re-implemented
       )) ++
-    GenScalacticDotty.copyDir("jvm/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
+    GenScalacticDotty.copyDir("jvm/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir,
+      List(
+        "NonEmptyString.scala"  // Re-implemented with macro-based compile-time checking for dotty
+      )) ++
+    GenScalacticDotty.copyDir("dotty/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
     GenScalacticDotty.copyDir("dotty/scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir, List.empty) ++
     GenScalacticDotty.copyDir("dotty/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty) ++
     GenScalacticDotty.copyDir("dotty/scalactic/src/main/scala/org/scalactic/opaquetypes", "org/scalactic/opaquetypes", targetDir, List.empty)
