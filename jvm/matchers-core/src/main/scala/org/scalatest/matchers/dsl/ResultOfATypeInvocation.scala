@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ final class ResultOfATypeInvocation[T](val clazzTag: ClassTag[T]) {
    *                      ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def should(beWord: BeWord)(implicit prettifier: Prettifier, pos: source.Position): ResultOfBeWordForAType[T] =
+  //DOTTY-ONLY infix def should(beWord: BeWord)(using prettifier: Prettifier, pos: source.Position): ResultOfBeWordForAType[T] =
   // SKIP-DOTTY-START 
   def should(beWord: BeWord)(implicit prettifier: Prettifier, pos: source.Position): ResultOfBeWordForAType[T] =
   // SKIP-DOTTY-END
@@ -61,10 +61,7 @@ final class ResultOfATypeInvocation[T](val clazzTag: ClassTag[T]) {
    *
    * This method is here to direct people trying to use the above syntax to use <code>noException</code> instead.
    */
-  //DOTTY-ONLY infix def should(notWord: NotWord): PleaseUseNoExceptionShouldSyntaxInstead =
-  // SKIP-DOTTY-START 
-  def should(notWord: NotWord): PleaseUseNoExceptionShouldSyntaxInstead =
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def should(notWord: NotWord): PleaseUseNoExceptionShouldSyntaxInstead =
     new PleaseUseNoExceptionShouldSyntaxInstead
   
   /**
@@ -79,7 +76,7 @@ final class ResultOfATypeInvocation[T](val clazzTag: ClassTag[T]) {
   def shouldBe(thrownBy: ResultOfThrownByApplication)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = 
     checkThrownBy(clazz, thrownBy, pos)
   // SKIP-DOTTY-END
-  //DOTTY-ONLY infix inline def shouldBe(thrownBy: ResultOfThrownByApplication)(implicit prettifier: Prettifier): org.scalatest.Assertion =   
+  //DOTTY-ONLY infix inline def shouldBe(thrownBy: ResultOfThrownByApplication)(using prettifier: Prettifier): org.scalatest.Assertion =   
   //DOTTY-ONLY   ${ org.scalatest.matchers.MatchersHelper.checkThrownByMacro('{clazz}, '{thrownBy}) }
 
   /**
@@ -94,7 +91,7 @@ final class ResultOfATypeInvocation[T](val clazzTag: ClassTag[T]) {
   def should(beThrownBy: ResultOfBeThrownBy)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = 
     checkBeThrownBy(clazz, beThrownBy, pos)
   // SKIP-DOTTY-END  
-  //DOTTY-ONLY infix inline def should(beThrownBy: ResultOfBeThrownBy)(implicit prettifier: Prettifier): org.scalatest.Assertion = 
+  //DOTTY-ONLY infix inline def should(beThrownBy: ResultOfBeThrownBy)(using prettifier: Prettifier): org.scalatest.Assertion = 
   //DOTTY-ONLY   ${ org.scalatest.matchers.MatchersHelper.checkBeThrownByMacro('{clazz}, '{beThrownBy}) }
 
   /**
@@ -105,7 +102,7 @@ final class ResultOfATypeInvocation[T](val clazzTag: ClassTag[T]) {
    *                      ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def must(beWord: BeWord)(implicit prettifier: Prettifier, pos: source.Position): ResultOfBeWordForAType[T] =
+  //DOTTY-ONLY infix def must(beWord: BeWord)(using prettifier: Prettifier, pos: source.Position): ResultOfBeWordForAType[T] =
   // SKIP-DOTTY-START 
   def must(beWord: BeWord)(implicit prettifier: Prettifier, pos: source.Position): ResultOfBeWordForAType[T] =
   // SKIP-DOTTY-END
@@ -121,10 +118,7 @@ final class ResultOfATypeInvocation[T](val clazzTag: ClassTag[T]) {
    *
    * This method is here to direct people trying to use the above syntax to use <code>noException</code> instead.
    */
-  //DOTTY-ONLY infix def must(notWord: NotWord): PleaseUseNoExceptionShouldSyntaxInstead =
-  // SKIP-DOTTY-START 
-  def must(notWord: NotWord): PleaseUseNoExceptionShouldSyntaxInstead =
-  // SKIP-DOTTY-END
+  /* DOTTY-ONLY infix */ def must(notWord: NotWord): PleaseUseNoExceptionShouldSyntaxInstead =
     new PleaseUseNoExceptionShouldSyntaxInstead
 
   /**
@@ -139,7 +133,7 @@ final class ResultOfATypeInvocation[T](val clazzTag: ClassTag[T]) {
   def mustBe(thrownBy: ResultOfThrownByApplication)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = 
     checkThrownBy(clazz, thrownBy, pos)
   // SKIP-DOTTY-END
-  //DOTTY-ONLY infix inline def mustBe(thrownBy: ResultOfThrownByApplication)(implicit prettifier: Prettifier): org.scalatest.Assertion = 
+  //DOTTY-ONLY infix inline def mustBe(thrownBy: ResultOfThrownByApplication)(using prettifier: Prettifier): org.scalatest.Assertion = 
   //DOTTY-ONLY   ${ org.scalatest.matchers.MatchersHelper.checkThrownByMacro('{clazz}, '{thrownBy}) }  
 
   /**
@@ -154,7 +148,7 @@ final class ResultOfATypeInvocation[T](val clazzTag: ClassTag[T]) {
   def must(beThrownBy: ResultOfBeThrownBy)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = 
     checkBeThrownBy(clazz, beThrownBy, pos)
   // SKIP-DOTTY-END
-  //DOTTY-ONLY infix inline def must(beThrownBy: ResultOfBeThrownBy)(implicit prettifier: Prettifier): org.scalatest.Assertion = 
+  //DOTTY-ONLY infix inline def must(beThrownBy: ResultOfBeThrownBy)(using prettifier: Prettifier): org.scalatest.Assertion = 
   //DOTTY-ONLY   ${ org.scalatest.matchers.MatchersHelper.checkBeThrownByMacro('{clazz}, '{beThrownBy}) }
   
   override def toString: String = "a [" + clazz.getName + "]"

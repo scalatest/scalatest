@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,10 +80,6 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("hi")(0) shouldEqual 'h'
     NonEmptyString("789")(2) shouldEqual '9'
 
-    the [AssertionError] thrownBy {
-      NonEmptyString("")
-    } should have message Resources.nonEmptyStringEmpty
-
     // SKIP-SCALATESTJS,NATIVE-START
     val iobe = 
     the [IndexOutOfBoundsException] thrownBy { // In ScalaJs, this throws scala.scalajs.runtime.UndefinedBehaviorError
@@ -95,6 +91,21 @@ class NonEmptyStringSpec extends UnitSpec {
     iobe should have message expectedErrorMessage
     // SKIP-SCALATESTJS,NATIVE-END
   }
+  it should "offer an ensuringValid factory method that" in {
+    NonEmptyString.ensuringValid("1") shouldBe NonEmptyString("1")
+    NonEmptyString.ensuringValid("123") shouldBe NonEmptyString("123")
+    NonEmptyString.ensuringValid(NonEmptyString("1").toVector) shouldBe NonEmptyString("1")
+    NonEmptyString.ensuringValid(NonEmptyString("123").toVector) shouldBe NonEmptyString("123")
+
+    the [AssertionError] thrownBy {
+      NonEmptyString.ensuringValid("")
+    } should have message Resources.nonEmptyStringEmpty
+
+    the [AssertionError] thrownBy {
+      NonEmptyString.ensuringValid(Vector.empty[Char])
+    } should have message Resources.nonEmptyStringEmpty
+  }
+  "NonEmptyString(\"\")" shouldNot compile
   it should "have a length method" in {
     NonEmptyString("1").length shouldBe 1
     NonEmptyString("12").length shouldBe 2
@@ -350,14 +361,14 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").find(_ == '2') shouldBe Some('2')
   }
   it should "have a flatMap method" in {
-    NonEmptyString("123") flatMap (i => NonEmptyString(i.toString + "1")) shouldBe NonEmptyString("112131")
+    NonEmptyString("123") flatMap (i => NonEmptyString.ensuringValid(i.toString + "1")) shouldBe NonEmptyString("112131")
     val ss = NonEmptyString("hiho")
     val is = NonEmptyString("123")
     (for (s <- ss;
           i <- is) yield
       s.toString + i.toString) shouldBe NonEmptyString("h1h2h3i1i2i3h1h2h3o1o2o3")
-    NonEmptyString("5") flatMap (i => NonEmptyString(i + "3")) shouldBe NonEmptyString("53")
-    NonEmptyString("8") flatMap (i => NonEmptyString(i.toString)) shouldBe NonEmptyString("8")
+    NonEmptyString("5") flatMap (i => NonEmptyString.ensuringValid(i + "3")) shouldBe NonEmptyString("53")
+    NonEmptyString("8") flatMap (i => NonEmptyString.ensuringValid(i.toString)) shouldBe NonEmptyString("8")
   }
   it can "be flattened when in a IterableOnce" in {
     Vector(NonEmptyString("123"), NonEmptyString("123")).flatten shouldBe Vector('1', '2', '3', '1', '2', '3')

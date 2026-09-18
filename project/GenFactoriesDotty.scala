@@ -57,7 +57,7 @@ import scala.language.higherKinds
  * (in <code>TC1</code>, <code>TC2</code>, <em>etc.</em>) means <em>typeclass</em>.
  * This class's <code>matcher</code> factory method will produce a <code>Matcher[T]</code>, where <code>T</code> is a subtype of (or the same type
  * as) <code>SC</code>, given a typeclass instance for each <code>TC<em>n</em></code>
- * implicit parameter (for example, a <code>TC1[T]</code>, <code>TC2[T]</code>, <em>etc.</em>).
+ * using parameter (for example, a <code>TC1[T]</code>, <code>TC2[T]</code>, <em>etc.</em>).
  * </p>
  *
  * @author Bill Venners
@@ -68,7 +68,7 @@ abstract class MatcherFactory$arity$[-SC, $typeConstructors$] { thisMatcherFacto
   /**
    * Factory method that will produce a <code>Matcher[T]</code>, where <code>T</code> is a subtype of (or the same type
    * as) <code>SC</code>, given a typeclass instance for each <code>TC<em>n</em></code>
-   * implicit parameter (for example, a <code>TC1[T]</code>, <code>TC2[T]</code>, <em>etc.</em>).
+   * using parameter (for example, a <code>TC1[T]</code>, <code>TC2[T]</code>, <em>etc.</em>).
    */
   def matcher[T <: SC : $colonSeparatedTCNs$]: Matcher[T]
 
@@ -283,7 +283,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    def apply(expectedElement: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = thisMatcherFactory.and(MatcherWords.contain(expectedElement))
+    infix def apply(expectedElement: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = thisMatcherFactory.and(MatcherWords.contain(expectedElement))
 
     // And some, the ones that would by themselves already generate a Matcher, just return a MatcherFactoryN where N is the same.
 
@@ -340,7 +340,7 @@ $endif$
      * </pre>
      */
     infix def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
-      thisMatcherFactory.and(MatcherWords.contain.inOrderOnly(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
+      thisMatcherFactory.and(MatcherWords.contain.inOrderOnly(firstEle, secondEle, remainingEles.toList: _*)(using prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -351,7 +351,7 @@ $endif$
      * </pre>
      */
     infix def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
-      thisMatcherFactory.and(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles  .toList: _*)(prettifier, pos))
+      thisMatcherFactory.and(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles  .toList: _*)(using prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -373,7 +373,7 @@ $endif$
      * </pre>
      */
     infix def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
-      thisMatcherFactory.and(MatcherWords.contain.inOrder(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
+      thisMatcherFactory.and(MatcherWords.contain.inOrder(firstEle, secondEle, remainingEles.toList: _*)(using prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -395,7 +395,7 @@ $endif$
      * </pre>
      */
     infix def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
-      thisMatcherFactory.and(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
+      thisMatcherFactory.and(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*)(using prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -417,7 +417,7 @@ $endif$
      * </pre>
      */
     infix def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
-      thisMatcherFactory.and(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
+      thisMatcherFactory.and(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*)(using prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -439,7 +439,7 @@ $endif$
      * </pre>
      */
     infix def only(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
-      thisMatcherFactory.and(MatcherWords.contain.only(right.toList: _*)(prettifier, pos))
+      thisMatcherFactory.and(MatcherWords.contain.only(right.toList: _*)(using prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -450,7 +450,7 @@ $endif$
      * </pre>
      */
     infix def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
-      thisMatcherFactory.and(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
+      thisMatcherFactory.and(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*)(using prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -472,7 +472,7 @@ $endif$
      * </pre>
      */
     infix def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
-      thisMatcherFactory.and(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
+      thisMatcherFactory.and(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*)(using prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -494,7 +494,7 @@ $endif$
    *                 ^
    * </pre>
    */
-  infix def and(containWord: ContainWord)(implicit prettifier: Prettifier, pos: source.Position): AndContainWord = new AndContainWord(prettifier, pos)
+  infix def and(containWord: ContainWord)(using prettifier: Prettifier, pos: source.Position): AndContainWord = new AndContainWord(prettifier, pos)
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -978,7 +978,7 @@ $endif$
      * </p>
      */
     infix def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
-      thisMatcherFactory.and(MatcherWords.not.be(tripleEqualsInvocation)(pos))
+      thisMatcherFactory.and(MatcherWords.not.be(tripleEqualsInvocation)(using pos))
 
     // SKIP-SCALATESTJS,NATIVE-START
     /**
@@ -1493,7 +1493,7 @@ $endif$
    *                 ^
    * </pre>
    */
-  infix def and(notWord: NotWord)(implicit prettifier: Prettifier, pos: source.Position): AndNotWord = new AndNotWord(prettifier, pos)
+  infix def and(notWord: NotWord)(using prettifier: Prettifier, pos: source.Position): AndNotWord = new AndNotWord(prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -1635,7 +1635,7 @@ $endif$
      * </pre>
      */
     infix def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
-      thisMatcherFactory.or(MatcherWords.contain.inOrderOnly(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
+      thisMatcherFactory.or(MatcherWords.contain.inOrderOnly(firstEle, secondEle, remainingEles.toList: _*)(using prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1646,7 +1646,7 @@ $endif$
      * </pre>
      */
     infix def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
-      thisMatcherFactory.or(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
+      thisMatcherFactory.or(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles.toList: _*)(using prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1668,7 +1668,7 @@ $endif$
      * </pre>
      */
     infix def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
-      thisMatcherFactory.or(MatcherWords.contain.inOrder(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
+      thisMatcherFactory.or(MatcherWords.contain.inOrder(firstEle, secondEle, remainingEles.toList: _*)(using prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1690,7 +1690,7 @@ $endif$
      * </pre>
      */
     infix def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
-      thisMatcherFactory.or(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
+      thisMatcherFactory.or(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*)(using prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1712,7 +1712,7 @@ $endif$
      * </pre>
      */
     infix def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
-      thisMatcherFactory.or(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
+      thisMatcherFactory.or(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*)(using prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1734,7 +1734,7 @@ $endif$
      * </pre>
      */
     infix def only(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
-      thisMatcherFactory.or(MatcherWords.contain.only(right.toList: _*)(prettifier, pos))
+      thisMatcherFactory.or(MatcherWords.contain.only(right.toList: _*)(using prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1745,7 +1745,7 @@ $endif$
      * </pre>
      */
     infix def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
-      thisMatcherFactory.or(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
+      thisMatcherFactory.or(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*)(using prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1767,7 +1767,7 @@ $endif$
      * </pre>
      */
     infix def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
-      thisMatcherFactory.or(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, pos))
+      thisMatcherFactory.or(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*)(using prettifier, pos))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1789,7 +1789,7 @@ $endif$
    *                  ^
    * </pre>
    */
-  infix def or(containWord: ContainWord)(implicit prettifier: Prettifier, pos: source.Position): OrContainWord = new OrContainWord(prettifier, pos)
+  infix def or(containWord: ContainWord)(using prettifier: Prettifier, pos: source.Position): OrContainWord = new OrContainWord(prettifier, pos)
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -2273,7 +2273,7 @@ $endif$
      * </p>
      */
     infix def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
-      thisMatcherFactory.or(MatcherWords.not.be(tripleEqualsInvocation)(pos))
+      thisMatcherFactory.or(MatcherWords.not.be(tripleEqualsInvocation)(using pos))
 
     // SKIP-SCALATESTJS,NATIVE-START
     /**
@@ -2785,7 +2785,7 @@ $endif$
    *                 ^
    * </pre>
    */
-  infix def or(notWord: NotWord)(implicit prettifier: Prettifier, pos: source.Position): OrNotWord = new OrNotWord(prettifier, pos)
+  infix def or(notWord: NotWord)(using prettifier: Prettifier, pos: source.Position): OrNotWord = new OrNotWord(prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -2811,7 +2811,7 @@ $endif$
 }
 
 /**
- * Companion object containing an implicit method that converts a <code>MatcherFactory$arity$</code> to a <code>Matcher</code>.
+ * Companion object containing an given method that converts a <code>MatcherFactory$arity$</code> to a <code>Matcher</code>.
  *
  * @author Bill Venners
  */

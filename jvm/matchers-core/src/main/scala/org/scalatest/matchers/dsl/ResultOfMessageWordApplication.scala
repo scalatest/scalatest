@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ final class ResultOfMessageWordApplication(val expectedMessage: String) {
    *                                  ^
    * </pre>
    */
-  def apply[T : Messaging](resultOfOfTypeInvocation: ResultOfOfTypeInvocation[T]): HavePropertyMatcher[T, String] = {
+  /* DOTTY-ONLY infix */ def apply[T : Messaging](resultOfOfTypeInvocation: ResultOfOfTypeInvocation[T]): HavePropertyMatcher[T, String] = {
     new HavePropertyMatcher[T, String] {
       def apply(t: T): HavePropertyMatchResult[String] = {
         val messaging = implicitly[Messaging[T]]
