@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,35 +33,35 @@ class ShouldEqualExplicitlySpec extends AnyFunSpec with Explicitly {
 
     it("should do nothing when equal") {
       intercept[TestFailedException] { 1 should equal (1) }
-      1 should equal (1) (defaultEquality)
-      1 should equal (1) (decided by defaultEquality)
-      (1 should equal (1)) (defaultEquality)
-      (1 should equal (1)) (decided by defaultEquality)
+      (1 should equal (1)) (/* DOTTY-ONLY using */ defaultEquality)
+      (1 should equal (1)) (/* DOTTY-ONLY using */ decided by defaultEquality)
+      (1 should equal (1)) (/* DOTTY-ONLY using */ defaultEquality)
+      (1 should equal (1)) (/* DOTTY-ONLY using */ decided by defaultEquality)
       intercept[TestFailedException] { 1 shouldEqual 1 }
-      (1 shouldEqual 1) (defaultEquality)
-      (1 shouldEqual 1) (decided by defaultEquality)
-      (1).shouldEqual(1)(defaultEquality)
-      (1).shouldEqual(1)(decided by defaultEquality)
+      (1 shouldEqual 1) (/* DOTTY-ONLY using */ defaultEquality)
+      (1 shouldEqual 1) (/* DOTTY-ONLY using */ decided by defaultEquality)
+      (1).shouldEqual(1)(/* DOTTY-ONLY using */ defaultEquality)
+      (1).shouldEqual(1)(/* DOTTY-ONLY using */ decided by defaultEquality)
     }
 
     it("should do nothing when not equal and used with not") {
       intercept[TestFailedException] { 1 should not { equal (2) } }
       intercept[TestFailedException] { 1 should not equal (2) }
-      1 should not { equal (2) } (defaultEquality)
-      1 should not { equal (2) } (decided by defaultEquality)
-      (1 should not equal (2)) (defaultEquality)
-      (1 should not equal (2)) (decided by defaultEquality)
+      (1 should not { equal (2) }) (/* DOTTY-ONLY using */ defaultEquality)
+      (1 should not { equal (2) }) (/* DOTTY-ONLY using */ decided by defaultEquality)
+      (1 should not equal (2)) (/* DOTTY-ONLY using */ defaultEquality)
+      (1 should not equal (2)) (/* DOTTY-ONLY using */ decided by defaultEquality)
 /*
       intercept[TestFailedException] { 1 shouldNot { equal (2) } }
       intercept[TestFailedException] { 1 shouldNot equal (2) }
-      1 shouldNot equal (2) (defaultEquality)
-      1 shouldNot equal (2) (decided by defaultEquality)
+      (1 shouldNot equal (2)) (/* DOTTY-ONLY using */ defaultEquality)
+      (1 shouldNot equal (2)) (/* DOTTY-ONLY using */ decided by defaultEquality)
 */
     }
 
     it("should do nothing when equal and used in a logical-and expression") {
       intercept[TestFailedException] { 1 should (equal (1) and equal (2 - 1)) }
-      1 should (equal (1) and equal (2 - 1)) (decided by defaultEquality)
+      (1 should (equal (1) and equal (2 - 1))) (/* DOTTY-ONLY using */ decided by defaultEquality)
       1 should (equal (1) (decided by defaultEquality) and equal (2 - 1) (decided by defaultEquality)) 
     }
 
@@ -70,36 +70,36 @@ class ShouldEqualExplicitlySpec extends AnyFunSpec with Explicitly {
         // Just to make sure these work strung together
         intercept[TestFailedException] { 1 should (equal (1) and equal (1) and equal (1) and equal (1)) }
         intercept[TestFailedException] { 1 should (equal (1) and equal (1) or equal (1) and equal (1) or equal (1)) }
-        intercept[TestFailedException] { 1 should (
+        (intercept[TestFailedException] { 1 should (
             equal (1) and
             equal (1) or
             equal (1) and
             equal (1) or
             equal (1)
-        ) }
-        1 should (equal (1) and equal (1) and equal (1) and equal (1)) (decided by defaultEquality)
-        1 should (equal (1) and equal (1) or equal (1) and equal (1) or equal (1)) (decided by defaultEquality)
-        1 should (
+        ) })
+        (1 should (equal (1) and equal (1) and equal (1) and equal (1))) (/* DOTTY-ONLY using */ decided by defaultEquality)
+        (1 should (equal (1) and equal (1) or equal (1) and equal (1) or equal (1))) (/* DOTTY-ONLY using */ decided by defaultEquality)
+        (1 should (
             equal (1) and
             equal (1) or
             equal (1) and
             equal (1) or
             equal (1)
-        ) (decided by defaultEquality)
+        )) (/* DOTTY-ONLY using */ decided by defaultEquality)
         1 should (equal (1) (decided by defaultEquality) and equal (1) (decided by defaultEquality) and equal (1) (decided by defaultEquality) and equal (1) (decided by defaultEquality))
         1 should (equal (1) (decided by defaultEquality) and equal (1) (decided by defaultEquality) or equal (1) (decided by defaultEquality) and equal (1) (decided by defaultEquality) or equal (1) (decided by defaultEquality))
-        1 should (
+        (1 should (
             equal (1) (decided by defaultEquality) and
             equal (1) (decided by defaultEquality) or
             equal (1) (decided by defaultEquality) and
             equal (1) (decided by defaultEquality) or
             equal (1) (decided by defaultEquality)
-        )
+        ))
     }
 
     it("should do nothing when equal and used in a logical-or expression") {
       intercept[TestFailedException] { 1 should { equal (1) or equal (2 - 1) } }
-      1 should (equal (1) or equal (2 - 1)) (decided by defaultEquality)
+      (1 should (equal (1) or equal (2 - 1))) (/* DOTTY-ONLY using */ decided by defaultEquality)
       1 should { equal (1) (decided by defaultEquality) or equal (2 - 1) (decided by defaultEquality) }
     }
 
@@ -109,8 +109,8 @@ class ShouldEqualExplicitlySpec extends AnyFunSpec with Explicitly {
       // Will back up on these MatcherGen1 and not ones, and do simpler MatcherGen1 and MatcherGen1 ones first
       // intercept[TestFailedException] { 1 should (not equal (2) and not equal (3 - 1)) }
 
-      1 should (not (equal (2)) and not (equal (3 - 1))) (decided by defaultEquality)
-      1 should (not equal (2) and (not equal (3 - 1))) (decided by defaultEquality)
+      (1 should (not (equal (2)) and not (equal (3 - 1)))) (/* DOTTY-ONLY using */ decided by defaultEquality)
+      (1 should (not equal (2) and (not equal (3 - 1)))) (/* DOTTY-ONLY using */ decided by defaultEquality)
       // 1 should (not equal (2) and not equal (3 - 1)) (decided by defaultEquality)
 
       1 should (not (equal (2) (decided by defaultEquality)) and not (equal (3 - 1) (decided by defaultEquality)))

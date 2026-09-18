@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[L]): Assertion = {
+  //DOTTY-ONLY infix def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(using containing: Containing[L]): Assertion = {
   // SKIP-DOTTY-START 
   def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[L]): Assertion = {
   // SKIP-DOTTY-END  
@@ -81,7 +81,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def oneElementOf(elements: Iterable[Any])(implicit containing: Containing[L]): Assertion = {
+  //DOTTY-ONLY infix def oneElementOf(elements: Iterable[Any])(using containing: Containing[L]): Assertion = {
   // SKIP-DOTTY-START 
   def oneElementOf(elements: Iterable[Any])(implicit containing: Containing[L]): Assertion = {
   // SKIP-DOTTY-END  
@@ -102,7 +102,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
+  //DOTTY-ONLY infix def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(using aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-START 
   def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-END  
@@ -138,7 +138,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def atLeastOneElementOf(elements: Iterable[Any])(implicit aggregating: Aggregating[L]): Assertion = {
+  //DOTTY-ONLY infix def atLeastOneElementOf(elements: Iterable[Any])(using aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-START 
   def atLeastOneElementOf(elements: Iterable[Any])(implicit aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-END  
@@ -160,7 +160,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[L]): Assertion = {
+  //DOTTY-ONLY infix def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(using containing: Containing[L]): Assertion = {
   // SKIP-DOTTY-START 
   def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[L]): Assertion = {
   // SKIP-DOTTY-END  
@@ -196,7 +196,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def noElementsOf(elements: Iterable[Any])(implicit containing: Containing[L]): Assertion = {
+  //DOTTY-ONLY infix def noElementsOf(elements: Iterable[Any])(using containing: Containing[L]): Assertion = {
   // SKIP-DOTTY-START 
   def noElementsOf(elements: Iterable[Any])(implicit containing: Containing[L]): Assertion = {
   // SKIP-DOTTY-END  
@@ -218,7 +218,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def theSameElementsAs(right: Iterable[_])(implicit aggregating: Aggregating[L]): Assertion = {
+  //DOTTY-ONLY infix def theSameElementsAs(right: Iterable[_])(using aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-START 
   def theSameElementsAs(right: Iterable[_])(implicit aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-END  
@@ -239,7 +239,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def theSameElementsInOrderAs(right: Iterable[_])(implicit sequencing: Sequencing[L]): Assertion = {
+  //DOTTY-ONLY infix def theSameElementsInOrderAs(right: Iterable[_])(using sequencing: Sequencing[L]): Assertion = {
   // SKIP-DOTTY-START 
   def theSameElementsInOrderAs(right: Iterable[_])(implicit sequencing: Sequencing[L]): Assertion = {
   // SKIP-DOTTY-END  
@@ -260,7 +260,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def only(right: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
+  //DOTTY-ONLY infix def only(right: Any*)(using aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-START 
   def only(right: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-END  
@@ -312,7 +312,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[L]): Assertion = {
+  //DOTTY-ONLY infix def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*)(using sequencing: Sequencing[L]): Assertion = {
   // SKIP-DOTTY-START 
   def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[L]): Assertion = {
   // SKIP-DOTTY-END
@@ -348,7 +348,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
+  //DOTTY-ONLY infix def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(using aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-START 
   def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-END  
@@ -387,7 +387,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def allElementsOf[R](elements: Iterable[R])(implicit aggregating: Aggregating[L]): Assertion = {
+  //DOTTY-ONLY infix def allElementsOf[R](elements: Iterable[R])(using aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-START 
   def allElementsOf[R](elements: Iterable[R])(implicit aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-END  
@@ -409,7 +409,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[L]): Assertion = {
+  //DOTTY-ONLY infix def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(using sequencing: Sequencing[L]): Assertion = {
   // SKIP-DOTTY-START 
   def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[L]): Assertion = {
   // SKIP-DOTTY-END  
@@ -445,7 +445,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def inOrderElementsOf[R](elements: Iterable[R])(implicit sequencing: Sequencing[L]): Assertion = {
+  //DOTTY-ONLY infix def inOrderElementsOf[R](elements: Iterable[R])(using sequencing: Sequencing[L]): Assertion = {
   // SKIP-DOTTY-START 
   def inOrderElementsOf[R](elements: Iterable[R])(implicit sequencing: Sequencing[L]): Assertion = {
   // SKIP-DOTTY-END  
@@ -467,7 +467,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                    ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def key(expectedKey: Any)(implicit keyMapping: KeyMapping[L]): Assertion = {
+  //DOTTY-ONLY infix def key(expectedKey: Any)(using keyMapping: KeyMapping[L]): Assertion = {
   // SKIP-DOTTY-START 
   def key(expectedKey: Any)(implicit keyMapping: KeyMapping[L]): Assertion = {
   // SKIP-DOTTY-END
@@ -488,7 +488,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                    ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def value(expectedValue: Any)(implicit valueMapping: ValueMapping[L]): Assertion = {
+  //DOTTY-ONLY infix def value(expectedValue: Any)(using valueMapping: ValueMapping[L]): Assertion = {
   // SKIP-DOTTY-START 
   def value(expectedValue: Any)(implicit valueMapping: ValueMapping[L]): Assertion = {
   // SKIP-DOTTY-END  
@@ -509,7 +509,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
+  //DOTTY-ONLY infix def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(using aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-START 
   def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-END  
@@ -545,7 +545,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def atMostOneElementOf[R](elements: Iterable[R])(implicit aggregating: Aggregating[L]): Assertion = {
+  //DOTTY-ONLY infix def atMostOneElementOf[R](elements: Iterable[R])(using aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-START 
   def atMostOneElementOf[R](elements: Iterable[R])(implicit aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-END  

@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ final class ResultOfGreaterThanComparison[T : Ordering](val right: T) {
    *                 ^  ... invoked by this be method
    * </pre>
    */ 
-  def apply(left: T): Boolean = { 
+  /* DOTTY-ONLY infix */ def apply(left: T): Boolean = { 
     val ordering = implicitly[Ordering[T]]
     ordering.gt(left, right) // left > right
   }
