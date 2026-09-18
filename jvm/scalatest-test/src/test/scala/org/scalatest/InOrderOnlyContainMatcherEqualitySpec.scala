@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -142,19 +142,19 @@ class InOrderOnlyContainMatcherEqualitySpec extends AnyFunSpec with Matchers wit
     
     it("should take passed in custom explicit equality when 'should contain' is used") {
       implicit val equality = new TrimEquality
-      (List("1 ", " 2", "3 ") should contain inOrderOnly (" 1", "2 ", " 3")) (equality)
-      (Array("1 ", " 2", "3 ") should contain inOrderOnly (" 1", "2 ", " 3")) (equality)
+      (List("1 ", " 2", "3 ") should contain inOrderOnly (" 1", "2 ", " 3")) (/* DOTTY-ONLY using */ equality)
+      (Array("1 ", " 2", "3 ") should contain inOrderOnly (" 1", "2 ", " 3")) (/* DOTTY-ONLY using */ equality)
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList("1 ", " 2", "3 ") should contain inOrderOnly (" 1", "2 ", " 3")) (equality)
+      (javaList("1 ", " 2", "3 ") should contain inOrderOnly (" 1", "2 ", " 3")) (/* DOTTY-ONLY using */ equality)
       // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should take passed in custom explicit equality when 'should not contain' is used") {
       implicit val equality = new FalseEquality
-      (List(1, 2, 3) should not contain inOrderOnly (1, 2, 3)) (equality)
-      (Array(1, 2, 3) should not contain inOrderOnly (1, 2, 3)) (equality)
+      (List(1, 2, 3) should not contain inOrderOnly (1, 2, 3)) (/* DOTTY-ONLY using */ equality)
+      (Array(1, 2, 3) should not contain inOrderOnly (1, 2, 3)) (/* DOTTY-ONLY using */ equality)
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList(1, 2, 3) should not contain inOrderOnly (1, 2, 3)) (equality)
+      (javaList(1, 2, 3) should not contain inOrderOnly (1, 2, 3)) (/* DOTTY-ONLY using */ equality)
       // SKIP-SCALATESTJS,NATIVE-END
     }
     
@@ -163,20 +163,20 @@ class InOrderOnlyContainMatcherEqualitySpec extends AnyFunSpec with Matchers wit
         
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should contain inOrderOnly (1, 2, 3)) (equality)
+        (left1 should contain inOrderOnly (1, 2, 3)) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldContainStackDepth(e1, left1, deep(Array(1, 2, 3)), thisLineNumber - 2)
         
       val left2 = Array(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should contain inOrderOnly (1, 2, 3)) (equality)
+        (left2 should contain inOrderOnly (1, 2, 3)) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldContainStackDepth(e2, left2, deep(Array(1, 2, 3)), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS,NATIVE-START
       val left3 = javaList(1, 2, 3)
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should contain inOrderOnly (1, 2, 3)) (equality)
+        (left3 should contain inOrderOnly (1, 2, 3)) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldContainStackDepth(e3, left3, deep(Array(1, 2, 3)), thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END
@@ -187,20 +187,20 @@ class InOrderOnlyContainMatcherEqualitySpec extends AnyFunSpec with Matchers wit
         
       val left1 = List("1", " 2", "3")
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should not contain inOrderOnly (" 1", "2 ", " 3")) (equality)
+        (left1 should not contain inOrderOnly (" 1", "2 ", " 3")) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldNotContainStackDepth(e1, left1, deep(Array(" 1", "2 ", " 3")), thisLineNumber - 2)
         
       val left2 = Array("1", " 2", "3")
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should not contain inOrderOnly (" 1", "2 ", " 3")) (equality)
+        (left2 should not contain inOrderOnly (" 1", "2 ", " 3")) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldNotContainStackDepth(e2, left2, deep(Array(" 1", "2 ", " 3")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS,NATIVE-START
       val left3 = javaList("1", " 2", "3")
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should not contain inOrderOnly (" 1", "2 ", " 3")) (equality)
+        (left3 should not contain inOrderOnly (" 1", "2 ", " 3")) (/* DOTTY-ONLY using */ equality)
       }
       checkShouldNotContainStackDepth(e3, left3, deep(Array(" 1", "2 ", " 3")), thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END

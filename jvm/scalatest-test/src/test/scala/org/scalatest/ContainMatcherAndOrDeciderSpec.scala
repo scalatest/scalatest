@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,23 +46,23 @@ class ContainMatcherAndOrDeciderSpec extends AnyFunSpec with Explicitly {
         val right1 = List(" three", " one", "two ")
         val right2 = List(" one", "two ", " three")
         
-        (left should (contain theSameElementsAs (right1) and contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right1) and contain theSameElementsInOrderAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right1) and contain allOf (" three", "two ", " one"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right1) and contain inOrder (" one", "two ", " three"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right1) and contain oneOf (" one", " four", "five "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right1) and contain atLeastOneOf (" one", " three", "five "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right1) and contain only (" three", " one", "two "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right1) and contain inOrderOnly (" one", "two ", " three"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right1) and contain noneOf (" seven", "eight ", " nine"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsInOrderAs (right2) and contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain allOf (" three", " one", "two ") and contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain inOrder (" one", "two ", " three") and contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain oneOf (" one", " four", "five ") and contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain atLeastOneOf (" one", " three", "five ") and contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain only (" three", " one", "two ") and contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain inOrderOnly (" one", "two ", " three") and contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain noneOf (" seven", "eight ", " nine") and contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) and contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) and contain theSameElementsInOrderAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) and contain allOf (" three", "two ", " one"))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) and contain inOrder (" one", "two ", " three"))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) and contain oneOf (" one", " four", "five "))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) and contain atLeastOneOf (" one", " three", "five "))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) and contain only (" three", " one", "two "))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) and contain inOrderOnly (" one", "two ", " three"))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) and contain noneOf (" seven", "eight ", " nine"))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsInOrderAs (right2) and contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain allOf (" three", " one", "two ") and contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain inOrder (" one", "two ", " three") and contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain oneOf (" one", " four", "five ") and contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain atLeastOneOf (" one", " three", "five ") and contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain only (" three", " one", "two ") and contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain inOrderOnly (" one", "two ", " three") and contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain noneOf (" seven", "eight ", " nine") and contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
         
       }
       
@@ -71,7 +71,7 @@ class ContainMatcherAndOrDeciderSpec extends AnyFunSpec with Explicitly {
         val right = List(" three", "two ", " one")
         
         val e = intercept[exceptions.TestFailedException] {
-          (left should (contain theSameElementsInOrderAs right and contain theSameElementsAs right)) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+          (left should (contain theSameElementsInOrderAs right and contain theSameElementsAs right)) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
         }
         e.message should be (Some(decorateToStringValue(prettifier, left) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, right)))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrDeciderSpec.scala"))
@@ -84,7 +84,7 @@ class ContainMatcherAndOrDeciderSpec extends AnyFunSpec with Explicitly {
         val right = List(" three", "two ", " one")
         
         val e = intercept[exceptions.TestFailedException] {
-          (left should (contain theSameElementsAs right and contain theSameElementsInOrderAs right)) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+          (left should (contain theSameElementsAs right and contain theSameElementsInOrderAs right)) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
         }
         e.message should be (Some(decorateToStringValue(prettifier, left) + " contained the same elements as " + decorateToStringValue(prettifier, right) + ", but " + decorateToStringValue(prettifier, left) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, right)))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrDeciderSpec.scala"))
@@ -98,14 +98,14 @@ class ContainMatcherAndOrDeciderSpec extends AnyFunSpec with Explicitly {
         val right1 = List("eight ", " one", "two ")
         val right2 = List(" one", "two ", " three")
         
-        (left should (not contain theSameElementsAs (right1) and contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain theSameElementsInOrderAs (right1) and contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain allOf ("eight ", "two ", " one") and contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain inOrder (" one", "two ", "eight ") and contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain oneOf (" six", "eight ", " five") and contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain only ("eight ", " one", "two ") and contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain inOrderOnly (" one", "two ", "eight ") and contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain inOrderOnly (" one", "two ", "eight ") and contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right1) and contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsInOrderAs (right1) and contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain allOf ("eight ", "two ", " one") and contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain inOrder (" one", "two ", "eight ") and contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain oneOf (" six", "eight ", " five") and contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain only ("eight ", " one", "two ") and contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain inOrderOnly (" one", "two ", "eight ") and contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain inOrderOnly (" one", "two ", "eight ") and contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
       }
       
       it("should pass when contain and not contain passes") {
@@ -114,14 +114,14 @@ class ContainMatcherAndOrDeciderSpec extends AnyFunSpec with Explicitly {
         val right1 = List(" eight", "one ", " two")
         val right2 = List(" one", "two ", " three")
         
-        (left should (contain theSameElementsAs (right2) and not contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)        
-        (left should (contain theSameElementsAs (right2) and not contain theSameElementsInOrderAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right2) and not contain allOf (" eight", " two", "one "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right2) and not contain inOrder ("one ", " two", " eight"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right2) and not contain oneOf ("six ", " eight", "five "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right2) and not contain only (" eight", "one ", " two"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right2) and not contain inOrderOnly ("one ", " two", " eight"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right2) and not contain noneOf ("one ", " two", " eight"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) and not contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)        
+        (left should (contain theSameElementsAs (right2) and not contain theSameElementsInOrderAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) and not contain allOf (" eight", " two", "one "))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) and not contain inOrder ("one ", " two", " eight"))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) and not contain oneOf ("six ", " eight", "five "))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) and not contain only (" eight", "one ", " two"))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) and not contain inOrderOnly ("one ", " two", " eight"))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) and not contain noneOf ("one ", " two", " eight"))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
       }
       
       it("should pass when not contain and not contain passes") {
@@ -130,14 +130,14 @@ class ContainMatcherAndOrDeciderSpec extends AnyFunSpec with Explicitly {
         val right1 = List(" eight", "one ", " two")
         val right2 = List("one ", " two", " eight")
         
-        (left should (not contain theSameElementsAs (right2) and not contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain theSameElementsAs (right2) and not contain theSameElementsInOrderAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain theSameElementsAs (right2) and not contain allOf (" eight", " two", "one "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain theSameElementsAs (right2) and not contain inOrder ("one ", " two", " eight"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain theSameElementsAs (right2) and not contain oneOf ("six ", " eight", "five "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain theSameElementsAs (right2) and not contain only (" eight", "one ", " two"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain theSameElementsAs (right2) and not contain inOrderOnly ("one ", " two", " eight"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain theSameElementsAs (right2) and not contain noneOf ("one ", " two", " eight"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) and not contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) and not contain theSameElementsInOrderAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) and not contain allOf (" eight", " two", "one "))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) and not contain inOrder ("one ", " two", " eight"))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) and not contain oneOf ("six ", " eight", "five "))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) and not contain only (" eight", "one ", " two"))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) and not contain inOrderOnly ("one ", " two", " eight"))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) and not contain noneOf ("one ", " two", " eight"))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
       }
       
       it("should failed with correctly stack depth and message when first not contain failed but second contain passed") {
@@ -147,7 +147,7 @@ class ContainMatcherAndOrDeciderSpec extends AnyFunSpec with Explicitly {
         val right2 = List(" three", "two ", " one")
         
         val e = intercept[exceptions.TestFailedException] {
-          (left should (not contain theSameElementsInOrderAs (right1) and contain theSameElementsAs right2)) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+          (left should (not contain theSameElementsInOrderAs (right1) and contain theSameElementsAs right2)) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
         }
         e.message should be (Some(decorateToStringValue(prettifier, left) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, right1)))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrDeciderSpec.scala"))
@@ -162,7 +162,7 @@ class ContainMatcherAndOrDeciderSpec extends AnyFunSpec with Explicitly {
         val right2 = List(" one", "two ", " three")
         
         val e = intercept[exceptions.TestFailedException] {
-          (left should (contain theSameElementsAs right1 and not contain theSameElementsInOrderAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed) 
+          (left should (contain theSameElementsAs right1 and not contain theSameElementsInOrderAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed) 
         }
         e.message should be (Some(decorateToStringValue(prettifier, left) + " contained the same elements as " + decorateToStringValue(prettifier, right1) + ", but " + decorateToStringValue(prettifier, left) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, right2)))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrDeciderSpec.scala"))
@@ -177,7 +177,7 @@ class ContainMatcherAndOrDeciderSpec extends AnyFunSpec with Explicitly {
         val right2 = List(" three", "two ", " one")        
         
         val e = intercept[exceptions.TestFailedException] {
-          (left should (not contain theSameElementsInOrderAs (right1) and not contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed) 
+          (left should (not contain theSameElementsInOrderAs (right1) and not contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed) 
         }
         e.message should be (Some(decorateToStringValue(prettifier, left) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, right1)))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrDeciderSpec.scala"))
@@ -194,23 +194,23 @@ class ContainMatcherAndOrDeciderSpec extends AnyFunSpec with Explicitly {
         val right1 = List("five ", " one", "two ")
         val right2 = List(" one", "two ", " three")
         
-        (left should (contain theSameElementsAs (right1) or contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right1) or contain theSameElementsInOrderAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right1) or contain allOf (" three", "two ", " one"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right1) or contain inOrder (" one", "two ", " three"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right1) or contain oneOf (" one", " four", "five "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right1) or contain atLeastOneOf (" one", " three", "five "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right1) or contain only (" three", " one", "two "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right1) or contain inOrderOnly (" one", "two ", " three"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right1) or contain noneOf ("seven ", " eight", "nine "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsInOrderAs (right2) or contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain allOf (" three", "two ", " one") or contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain inOrder (" one", "two ", " three") or contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain oneOf (" one", " four", "five ") or contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain atLeastOneOf (" one", " three", "five ") or contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain only (" three", " one", "two ") or contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain inOrderOnly (" one", "two ", " three") or contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain noneOf ("seven ", " eight", "nine ") or contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) or contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) or contain theSameElementsInOrderAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) or contain allOf (" three", "two ", " one"))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) or contain inOrder (" one", "two ", " three"))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) or contain oneOf (" one", " four", "five "))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) or contain atLeastOneOf (" one", " three", "five "))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) or contain only (" three", " one", "two "))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) or contain inOrderOnly (" one", "two ", " three"))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) or contain noneOf ("seven ", " eight", "nine "))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsInOrderAs (right2) or contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain allOf (" three", "two ", " one") or contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain inOrder (" one", "two ", " three") or contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain oneOf (" one", " four", "five ") or contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain atLeastOneOf (" one", " three", "five ") or contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain only (" three", " one", "two ") or contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain inOrderOnly (" one", "two ", " three") or contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain noneOf ("seven ", " eight", "nine ") or contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
         
       }
       
@@ -221,7 +221,7 @@ class ContainMatcherAndOrDeciderSpec extends AnyFunSpec with Explicitly {
         val right2 = List(" three", "two ", " one")
         
         val e = intercept[exceptions.TestFailedException] {
-          (left should (contain theSameElementsAs right1 or contain theSameElementsInOrderAs right2)) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+          (left should (contain theSameElementsAs right1 or contain theSameElementsInOrderAs right2)) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
         }
         e.message should be (Some(decorateToStringValue(prettifier, left) + " did not contain the same elements as " + decorateToStringValue(prettifier, right1) + ", and " + decorateToStringValue(prettifier, left) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, right2)))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrDeciderSpec.scala"))
@@ -235,14 +235,14 @@ class ContainMatcherAndOrDeciderSpec extends AnyFunSpec with Explicitly {
         val right1 = List("eight ", " one", "two ")
         val right2 = List(" one", "two ", " three")
         
-        (left should (not contain theSameElementsAs (right1) or contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed) 
-        (left should (not contain theSameElementsInOrderAs (right1) or contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain allOf ("eight ", "two ", " one") or contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain inOrder (" one", "two ", "eight ") or contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain oneOf (" six", "eight ", " five") or contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain only ("eight ", " one", "two ") or contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain inOrderOnly (" one", "two ", "eight ") or contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain noneOf (" one", "two ", "eight ") or contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right1) or contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed) 
+        (left should (not contain theSameElementsInOrderAs (right1) or contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain allOf ("eight ", "two ", " one") or contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain inOrder (" one", "two ", "eight ") or contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain oneOf (" six", "eight ", " five") or contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain only ("eight ", " one", "two ") or contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain inOrderOnly (" one", "two ", "eight ") or contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain noneOf (" one", "two ", "eight ") or contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
       }
       
       it("should pass when contain and not contain passes") {
@@ -251,14 +251,14 @@ class ContainMatcherAndOrDeciderSpec extends AnyFunSpec with Explicitly {
         val right1 = List("eight ", " one", "two ")
         val right2 = List(" one", "two ", " three")
         
-        (left should (contain theSameElementsAs (right2) or not contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right2) or not contain theSameElementsInOrderAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right2) or not contain allOf ("eight ", "two ", " one"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right2) or not contain inOrder (" one", "two ", "eight "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right2) or not contain oneOf (" six", "eight ", " five"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right2) or not contain only ("eight ", " one", "two "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right2) or not contain inOrderOnly (" one", "two ", "eight "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (contain theSameElementsAs (right2) or not contain noneOf (" one", "two ", "eight "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) or not contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) or not contain theSameElementsInOrderAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) or not contain allOf ("eight ", "two ", " one"))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) or not contain inOrder (" one", "two ", "eight "))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) or not contain oneOf (" six", "eight ", " five"))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) or not contain only ("eight ", " one", "two "))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) or not contain inOrderOnly (" one", "two ", "eight "))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) or not contain noneOf (" one", "two ", "eight "))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
         
       }
       
@@ -268,14 +268,14 @@ class ContainMatcherAndOrDeciderSpec extends AnyFunSpec with Explicitly {
         val right1 = List("eight ", " one", "two ")
         val right2 = List(" one", "two ", "eight ")
         
-        (left should (not contain theSameElementsAs (right2) or not contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain theSameElementsAs (right2) or not contain theSameElementsInOrderAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain theSameElementsAs (right2) or not contain allOf ("eight ", "two ", " one"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain theSameElementsAs (right2) or not contain inOrder (" one", "two ", "eight "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain theSameElementsAs (right2) or not contain oneOf (" six", "eight ", " five"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain theSameElementsAs (right2) or not contain only ("eight ", " one", "two "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain theSameElementsAs (right2) or not contain inOrderOnly (" one", "two ", "eight "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
-        (left should (not contain theSameElementsAs (right2) or not contain noneOf (" one", "two ", "eight "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) or not contain theSameElementsAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) or not contain theSameElementsInOrderAs (right1))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) or not contain allOf ("eight ", "two ", " one"))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) or not contain inOrder (" one", "two ", "eight "))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) or not contain oneOf (" six", "eight ", " five"))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) or not contain only ("eight ", " one", "two "))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) or not contain inOrderOnly (" one", "two ", "eight "))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) or not contain noneOf (" one", "two ", "eight "))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
       }
       
       it("should failed with correctly stack depth and message when first not contain failed and second contain failed") {
@@ -285,7 +285,7 @@ class ContainMatcherAndOrDeciderSpec extends AnyFunSpec with Explicitly {
         val right2 = List(" eight", "two ", " one")
         
         val e = intercept[exceptions.TestFailedException] {
-          (left should (not contain theSameElementsInOrderAs (right1) or contain theSameElementsAs right2)) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed) 
+          (left should (not contain theSameElementsInOrderAs (right1) or contain theSameElementsAs right2)) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed) 
         }
         e.message should be (Some(decorateToStringValue(prettifier, left) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, right1) + ", and " + decorateToStringValue(prettifier, left) + " did not contain the same elements as " + decorateToStringValue(prettifier, right2)))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrDeciderSpec.scala"))
@@ -299,7 +299,7 @@ class ContainMatcherAndOrDeciderSpec extends AnyFunSpec with Explicitly {
         val right = List(" three", "two ", " one")
         
         val e = intercept[exceptions.TestFailedException] {
-          (left should (contain theSameElementsInOrderAs (right) or not contain theSameElementsAs (right))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+          (left should (contain theSameElementsInOrderAs (right) or not contain theSameElementsAs (right))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
         }
         e.message should be (Some(decorateToStringValue(prettifier, left) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, right) + ", and " + decorateToStringValue(prettifier, left) + " contained the same elements as " + decorateToStringValue(prettifier, right)))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrDeciderSpec.scala"))
@@ -314,7 +314,7 @@ class ContainMatcherAndOrDeciderSpec extends AnyFunSpec with Explicitly {
         val right2 = List(" three", "two ", " one")
         
         val e = intercept[exceptions.TestFailedException] {
-          (left should (not contain theSameElementsInOrderAs (right1) or not contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed) 
+          (left should (not contain theSameElementsInOrderAs (right1) or not contain theSameElementsAs (right2))) (/* DOTTY-ONLY using */ decided by equality afterBeing trimmed, decided by equality afterBeing trimmed) 
         }
         e.message should be (Some(decorateToStringValue(prettifier, left) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, right1) + ", and " + decorateToStringValue(prettifier, left) + " contained the same elements as " + decorateToStringValue(prettifier, right2)))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrDeciderSpec.scala"))

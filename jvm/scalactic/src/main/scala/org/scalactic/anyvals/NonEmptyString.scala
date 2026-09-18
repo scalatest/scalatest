@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1537,15 +1537,15 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
 object NonEmptyString {
 
   /**
-    * Constructs a new <code>NonEmptyString</code> given at least one element.
-    *
-    * @param s the <code>String</code> represented by this <code>NonEmptyString</code>
-    * @throws AssertionError if the passed <code>String</code> is empty
-    */
-  def apply(s: String): NonEmptyString = {
-    if (s.isEmpty) throw new AssertionError(Resources.nonEmptyStringEmpty)
-    new NonEmptyString(s)
-  }
+   * Constructs a new <code>NonEmptyString</code> given at least one element.
+   *
+   * This overload requires a string literal at compile time and rejects empty
+   * string literals or non-literals with a compile-time error.
+   *
+   * @param s the <code>String</code> represented by this <code>NonEmptyString</code>
+   */
+  import scala.language.experimental.macros
+  def apply(s: String): NonEmptyString = macro NonEmptyStringMacro.apply
 
   /**
     * Constructs a new <code>NonEmptyString</code> given at least one character.
@@ -1583,6 +1583,31 @@ object NonEmptyString {
       case Some(first) => Some(new NonEmptyString(seq.mkString))
     }
 
+  /**
+    * Construct a <code>NonEmptyString</code> containing the characters of a given <code>GenSeq[Char]</code>, throwing an <code>AssertionError</code> if the <code>GenSeq</code> is empty.
+    *
+    * @param seq the <code>GenSeq[Char]</code> with which to construct a <code>NonEmptyString</code>
+    * @return a <code>NonEmptyString</code> containing the characters of the given <code>GenSeq</code>
+    * @throws AssertionError if the passed <code>GenSeq</code> is empty
+    */
+  def ensuringValid(seq: GenSeq[Char]): NonEmptyString =
+    seq.headOption match {
+      case None => throw new AssertionError(Resources.nonEmptyStringEmpty)
+      case Some(first) => new NonEmptyString(seq.mkString)
+    }
+
+  /**
+    * Construct a <code>NonEmptyString</code> from a given <code>String</code>, throwing an <code>AssertionError</code> if the <code>String</code> is empty.
+    *
+    * @param s the <code>String</code> with which to construct a <code>NonEmptyString</code>
+    * @return a <code>NonEmptyString</code> containing the characters of the given <code>String</code>
+    * @throws AssertionError if the passed <code>String</code> is empty
+    */
+  def ensuringValid(s: String): NonEmptyString = {
+    if (s.isEmpty) throw new AssertionError(Resources.nonEmptyStringEmpty)
+    new NonEmptyString(s)
+  }
+
   import scala.language.implicitConversions
 
   /**
@@ -1608,4 +1633,33 @@ object NonEmptyString {
       def isDefinedAt(idx: Int): Boolean = nonEmptyString.theString.isDefinedAt(idx)
       def apply(idx: Int): Char = nonEmptyString.theString(idx)
     }
+}
+
+/**
+ * Macro implementation for compile-time validation of NonEmptyString.
+ */
+private[scalactic] object NonEmptyStringMacro {
+
+  def isValid(s: String): Boolean = s.nonEmpty
+
+  def apply(c: scala.reflect.macros.whitebox.Context)(s: c.Expr[String]): c.Expr[NonEmptyString] = {
+    import c.universe._
+
+    val notValidMsg =
+      "NonEmptyString.apply can only be invoked on String literals that are non-empty, "+
+      "like NonEmptyString(\"1\")."
+    val notLiteralMsg =
+      "NonEmptyString.apply can only be invoked on String literals, like NonEmptyString(\"1\")."+
+      " Please use NonEmptyString.from instead."
+
+    s.tree match {
+      case Literal(stringConst) =>
+        val literalValue = stringConst.value.toString
+        if (!isValid(literalValue))
+          c.abort(c.enclosingPosition, notValidMsg)
+      case _ =>
+        c.abort(c.enclosingPosition, notLiteralMsg)
+    }
+    c.universe.reify { NonEmptyString.ensuringValid(s.splice) }
+  }
 }

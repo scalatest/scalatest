@@ -142,7 +142,7 @@ object GenScalaTestDotty {
     val packageDir = new File(targetDir, packageDirName)
     packageDir.mkdirs()
     val sourceDir = new File(sourceDirName)
-    sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && (f.getName.endsWith(".scala") || f.getName.endsWith(".java"))).map { sourceFile =>
+    Option(sourceDir.listFiles).toList.flatten.filter(f => f.isFile && !skipList.contains(f.getName) && (f.getName.endsWith(".scala") || f.getName.endsWith(".java"))).map { sourceFile =>
       val destFile = new File(packageDir, sourceFile.getName)
       if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
         copyFile(sourceFile, destFile)
@@ -155,7 +155,7 @@ object GenScalaTestDotty {
     val packageDir = new File(targetDir, packageDirName)
     packageDir.mkdirs()
     val sourceDir = new File(sourceDirName)
-    sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && (f.getName.endsWith(".scala") || f.getName.endsWith(".java"))).map { sourceFile =>
+    Option(sourceDir.listFiles).toList.flatten.filter(f => f.isFile && !skipList.contains(f.getName) && (f.getName.endsWith(".scala") || f.getName.endsWith(".java"))).map { sourceFile =>
       val destFile = new File(packageDir, sourceFile.getName)
       if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
         copyFileJS(sourceFile, destFile)
@@ -217,7 +217,7 @@ object GenScalaTestDotty {
     val packageDir = new File(targetDir, packageDirName)
     packageDir.mkdirs()
     val sourceDir = new File(sourceDirName)
-    sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && (f.getName.endsWith(".scala") || f.getName.endsWith(".java"))).map { sourceFile =>
+    Option(sourceDir.listFiles).toList.flatten.filter(f => f.isFile && !skipList.contains(f.getName) && (f.getName.endsWith(".scala") || f.getName.endsWith(".java"))).map { sourceFile =>
       val destFile = new File(packageDir, sourceFile.getName)
       if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
         copyFileNative(sourceFile, destFile)

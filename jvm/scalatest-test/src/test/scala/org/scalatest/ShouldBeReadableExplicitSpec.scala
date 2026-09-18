@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,12 +66,12 @@ class ShouldBeReadableExplicitSpec extends AnyFunSpec {
     describe("when work with 'file should be (readable)'") {
       
       it("should do nothing when file is readable") {
-        (book should be (readable)) (readability)
+        (book should be (readable)) (/* DOTTY-ONLY using */ readability)
       }
       
       it("should throw TestFailedException with correct stack depth when file is not readable") {
         val caught1 = intercept[TestFailedException] {
-          (stone should be (readable)) (readability)
+          (stone should be (readable)) (/* DOTTY-ONLY using */ readability)
         }
         assert(caught1.message === Some(wasNotReadable(stone)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -83,12 +83,12 @@ class ShouldBeReadableExplicitSpec extends AnyFunSpec {
     describe("when work with 'file should not be readable'") {
       
       it("should do nothing when file is not readable") {
-        (stone should not be readable) (readability)
+        (stone should not be readable) (/* DOTTY-ONLY using */ readability)
       }
       
       it("should throw TestFailedException with correct stack depth when file is readable") {
         val caught1 = intercept[TestFailedException] {
-          (book should not be readable) (readability)
+          (book should not be readable) (/* DOTTY-ONLY using */ readability)
         }
         assert(caught1.message === Some(wasReadable(book)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -99,12 +99,12 @@ class ShouldBeReadableExplicitSpec extends AnyFunSpec {
     describe("when work with 'file shouldBe readable'") {
       
       it("should do nothing when file is readable") {
-        (book shouldBe readable) (readability)
+        (book shouldBe readable) (/* DOTTY-ONLY using */ readability)
       }
       
       it("should throw TestFailedException with correct stack depth when file is not readable") {
         val caught1 = intercept[TestFailedException] {
-          (stone shouldBe readable) (readability)
+          (stone shouldBe readable) (/* DOTTY-ONLY using */ readability)
         }
         assert(caught1.message === Some(wasNotReadable(stone)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -116,12 +116,12 @@ class ShouldBeReadableExplicitSpec extends AnyFunSpec {
     describe("when work with 'file shouldNot be (readable)'") {
       
       it("should do nothing when file is not readable") {
-        (stone shouldNot be (readable)) (readability)
+        (stone shouldNot be (readable)) (/* DOTTY-ONLY using */ readability)
       }
       
       it("should throw TestFailedException with correct stack depth when file is readable") {
         val caught1 = intercept[TestFailedException] {
-          (book shouldNot be (readable)) (readability)
+          (book shouldNot be (readable)) (/* DOTTY-ONLY using */ readability)
         }
         assert(caught1.message === Some(wasReadable(book)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -133,13 +133,13 @@ class ShouldBeReadableExplicitSpec extends AnyFunSpec {
     describe("when work with 'all(xs) should be (readable)'") {
       
       it("should do nothing when all(xs) is readable") {
-        (all(List(book)) should be (readable)) (readability)
+        (all(List(book)) should be (readable)) (/* DOTTY-ONLY using */ readability)
       }
       
       it("should throw TestFailedException with correct stack depth when all(xs) is not readable") {
         val left1 = List(stone)
         val caught1 = intercept[TestFailedException] {
-          (all(left1) should be (readable)) (readability)
+          (all(left1) should be (readable)) (/* DOTTY-ONLY using */ readability)
         }
         assert(caught1.message === Some(allError(left1, wasNotReadable(stone), thisLineNumber - 2)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -151,13 +151,13 @@ class ShouldBeReadableExplicitSpec extends AnyFunSpec {
     describe("when work with 'all(xs) should not be readable'") {
       
       it("should do nothing when all(xs) is not readable") {
-        (all(List(stone)) should not be readable) (readability)
+        (all(List(stone)) should not be readable) (/* DOTTY-ONLY using */ readability)
       }
       
       it("should throw TestFailedException with correct stack depth when all(xs) is readable") {
         val left1 = List(book)
         val caught1 = intercept[TestFailedException] {
-          (all(left1) should not be readable) (readability)
+          (all(left1) should not be readable) (/* DOTTY-ONLY using */ readability)
         }
         assert(caught1.message === Some(allError(left1, wasReadable(book), thisLineNumber - 2)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -169,13 +169,13 @@ class ShouldBeReadableExplicitSpec extends AnyFunSpec {
     describe("when work with 'all(xs) shouldBe readable'") {
       
       it("should do nothing when all(xs) is readable") {
-        (all(List(book)) shouldBe readable) (readability)
+        (all(List(book)) shouldBe readable) (/* DOTTY-ONLY using */ readability)
       }
       
       it("should throw TestFailedException with correct stack depth when all(xs) is not readable") {
         val left1 = List(stone)
         val caught1 = intercept[TestFailedException] {
-          (all(left1) shouldBe readable) (readability)
+          (all(left1) shouldBe readable) (/* DOTTY-ONLY using */ readability)
         }
         assert(caught1.message === Some(allError(left1, wasNotReadable(stone), thisLineNumber - 2)))
         assert(caught1.failedCodeFileName === Some(fileName))
@@ -186,13 +186,13 @@ class ShouldBeReadableExplicitSpec extends AnyFunSpec {
     describe("when work with 'all(xs) shouldNot be (readable)'") {
       
       it("should do nothing when all(xs) is not readable") {
-        (all(List(stone)) shouldNot be (readable)) (readability)
+        (all(List(stone)) shouldNot be (readable)) (/* DOTTY-ONLY using */ readability)
       }
       
       it("should throw TestFailedException with correct stack depth when all(xs) is readable") {
         val left1 = List(book)
         val caught1 = intercept[TestFailedException] {
-          (all(left1) shouldNot be (readable)) (readability)
+          (all(left1) shouldNot be (readable)) (/* DOTTY-ONLY using */ readability)
         }
         assert(caught1.message === Some(allError(left1, wasReadable(book), thisLineNumber - 2)))
         assert(caught1.failedCodeFileName === Some(fileName))
