@@ -228,13 +228,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       initEdges.length should equal (initEdges1.length * initEdges2.length)
 
-      val comboLists: List[List[Int]] = initEdges1.combinations(2).toList
+      val comboLists: List[List[Int]] = initEdges1.map(_.value).combinations(2).toList
       val comboPairs: List[(Int, Int)] = comboLists.map(xs => (xs(0), xs(1)))
       val plusReversedPairs: List[(Int, Int)] = comboPairs flatMap { case (x, y) => List((x, y), (y, x)) }
-      val sameValuePairs: List[(Int, Int)] = initEdges1.map(i => (i, i))
+      val sameValuePairs: List[(Int, Int)] = initEdges1.map(rt => (rt.value, rt.value))
       val expectedInitEdges: List[(Int, Int)] = plusReversedPairs ++ sameValuePairs
 
-      initEdges should contain theSameElementsAs expectedInitEdges
+      initEdges.map(_.value) should contain theSameElementsAs expectedInitEdges
 
       val (tup1, e1, r1) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
       val (tup2, e2, r2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = e1, rnd = r1)
@@ -325,7 +325,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = byteGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[Byte], ae1: List[Byte], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[Byte], ae1: List[RoseTree[Byte]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -375,7 +375,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.byteGenerator.filter(_ > 5)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(30.toByte), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(30.toByte, SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(15.toByte, 7.toByte)
@@ -415,7 +415,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = shortGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[Short], ae1: List[Short], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[Short], ae1: List[RoseTree[Short]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -465,7 +465,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.shortGenerator.filter(_ > 5)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(30.toShort), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(30.toShort, SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(15.toShort, 7.toShort)
@@ -505,7 +505,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = intGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[Int], ae1: List[Int], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[Int], ae1: List[RoseTree[Int]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -552,7 +552,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.intGenerator.filter(_ > 5)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(30), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(30, SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(15, 7)
@@ -592,7 +592,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = longGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[Long], ae1: List[Long], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[Long], ae1: List[RoseTree[Long]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -647,7 +647,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.longGenerator.filter(_ > 5L)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(30L), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(30L, SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(15L, 7L)
@@ -687,7 +687,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = charGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[Char], ae1: List[Char], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[Char], ae1: List[RoseTree[Char]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val edges = List(a1, a2)
         edges.map(_.value) should contain (Char.MinValue)
@@ -725,14 +725,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         }
         import org.scalatest.Inspectors
         Inspectors.forAll (expectedChars) { (c: Char) =>
-          val (shrinkRoseTree, _, _) = generator.next(SizeParam(1, 0, 1), List(c), Randomizer.default)
+          val (shrinkRoseTree, _, _) = generator.next(SizeParam(1, 0, 1), List(generator.roseTreeOfEdge(c, SizeParam(1, 0, 1), generator.isValid)), Randomizer.default)
           val shrinks: LazyListOrStream[Char] = shrinkRoseTree.shrinks.map(_.value)
           shrinks shouldEqual expectedChars.drop(expectedChars.indexOf(c) + 1)
         }
       }
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.charGenerator.filter(c => c.toLower == c)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List('9'), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge('9', SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List('8', '7', '6', '5', '4', '3', '2', '1', '0', 
@@ -769,7 +769,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = floatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[Float], ae1: List[Float], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[Float], ae1: List[RoseTree[Float]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -857,7 +857,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.floatGenerator.filter(_ > 5.0f)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(40.0f), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(40.0f, SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(6.0f)
@@ -889,7 +889,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = doubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[Double], ae1: List[Double], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[Double], ae1: List[RoseTree[Double]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -946,7 +946,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.doubleGenerator.filter(_ > 5.0)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(40.0), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(40.0, SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(6.0)
@@ -1116,7 +1116,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posIntGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[PosInt], ae1: List[PosInt], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosInt], ae1: List[RoseTree[PosInt]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val edges = List(a1, a2).map(_.value)
         edges should contain (PosInt(1))
@@ -1158,7 +1158,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.posIntGenerator.filter(_.value > 5)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(PosInt(30)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(PosInt(30), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(PosInt(15), PosInt(7))
@@ -1198,7 +1198,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posZIntGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[PosZInt], ae1: List[PosZInt], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosZInt], ae1: List[RoseTree[PosZInt]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -1242,7 +1242,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.posZIntGenerator.filter(_.value > 5)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(PosZInt(30)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(PosZInt(30), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(PosZInt(15), PosZInt(7))
@@ -1282,7 +1282,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posLongGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[PosLong], ae1: List[PosLong], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosLong], ae1: List[RoseTree[PosLong]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val edges = List(a1, a2).map(_.value)
         edges should contain (PosLong(1L))
@@ -1323,7 +1323,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.posLongGenerator.filter(_.value > 5)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(PosLong(30L)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(PosLong(30L), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(PosLong(15L), PosLong(7L))
@@ -1363,7 +1363,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posZLongGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[PosZLong], ae1: List[PosZLong], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosZLong], ae1: List[RoseTree[PosZLong]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -1407,7 +1407,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.posZLongGenerator.filter(_.value > 5)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(PosZLong(30L)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(PosZLong(30L), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(PosZLong(15L), PosZLong(7L))
@@ -1447,7 +1447,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[PosFloat], ae1: List[PosFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosFloat], ae1: List[RoseTree[PosFloat]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -1494,7 +1494,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.posFloatGenerator.filter(_ > 5.0)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(PosFloat(40.0f)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(PosFloat(40.0f), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(PosFloat(6.0f))
@@ -1534,7 +1534,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posFiniteFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[PosFiniteFloat], ae1: List[PosFiniteFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosFiniteFloat], ae1: List[RoseTree[PosFiniteFloat]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -1578,7 +1578,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.posFiniteFloatGenerator.filter(_ > 5.0)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(PosFiniteFloat(40.0f)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(PosFiniteFloat(40.0f), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(PosFiniteFloat(6.0f))
@@ -1618,7 +1618,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posZFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[PosZFloat], ae1: List[PosZFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosZFloat], ae1: List[RoseTree[PosZFloat]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -1669,7 +1669,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.posZFloatGenerator.filter(_ > 5.0)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(PosZFloat(40.0f)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(PosZFloat(40.0f), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(PosZFloat(6.0f))
@@ -1709,7 +1709,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posZFiniteFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[PosZFiniteFloat], ae1: List[PosZFiniteFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosZFiniteFloat], ae1: List[RoseTree[PosZFiniteFloat]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -1758,7 +1758,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.posZFiniteFloatGenerator.filter(_ > 5.0)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(PosZFiniteFloat(40.0f)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(PosZFiniteFloat(40.0f), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(PosZFiniteFloat(6.0f))
@@ -1798,7 +1798,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[PosDouble], ae1: List[PosDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosDouble], ae1: List[RoseTree[PosDouble]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -1845,7 +1845,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.posDoubleGenerator.filter(_ > 5.0)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(PosDouble(40.0)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(PosDouble(40.0), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(PosDouble(6.0))
@@ -1885,7 +1885,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posFiniteDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[PosFiniteDouble], ae1: List[PosFiniteDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosFiniteDouble], ae1: List[RoseTree[PosFiniteDouble]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -1931,7 +1931,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.posFiniteDoubleGenerator.filter(_ > 5.0)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(PosFiniteDouble(40.0)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(PosFiniteDouble(40.0), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(PosFiniteDouble(6.0))
@@ -1971,7 +1971,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posZDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[PosZDouble], ae1: List[PosZDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosZDouble], ae1: List[RoseTree[PosZDouble]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -2022,7 +2022,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.posZDoubleGenerator.filter(_ > 5.0)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(PosZDouble(40.0)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(PosZDouble(40.0), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(PosZDouble(6.0))
@@ -2062,7 +2062,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posZFiniteDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[PosZFiniteDouble], ae1: List[PosZFiniteDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosZFiniteDouble], ae1: List[RoseTree[PosZFiniteDouble]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -2111,7 +2111,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.posZFiniteDoubleGenerator.filter(_ > 5.0)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(PosZFiniteDouble(40.0)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(PosZFiniteDouble(40.0), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(PosZFiniteDouble(6.0))
@@ -2151,7 +2151,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negIntGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[NegInt], ae1: List[NegInt], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegInt], ae1: List[RoseTree[NegInt]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val edges = List(a1, a2).map(_.value)
         edges should contain (NegInt(-1))
@@ -2193,7 +2193,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.negIntGenerator.filter(_ < -5)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NegInt(-30)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(NegInt(-30), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NegInt(-15), NegInt(-7))
@@ -2233,7 +2233,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negZIntGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[NegZInt], ae1: List[NegZInt], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegZInt], ae1: List[RoseTree[NegZInt]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -2277,7 +2277,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.negZIntGenerator.filter(_ < -5)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NegInt(-30)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(NegInt(-30), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NegZInt(-15), NegZInt(-7))
@@ -2317,7 +2317,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negLongGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[NegLong], ae1: List[NegLong], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegLong], ae1: List[RoseTree[NegLong]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val edges = List(a1, a2).map(_.value)
         edges should contain (NegLong(-1L))
@@ -2359,7 +2359,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.negLongGenerator.filter(_ < -5)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NegLong(-30L)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(NegLong(-30L), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NegLong(-15L), NegLong(-7L))
@@ -2399,7 +2399,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negZLongGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[NegZLong], ae1: List[NegZLong], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegZLong], ae1: List[RoseTree[NegZLong]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -2443,7 +2443,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.negZLongGenerator.filter(_ < -5)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NegZLong(-30L)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(NegZLong(-30L), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NegZLong(-15L), NegZLong(-7L))
@@ -2483,7 +2483,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[NegFloat], ae1: List[NegFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegFloat], ae1: List[RoseTree[NegFloat]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -2530,7 +2530,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.negFloatGenerator.filter(_ < -5.0f)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NegFloat(-40.0f)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(NegFloat(-40.0f), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NegFloat(-6.0f))
@@ -2570,7 +2570,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negFiniteFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[NegFiniteFloat], ae1: List[NegFiniteFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegFiniteFloat], ae1: List[RoseTree[NegFiniteFloat]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -2617,7 +2617,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.negFiniteFloatGenerator.filter(_ < -5.0f)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NegFiniteFloat(-40.0f)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(NegFiniteFloat(-40.0f), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NegFiniteFloat(-6.0f))
@@ -2657,7 +2657,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negZFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[NegZFloat], ae1: List[NegZFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegZFloat], ae1: List[RoseTree[NegZFloat]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -2708,7 +2708,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.negZFloatGenerator.filter(_ < -5.0f)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NegZFloat(-40.0f)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(NegZFloat(-40.0f), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NegZFloat(-6.0f))
@@ -2748,7 +2748,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negZFiniteFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[NegZFiniteFloat], ae1: List[NegZFiniteFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegZFiniteFloat], ae1: List[RoseTree[NegZFiniteFloat]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -2797,7 +2797,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.negZFiniteFloatGenerator.filter(_ < -5.0f)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NegZFiniteFloat(-40.0f)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(NegZFiniteFloat(-40.0f), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NegZFiniteFloat(-6.0f))
@@ -2837,7 +2837,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[NegDouble], ae1: List[NegDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegDouble], ae1: List[RoseTree[NegDouble]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -2884,7 +2884,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.negDoubleGenerator.filter(_ < -5.0)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NegDouble(-40.0)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(NegDouble(-40.0), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NegDouble(-6.0))
@@ -2924,7 +2924,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negFiniteDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[NegFiniteDouble], ae1: List[NegFiniteDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegFiniteDouble], ae1: List[RoseTree[NegFiniteDouble]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -2969,7 +2969,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.negFiniteDoubleGenerator.filter(_ < -5.0)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NegFiniteDouble(-40.0)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(NegFiniteDouble(-40.0), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NegFiniteDouble(-6.0))
@@ -3009,7 +3009,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negZDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[NegZDouble], ae1: List[NegZDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegZDouble], ae1: List[RoseTree[NegZDouble]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -3060,7 +3060,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.negZDoubleGenerator.filter(_ < -5.0)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NegZDouble(-40.0)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(NegZDouble(-40.0), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NegZDouble(-6.0))
@@ -3100,7 +3100,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negZFiniteDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[NegZFiniteDouble], ae1: List[NegZFiniteDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegZFiniteDouble], ae1: List[RoseTree[NegZFiniteDouble]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -3149,7 +3149,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.negZFiniteDoubleGenerator.filter(_ < -5.0)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NegZFiniteDouble(-40.0)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(NegZFiniteDouble(-40.0), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NegZFiniteDouble(-6.0))
@@ -3189,7 +3189,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = nonZeroIntGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[NonZeroInt], ae1: List[NonZeroInt], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NonZeroInt], ae1: List[RoseTree[NonZeroInt]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -3238,7 +3238,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.nonZeroIntGenerator.filter(_ > 5)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NonZeroInt(30)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(NonZeroInt(30), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NonZeroInt(15), NonZeroInt(7))
@@ -3278,7 +3278,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = nonZeroLongGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[NonZeroLong], ae1: List[NonZeroLong], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NonZeroLong], ae1: List[RoseTree[NonZeroLong]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -3327,7 +3327,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.nonZeroLongGenerator.filter(_ > 5L)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NonZeroLong(30L)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(NonZeroLong(30L), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NonZeroLong(15L), NonZeroLong(7L))
@@ -3367,7 +3367,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = nonZeroFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[NonZeroFloat], ae1: List[NonZeroFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NonZeroFloat], ae1: List[RoseTree[NonZeroFloat]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -3425,7 +3425,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.nonZeroFloatGenerator.filter(_ > 5.0f)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NonZeroFloat(40.0f)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(NonZeroFloat(40.0f), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NonZeroFloat(6.0f))
@@ -3465,7 +3465,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = nonZeroFiniteFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[NonZeroFiniteFloat], ae1: List[NonZeroFiniteFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NonZeroFiniteFloat], ae1: List[RoseTree[NonZeroFiniteFloat]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -3519,7 +3519,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.nonZeroFiniteFloatGenerator.filter(_ > 5.0f)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NonZeroFiniteFloat(40.0f)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(NonZeroFiniteFloat(40.0f), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NonZeroFiniteFloat(6.0f))
@@ -3559,7 +3559,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = nonZeroDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[NonZeroDouble], ae1: List[NonZeroDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NonZeroDouble], ae1: List[RoseTree[NonZeroDouble]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -3617,7 +3617,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.nonZeroDoubleGenerator.filter(_ > 5.0)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NonZeroDouble(40.0)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(NonZeroDouble(40.0), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NonZeroDouble(6.0))
@@ -3657,7 +3657,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = nonZeroFiniteDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[NonZeroFiniteDouble], ae1: List[NonZeroFiniteDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NonZeroFiniteDouble], ae1: List[RoseTree[NonZeroFiniteDouble]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -3711,7 +3711,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.nonZeroFiniteDoubleGenerator.filter(_ > 5.0)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NonZeroFiniteDouble(40.0)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(NonZeroFiniteDouble(40.0), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NonZeroFiniteDouble(6.0))
@@ -3751,7 +3751,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = finiteFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[FiniteFloat], ae1: List[FiniteFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[FiniteFloat], ae1: List[RoseTree[FiniteFloat]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -3806,7 +3806,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.finiteFloatGenerator.filter(_ > 5.0f)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(FiniteFloat(40.0f)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(FiniteFloat(40.0f), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(FiniteFloat(6.0f))
@@ -3846,7 +3846,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = finiteDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: RoseTree[FiniteDouble], ae1: List[FiniteDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[FiniteDouble], ae1: List[RoseTree[FiniteDouble]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -3901,7 +3901,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.finiteDoubleGenerator.filter(_ > 5.0)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(FiniteDouble(40.0)), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(FiniteDouble(40.0), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(FiniteDouble(6.0))
@@ -3981,7 +3981,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.numericCharGenerator.filter(_.value.toString.toInt > 5)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NumericChar('9')), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(NumericChar('9'), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NumericChar('8'), NumericChar('7'), NumericChar('6'))
@@ -4052,7 +4052,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.stringGenerator.filter(_.length > 5)
-        val (rs, _, _) = aGen.next(SizeParam(1, 99, 100), List("one two three four five"), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 99, 100), List(aGen.roseTreeOfEdge("one two three four five", SizeParam(1, 99, 100), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List("ee four five", "one two thr", "wo thr")
@@ -4088,8 +4088,8 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (intEdges, _) = baseGen.initEdges(100, rnd)
         val (optEdges, _) = gen.initEdges(100, rnd)
 
-        optEdges should contain (None)
-        optEdges.filter(_.isDefined).map(_.get) should contain theSameElementsAs intEdges
+        optEdges.map(_.value) should contain (None: Option[Int])
+        optEdges.map(_.value).filter(_.isDefined).map(_.get) should contain theSameElementsAs intEdges.map(_.value)
       }
 
       it("should use the base type for canonicals") {
@@ -4158,14 +4158,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = optionGenerator[Int]
         val rnd = Randomizer.default
 
-        val (optShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(None), rnd)
+        val (optShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(gen.roseTreeOfEdge(None, SizeParam(1, 0, 1), gen.isValid)), rnd)
 
         assert(optShrink.shrinks.isEmpty)
       }
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.optionGenerator[String].filter(_.nonEmpty)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(Some("test")), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Some("test"), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not contain (None)
 
@@ -4191,7 +4191,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (bEdges, _) = bGen.initEdges(100, rnd)
         val (orEdges, _) = gen.initEdges(100, rnd)
 
-        orEdges should contain theSameElementsAs(gEdges.map(Good(_)) ++ bEdges.map(Bad(_)))
+        orEdges.map(_.value) should contain theSameElementsAs(gEdges.map(_.value).map(Good(_)) ++ bEdges.map(_.value).map(Bad(_)))
       }
 
       it("should use the base types for canonicals") {
@@ -4250,10 +4250,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = orGenerator[Int, Long]
 
         val rnd = Randomizer.default
-        val (gShrink, _, _) = gGen.next(SizeParam(1, 0, 1), List(1000), rnd)
-        val (bShrink, _, _) = bGen.next(SizeParam(1, 0, 1), List(2000L), rnd)
-        val (orGoodShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Good(1000)), rnd)
-        val (orBadShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Bad(2000L)), rnd)
+        val (gShrink, _, _) = gGen.next(SizeParam(1, 0, 1), List(gGen.roseTreeOfEdge(1000, SizeParam(1, 0, 1), gGen.isValid)), rnd)
+        val (bShrink, _, _) = bGen.next(SizeParam(1, 0, 1), List(bGen.roseTreeOfEdge(2000L, SizeParam(1, 0, 1), bGen.isValid)), rnd)
+        val (orGoodShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(gen.roseTreeOfEdge(Good(1000), SizeParam(1, 0, 1), gen.isValid)), rnd)
+        val (orBadShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(gen.roseTreeOfEdge(Bad(2000L), SizeParam(1, 0, 1), gen.isValid)), rnd)
 
         orGoodShrink.shrinks.map(_.value) should contain theSameElementsAs(gShrink.shrinks.map(_.value).map(Good(_)).toList)
         orBadShrink.shrinks.map(_.value) should contain theSameElementsAs(bShrink.shrinks.map(_.value).map(Bad(_)).toList)
@@ -4270,12 +4270,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
         val rnd = Randomizer.default
         
-        val (orGoodShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Good(1000)), rnd)
+        val (orGoodShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(gen.roseTreeOfEdge(Good(1000), SizeParam(1, 0, 1), gen.isValid)), rnd)
         val orGoodShrinkees = orGoodShrink.shrinks.map(_.value)
         orGoodShrinkees should not be empty
         orGoodShrinkees.toList shouldBe List(Good(500), Good(250))
 
-        val (orBadShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Bad(2000L)), rnd)
+        val (orBadShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(gen.roseTreeOfEdge(Bad(2000L), SizeParam(1, 0, 1), gen.isValid)), rnd)
         val orBadShrinkees = orBadShrink.shrinks.map(_.value)
         orBadShrinkees should not be empty
         orBadShrinkees.toList shouldBe List(Bad(1000L), Bad(500L), Bad(250L))
@@ -4306,7 +4306,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (lEdges, _) = lGen.initEdges(100, rnd)
         val (eitherEdges, _) = gen.initEdges(100, rnd)
 
-        eitherEdges should contain theSameElementsAs(rEdges.map(Right(_)) ++ lEdges.map(Left(_)))
+        eitherEdges.map(_.value) should contain theSameElementsAs(rEdges.map(_.value).map(Right(_)) ++ lEdges.map(_.value).map(Left(_)))
       }
 
       it("should use the base types for canonicals") {
@@ -4362,10 +4362,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = eitherGenerator[Long, Int]
 
         val rnd = Randomizer.default
-        val (rShrink, _, _) = rGen.next(SizeParam(1, 0, 1), List(1000), rnd)
-        val (lShrink, _, _) = lGen.next(SizeParam(1, 0, 1), List(2000L), rnd)
-        val (eitherRightShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Right(1000)), rnd)
-        val (eitherLeftShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Left(2000L)), rnd)
+        val (rShrink, _, _) = rGen.next(SizeParam(1, 0, 1), List(rGen.roseTreeOfEdge(1000, SizeParam(1, 0, 1), rGen.isValid)), rnd)
+        val (lShrink, _, _) = lGen.next(SizeParam(1, 0, 1), List(lGen.roseTreeOfEdge(2000L, SizeParam(1, 0, 1), lGen.isValid)), rnd)
+        val (eitherRightShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(gen.roseTreeOfEdge(Right(1000), SizeParam(1, 0, 1), gen.isValid)), rnd)
+        val (eitherLeftShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(gen.roseTreeOfEdge(Left(2000L), SizeParam(1, 0, 1), gen.isValid)), rnd)
 
         eitherRightShrink.shrinks.map(_.value) should contain theSameElementsAs(rShrink.shrinks.map(_.value).map(Right(_)).toList)
         eitherLeftShrink.shrinks.map(_.value) should contain theSameElementsAs(lShrink.shrinks.map(_.value).map(Left(_)).toList)
@@ -4382,12 +4382,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
         val rnd = Randomizer.default
         
-        val (orLeftShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Left(1000)), rnd)
+        val (orLeftShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(gen.roseTreeOfEdge(Left(1000), SizeParam(1, 0, 1), gen.isValid)), rnd)
         val orLeftShrinkees = orLeftShrink.shrinks.map(_.value)
         orLeftShrinkees should not be empty
         orLeftShrinkees.toList shouldBe List(Left(500), Left(250))
 
-        val (orRightShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Right(2000L)), rnd)
+        val (orRightShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(gen.roseTreeOfEdge(Right(2000L), SizeParam(1, 0, 1), gen.isValid)), rnd)
         val orRightShrinkees = orRightShrink.shrinks.map(_.value)
         orRightShrinkees should not be empty
         orRightShrinkees.toList shouldBe List(Right(1000L), Right(500L), Right(250L))
@@ -4426,7 +4426,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       val intCanonicals = intCanonicalsIt.toList
       forAll { (xs: F[Int]) =>
         // pass in List(xs) as only edge case so the generator will generate rose tree with the specified value.
-        val (shrinkRoseTree, _, _) = generator.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)
+        val (shrinkRoseTree, _, _) = generator.next(SizeParam(1, 0, 1), List(generator.roseTreeOfEdge(xs, SizeParam(1, 0, 1), generator.isValid)), Randomizer.default)
         val shrinks: LazyListOrStream[F[Int]] = shrinkRoseTree.shrinks.map(_.value).reverse
         if (xs.isEmpty)
           shrinks shouldBe empty
@@ -4565,12 +4565,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should not exhibit this bug in List shrinking") {
         val lstGen = implicitly[Generator[List[List[Int]]]]
         val xss = List(List(100, 200, 300, 400, 300))
-        lstGen.next(SizeParam(1, 0, 1), List(xss), Randomizer.default)._1.shrinks.map(_.value) should not contain xss
+        lstGen.next(SizeParam(1, 0, 1), List(lstGen.roseTreeOfEdge(xss, SizeParam(1, 0, 1), lstGen.isValid)), Randomizer.default)._1.shrinks.map(_.value) should not contain xss
       }
       it("should return an empty LazyListOrStream when asked to shrink a List of size 0") {
         val lstGen = implicitly[Generator[List[Int]]]
         val xs = List.empty[Int]
-        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks.map(_.value) shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(lstGen.roseTreeOfEdge(xs, SizeParam(1, 0, 1), lstGen.isValid)), Randomizer.default)._1.shrinks.map(_.value) shouldBe empty
       }
       it("should shrink List with an algo towards empty List") {
         import GeneratorDrivenPropertyChecks._
@@ -4591,17 +4591,17 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following size determined by havingSize method") {
         val aGen= Generator.listGenerator[Int].havingSize(5)
-        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(List(3, 99)), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(List(3, 99), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)._1.shrinks.map(_.value)
         all(shrinkees) should have size 5
       }
       it("should produce shrinkees following length determined by havingLength method") {
         val aGen= Generator.vectorGenerator[Int].havingLength(5)
-        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Vector(3, 99), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)._1.shrinks.map(_.value)
         all(shrinkees) should have length 5
       }
       it("should produce shrinkees following sizes determined by havingSizesBetween method") {
         val aGen= Generator.vectorGenerator[Int].havingSizesBetween(2, 5)
-        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Vector(3, 99), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = v.shrinks.map(_.value)
         if (v.value.size >= 4)
           shrinkees should not be empty
@@ -4611,7 +4611,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following sizes determined by havingLengthsBetween method") {
         val aGen= Generator.vectorGenerator[Int].havingLengthsBetween(2, 5)
-        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Vector(3, 99), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = v.shrinks.map(_.value)
         if (v.value.length >= 4)
           shrinkees should not be empty
@@ -4621,7 +4621,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following sizes determined by havingSizesDeterminedBy method") {
         val aGen= Generator.vectorGenerator[Int].havingSizesDeterminedBy(s => SizeParam(2, 3, 5))
-        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Vector(3, 99), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = v.shrinks.map(_.value)
         if (v.value.size >= 4)
           shrinkees should not be empty
@@ -4631,7 +4631,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following sizes determined by havingLengthsDeterminedBy method") {
         val aGen= Generator.vectorGenerator[Int].havingLengthsDeterminedBy(s => SizeParam(2, 3, 5))
-        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Vector(3, 99), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = v.shrinks.map(_.value)
         if (v.value.length >= 4)
           shrinkees should not be empty
@@ -4645,7 +4645,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         // for example, that that one doesn't show up in the shrinks output, because it would be the original list-to-shrink.
         val lstGen = implicitly[Generator[List[Int]]]
         val listToShrink = List.fill(16)(99)
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(lstGen.roseTreeOfEdge(listToShrink, SizeParam(1, 0, 1), lstGen.isValid)), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a list generator whose canonical method uses the canonical method of the underlying T") {
@@ -4670,7 +4670,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.listGenerator[String].filter(_.nonEmpty)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(List("1", "2", "3", "4")), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(List("1", "2", "3", "4"), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not contain (List.empty[String])
 
@@ -4700,7 +4700,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (function0EdgesIt, _) = function0s.initEdges(100, rnd1)
         val intEdges = intEdgesIt.toList
         val function0Edges = function0EdgesIt.toList
-        function0Edges.map(f => f()) should contain theSameElementsAs intEdges
+        function0Edges.map(rt => rt.value()) should contain theSameElementsAs intEdges.map(_.value)
       }
       it("should offer an implicit provider for constant function0's that returns the canonicals of the result type") {
         val ints = Generator.intGenerator
@@ -4806,7 +4806,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce Vector[T] edge values first in random order") {
         val gen = Generator.vectorGenerator[Int]
-        val (a1: RoseTree[Vector[Int]], ae1: List[Vector[Int]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Vector.empty[Int], Vector(1, 2), Vector(3, 4, 5)), rnd = Randomizer.default)
+        val (a1: RoseTree[Vector[Int]], ae1: List[RoseTree[Vector[Int]]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Rose(Vector.empty[Int]), Rose(Vector(1, 2)), Rose(Vector(3, 4, 5))), rnd = Randomizer.default)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -4897,7 +4897,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should not exhibit this bug in Vector shrinking") {
         val vectorGen = implicitly[Generator[Vector[Vector[Int]]]]
         val xss = Vector(Vector(100, 200, 300, 400, 300))
-        vectorGen.next(SizeParam(1, 0, 1), List(xss), Randomizer.default)._1.shrinks.map(_.value) should not contain xss
+        vectorGen.next(SizeParam(1, 0, 1), List(vectorGen.roseTreeOfEdge(xss, SizeParam(1, 0, 1), vectorGen.isValid)), Randomizer.default)._1.shrinks.map(_.value) should not contain xss
       }
       it("should shrink Vector with an algo towards empty Vector") {
         import GeneratorDrivenPropertyChecks._
@@ -4918,17 +4918,17 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following size determined by havingSize method") {
         val aGen= Generator.vectorGenerator[Int].havingSize(5)
-        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Vector(3, 99), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)._1.shrinks.map(_.value)
         all(shrinkees) should have size 5
       }
       it("should produce shrinkees following length determined by havingLength method") {
         val aGen= Generator.vectorGenerator[Int].havingLength(5)
-        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Vector(3, 99), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)._1.shrinks.map(_.value)
         all(shrinkees) should have length 5
       }
       it("should produce shrinkees following sizes determined by havingSizesBetween method") {
         val aGen= Generator.vectorGenerator[Int].havingSizesBetween(2, 5)
-        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Vector(3, 99), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = v.shrinks.map(_.value)
         if (v.value.size >= 4)
           shrinkees should not be empty
@@ -4938,7 +4938,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following sizes determined by havingLengthsBetween method") {
         val aGen= Generator.vectorGenerator[Int].havingLengthsBetween(2, 5)
-        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Vector(3, 99), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = v.shrinks.map(_.value)
         if (v.value.length >= 4)
           shrinkees should not be empty
@@ -4948,7 +4948,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following sizes determined by havingSizesDeterminedBy method") {
         val aGen= Generator.vectorGenerator[Int].havingSizesDeterminedBy(s => SizeParam(2, 3, 5))
-        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Vector(3, 99), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = v.shrinks.map(_.value)
         if (v.value.size >= 4)
           shrinkees should not be empty
@@ -4958,7 +4958,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following sizes determined by havingLengthsDeterminedBy method") {
         val aGen= Generator.vectorGenerator[Int].havingLengthsDeterminedBy(s => SizeParam(2, 3, 5))
-        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Vector(3, 99), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = v.shrinks.map(_.value)
         if (v.value.length >= 4)
           shrinkees should not be empty
@@ -4969,11 +4969,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should return an empty LazyListOrStream when asked to shrink a Vector of size 0") {
         val lstGen = implicitly[Generator[Vector[Int]]]
         val xs = Vector.empty[Int]
-        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(lstGen.roseTreeOfEdge(xs, SizeParam(1, 0, 1), lstGen.isValid)), Randomizer.default)._1.shrinks shouldBe empty
       }
       it("should return an LazyListOrStream that does not repeat canonicals when asked to shrink a Vector of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[Vector[Int]]]
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(lstGen.roseTreeOfEdge(Vector(3, 99), SizeParam(1, 0, 1), lstGen.isValid)), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an LazyListOrStream that does not repeat the passed list-to-shink even if that list has a power of 2 length") {
@@ -4982,7 +4982,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         // for example, that that one doesn't show up in the shrinks output, because it would be the original list-to-shrink.
         val lstGen = implicitly[Generator[Vector[Int]]]
         val listToShrink = Vector.fill(16)(99)
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(lstGen.roseTreeOfEdge(listToShrink, SizeParam(1, 0, 1), lstGen.isValid)), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Vector generator whose canonical method uses the canonical method of the underlying T") {
@@ -5005,7 +5005,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.vectorGenerator[String].filter(_.nonEmpty)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(Vector("1", "2", "3", "4")), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Vector("1", "2", "3", "4"), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not contain (Vector.empty[String])
 
@@ -5042,7 +5042,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce Set[T] edge values first in random order") {
         val gen = Generator.setGenerator[Int]
-        val (a1: RoseTree[Set[Int]], ae1: List[Set[Int]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Set.empty[Int], Set(1, 2), Set(3, 4, 5)), rnd = Randomizer.default)
+        val (a1: RoseTree[Set[Int]], ae1: List[RoseTree[Set[Int]]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Rose(Set.empty[Int]), Rose(Set(1, 2)), Rose(Set(3, 4, 5))), rnd = Randomizer.default)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -5093,7 +5093,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should not exhibit this bug in Set shrinking") {
         val setGen = implicitly[Generator[Set[Set[Int]]]]
         val xss = Set(Set(100, 200, 300, 400, 300))
-        setGen.next(SizeParam(1, 0, 1), List(xss), Randomizer.default)._1.shrinks.map(_.value) should not contain xss
+        setGen.next(SizeParam(1, 0, 1), List(setGen.roseTreeOfEdge(xss, SizeParam(1, 0, 1), setGen.isValid)), Randomizer.default)._1.shrinks.map(_.value) should not contain xss
       }
       it("should shrink Set with an algo towards empty Set") {
         import GeneratorDrivenPropertyChecks._
@@ -5114,12 +5114,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following size determined by havingSize method") {
         val aGen= Generator.setGenerator[Int].havingSize(5)
-        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(Set(3, 99)), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Set(3, 99), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)._1.shrinks.map(_.value)
         all(shrinkees) should have size 5
       }
       it("should produce shrinkees following sizes determined by havingSizesBetween method") {
         val aGen= Generator.setGenerator[Int].havingSizesBetween(2, 5)
-        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Set(3, 99)), Randomizer.default)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Set(3, 99), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = v.shrinks.map(_.value)
         if (v.value.size >= 4)
           shrinkees should not be empty
@@ -5129,7 +5129,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following sizes determined by havingSizesDeterminedBy method") {
         val aGen= Generator.setGenerator[Int].havingSizesDeterminedBy(s => SizeParam(2, 3, 5))
-        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Set(3, 99)), Randomizer.default)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Set(3, 99), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = v.shrinks.map(_.value)
         if (v.value.size >= 4)
           shrinkees should not be empty
@@ -5140,11 +5140,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should return an empty LazyListOrStream when asked to shrink a Set of size 0") {
         val lstGen = implicitly[Generator[Set[Int]]]
         val xs = Set.empty[Int]
-        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks.map(_.value).toSet shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(lstGen.roseTreeOfEdge(xs, SizeParam(1, 0, 1), lstGen.isValid)), Randomizer.default)._1.shrinks.map(_.value).toSet shouldBe empty
       }
       it("should return an LazyListOrStream that does not repeat canonicals when asked to shrink a Set of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[Set[Int]]]
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(Set(3, 99)), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(lstGen.roseTreeOfEdge(Set(3, 99), SizeParam(1, 0, 1), lstGen.isValid)), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an LazyListOrStream that does not repeat the passed set-to-shink even if that set has a power of 2 length") {
@@ -5155,7 +5155,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val listToShrink: Set[Int] = (Set.empty[Int] /: (1 to 16)) { (set, n) =>
           set + n
         }
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(lstGen.roseTreeOfEdge(listToShrink, SizeParam(1, 0, 1), lstGen.isValid)), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Set generator whose canonical method uses the canonical method of the underlying T") {
@@ -5178,7 +5178,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.setGenerator[String].filter(_.nonEmpty)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(Set("1", "2", "3", "4")), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Set("1", "2", "3", "4"), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not contain (Set.empty[String])
 
@@ -5215,7 +5215,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce SortedSet[T] edge values first in random order") {
         val gen = Generator.sortedSetGenerator[Int]
-        val (a1: RoseTree[SortedSet[Int]], ae1: List[SortedSet[Int]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(SortedSet.empty[Int], SortedSet(1, 2), SortedSet(3, 4, 5)), rnd = Randomizer.default)
+        val (a1: RoseTree[SortedSet[Int]], ae1: List[RoseTree[SortedSet[Int]]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Rose(SortedSet.empty[Int]), Rose(SortedSet(1, 2)), Rose(SortedSet(3, 4, 5))), rnd = Randomizer.default)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -5267,7 +5267,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         implicit val ordering: Ordering[SortedSet[Int]] = Ordering.by[SortedSet[Int], Int](_.size)
         val setGen = implicitly[Generator[SortedSet[SortedSet[Int]]]]
         val xss = SortedSet(SortedSet(100, 200, 300, 400, 300))
-        setGen.next(SizeParam(1, 0, 1), List(xss), Randomizer.default)._1.shrinks.map(_.value) should not contain xss
+        setGen.next(SizeParam(1, 0, 1), List(setGen.roseTreeOfEdge(xss, SizeParam(1, 0, 1), setGen.isValid)), Randomizer.default)._1.shrinks.map(_.value) should not contain xss
       }
       it("should shrink Set with an algo towards empty Set") {
         import GeneratorDrivenPropertyChecks._
@@ -5288,12 +5288,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following size determined by havingSize method") {
         val aGen= Generator.sortedSetGenerator[Int].havingSize(5)
-        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(SortedSet(3, 99)), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(SortedSet(3, 99), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)._1.shrinks.map(_.value)
         all(shrinkees) should have size 5
       }
       it("should produce shrinkees following sizes determined by havingSizesBetween method") {
         val aGen= Generator.sortedSetGenerator[Int].havingSizesBetween(2, 5)
-        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(SortedSet(3, 99)), Randomizer.default)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(SortedSet(3, 99), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = v.shrinks.map(_.value)
         if (v.value.size >= 4)
           shrinkees should not be empty
@@ -5303,7 +5303,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following sizes determined by havingSizesDeterminedBy method") {
         val aGen= Generator.sortedSetGenerator[Int].havingSizesDeterminedBy(s => SizeParam(2, 3, 5))
-        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(SortedSet(3, 99)), Randomizer.default)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(SortedSet(3, 99), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = v.shrinks.map(_.value)
         if (v.value.size >= 4)
           shrinkees should not be empty
@@ -5314,11 +5314,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should return an empty LazyListOrStream when asked to shrink a SortedSet of size 0") {
         val lstGen = implicitly[Generator[SortedSet[Int]]]
         val xs = SortedSet.empty[Int]
-        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks.map(_.value).toSet shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(lstGen.roseTreeOfEdge(xs, SizeParam(1, 0, 1), lstGen.isValid)), Randomizer.default)._1.shrinks.map(_.value).toSet shouldBe empty
       }
       it("should return an LazyListOrStream that does not repeat canonicals when asked to shrink a SortedSet of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[SortedSet[Int]]]
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(SortedSet(3, 99)), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(lstGen.roseTreeOfEdge(SortedSet(3, 99), SizeParam(1, 0, 1), lstGen.isValid)), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an LazyListOrStream that does not repeat the passed set-to-shink even if that set has a power of 2 length") {
@@ -5329,7 +5329,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val listToShrink: SortedSet[Int] = (SortedSet.empty[Int] /: (1 to 16)) { (set, n) =>
           set + n
         }
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(lstGen.roseTreeOfEdge(listToShrink, SizeParam(1, 0, 1), lstGen.isValid)), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Set generator whose canonical method uses the canonical method of the underlying T") {
@@ -5352,7 +5352,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.sortedSetGenerator[String].filter(_.nonEmpty)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(SortedSet("1", "2", "3", "4")), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(SortedSet("1", "2", "3", "4"), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not contain (Set.empty[String])
 
@@ -5389,7 +5389,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce Map[K, V] edge values first in random order") {
         val gen = Generator.mapGenerator[Int, String]
-        val (a1: RoseTree[Map[Int, String]], ae1: List[Map[Int, String]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Map.empty[Int, String], Map(1 -> "one", 2 -> "two"), Map(3 -> "three", 4 -> "four", 5 -> "five")), rnd = Randomizer.default)
+        val (a1: RoseTree[Map[Int, String]], ae1: List[RoseTree[Map[Int, String]]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Rose(Map.empty[Int, String]), Rose(Map(1 -> "one", 2 -> "two")), Rose(Map(3 -> "three", 4 -> "four", 5 -> "five"))), rnd = Randomizer.default)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -5440,7 +5440,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should not exhibit this bug in Map shrinking") {
         val mapGen = implicitly[Generator[Map[Map[Int, String], String]]]
         val xss = Map(Map(100 -> "100", 200 -> "200", 300 -> "300", 400 -> "400", 500 -> "500") -> "test")
-        mapGen.next(SizeParam(1, 0, 1), List(xss), Randomizer.default)._1.shrinks.map(_.value) should not contain xss
+        mapGen.next(SizeParam(1, 0, 1), List(mapGen.roseTreeOfEdge(xss, SizeParam(1, 0, 1), mapGen.isValid)), Randomizer.default)._1.shrinks.map(_.value) should not contain xss
       }
       it("should shrink Map with an algo towards empty Map") {
         import GeneratorDrivenPropertyChecks._
@@ -5461,12 +5461,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following size determined by havingSize method") {
         val aGen= Generator.mapGenerator[Int, String].havingSize(5)
-        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(Map(3 -> "three", 99 -> "ninety nine")), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Map(3 -> "three", 99 -> "ninety nine"), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)._1.shrinks.map(_.value)
         all(shrinkees) should have size 5
       }
       it("should produce shrinkees following sizes determined by havingSizesBetween method") {
         val aGen= Generator.mapGenerator[Int, String].havingSizesBetween(2, 5)
-        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Map(3 -> "three", 99 -> "ninety nine")), Randomizer.default)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Map(3 -> "three", 99 -> "ninety nine"), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = v.shrinks.map(_.value)
         if (v.value.size >= 4)
           shrinkees should not be empty
@@ -5476,7 +5476,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following sizes determined by havingSizesDeterminedBy method") {
         val aGen= Generator.mapGenerator[Int, String].havingSizesDeterminedBy(s => SizeParam(2, 3, 5))
-        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Map(3 -> "three", 99 -> "ninety nine")), Randomizer.default)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Map(3 -> "three", 99 -> "ninety nine"), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = v.shrinks.map(_.value)
         if (v.value.size >= 4)
           shrinkees should not be empty
@@ -5487,11 +5487,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should return an empty LazyListOrStream when asked to shrink a Map of size 0") {
         val lstGen = implicitly[Generator[Map[PosInt, Int]]]
         val xs = Map.empty[PosInt, Int]
-        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks.map(_.value).toSet shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(lstGen.roseTreeOfEdge(xs, SizeParam(1, 0, 1), lstGen.isValid)), Randomizer.default)._1.shrinks.map(_.value).toSet shouldBe empty
       }
       it("should return an LazyListOrStream that does not repeat canonicals when asked to shrink a Map of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[Map[PosInt, Int]]]
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(Map(PosInt(3) -> 3, PosInt(2) -> 2, PosInt(99) -> 99)), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(lstGen.roseTreeOfEdge(Map(PosInt(3) -> 3, PosInt(2) -> 2, PosInt(99) -> 99), SizeParam(1, 0, 1), lstGen.isValid)), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an LazyListOrStream that does not repeat the passed map-to-shink even if that set has a power of 2 length") {
@@ -5502,7 +5502,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val listToShrink: Map[PosInt, Int] = (Map.empty[PosInt, Int] /: (1 to 16)) { (map, n) =>
           map + (PosInt.ensuringValid(n) -> n)
         }
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(lstGen.roseTreeOfEdge(listToShrink, SizeParam(1, 0, 1), lstGen.isValid)), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Map generator whose canonical method uses the canonical method of the underlying types") {
@@ -5525,7 +5525,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.mapGenerator[Int, String].filter(_.nonEmpty)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(Map(1 -> "1", 2 -> "2", 3 -> "3", 4 -> "4")), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(Map(1 -> "1", 2 -> "2", 3 -> "3", 4 -> "4"), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not contain (Set.empty[String])
 
@@ -5562,7 +5562,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce SortedMap[K, V] edge values first in random order") {
         val gen = Generator.sortedMapGenerator[Int, String]
-        val (a1: RoseTree[SortedMap[Int, String]], ae1: List[SortedMap[Int, String]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(SortedMap.empty[Int, String], SortedMap(1 -> "one", 2 -> "two"), SortedMap(3 -> "three", 4 -> "four", 5 -> "five")), rnd = Randomizer.default)
+        val (a1: RoseTree[SortedMap[Int, String]], ae1: List[RoseTree[SortedMap[Int, String]]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Rose(SortedMap.empty[Int, String]), Rose(SortedMap(1 -> "one", 2 -> "two")), Rose(SortedMap(3 -> "three", 4 -> "four", 5 -> "five"))), rnd = Randomizer.default)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -5614,7 +5614,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         implicit val ordering: Ordering[SortedMap[Int, String]] = Ordering.by[SortedMap[Int, String], Int](_.size)
         val mapGen = implicitly[Generator[SortedMap[SortedMap[Int, String], String]]]
         val xss = SortedMap(SortedMap(100 -> "100", 200 -> "200", 300 -> "300", 400 -> "400", 500 -> "500") -> "test")
-        mapGen.next(SizeParam(1, 0, 1), List(xss), Randomizer.default)._1.shrinks.map(_.value) should not contain xss
+        mapGen.next(SizeParam(1, 0, 1), List(mapGen.roseTreeOfEdge(xss, SizeParam(1, 0, 1), mapGen.isValid)), Randomizer.default)._1.shrinks.map(_.value) should not contain xss
       }
       it("should shrink SortedMap with an algo towards empty SortedMap") {
         import GeneratorDrivenPropertyChecks._
@@ -5635,12 +5635,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following size determined by havingSize method") {
         val aGen= Generator.sortedMapGenerator[Int, String].havingSize(5)
-        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(SortedMap(3 -> "three", 99 -> "ninety nine")), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(SortedMap(3 -> "three", 99 -> "ninety nine"), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)._1.shrinks.map(_.value)
         all(shrinkees) should have size 5
       }
       it("should produce shrinkees following sizes determined by havingSizesBetween method") {
         val aGen= Generator.sortedMapGenerator[Int, String].havingSizesBetween(2, 5)
-        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(SortedMap(3 -> "three", 99 -> "ninety nine")), Randomizer.default)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(SortedMap(3 -> "three", 99 -> "ninety nine"), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = v.shrinks.map(_.value)
         if (v.value.size >= 4)
           shrinkees should not be empty
@@ -5650,7 +5650,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following sizes determined by havingSizesDeterminedBy method") {
         val aGen= Generator.mapGenerator[Int, String].havingSizesDeterminedBy(s => SizeParam(2, 3, 5))
-        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(SortedMap(3 -> "three", 99 -> "ninety nine")), Randomizer.default)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(SortedMap(3 -> "three", 99 -> "ninety nine"), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = v.shrinks.map(_.value)
         if (v.value.size >= 4)
           shrinkees should not be empty
@@ -5661,11 +5661,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should return an empty LazyListOrStream when asked to shrink a SortedMap of size 0") {
         val lstGen = implicitly[Generator[SortedMap[PosInt, Int]]]
         val xs = SortedMap.empty[PosInt, Int]
-        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks.map(_.value).toSet shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(lstGen.roseTreeOfEdge(xs, SizeParam(1, 0, 1), lstGen.isValid)), Randomizer.default)._1.shrinks.map(_.value).toSet shouldBe empty
       }
       it("should return an LazyListOrStream that does not repeat canonicals when asked to shrink a SortedMap of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[SortedMap[PosInt, Int]]]
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(SortedMap(PosInt(3) -> 3, PosInt(2) -> 2, PosInt(99) -> 99)), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(lstGen.roseTreeOfEdge(SortedMap(PosInt(3) -> 3, PosInt(2) -> 2, PosInt(99) -> 99), SizeParam(1, 0, 1), lstGen.isValid)), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an LazyListOrStream that does not repeat the passed SortedMap-to-shink even if that SortedMap has a power of 2 length") {
@@ -5676,7 +5676,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val listToShrink: SortedMap[PosInt, Int] = (SortedMap.empty[PosInt, Int] /: (1 to 16)) { (map, n) =>
           map + (PosInt.ensuringValid(n) -> n)
         }
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(lstGen.roseTreeOfEdge(listToShrink, SizeParam(1, 0, 1), lstGen.isValid)), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a SortedMap generator whose canonical method uses the canonical method of the underlying types") {
@@ -5699,7 +5699,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.sortedMapGenerator[Int, String].filter(_.nonEmpty)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(SortedMap(1 -> "1", 2 -> "2", 3 -> "3", 4 -> "4")), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(aGen.roseTreeOfEdge(SortedMap(1 -> "1", 2 -> "2", 3 -> "3", 4 -> "4"), SizeParam(1, 0, 1), aGen.isValid)), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not contain (Set.empty[String])
 
