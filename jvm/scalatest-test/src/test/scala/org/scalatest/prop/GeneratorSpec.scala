@@ -4386,7 +4386,39 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         classification.percentages("Left").value should be (25 +- 2)
       }
 
-      // TODO. Why does this not fail? Make sure it is correct.
+      it("should shrink Either via mapping correctly for arbitrary values") {
+        import GeneratorDrivenPropertyChecks._
+        import Generator._
+        forAll { (shrinkRoseTree: RoseTree[Either[Int, String]]) =>
+          val eitherValue = shrinkRoseTree.value
+          val shrinks: LazyListOrStream[Either[Int, String]] = shrinkRoseTree.shrinks.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          eitherValue match {
+            case Left(l) =>
+              if (l == 0)
+                shrinks shouldBe empty
+              else {
+                shrinks should not be empty
+                inspectAll(shrinks) { s =>
+                  s shouldBe a [Left[_, _]]
+                }
+                val shrunkValues = shrinks.map(_.left.get)
+                shrunkValues.distinct.length shouldEqual shrunkValues.length
+              }
+            case Right(r) =>
+              if (r.isEmpty)
+                shrinks shouldBe empty
+              else {
+                shrinks should not be empty
+                inspectAll(shrinks) { s =>
+                  s shouldBe a [Right[_, _]]
+                  s.right.get.length should be < r.length
+                }
+              }
+          }
+        }
+      }
+
       it("should use the base types to shrink") {
         import Generator._
         val rGen = intGenerator
@@ -5775,6 +5807,27 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       //DOTTY-ONLY   shape <- genShape
       //DOTTY-ONLY } yield Box(color, shape)
       //DOTTY-ONLY """ should compile
+    }
+
+    it("should evenly distribute across generators and pass size through") {
+      import CommonGenerators.evenly
+      import GeneratorDrivenPropertyChecks._
+
+      val genA: Generator[Int] = Generator.intGenerator
+      val genB: Generator[Int] = Generator.intGenerator
+      val genC: Generator[Int] = Generator.intGenerator
+
+      val gen = evenly(genA, genB, genC)
+
+      // Verify that evenly produces valid values and passes size through
+      // without error, by running many iterations with different size params
+      val rnd = Randomizer.default
+      val results = (0 to 100).foldLeft((List.empty[Int], rnd)) { case ((acc, r), _) =>
+        val (result, _, nextRnd) = gen.next(SizeParam(PosZInt(0), PosZInt(100), PosZInt(50)), Nil, r)
+        (result.value :: acc, nextRnd)
+      }
+      results._1 should not be empty
+      results._1.length shouldEqual 101
     }
   }
 }

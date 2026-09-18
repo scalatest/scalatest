@@ -199,7 +199,7 @@ trait Generator[T] { thisGeneratorOfT =>
     *
     * This function returns a Tuple of three fields:
     *
-    *   - The next value of type [[T]] to try evaluating.
+    *   - The next value of type `T` to try evaluating.
     *   - The remaining edges ''without'' the one that you are using. That is, if this function
     *     received a non-empty `edges` List, it should usually return the head as the next
     *     value, and the tail as the remainder after that.
@@ -233,8 +233,8 @@ trait Generator[T] { thisGeneratorOfT =>
     }
 
   /**
-    * Given a function from types [[T]] to [[U]], return a new [[Generator]] that produces
-    * values of type [[U]].
+    * Given a function from types `T` to `U`, return a new [[Generator]] that produces
+    * values of type `U`.
     *
     * For example, say that you needed a Generator that only creates even Ints. We already
     * have [[Generator.intGenerator]], so one way to write this would be:
@@ -253,7 +253,7 @@ trait Generator[T] { thisGeneratorOfT =>
     * This often makes it much easier to create a new Generator, if you have an existing
     * one you can base it on.
     *
-    * @param f a function from [[T]] to [[U]]
+    * @param f a function from `T` to `U`
     * @tparam U the type of Generator you want to create
     * @return a new Generator, based on this one and the given transformation function
     */
@@ -285,8 +285,8 @@ trait Generator[T] { thisGeneratorOfT =>
     * For example, if `f` is a function from `Int => Option[Int]` that just wraps each `Int` in a `Some`,
     * `(n: Int) => Some(n)`, then `g` can be a function that unwraps it back to `Int`: `(n: Option[Int]) => n.get`.
     *
-    * @param f a function from [[T]] to [[U]]
-    * @param g the inverse of `f`, a function from [[U]] back to [[T]]
+    * @param f a function from `T` to `U`
+    * @param g the inverse of `f`, a function from `U` back to `T`
     * @tparam U the type of Generator you want to create
     * @return a new Generator, based on this one and the given transformation functions, that still shrinks meaningfully
     */
@@ -448,10 +448,10 @@ trait Generator[T] { thisGeneratorOfT =>
   def isValid(value: T, size: SizeParam): Boolean = true
 
   /**
-    * Some simple, "ordinary" values of type [[T]].
+    * Some simple, "ordinary" values of type `T`.
     *
     * [[canonicals]] are used for certain higher-order functions, mainly during shrinking. For example,
-    * when the system is trying to simplify a `List[T]`, it will look for canonical values of [[T]] to try
+    * when the system is trying to simplify a `List[T]`, it will look for canonical values of `T` to try
     * putting into that simpler list, to see if that still causes the property to fail.
     *
     * For example, a few of the common types provide these canonicals:
@@ -468,7 +468,7 @@ trait Generator[T] { thisGeneratorOfT =>
   def canonicals: LazyListOrStream[RoseTree[T]] = LazyListOrStream.empty
 
   /**
-    * Fetch a generated value of type [[T]].
+    * Fetch a generated value of type `T`.
     *
     * [[sample]] allows you to experiment with this [[Generator]] in a convenient, ad-hoc way.
     * Each time you call it, it will create a new [[Randomizer]] and a random size, and
@@ -477,7 +477,7 @@ trait Generator[T] { thisGeneratorOfT =>
     * You should not need to override this method; it is here to let you play with your
     * Generator as you build it, and see what sort of values are actually coming out.
     *
-    * @return a generated value of type [[T]]
+    * @return a generated value of type `T`
     */
   final def sample: T = {
     val rnd = Randomizer.default
@@ -488,7 +488,7 @@ trait Generator[T] { thisGeneratorOfT =>
   }
 
   /**
-    * Generate a number of values of type [[T]].
+    * Generate a number of values of type `T`.
     *
     * This is essentially the same as [[sample]], and all the same comments apply, but this
     * will generate as many values as you ask for.
@@ -565,8 +565,8 @@ object Generator {
     * generate anything except the subtype. That would be sound, but you wouldn't get a good variety of
     * supertype values. This way, the subtype/supertype conversion is somewhat better-controlled.
     *
-    * @param genOfT a [[Generator]] that produces values of [[T]]
-    * @param ev implicit evidence that [[T]] is a subtype of [[U]]
+    * @param genOfT a [[Generator]] that produces values of `T`
+    * @param ev implicit evidence that `T` is a subtype of `U`
     * @tparam T the subtype that we have a [[Generator]] for
     * @tparam U the supertype that we want a [[Generator]] for
     * @return a `Generator[U]` derived from the `Generator[T]`
@@ -3416,7 +3416,7 @@ object Generator {
           }
           resLazyListOrStream(value)
         }
-      } // TODO Confirm OK without Roses. I.e., will the last one have an empty shrinks method?
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroInt], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroIntEdges, rnd)
@@ -3479,7 +3479,7 @@ object Generator {
           }
           resLazyListOrStream(value)
         }
-      } // TODO Confirm OK without Roses. I.e., will the last one have an empty shrinks method?
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroLong], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroLongEdges, rnd)
@@ -3943,7 +3943,7 @@ object Generator {
           }
           resLazyListOrStream(value)
         }
-      } // TODO: Confirm OK with no Roses.
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegLong], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negLongEdges, rnd)
@@ -4364,7 +4364,7 @@ object Generator {
           }
           resLazyListOrStream(value)
         }
-      } // TODO Confirm OK with no Rose.
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZInt], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZIntEdges, rnd)
@@ -4429,7 +4429,7 @@ object Generator {
           }
           resLazyListOrStream(value)
         }
-      } // TODO Confirm OK no Rose.
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZLong], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZLongEdges, rnd)
@@ -4550,7 +4550,6 @@ object Generator {
 
       // For strings, we won't shrink the characters.  We could, but the trees could get really big. Just cut the length of
       // the list in half and try both halves each round, using the same characters.
-      // TODO: Write a test for this shrinks implementation.
       case class NextRoseTree(value: String)(sizeParam: SizeParam, isValidFun: (String, SizeParam) => Boolean) extends RoseTree[String] {
         def shrinks: LazyListOrStream[RoseTree[String]] = {
           def resLazyListOrStream(theValue: String): LazyListOrStream[RoseTree[String]] = {
@@ -4601,9 +4600,9 @@ object Generator {
   /**
     * Given an existing `Generator[T]`, this creates a `Generator[List[T]]`.
     *
-    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @param genOfT a [[Generator]] that produces values of type `T`
     * @tparam T the type that we are producing a List of
-    * @return a List of values of type [[T]]
+    * @return a List of values of type `T`
     */
   // SKIP-DOTTY-START
   implicit def listGenerator[T](implicit genOfT: Generator[T]): Generator[List[T]] with HavingLength[List[T]] =
@@ -4615,7 +4614,6 @@ object Generator {
       // For lists, we won't bother shrinking the elements. We could, but the trees could get very big.
       // So we will just cut the length of the list in half and try both
       // halves each round, using the same elements.
-      // TODO: Write a test for this shrinks implementation.
       case class NextRoseTree(value: List[T], sizeParam: SizeParam, isValidFun: (List[T], SizeParam) => Boolean) extends RoseTree[List[T]] {
         def shrinks: LazyListOrStream[RoseTree[List[T]]] = {
           def resLazyListOrStream(theValue: List[T]): LazyListOrStream[RoseTree[List[T]]] = {
@@ -4714,14 +4712,14 @@ object Generator {
   //DOTTY-ONLY given givenListGenerator[T](using genOfT: Generator[T]): (Generator[List[T]] with HavingLength[List[T]]) = listGenerator(using genOfT)
 
   /**
-    * Given a [[Generator]] that produces values of type [[T]], this returns one that produces ''functions'' that return
+    * Given a [[Generator]] that produces values of type `T`, this returns one that produces ''functions'' that return
     * a T.
     *
-    * The functions produced here are nullary -- they take no parameters, they just produce values of type [[T]].
+    * The functions produced here are nullary -- they take no parameters, they just produce values of type `T`.
     *
-    * @param genOfT a [[Generator]] that produces values of [[T]]
+    * @param genOfT a [[Generator]] that produces values of `T`
     * @tparam T the type to produce
-    * @return a [[Generator]] that produces functions that return values of type [[T]]
+    * @return a [[Generator]] that produces functions that return values of type `T`
     */
   // SKIP-DOTTY-START
   implicit def function0Generator[T](implicit genOfT: Generator[T]): Generator[() => T] = {
@@ -5836,9 +5834,9 @@ object Generator {
   //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](using genOfW: Generator[W], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U], typeInfoV: TypeInfo[V], typeInfoW: TypeInfo[W]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W] = function22Generator(using genOfW, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI, typeInfoJ, typeInfoK, typeInfoL, typeInfoM, typeInfoN, typeInfoO, typeInfoP, typeInfoQ, typeInfoR, typeInfoS, typeInfoT, typeInfoU, typeInfoV, typeInfoW)
 
   /**
-    * Given a [[Generator]] for type [[T]], this provides one for `Option[T]`.
+    * Given a [[Generator]] for type `T`, this provides one for `Option[T]`.
     *
-    * @param genOfT a [[Generator]] that produces type [[T]]
+    * @param genOfT a [[Generator]] that produces type `T`
     * @tparam T the type to generate
     * @return a [[Generator]] that produces `Option[T]`
     */
@@ -6096,9 +6094,6 @@ object Generator {
       def nextImpl(szp: SizeParam, isValidFun: (Either[L, R], SizeParam) => Boolean, rnd: Randomizer): (RoseTree[Either[L, R]], Randomizer) = {
         val (nextInt, nextRnd) = rnd.nextInt
         if (nextInt % 4 == 0) {
-          // TODO: Here I was not sure if I should just map the RoseTree or takes
-          // its value and wrap that in a shrink call. Might be the same thing ultimately.
-          // Will check that later. Actually I'll try mapping first.
           val (nextRoseTreeOfL, _, nextRnd) = genOfL.filter(l => isValidFun(Left(l), szp)).next(szp, Nil, rnd)
           (nextRoseTreeOfL.map(l => Left(l)), nextRnd)
         }
@@ -6379,7 +6374,7 @@ object Generator {
   //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T], genOfU: Generator[U], genOfV: Generator[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] = tuple22Generator(using genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS, genOfT, genOfU, genOfV)  
 
   /**
-    * Given a [[Generator]] for type [[T]], this creates one for a [[Vector]] of [[T]].
+    * Given a [[Generator]] for type `T`, this creates one for a [[Vector]] of `T`.
     *
     * Note that the [[Vector]] type is considered to have a "size", so you can use the configuration parameters
     * [[Configuration.minSize]] and [[Configuration.sizeRange]] to constrain the sizes of the resulting `Vector`s
@@ -6388,7 +6383,7 @@ object Generator {
     * The resulting [[Generator]] also has the [[HavingLength]] trait, so you can use it to generate [[Vector]]s
     * with specific lengths.
     *
-    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @param genOfT a [[Generator]] that produces values of type `T`
     * @tparam T the type to produce
     * @return a [[Generator]] that produces values of type `Vector[T]`
     */
@@ -6477,7 +6472,7 @@ object Generator {
   //DOTTY-ONLY given givenVectorGenerator[T](using genOfT: Generator[T]): (Generator[Vector[T]] with HavingLength[Vector[T]]) = vectorGenerator(using genOfT)
   
   /**
-    * Given a [[Generator]] that produces values of type [[T]], this creates one for a [[Set]] of [[T]].
+    * Given a [[Generator]] that produces values of type `T`, this creates one for a [[Set]] of `T`.
     *
     * Note that the [[Set]] type is considered to have a "size", so you can use the configuration parameters
     * [[Configuration.minSize]] and [[Configuration.sizeRange]] to constrain the sizes of the resulting `Set`s
@@ -6486,7 +6481,7 @@ object Generator {
     * The resulting [[Generator]] also has the [[HavingSize]] trait, so you can use it to generate [[Set]]s
     * with specific sizes.
     *
-    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @param genOfT a [[Generator]] that produces values of type `T`
     * @tparam T the type to produce
     * @return a [[Generator]] that produces `Set[T]`.
     */
@@ -6575,7 +6570,7 @@ object Generator {
   //DOTTY-ONLY given givenSetGenerator[T](using genOfT: Generator[T]): (Generator[Set[T]] with HavingSize[Set[T]]) = setGenerator(using genOfT)
 
   /**
-    * Given a [[Generator]] that produces values of type [[T]], this creates one for a [[SortedSet]] of [[T]].
+    * Given a [[Generator]] that produces values of type `T`, this creates one for a [[SortedSet]] of `T`.
     *
     * Note that the [[SortedSet]] type is considered to have a "size", so you can use the configuration parameters
     * [[Configuration.minSize]] and [[Configuration.sizeRange]] to constrain the sizes of the resulting `SortedSet`s
@@ -6584,7 +6579,7 @@ object Generator {
     * The resulting [[Generator]] also has the [[HavingSize]] trait, so you can use it to generate [[SortedSet]]s
     * with specific sizes.
     *
-    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @param genOfT a [[Generator]] that produces values of type `T`
     * @tparam T the type to produce
     * @return a [[Generator]] that produces `SortedSet[T]`.
     */
