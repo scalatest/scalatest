@@ -49,6 +49,6 @@ object AssertionsMacro {
   )
   (using Quotes): Expr[Assertion] = {
     val bool = BooleanMacro.parse(condition, prettifier)
-    source.Position.withPosition[Assertion]('{(pos: source.Position) => ($helper)($bool, $clue, pos) })
+    source.Position.withCallerPosition[Assertion](pos, '{(p: source.Position) => ($helper)($bool, $clue, p) })
   }
 }

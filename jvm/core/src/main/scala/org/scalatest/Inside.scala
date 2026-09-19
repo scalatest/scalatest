@@ -104,8 +104,8 @@ trait Inside {
   def inside[T, U](value: T)(pf: PartialFunction[T, U])(implicit pos: source.Position): U = 
     Inside.insideWithPos(value, pf, pos)
   // SKIP-DOTTY-END  
-  //DOTTY-ONLY inline def inside[T, U](value: T)(pf: PartialFunction[T, U]): U = 
-  //DOTTY-ONLY   ${ Inside.insideMacro('{value})('{pf}) }
+  //DOTTY-ONLY inline def inside[T, U](value: T)(pf: PartialFunction[T, U])(using pos: source.Position): U =
+  //DOTTY-ONLY   ${ Inside.insideMacro('{value}, '{pf}, '{pos}) }
 }
 
 /**
@@ -183,8 +183,29 @@ object Inside extends Inside {
   }
 
   //DOTTY-ONLY import scala.quoted.*
-  //DOTTY-ONLY private[scalatest] def insideMacro[T, U](value: Expr[T])(pf: Expr[PartialFunction[T, U]])(using quotes: Quotes, typeT: Type[T], typeU: Type[U]): Expr[U] = {
-  //DOTTY-ONLY   source.Position.withPosition[U]('{(pos: source.Position) => insideWithPos(${value}, ${pf}, pos) })
+  //DOTTY-ONLY private[scalatest] def insideMacro[T, U](value: Expr[T], pf: Expr[PartialFunction[T, U]], pos: Expr[source.Position])(using quotes: Quotes, typeT: Type[T], typeU: Type[U]): Expr[U] = {
+  //DOTTY-ONLY   import quotes.reflect.*
+  //DOTTY-ONLY   def unwrap(term: Term): Term =
+  //DOTTY-ONLY     term match {
+  //DOTTY-ONLY       case Inlined(_, _, inner) => unwrap(inner)
+  //DOTTY-ONLY       case Block(Nil, inner) => unwrap(inner)
+  //DOTTY-ONLY       case Typed(inner, _) => unwrap(inner)
+  //DOTTY-ONLY       case _ => term
+  //DOTTY-ONLY     }
+  //DOTTY-ONLY   // A Position resolved from the inline given Position.here shows up here as a
+  //DOTTY-ONLY   // reference to a synthetic "$proxy" val created while inlining the given. In
+  //DOTTY-ONLY   // that case no caller-supplied Position exists, so keep producing the position
+  //DOTTY-ONLY   // of the inside invocation itself via withPosition. Otherwise, respect
+  //DOTTY-ONLY   // the Position provided by the caller.
+  //DOTTY-ONLY   val isCallerProvidedPosition =
+  //DOTTY-ONLY     unwrap(pos.asTerm) match {
+  //DOTTY-ONLY       case Ident(name) => !name.contains("$proxy")
+  //DOTTY-ONLY       case _ => true
+  //DOTTY-ONLY     }
+  //DOTTY-ONLY   if (isCallerProvidedPosition)
+  //DOTTY-ONLY     '{ insideWithPos(${value}, ${pf}, ${pos}) }
+  //DOTTY-ONLY   else
+  //DOTTY-ONLY     source.Position.withPosition[U]('{(p: source.Position) => insideWithPos(${value}, ${pf}, p) })
   //DOTTY-ONLY }
 
 }

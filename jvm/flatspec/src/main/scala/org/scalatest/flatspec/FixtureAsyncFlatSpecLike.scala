@@ -105,7 +105,7 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerAsyncTestImpl(testText, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   private final def registerIgnoredAsyncTestImpl(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
@@ -118,7 +118,7 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerAsyncTestImpl(testText, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   /**
@@ -210,8 +210,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       ofImpl(description, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def of(description: String): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ofImpl(description, pos) }) } 
+    //DOTTY-ONLY inline infix def of(description: String)(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => ofImpl(description, p) }) } 
     //DOTTY-ONLY }
   }
 
@@ -306,8 +306,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       inImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: () => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => inImpl(testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -334,8 +334,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       registerAsyncTestToRun(verb.trim + " " + name.trim, tags, "in", testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToRun(verb.trim + " " + name.trim, tags, "in", testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerAsyncTestToRun(verb.trim + " " + name.trim, tags, "in", testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -363,8 +363,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       registerPendingTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun, p) }) } 
     //DOTTY-ONLY }
 
     private final def ignoreImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
@@ -396,8 +396,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       ignoreImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(testFun: () => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => ignoreImpl(testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -426,8 +426,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, testFun, p) }) } 
     //DOTTY-ONLY }
   }
 
@@ -508,8 +508,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       inImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: () => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => inImpl(testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -536,8 +536,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       registerAsyncTestToRun(verb.trim + " " + name.trim, List(), "in", testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToRun(verb.trim + " " + name.trim, List(), "in", testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerAsyncTestToRun(verb.trim + " " + name.trim, List(), "in", testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -564,8 +564,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       registerPendingTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun, p) }) } 
     //DOTTY-ONLY }
 
     private final def ignoreImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
@@ -596,8 +596,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       ignoreImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(testFun: () => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => ignoreImpl(testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -624,8 +624,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -914,8 +914,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       inImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: () => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => inImpl(testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -942,8 +942,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       registerAsyncTestToRun(verb.trim + " " + name.trim, tags, "in", testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToRun(verb.trim + " " + name.trim, tags, "in", testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerAsyncTestToRun(verb.trim + " " + name.trim, tags, "in", testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -971,8 +971,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       registerPendingTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun, p) }) } 
     //DOTTY-ONLY }
 
     private final def ignoreImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
@@ -1004,8 +1004,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       ignoreImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(testFun: () => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => ignoreImpl(testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -1034,8 +1034,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, testFun, p) }) } 
     //DOTTY-ONLY }
   }
 
@@ -1116,8 +1116,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       inImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: () => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => inImpl(testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -1144,8 +1144,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       registerAsyncTestToRun(verb.trim + " " + name.trim, List(), "in", testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToRun(verb.trim + " " + name.trim, List(), "in", testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerAsyncTestToRun(verb.trim + " " + name.trim, List(), "in", testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -1172,8 +1172,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       registerPendingTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun, p) }) } 
     //DOTTY-ONLY }
 
     private final def ignoreImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
@@ -1204,8 +1204,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       ignoreImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(testFun: () => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => ignoreImpl(testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -1232,8 +1232,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -1522,8 +1522,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       inImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: () => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => inImpl(testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -1552,8 +1552,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -1589,8 +1589,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, unusedFixtureParam => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, unusedFixtureParam => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, unusedFixtureParam => testFun, p) }) } 
     //DOTTY-ONLY }
   }
 
@@ -1669,8 +1669,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       inImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: () => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => inImpl(testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -1698,8 +1698,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -1734,8 +1734,8 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), unusedFixtureParam => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), unusedFixtureParam => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), unusedFixtureParam => testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -2073,9 +2073,9 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
   //DOTTY-ONLY    *
   //DOTTY-ONLY    * @param testFun the test function
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   inline infix def in(testFun: () => Future[compatible.Assertion]): Unit = 
-  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
-  //DOTTY-ONLY       new InAndIgnoreMethods(resultOfStringPassedToVerb).in(testFun)(using pos)
+  //DOTTY-ONLY   inline infix def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) =>
+  //DOTTY-ONLY       new InAndIgnoreMethods(resultOfStringPassedToVerb).in(testFun)(using p)
   //DOTTY-ONLY     }) }
   //DOTTY-ONLY   /**
   //DOTTY-ONLY    * Supports the registration of ignored, no-arg tests in shorthand form.
@@ -2096,9 +2096,9 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
   //DOTTY-ONLY    *
   //DOTTY-ONLY    * @param testFun the test function
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   inline infix def ignore(testFun: () => Future[compatible.Assertion]): Unit = 
-  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
-  //DOTTY-ONLY       new InAndIgnoreMethods(resultOfStringPassedToVerb).ignore(testFun)(using pos)
+  //DOTTY-ONLY   inline infix def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) =>
+  //DOTTY-ONLY       new InAndIgnoreMethods(resultOfStringPassedToVerb).ignore(testFun)(using p)
   //DOTTY-ONLY     }) }
   //DOTTY-ONLY   /**
   //DOTTY-ONLY    * Supports the registration of one-arg tests (tests that take a <code>FixtureParam</code> parameter) in shorthand form.
@@ -2119,9 +2119,9 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
   //DOTTY-ONLY    *
   //DOTTY-ONLY    * @param testFun the test function
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   inline infix def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = 
-  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
-  //DOTTY-ONLY       new InAndIgnoreMethods(resultOfStringPassedToVerb).in(testFun)(using pos)
+  //DOTTY-ONLY   inline infix def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) =>
+  //DOTTY-ONLY       new InAndIgnoreMethods(resultOfStringPassedToVerb).in(testFun)(using p)
   //DOTTY-ONLY     }) }
   //DOTTY-ONLY   /**
   //DOTTY-ONLY    * Supports the registration of ignored, one-arg tests (tests that take a <code>FixtureParam</code> parameter) in shorthand form.
@@ -2142,9 +2142,9 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
   //DOTTY-ONLY    *
   //DOTTY-ONLY    * @param testFun the test function
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   inline infix def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = 
-  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
-  //DOTTY-ONLY       new InAndIgnoreMethods(resultOfStringPassedToVerb).ignore(testFun)(using pos)
+  //DOTTY-ONLY   inline infix def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) =>
+  //DOTTY-ONLY       new InAndIgnoreMethods(resultOfStringPassedToVerb).ignore(testFun)(using p)
   //DOTTY-ONLY     }) }
   //DOTTY-ONLY }  
 
@@ -2353,9 +2353,9 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
   //DOTTY-ONLY    *
   //DOTTY-ONLY    * @param testFun the test function
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   inline infix def in(testFun: () => Future[compatible.Assertion]): Unit = 
-  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
-  //DOTTY-ONLY       new InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).in(testFun)(using pos)
+  //DOTTY-ONLY   inline infix def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) =>
+  //DOTTY-ONLY       new InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).in(testFun)(using p)
   //DOTTY-ONLY     }) }
   //DOTTY-ONLY   /**
   //DOTTY-ONLY    * Supports the registration of tagged, ignored, no-arg tests in shorthand form.
@@ -2378,9 +2378,9 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
   //DOTTY-ONLY    *
   //DOTTY-ONLY    * @param testFun the test function
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   inline infix def ignore(testFun: () => Future[compatible.Assertion]): Unit = 
-  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
-  //DOTTY-ONLY       new InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).ignore(testFun)(using pos)
+  //DOTTY-ONLY   inline infix def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) =>
+  //DOTTY-ONLY       new InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).ignore(testFun)(using p)
   //DOTTY-ONLY     }) }
   //DOTTY-ONLY   /**
   //DOTTY-ONLY    * Supports the registration of tagged, one-arg tests (tests that take a <code>FixtureParam</code> parameter) in shorthand form.
@@ -2401,9 +2401,9 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
   //DOTTY-ONLY    *
   //DOTTY-ONLY    * @param testFun the test function
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   inline infix def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = 
-  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
-  //DOTTY-ONLY       new InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).in(testFun)(using pos)
+  //DOTTY-ONLY   inline infix def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) =>
+  //DOTTY-ONLY       new InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).in(testFun)(using p)
   //DOTTY-ONLY     }) }
   //DOTTY-ONLY   /**
   //DOTTY-ONLY    * Supports the registration of tagged, ignored, one-arg tests (tests that take a <code>FixtureParam</code> parameter) in shorthand form.
@@ -2426,9 +2426,9 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
   //DOTTY-ONLY    *
   //DOTTY-ONLY    * @param testFun the test function
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   inline infix def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = 
-  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
-  //DOTTY-ONLY       new InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).ignore(testFun)(using pos)
+  //DOTTY-ONLY   inline infix def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) =>
+  //DOTTY-ONLY       new InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).ignore(testFun)(using p)
   //DOTTY-ONLY     }) }
   //DOTTY-ONLY }  
 

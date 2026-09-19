@@ -118,7 +118,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerAsyncTestImpl(testText, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   private final def registerIgnoredAsyncTestImpl(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion], pos: source.Position): Unit = {
@@ -131,7 +131,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerIgnoredAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerIgnoredAsyncTestImpl(testText, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   /**
@@ -220,8 +220,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
       ofImpl(description, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def of(description: String): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ofImpl(description, pos) }) } 
+    //DOTTY-ONLY inline infix def of(description: String)(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => ofImpl(description, p) }) } 
     //DOTTY-ONLY }
   }
 
@@ -306,8 +306,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
       registerTestToRun(verb.trim + " " + name.trim, "in", tags, () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + name.trim, "in", tags, () => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerTestToRun(verb.trim + " " + name.trim, "in", tags, () => testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -333,8 +333,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
       registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, () => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, () => testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -360,8 +360,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(testFun: => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", () => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", () => testFun, p) }) } 
     //DOTTY-ONLY }
   }
 
@@ -433,8 +433,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
       registerTestToRun(verb.trim + " " + name.trim, "in", List(), () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + name.trim, "in", List(), () => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerTestToRun(verb.trim + " " + name.trim, "in", List(), () => testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -459,8 +459,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
       registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), () => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), () => testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -485,8 +485,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(testFun: => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", () => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", () => testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -749,8 +749,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(testFun: => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", () => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", () => testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -784,8 +784,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
       registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, "is", () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, "is", () => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, "is", () => testFun, p) }) } 
     //DOTTY-ONLY }
     
     // Note: no def ignore here, so you can't put two ignores in the same line
@@ -857,8 +857,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", () => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", () => testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -891,8 +891,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
       registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), "is", () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), "is", () => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), "is", () => testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -1083,8 +1083,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
       registerTestToRun(verb.trim + " " + name.trim, "in", tags, () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + name.trim, "in", tags, () => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerTestToRun(verb.trim + " " + name.trim, "in", tags, () => testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -1110,8 +1110,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
       registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, () => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, () => testFun, p) }) } 
     //DOTTY-ONLY }
 
 
@@ -1138,8 +1138,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(testFun: => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", () => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", () => testFun, p) }) } 
     //DOTTY-ONLY }
   }
 
@@ -1211,8 +1211,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
       registerTestToRun(verb.trim + " " + name.trim, "in", List(), () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def in(testFun: => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + name.trim, "in", List(), () => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerTestToRun(verb.trim + " " + name.trim, "in", List(), () => testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -1237,8 +1237,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
       registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), () => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), () => testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -1263,8 +1263,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with ShouldVerb with MustVerb wit
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline infix def ignore(testFun: => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", () => testFun, pos) }) } 
+    //DOTTY-ONLY inline infix def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", () => testFun, p) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -1601,9 +1601,9 @@ import resultOfStringPassedToVerb.verb
   //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
   //DOTTY-ONLY    * </p>
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   inline infix def in(testFun: => Future[compatible.Assertion]): Unit = 
-  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
-  //DOTTY-ONLY       convertToInAndIgnoreMethods(resultOfStringPassedToVerb).in(testFun)(using pos)
+  //DOTTY-ONLY   inline infix def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) =>
+  //DOTTY-ONLY       convertToInAndIgnoreMethods(resultOfStringPassedToVerb).in(testFun)(using p)
   //DOTTY-ONLY     }) }
   //DOTTY-ONLY   /**
   //DOTTY-ONLY    * Supports the registration of tagged, ignored tests in shorthand form.
@@ -1624,9 +1624,9 @@ import resultOfStringPassedToVerb.verb
   //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
   //DOTTY-ONLY    * </p>
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   inline infix def ignore(testFun: => Future[compatible.Assertion]): Unit = 
-  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
-  //DOTTY-ONLY       convertToInAndIgnoreMethods(resultOfStringPassedToVerb).ignore(testFun)(using pos)
+  //DOTTY-ONLY   inline infix def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) =>
+  //DOTTY-ONLY       convertToInAndIgnoreMethods(resultOfStringPassedToVerb).ignore(testFun)(using p)
   //DOTTY-ONLY     }) }
   //DOTTY-ONLY }
 
@@ -1762,9 +1762,9 @@ import resultOfStringPassedToVerb.verb
   //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
   //DOTTY-ONLY    * </p>
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   inline infix def in(testFun: => Future[compatible.Assertion]): Unit = 
-  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
-  //DOTTY-ONLY       convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).in(testFun)(using pos)
+  //DOTTY-ONLY   inline infix def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) =>
+  //DOTTY-ONLY       convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).in(testFun)(using p)
   //DOTTY-ONLY     }) }
   //DOTTY-ONLY /**
   //DOTTY-ONLY    * Supports the registration of tagged, ignored tests in shorthand form.
@@ -1785,9 +1785,9 @@ import resultOfStringPassedToVerb.verb
   //DOTTY-ONLY    * in the main documentation for trait <code>AsyncFlatSpec</code>.
   //DOTTY-ONLY    * </p>
   //DOTTY-ONLY    */
-  //DOTTY-ONLY   inline infix def ignore(testFun: => Future[compatible.Assertion]): Unit = 
-  //DOTTY-ONLY     ${ source.Position.withPosition[Unit]('{(pos: source.Position) =>
-  //DOTTY-ONLY       convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).ignore(testFun)(using pos)
+  //DOTTY-ONLY   inline infix def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = 
+  //DOTTY-ONLY     ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) =>
+  //DOTTY-ONLY       convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation).ignore(testFun)(using p)
   //DOTTY-ONLY     }) }
   //DOTTY-ONLY }
 

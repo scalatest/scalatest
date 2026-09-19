@@ -85,5 +85,46 @@ object Position {
    '{${fun}.apply(org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))}
   }
 
+  /**
+   * Helper method for macros that need to respect a caller-provided <code>Position</code>, falling back to the
+   * position of the macro expansion itself when no caller-supplied <code>Position</code> exists.
+   *
+   * <p>
+   * A <code>Position</code> resolved from the inline given <code>Position.here</code> shows up inside an inlined
+   * method body as a reference to a synthetic "$proxy" val created while inlining the given. In that case no
+   * caller-supplied <code>Position</code> exists, so the position of the invocation itself is produced via
+   * <code>withPosition</code>. Otherwise, the <code>Position</code> provided by the caller is respected and
+   * passed to <code>call</code>.
+   * </p>
+   *
+   * <p>
+   * Note: this method is intended for use by the ScalaTest/Scalactic frameworks' own macros and is not part of
+   * the public API surface meant for user code.
+   * </p>
+   *
+   * @param pos the expression representing the caller-provided position
+   * @param call function expression invoked with either the caller-provided position or the expansion-site position
+   * @return the resulting expression
+   */
+  def withCallerPosition[T](pos: Expr[Position], call: Expr[Position => T])(using quotes: Quotes, typeOfT: Type[T]): Expr[T] = {
+    import quotes.reflect.*
+    def unwrap(term: Term): Term =
+      term match {
+        case Inlined(_, _, inner) => unwrap(inner)
+        case Block(Nil, inner) => unwrap(inner)
+        case Typed(inner, _) => unwrap(inner)
+        case _ => term
+      }
+    val isCallerProvidedPosition =
+      unwrap(pos.asTerm) match {
+        case Ident(name) => !name.contains("$proxy")
+        case _ => true
+      }
+    if (isCallerProvidedPosition)
+      '{ $call($pos) }
+    else
+      withPosition[T](call)
+  }
+
 }
 

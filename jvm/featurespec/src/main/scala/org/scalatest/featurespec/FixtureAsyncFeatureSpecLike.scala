@@ -109,7 +109,7 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.FixtureAsyncTestSuite wi
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerAsyncTestImpl(testText, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   private final def registerIgnoredAsyncTestImpl(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
@@ -122,7 +122,7 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.FixtureAsyncTestSuite wi
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerIgnoredAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerIgnoredAsyncTestImpl(testText, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   class ResultOfScenarioInvocation(specText: String, testTags: Tag*) {
@@ -136,8 +136,8 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.FixtureAsyncTestSuite wi
       applyImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def apply(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+    //DOTTY-ONLY inline def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => applyImpl(testFun, p) }) } 
     //DOTTY-ONLY }
     
     private final def applyImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
@@ -149,8 +149,8 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.FixtureAsyncTestSuite wi
       applyImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def apply(testFun: () => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+    //DOTTY-ONLY inline def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => applyImpl(testFun, p) }) } 
     //DOTTY-ONLY }
   }
 
@@ -197,8 +197,8 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.FixtureAsyncTestSuite wi
       applyImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def apply(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+    //DOTTY-ONLY inline def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => applyImpl(testFun, p) }) } 
     //DOTTY-ONLY }
 
     private final def applyImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
@@ -210,8 +210,8 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.FixtureAsyncTestSuite wi
       applyImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def apply(testFun: () => Future[compatible.Assertion]): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+    //DOTTY-ONLY inline def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => applyImpl(testFun, p) }) } 
     //DOTTY-ONLY }
   }
 
@@ -248,8 +248,8 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.FixtureAsyncTestSuite wi
   // SKIP-DOTTY-START
   protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = FeatureImpl(description)(fun, pos)
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def feature(description: String)(fun: => Unit): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => FeatureImpl(description)(fun, pos) }) } 
+  //DOTTY-ONLY inline def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => FeatureImpl(description)(fun, p) }) } 
   //DOTTY-ONLY }
 
   private final def FeatureImpl(description: String)(fun: => Unit, pos: source.Position): Unit = {
@@ -281,8 +281,8 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.FixtureAsyncTestSuite wi
     FeatureImpl(description)(fun, pos)
   }
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def Feature(description: String)(fun: => Unit): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => FeatureImpl(description)(fun, pos) }) } 
+  //DOTTY-ONLY inline def Feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => FeatureImpl(description)(fun, p) }) } 
   //DOTTY-ONLY }
 
   /**

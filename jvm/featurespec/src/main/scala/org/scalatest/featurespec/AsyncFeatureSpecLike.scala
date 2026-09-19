@@ -111,7 +111,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with Informing with Notifying 
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerAsyncTestImpl(testText, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   private final def registerIgnoredAsyncTestImpl(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion], pos: source.Position): Unit = {
@@ -124,7 +124,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with Informing with Notifying 
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerIgnoredAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerIgnoredAsyncTestImpl(testText, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   /**
@@ -140,8 +140,8 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with Informing with Notifying 
   protected def scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit =
     ScenarioImpl(specText, testTags: _*)(testFun, pos)
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ScenarioImpl(specText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY inline def scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => ScenarioImpl(specText, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }  
 
   private final def ScenarioImpl(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion], pos: source.Position): Unit = {
@@ -171,8 +171,8 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with Informing with Notifying 
     ScenarioImpl(specText, testTags: _*)(testFun, pos)
   }
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def Scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ScenarioImpl(specText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY inline def Scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => ScenarioImpl(specText, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   private final def ignoreImpl(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion], pos: source.Position): Unit = {
@@ -202,8 +202,8 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with Informing with Notifying 
     ignoreImpl(specText, testTags: _*)(testFun, pos)
   }
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def ignore(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(specText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY inline def ignore(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => ignoreImpl(specText, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   /**
@@ -218,8 +218,8 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with Informing with Notifying 
   // SKIP-DOTTY-START
   protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = FeatureImpl(description)(fun, pos)
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def feature(description: String)(fun: => Unit): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => FeatureImpl(description)(fun, pos) }) } 
+  //DOTTY-ONLY inline def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => FeatureImpl(description)(fun, p) }) } 
   //DOTTY-ONLY }
 
   private final def FeatureImpl(description: String)(fun: => Unit, pos: source.Position): Unit = {
@@ -250,8 +250,8 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with Informing with Notifying 
     FeatureImpl(description)(fun, pos)
   }
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def Feature(description: String)(fun: => Unit): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => FeatureImpl(description)(fun, pos) }) } 
+  //DOTTY-ONLY inline def Feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => FeatureImpl(description)(fun, p) }) } 
   //DOTTY-ONLY }
 
   /**
