@@ -24,6 +24,7 @@ import scala.collection.JavaConverters._
 import java.io.{PrintWriter, StringWriter, IOException}
 import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger, AtomicReference}
 import java.util.concurrent.{ExecutorService, Executors, LinkedBlockingQueue, ThreadFactory}
+import java.net.ServerSocket
 
 import org.scalatest.time.{Millis, Seconds, Span}
 import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Runner => SbtRunner, Status => SbtStatus, _}
@@ -665,7 +666,8 @@ class Framework extends SbtFramework {
     testSortingReporterTimeout: Span
   ) extends sbt.testing.Runner {
     val isDone = new AtomicBoolean(false)
-    val serverThread = new AtomicReference[Option[Thread]](None)
+    val runTerminated = new AtomicBoolean(false)
+    val serverRef = new AtomicReference[Option[(Thread, ServerSocket)]](None)
     val statusList = new LinkedBlockingQueue[Status]()
     val tracker = new Tracker
     val summaryCounter = new SummaryCounter
@@ -777,17 +779,19 @@ class Framework extends SbtFramework {
           }
         }
 
-        serverThread.get match {
-          case Some(thread) =>
-            // Need to wait until the server thread is done
-            thread.join()
+        serverRef.get match {
+          case Some((thread, serverSocket)) =>
+            serverSocket.close() // Close the server socket to unblock the server thread
+            // Need to wait until the server thread is done, wait for maximum of 15 seconds.
+            thread.join(15000)
           case None =>
         }
 
         val duration = System.currentTimeMillis - runStartTime
         val summary = new Summary(summaryCounter.testsSucceededCount.get, summaryCounter.testsFailedCount.get, summaryCounter.testsIgnoredCount.get, summaryCounter.testsPendingCount.get,
                                   summaryCounter.testsCanceledCount.get, summaryCounter.suitesCompletedCount.get, summaryCounter.suitesAbortedCount.get, summaryCounter.scopesPendingCount.get)
-        dispatchReporter(RunCompleted(tracker.nextOrdinal(), Some(duration), Some(summary)))
+        if (!runTerminated.get)
+          dispatchReporter(RunCompleted(tracker.nextOrdinal(), Some(duration), Some(summary)))
         dispatchReporter.dispatchDisposeAndWaitUntilDone()
 
         execSvc.shutdown()
@@ -816,7 +820,6 @@ class Framework extends SbtFramework {
     def remoteArgs: Array[String] = {
       import org.scalatest.events._
       import java.io.{ObjectInputStream, ObjectOutputStream}
-      import java.net.{ServerSocket, InetAddress}
 
       class SkeletonObjectInputStream(in: java.io.InputStream, loader: ClassLoader) extends ObjectInputStream(in) {
 
@@ -839,13 +842,25 @@ class Framework extends SbtFramework {
         lazy val is = new AtomicReference(new SkeletonObjectInputStream(socket.get.getInputStream, getClass.getClassLoader))
 
         def run(): Unit = {
-          try {
-			      (new React(server)).tryReact(0)
-          }
-          finally {
-            is.get.close()
-            socket.get.close()
-		      }
+          val connected =
+            try {
+              // Force the connection up front. If the fork never connects, this accept() throws
+              // when done() closes the server socket, and there is nothing to read or clean up,
+              // so just let the thread terminate.
+              is.get
+              true
+            } catch {
+              case _: IOException => false
+            }
+          if (connected)
+            try {
+              (new React(server)).tryReact()
+            }
+            finally {
+              is.get.close()
+              if (!socket.get.isClosed)
+                socket.get.close()
+            }
         }
 
         class React(server: ServerSocket) {
@@ -897,31 +912,33 @@ class Framework extends SbtFramework {
               case e: MarkupProvided => dispatchReporter(e); react()
               case e: AlertProvided => dispatchReporter(e); react()
               case e: NoteProvided => dispatchReporter(e); react()
-              case e: RunStarting => react() // just ignore test starting and continue
+              // The main JVM owns the two "normal" run-level events: it fires RunStarting at runner
+              // creation and RunCompleted in `done`. The sub-process sends its own copies over the
+              // socket, so drop them here to avoid double-firing. The two "abnormal" terminal events,
+              // RunStopped and RunAborted, are only knowable from the sub-process (they carry the actual
+              // message/throwable that the main JVM cannot reproduce), so forward them to the reporters
+              // and mark the run as terminated so `done` won't also fire RunCompleted.
+              case e: RunStarting => react() // just ignore run starting and continue
               case e: RunCompleted => // Sub-process completed, just let the thread terminate
-              case e: RunStopped => dispatchReporter(e)
-              case e: RunAborted => dispatchReporter(e)
+              case e: RunStopped => dispatchReporter(e); runTerminated.set(true)
+              case e: RunAborted => dispatchReporter(e); runTerminated.set(true)
             }
           }
 
-          @annotation.tailrec
-          final def tryReact(count: Int): Unit =
-            if (count < 3)
-              try {
-                react()
-              }
-              catch {
-                case t: IOException =>
-                  // Restart server socket
-                  println(Resources.unableToReadSerializedEvent)
-                  is.get.close()
-                  socket.set(server.accept())
-                  is.set(new SkeletonObjectInputStream(socket.get.getInputStream, getClass.getClassLoader))
-                  tryReact(count + 1)
-              }
-            else {
-              println(Resources.unableToContinueRun)
-              System.exit(-1)
+          final def tryReact(): Unit =
+            try {
+              react()
+            }
+            catch {
+              case _: IOException =>
+                // By the time we get here a connection was established, and closing the server
+                // socket in done() has no effect on the accepted socket we read from. So any
+                // read failure means the forked JVM is gone: ForkMain uses a single connection
+                // per fork group and never reconnects, so abort the run instead of retrying.
+                println(Resources.unableToReadSerializedEvent)
+                println(Resources.unableToContinueRun)
+                runTerminated.set(true)
+                dispatchReporter(RunAborted(tracker.nextOrdinal(), Resources.unableToContinueRun, None))
             }
         }
 
@@ -931,8 +948,9 @@ class Framework extends SbtFramework {
 
       val skeleton = new Skeleton()
       val thread = new Thread(skeleton)
+      thread.setDaemon(true)
       thread.start()
-      serverThread.set(Some(thread))
+      serverRef.set(Some((thread, skeleton.server)))
       Array("127.0.0.1", skeleton.port.toString)
       // Array(InetAddress.getLocalHost.getHostAddress, skeleton.port.toString)
     }
