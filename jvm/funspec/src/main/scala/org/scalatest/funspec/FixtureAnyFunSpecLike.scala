@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,8 @@ import verbs.BehaveWord
  * Implementation trait for class <code>FixtureAnyFunSpec</code>, which is
  * a sister class to <code>org.scalatest.funspec.AnyFunSpec</code> that can pass a
  * fixture object into its tests.
+ *
+ * The expected type of a test in this trait is <code>Fixture => Any</code>.
  *
  * <p>
  * <a href="FixtureAnyFunSpec.html"><code>FixtureAnyFunSpec</code></a> is a class,
@@ -113,7 +115,7 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with Informin
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerTestImpl(testText, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   private final def registerIgnoredTestImpl(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */, pos: source.Position): Unit = {
@@ -130,7 +132,7 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with Informin
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerIgnoredTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerIgnoredTestImpl(testText, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   /**
@@ -174,8 +176,8 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with Informin
         applyImpl(testFun, pos)
       }
       // SKIP-DOTTY-END
-      //DOTTY-ONLY inline def apply(testFun: FixtureParam => Any /* Assertion */): Unit = {
-      //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+      //DOTTY-ONLY inline def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+      //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => applyImpl(testFun, p) }) } 
       //DOTTY-ONLY }
 
       private final def applyImpl(testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
@@ -193,8 +195,8 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with Informin
         applyImpl(testFun, pos)
       }
       // SKIP-DOTTY-END
-      //DOTTY-ONLY inline def apply(testFun: () => Any /* Assertion */): Unit = {
-      //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+      //DOTTY-ONLY inline def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+      //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => applyImpl(testFun, p) }) } 
       //DOTTY-ONLY }
     }
 
@@ -327,8 +329,8 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with Informin
         applyImpl(testFun, pos)
       }
       // SKIP-DOTTY-END
-      //DOTTY-ONLY inline def apply(testFun: FixtureParam => Any /* Assertion */): Unit = {
-      //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+      //DOTTY-ONLY inline def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+      //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => applyImpl(testFun, p) }) } 
       //DOTTY-ONLY }
 
       def applyImpl(testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
@@ -344,8 +346,8 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with Informin
         applyImpl(testFun, pos)
       }
       // SKIP-DOTTY-END
-      //DOTTY-ONLY inline def apply(testFun: () => Any /* Assertion */): Unit = {
-      //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+      //DOTTY-ONLY inline def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+      //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => applyImpl(testFun, p) }) } 
       //DOTTY-ONLY }
     }
 
@@ -456,8 +458,8 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with Informin
       applyImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def apply(testFun: FixtureParam => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+    //DOTTY-ONLY inline def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => applyImpl(testFun, p) }) } 
     //DOTTY-ONLY }
     
     private final def applyImpl(testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
@@ -475,8 +477,8 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with Informin
       applyImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def apply(testFun: () => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+    //DOTTY-ONLY inline def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => applyImpl(testFun, p) }) } 
     //DOTTY-ONLY }
   }
 
@@ -550,8 +552,8 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with Informin
     describeImpl(description)(fun, pos)
   }
   // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def describe(description: String)(fun: => Unit): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => describeImpl(description)(fun, pos) }) }
+  //DOTTY-ONLY inline def describe(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => describeImpl(description)(fun, p) }) }
   //DOTTY-ONLY }
 
   /**

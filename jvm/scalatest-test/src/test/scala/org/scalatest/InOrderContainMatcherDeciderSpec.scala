@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -153,18 +153,18 @@ class InOrderContainMatcherDeciderSpec extends AnyFunSpec with Explicitly {
     }
     
     it("should take specified equality when 'should contain' is used") {
-      (List("1 ", "2", "3 ") should contain inOrder ("1", "2 ", "3")) (after being trimmed)
-      (Array("1 ", "2", "3 ") should contain inOrder ("1", "2 ", "3")) (after being trimmed)
+      (List("1 ", "2", "3 ") should contain inOrder ("1", "2 ", "3")) (/* DOTTY-ONLY using */ after being trimmed)
+      (Array("1 ", "2", "3 ") should contain inOrder ("1", "2 ", "3")) (/* DOTTY-ONLY using */ after being trimmed)
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList("1", "2 ", "3") should contain inOrder ("1", "2 ", "3")) (after being trimmed)
+      (javaList("1", "2 ", "3") should contain inOrder ("1", "2 ", "3")) (/* DOTTY-ONLY using */ after being trimmed)
       // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should take specified equality when 'should not contain' is used") {
-      (List("1 ", "2", "3 ") should not contain inOrder ("1", "2 ", "3")) (after being appended)
-      (Array("1 ", "2", "3 ") should not contain inOrder ("1", "2 ", "3")) (after being appended)
+      (List("1 ", "2", "3 ") should not contain inOrder ("1", "2 ", "3")) (/* DOTTY-ONLY using */ after being appended)
+      (Array("1 ", "2", "3 ") should not contain inOrder ("1", "2 ", "3")) (/* DOTTY-ONLY using */ after being appended)
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList("1 ", "2", "3 ") should not contain inOrder ("1", "2 ", "3")) (after being appended)
+      (javaList("1 ", "2", "3 ") should not contain inOrder ("1", "2 ", "3")) (/* DOTTY-ONLY using */ after being appended)
       // SKIP-SCALATESTJS,NATIVE-END
     }
     
@@ -172,20 +172,20 @@ class InOrderContainMatcherDeciderSpec extends AnyFunSpec with Explicitly {
       
       val left1 = List("1 ", "2", "3 ")
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should contain inOrder ("1", "2 ", "3")) (after being appended)
+        (left1 should contain inOrder ("1", "2 ", "3")) (/* DOTTY-ONLY using */ after being appended)
       }
       checkShouldContainStackDepth(e1, left1, deep(Array("1", "2 ", "3")), thisLineNumber - 2)
         
       val left2 = Array("1 ", "2", "3 ")
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should contain inOrder ("1", "2 ", "3")) (after being appended)
+        (left2 should contain inOrder ("1", "2 ", "3")) (/* DOTTY-ONLY using */ after being appended)
       }
         checkShouldContainStackDepth(e2, left2, deep(Array("1", "2 ", "3")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS,NATIVE-START
       val left3 = javaList("1 ", "2", "3 ")
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should contain inOrder ("1", "2 ", "3")) (after being appended)
+        (left3 should contain inOrder ("1", "2 ", "3")) (/* DOTTY-ONLY using */ after being appended)
       }
       checkShouldContainStackDepth(e3, left3, deep(Array("1", "2 ", "3")), thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END
@@ -196,38 +196,38 @@ class InOrderContainMatcherDeciderSpec extends AnyFunSpec with Explicitly {
       
       val left1 = List("one", "two", "three")
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should not contain inOrder ("eno", "two", "three")) (after being translated)
+        (left1 should not contain inOrder ("eno", "two", "three")) (/* DOTTY-ONLY using */ after being translated)
       }
       checkShouldNotContainStackDepth(e1, left1, deep(Array("eno", "two", "three")), thisLineNumber - 2)
         
       val left2 = Array("one", "two", "three")
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should not contain inOrder ("eno", "two", "three")) (after being translated)
+        (left2 should not contain inOrder ("eno", "two", "three")) (/* DOTTY-ONLY using */ after being translated)
       }
       checkShouldNotContainStackDepth(e2, left2, deep(Array("eno", "two", "three")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS,NATIVE-START
       val left3 = javaList("one", "two", "three")
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should not contain inOrder ("eno", "two", "three")) (after being translated)
+        (left3 should not contain inOrder ("eno", "two", "three")) (/* DOTTY-ONLY using */ after being translated)
       }
       checkShouldNotContainStackDepth(e3, left3, deep(Array("eno", "two", "three")), thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should take specified equality and normalization when 'should contain' is used") {
-      (List("A ", "B", "C ") should contain inOrder ("a", "b ", "c")) (decided by lowerCaseEquality afterBeing trimmed)
-      (Array("A ", "B", "C ") should contain inOrder ("a", "b ", "c")) (decided by lowerCaseEquality afterBeing trimmed)
+      (List("A ", "B", "C ") should contain inOrder ("a", "b ", "c")) (/* DOTTY-ONLY using */ decided by lowerCaseEquality afterBeing trimmed)
+      (Array("A ", "B", "C ") should contain inOrder ("a", "b ", "c")) (/* DOTTY-ONLY using */ decided by lowerCaseEquality afterBeing trimmed)
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList("A ", "B", "C ") should contain inOrder ("a", "b ", "c")) (decided by lowerCaseEquality afterBeing trimmed)
+      (javaList("A ", "B", "C ") should contain inOrder ("a", "b ", "c")) (/* DOTTY-ONLY using */ decided by lowerCaseEquality afterBeing trimmed)
       // SKIP-SCALATESTJS,NATIVE-END
     }
     
     it("should take specified equality and normalization when 'should not contain' is used") {
-      (List("one ", "two", "three ") should not contain inOrder ("one", "two ", "three")) (decided by reverseEquality afterBeing trimmed)
-      (Array("one ", "two", "three ") should not contain inOrder ("one", "two ", "three")) (decided by reverseEquality afterBeing trimmed)
+      (List("one ", "two", "three ") should not contain inOrder ("one", "two ", "three")) (/* DOTTY-ONLY using */ decided by reverseEquality afterBeing trimmed)
+      (Array("one ", "two", "three ") should not contain inOrder ("one", "two ", "three")) (/* DOTTY-ONLY using */ decided by reverseEquality afterBeing trimmed)
       // SKIP-SCALATESTJS,NATIVE-START
-      (javaList("one ", "two", "three ") should not contain inOrder ("one", "two ", "three")) (decided by reverseEquality afterBeing trimmed)
+      (javaList("one ", "two", "three ") should not contain inOrder ("one", "two ", "three")) (/* DOTTY-ONLY using */ decided by reverseEquality afterBeing trimmed)
       // SKIP-SCALATESTJS,NATIVE-END
     }
     
@@ -235,20 +235,20 @@ class InOrderContainMatcherDeciderSpec extends AnyFunSpec with Explicitly {
       
       val left1 = List("one ", "two", "three ")
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should contain inOrder ("one", "two ", "three")) (decided by reverseEquality afterBeing trimmed)
+        (left1 should contain inOrder ("one", "two ", "three")) (/* DOTTY-ONLY using */ decided by reverseEquality afterBeing trimmed)
       }
       checkShouldContainStackDepth(e1, left1, deep(Array("one", "two ", "three")), thisLineNumber - 2)
         
       val left2 = Array("one ", "two", "three ")
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should contain inOrder ("one", "two ", "three")) (decided by reverseEquality afterBeing trimmed)
+        (left2 should contain inOrder ("one", "two ", "three")) (/* DOTTY-ONLY using */ decided by reverseEquality afterBeing trimmed)
       }
       checkShouldContainStackDepth(e2, left2, deep(Array("one", "two ", "three")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS,NATIVE-START
       val left3 = javaList("one ", "two", "three ")
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should contain inOrder ("one", "two ", "three")) (decided by reverseEquality afterBeing trimmed)
+        (left3 should contain inOrder ("one", "two ", "three")) (/* DOTTY-ONLY using */ decided by reverseEquality afterBeing trimmed)
       }
       checkShouldContainStackDepth(e3, left3, deep(Array("one", "two ", "three")), thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END
@@ -258,20 +258,20 @@ class InOrderContainMatcherDeciderSpec extends AnyFunSpec with Explicitly {
       
       val left1 = List("one ", "two", "three ")
       val e1 = intercept[exceptions.TestFailedException] {
-        (left1 should not contain inOrder ("eno ", "owt", "eerht ")) (decided by reverseEquality afterBeing trimmed)
+        (left1 should not contain inOrder ("eno ", "owt", "eerht ")) (/* DOTTY-ONLY using */ decided by reverseEquality afterBeing trimmed)
       }
       checkShouldNotContainStackDepth(e1, left1, deep(Array("eno ", "owt", "eerht ")), thisLineNumber - 2)
         
       val left2 = Array("one ", "two", "three ")
       val e2 = intercept[exceptions.TestFailedException] {
-        (left2 should not contain inOrder ("eno ", "owt", "eerht ")) (decided by reverseEquality afterBeing trimmed)
+        (left2 should not contain inOrder ("eno ", "owt", "eerht ")) (/* DOTTY-ONLY using */ decided by reverseEquality afterBeing trimmed)
       }
       checkShouldNotContainStackDepth(e2, left2, deep(Array("eno ", "owt", "eerht ")), thisLineNumber - 2)
 
       // SKIP-SCALATESTJS,NATIVE-START
       val left3 = javaList("one ", "two", "three ")
       val e3 = intercept[exceptions.TestFailedException] {
-        (left3 should not contain inOrder ("eno ", "owt", "eerht ")) (decided by reverseEquality afterBeing trimmed)
+        (left3 should not contain inOrder ("eno ", "owt", "eerht ")) (/* DOTTY-ONLY using */ decided by reverseEquality afterBeing trimmed)
       }
       checkShouldNotContainStackDepth(e3, left3, deep(Array("eno ", "owt", "eerht ")), thisLineNumber - 2)
       // SKIP-SCALATESTJS,NATIVE-END

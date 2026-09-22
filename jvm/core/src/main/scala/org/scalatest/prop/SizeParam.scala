@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ import org.scalactic.Requirements._
   * @param size the actual size to use for this specific invocation of [[Generator.next()]]
   */
 case class SizeParam(minSize: PosZInt, sizeRange: PosZInt, size: PosZInt) {
-  require(size >= minSize, s"the passed size ($size.value) must be greater than or equal to the passed minSize ($minSize.value)")
+  require(size >= minSize, s"the passed size (${size.value}) must be greater than or equal to the passed minSize (${minSize.value})")
   require(size.value <= minSize + sizeRange, s"the passed size (${size.value}) must be less than or equal to passed minSize plus the passed sizeRange ($minSize + $sizeRange = ${minSize + sizeRange})")
 
   /**

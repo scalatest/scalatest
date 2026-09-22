@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import org.scalactic.ColCompatHelper.Iterable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ArrayBuffer
 
-import org.scalactic.{Every, One, Many, StringNormalizations}
+import org.scalactic.{Every, One, Many, StringNormalizations, Resources}
 import org.scalactic.UnitSpec
 import org.scalactic.NormalizingEquality
 
@@ -51,6 +51,20 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray.from(Array("1").par).get shouldBe NonEmptyArray("1")
     NonEmptyArray.from(Array(1, 2, 3).par).get shouldBe NonEmptyArray(1, 2, 3)
     // SKIP-SCALATESTJS,NATIVE-END
+  }
+  it should "offer an ensuringValid factory method that" in {
+    NonEmptyArray.ensuringValid(Array(1)) shouldBe NonEmptyArray(1)
+    NonEmptyArray.ensuringValid(Array(1, 2, 3)) shouldBe NonEmptyArray(1, 2, 3)
+    NonEmptyArray.ensuringValid(Vector(1)) shouldBe NonEmptyArray(1)
+    NonEmptyArray.ensuringValid(List(1, 2, 3)) shouldBe NonEmptyArray(1, 2, 3)
+
+    the [AssertionError] thrownBy {
+      NonEmptyArray.ensuringValid(Array.empty[String])
+    } should have message Resources.nonEmptyArrayEmpty
+
+    the [AssertionError] thrownBy {
+      NonEmptyArray.ensuringValid(Vector.empty[Int])
+    } should have message Resources.nonEmptyArrayEmpty
   }
   // This does not compile with scala 2.10
   /*it can "be constructed with null elements" in {

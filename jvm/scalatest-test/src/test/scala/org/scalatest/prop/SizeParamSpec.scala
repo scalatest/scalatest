@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,14 @@ class SizeParamSpec extends AnyWordSpec with Matchers with PropertyChecks {
       an [IllegalArgumentException] should be thrownBy SizeParam(0, 10, 11) // minSize 0, maxSize 10
       an [IllegalArgumentException] should be thrownBy SizeParam(1, 10, 0) // minSize 1, maxSize 11,
       an [IllegalArgumentException] should be thrownBy SizeParam(1, 10, 12)
+    }
+    "include the actual size and minSize values in the invalid size error message" in {
+      val e = intercept[IllegalArgumentException] {
+        SizeParam(PosZInt(5), PosZInt(10), PosZInt(1))
+      }
+      e.getMessage should include ("the passed size (1)")
+      e.getMessage should include ("minSize (5)")
+      e.getMessage should not include ".value)"
     }
     "offer a maxSize methods" in {
      

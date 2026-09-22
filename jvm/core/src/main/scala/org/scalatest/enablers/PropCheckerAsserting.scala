@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -260,7 +260,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
       @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
+      def loop(succeededCount: Int, discardedCount: Int, edges: List[RoseTree[A]], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
         val (size, nextInitialSizes, nextRnd) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -353,7 +353,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
       @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[RoseTree[A]], bEdges: List[RoseTree[B]], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
         val (size, nextInitialSizes, rnd1) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -455,7 +455,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
       @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[RoseTree[A]], bEdges: List[RoseTree[B]], cEdges: List[RoseTree[C]], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
         val (size, nextInitialSizes, rnd1) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -554,97 +554,97 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       * @return the result of the property check
       */
     private def checkForAll[A, B, C, D](names: List[String], config: Parameter,
-                                    genA: org.scalatest.prop.Generator[A],
-                                    genB: org.scalatest.prop.Generator[B],
-                                    genC: org.scalatest.prop.Generator[C],
-                                    genD: org.scalatest.prop.Generator[D])
-                                   (fun: (A, B, C, D) => Prop): PropertyCheckResult = {
-          val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
-          val minSize = config.minSize
-          val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
-    
-          @tailrec
-          def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
-            val (size, nextInitialSizes, rnd1) =
-              initialSizes match {
-                case head :: tail => (head, tail, rnd)
-                case Nil =>
-                  val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
-                  (sz, Nil, nextRnd)
-              }
-            val (roseTreeOfA, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, size), aEdges, rnd1)
-            val (roseTreeOfB, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
-            val (roseTreeOfC, nextCEdges, rnd4) = genC.next(SizeParam(PosZInt(0), maxSize, size), cEdges, rnd3)
-            val (roseTreeOfD, nextDEdges, rnd5) = genD.next(SizeParam(PosZInt(0), maxSize, size), dEdges, rnd4)
-            val a = roseTreeOfA.value
-            val b = roseTreeOfB.value
-            val c = roseTreeOfC.value
-            val d = roseTreeOfD.value
-            val result: Try[Prop] = Try { fun(a, b, c, d) }
-            val argsPassed =
-              List(
-                if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a),
-                if (names.isDefinedAt(1)) PropertyArgument(Some(names(1)), b) else PropertyArgument(None, b),
-                if (names.isDefinedAt(2)) PropertyArgument(Some(names(2)), c) else PropertyArgument(None, c),
-                if (names.isDefinedAt(3)) PropertyArgument(Some(names(3)), d) else PropertyArgument(None, d)
-              )
-            result match {
-              case Success(r) =>
-                if (discard(r)) {
-                  val nextDiscardedCount = discardedCount + 1
-                  if (nextDiscardedCount < maxDiscarded)
-                    loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes, initSeed)
-                  else
-                    new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
-                }
-                else {
-                  val (success, cause) = succeed(r)
-                  if (success) {
-                    val nextSucceededCount = succeededCount + 1
-                    if (nextSucceededCount < config.minSuccessful)
-                      loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes, initSeed)
-                    else
-                      PropertyCheckResult.Success(argsPassed, initSeed)
-                  }
-                  else
-                    new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)
-                }
-    
-              case Failure(ex: DiscardedEvaluationException) =>
-                val nextDiscardedCount = discardedCount + 1
-                if (nextDiscardedCount < maxDiscarded)
-                  loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes, initSeed)
-                else
-                  new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
-              case Failure(ex) =>
-                val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
-                val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
-                val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
-                val (bestABCD, err) =
-                  roseTreeOfABCD.shrinkSearch {
-                    case (a, b, c, d) =>
-                      val result: Try[Prop] = Try { fun(a, b, c, d) }
-                      result match {
-                        case Success(_) => None
-                        case Failure(shrunkEx) => Some(shrunkEx)
-                      }
-                  }.getOrElse((roseTreeOfA.value, ex))
-                val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCD) else PropertyArgument(None, bestABCD))
-                val theRes = new PropertyCheckResult.Failure(succeededCount, Some(err), names, shrunkArgsPassed, initSeed)
-                theRes
-            }
+                                genA: org.scalatest.prop.Generator[A],
+                                genB: org.scalatest.prop.Generator[B],
+                                genC: org.scalatest.prop.Generator[C],
+                                genD: org.scalatest.prop.Generator[D])
+                               (fun: (A, B, C, D) => Prop): PropertyCheckResult = {
+      val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
+      val minSize = config.minSize
+      val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
+
+      @tailrec
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[RoseTree[A]], bEdges: List[RoseTree[B]], cEdges: List[RoseTree[C]], dEdges: List[RoseTree[D]], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
+        val (size, nextInitialSizes, rnd1) =
+          initialSizes match {
+            case head :: tail => (head, tail, rnd)
+            case Nil =>
+              val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
+              (sz, Nil, nextRnd)
           }
-    
-          val initRnd = Randomizer.default // This can be set by a cmd line param.
-          val initSeed = initRnd.seed
-          val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
-          val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
-          val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
-          val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
-          val (initCEdges, afterCEdgesRnd) = genC.initEdges(maxEdges, afterBEdgesRnd)
-          val (initDEdges, afterDEdgesRnd) = genD.initEdges(maxEdges, afterCEdgesRnd)
-          loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, afterDEdgesRnd, initialSizes, initSeed)
+        val (roseTreeOfA, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, size), aEdges, rnd1)
+        val (roseTreeOfB, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
+        val (roseTreeOfC, nextCEdges, rnd4) = genC.next(SizeParam(PosZInt(0), maxSize, size), cEdges, rnd3)
+        val (roseTreeOfD, nextDEdges, rnd5) = genD.next(SizeParam(PosZInt(0), maxSize, size), dEdges, rnd4)
+        val a = roseTreeOfA.value
+        val b = roseTreeOfB.value
+        val c = roseTreeOfC.value
+        val d = roseTreeOfD.value
+        val result: Try[Prop] = Try { fun(a, b, c, d) }
+        val argsPassed =
+          List(
+            if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a),
+            if (names.isDefinedAt(1)) PropertyArgument(Some(names(1)), b) else PropertyArgument(None, b),
+            if (names.isDefinedAt(2)) PropertyArgument(Some(names(2)), c) else PropertyArgument(None, c),
+            if (names.isDefinedAt(3)) PropertyArgument(Some(names(3)), d) else PropertyArgument(None, d)
+          )
+        result match {
+          case Success(r) =>
+            if (discard(r)) {
+              val nextDiscardedCount = discardedCount + 1
+              if (nextDiscardedCount < maxDiscarded)
+                loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes, initSeed)
+              else
+                new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
+            }
+            else {
+              val (success, cause) = succeed(r)
+              if (success) {
+                val nextSucceededCount = succeededCount + 1
+                if (nextSucceededCount < config.minSuccessful)
+                  loop(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes, initSeed)
+                else
+                  PropertyCheckResult.Success(argsPassed, initSeed)
+              }
+              else
+                new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)
+            }
+
+          case Failure(ex: DiscardedEvaluationException) =>
+            val nextDiscardedCount = discardedCount + 1
+            if (nextDiscardedCount < maxDiscarded)
+              loop(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, rnd5, nextInitialSizes, initSeed)
+            else
+              new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
+          case Failure(ex) =>
+            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
+            val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
+            val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
+            val (bestABCD, err) =
+              roseTreeOfABCD.shrinkSearch {
+                case (a, b, c, d) =>
+                  val result: Try[Prop] = Try { fun(a, b, c, d) }
+                  result match {
+                    case Success(_) => None
+                    case Failure(shrunkEx) => Some(shrunkEx)
+                  }
+              }.getOrElse((roseTreeOfA.value, ex))
+            val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCD) else PropertyArgument(None, bestABCD))
+            val theRes = new PropertyCheckResult.Failure(succeededCount, Some(err), names, shrunkArgsPassed, initSeed)
+            theRes
         }
+      }
+
+      val initRnd = Randomizer.default // This can be set by a cmd line param.
+      val initSeed = initRnd.seed
+      val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
+      val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
+      val (initAEdges, afterAEdgesRnd) = genA.initEdges(maxEdges, afterSizesRnd)
+      val (initBEdges, afterBEdgesRnd) = genB.initEdges(maxEdges, afterAEdgesRnd)
+      val (initCEdges, afterCEdgesRnd) = genC.initEdges(maxEdges, afterBEdgesRnd)
+      val (initDEdges, afterDEdgesRnd) = genD.initEdges(maxEdges, afterCEdgesRnd)
+      loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, afterDEdgesRnd, initialSizes, initSeed)
+    }
 
     /**
       * Checks a property for all combinations of generated values of types A, B, C, D, and E.
@@ -682,7 +682,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
       @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[RoseTree[A]], bEdges: List[RoseTree[B]], cEdges: List[RoseTree[C]], dEdges: List[RoseTree[D]], eEdges: List[RoseTree[E]], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
         val (size, nextInitialSizes, rnd1) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -806,7 +806,7 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
       @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], fEdges: List[F], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[RoseTree[A]], bEdges: List[RoseTree[B]], cEdges: List[RoseTree[C]], dEdges: List[RoseTree[D]], eEdges: List[RoseTree[E]], fEdges: List[RoseTree[F]], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): PropertyCheckResult = {
         val (size, nextInitialSizes, rnd1) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -1039,13 +1039,13 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       */
     private def checkForAll[A](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A])(fun: (A) => Future[PropResult]): Future[PropertyCheckResult] = {
 
-      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedA: Option[A])
+      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, edges: List[RoseTree[A]], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedA: Option[A])
 
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
-      def loop(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): Future[AccumulatedResult] = {
+      def loop(succeededCount: Int, discardedCount: Int, edges: List[RoseTree[A]], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): Future[AccumulatedResult] = {
         val (size, nextInitialSizes, nextRnd) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -1188,13 +1188,13 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
       */
     private def checkForAll[A, B](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B])(fun: (A, B) => Future[PropResult]): Future[PropertyCheckResult] = {
 
-      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedAB: Option[(A, B)])
+      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[RoseTree[A]], bEdges: List[RoseTree[B]], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedAB: Option[(A, B)])
 
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): Future[AccumulatedResult] = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[RoseTree[A]], bEdges: List[RoseTree[B]], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): Future[AccumulatedResult] = {
         val (size, nextInitialSizes, nextRnd) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -1346,13 +1346,13 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
     private def checkForAll[A, B, C](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B],
                                      genC: org.scalatest.prop.Generator[C])(fun: (A, B, C) => Future[PropResult]): Future[PropertyCheckResult] = {
 
-      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedABC: Option[(A, B, C)])
+      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[RoseTree[A]], bEdges: List[RoseTree[B]], cEdges: List[RoseTree[C]], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedABC: Option[(A, B, C)])
 
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): Future[AccumulatedResult] = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[RoseTree[A]], bEdges: List[RoseTree[B]], cEdges: List[RoseTree[C]], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): Future[AccumulatedResult] = {
         val (size, nextInitialSizes, nextRnd) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -1510,13 +1510,13 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
     private def checkForAll[A, B, C, D](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B],
                                      genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D])(fun: (A, B, C, D) => Future[PropResult]): Future[PropertyCheckResult] = {
 
-      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedABCD: Option[(A, B, C, D)])
+      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[RoseTree[A]], bEdges: List[RoseTree[B]], cEdges: List[RoseTree[C]], dEdges: List[RoseTree[D]], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedABCD: Option[(A, B, C, D)])
 
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): Future[AccumulatedResult] = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[RoseTree[A]], bEdges: List[RoseTree[B]], cEdges: List[RoseTree[C]], dEdges: List[RoseTree[D]], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): Future[AccumulatedResult] = {
         val (size, nextInitialSizes, nextRnd) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -1682,13 +1682,13 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
     private def checkForAll[A, B, C, D, E](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B],
                                         genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D], genE: org.scalatest.prop.Generator[E])(fun: (A, B, C, D, E) => Future[PropResult]): Future[PropertyCheckResult] = {
 
-      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedABCDE: Option[(A, B, C, D, E)])
+      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[RoseTree[A]], bEdges: List[RoseTree[B]], cEdges: List[RoseTree[C]], dEdges: List[RoseTree[D]], eEdges: List[RoseTree[E]], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedABCDE: Option[(A, B, C, D, E)])
 
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): Future[AccumulatedResult] = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[RoseTree[A]], bEdges: List[RoseTree[B]], cEdges: List[RoseTree[C]], dEdges: List[RoseTree[D]], eEdges: List[RoseTree[E]], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): Future[AccumulatedResult] = {
         val (size, nextInitialSizes, nextRnd) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)
@@ -1863,13 +1863,13 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
                                            genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D], genE: org.scalatest.prop.Generator[E],
                                            genF: org.scalatest.prop.Generator[F])(fun: (A, B, C, D, E, F) => Future[PropResult]): Future[PropertyCheckResult] = {
 
-      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], fEdges: List[F], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedABCDEF: Option[(A, B, C, D, E, F)])
+      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[RoseTree[A]], bEdges: List[RoseTree[B]], cEdges: List[RoseTree[C]], dEdges: List[RoseTree[D]], eEdges: List[RoseTree[E]], fEdges: List[RoseTree[F]], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedABCDEF: Option[(A, B, C, D, E, F)])
 
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
 
-      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], fEdges: List[F], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): Future[AccumulatedResult] = {
+      def loop(succeededCount: Int, discardedCount: Int, aEdges: List[RoseTree[A]], bEdges: List[RoseTree[B]], cEdges: List[RoseTree[C]], dEdges: List[RoseTree[D]], eEdges: List[RoseTree[E]], fEdges: List[RoseTree[F]], rnd: Randomizer, initialSizes: List[PosZInt], initSeed: Long): Future[AccumulatedResult] = {
         val (size, nextInitialSizes, nextRnd) =
           initialSizes match {
             case head :: tail => (head, tail, rnd)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ import Suite.autoTagClassAnnotations
   * facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD),
   * in which tests are combined with text that specifies the behavior the tests
   * verify.
+  *
+  * The expected type of a test in this trait is <code>Any</code>.
   *
   * <p>
   * <a href="AnyFunSpec.html"><code>FunSpec</code></a> is a class, not a trait,
@@ -105,7 +107,7 @@ trait AnyFunSuiteLike extends TestSuite with Informing with Notifying with Alert
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerTestImpl(testText, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   private final def registerIgnoredTestImpl(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
@@ -122,7 +124,7 @@ trait AnyFunSuiteLike extends TestSuite with Informing with Notifying with Alert
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerIgnoredTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => registerIgnoredTestImpl(testText, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   private final def testImpl(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
@@ -154,8 +156,8 @@ trait AnyFunSuiteLike extends TestSuite with Informing with Notifying with Alert
     testImpl(testName, testTags: _*)(testFun, pos)
   }
   // SKIP-DOTTY-END
-  //DOTTY-ONLY protected inline def test(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => testImpl(testName, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY protected inline def test(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => testImpl(testName, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   private final def ignoreImpl(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
@@ -188,8 +190,8 @@ trait AnyFunSuiteLike extends TestSuite with Informing with Notifying with Alert
     ignoreImpl(testName, testTags: _*)(testFun, pos)
   }
   // SKIP-DOTTY-END
-  //DOTTY-ONLY protected inline def ignore(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testName, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY protected inline def ignore(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withCallerPosition[Unit]('{pos}, '{(p: source.Position) => ignoreImpl(testName, testTags: _*)(testFun, p) }) } 
   //DOTTY-ONLY }
 
   /**

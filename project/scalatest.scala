@@ -1779,11 +1779,21 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
   val scalatestDocSourceUrl =
     s"https://github.com/scalatest/releases-source/blob/main/scalatest/${releaseVersion}€{FILE_PATH}.scala"
 
+  val scalatestDottyDocSourceUrl =
+    s"https://github.com/scalatest/releases-source/blob/main/scalatest/${releaseVersion}€{FILE_PATH}.scala"
+
   val scalacticDocSourceUrl =
     s"https://github.com/scalatest/releases-source/blob/main/scalactic/$releaseVersion€{FILE_PATH}.scala"
 
+  val scalacticDottyDocSourceUrl =
+    s"https://github.com/scalatest/releases-source/blob/main/scalactic/${releaseVersion}€{FILE_PATH}.scala"
+
   val scalatestDocScalacOptionsSetting =
     Compile / doc / scalacOptions := {
+      val docSourceUrl =
+        if (scalaVersion.value.startsWith("3.")) scalatestDottyDocSourceUrl
+        else scalatestDocSourceUrl
+
       Seq[String](
         // -Ymacro-no-expand is not supported (or needed) under 2.13. In case we want
         // to run Scaladoc under 2.12 again, this is the line that is required:
@@ -1791,11 +1801,15 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "-groups", // enables the @group tags in Scaladocs
         "-sourcepath", docsrcDir.value.getAbsolutePath,
         "-doc-title", projectTitle.value +" "+ releaseVersion,
-        "-doc-source-url", scalatestDocSourceUrl)
+        "-doc-source-url", docSourceUrl)
     }
 
   val scalacticDocScalacOptionsSetting =
-    Compile / doc / scalacOptions :=
+    Compile / doc / scalacOptions := {
+      val docSourceUrl =
+        if (scalaVersion.value.startsWith("3.")) scalacticDottyDocSourceUrl
+        else scalacticDocSourceUrl
+
       Seq[String](
         // -Ymacro-no-expand is not supported (or needed) under 2.13. In case we want
         // to run Scaladoc under 2.12 again, this is the line that is required:
@@ -1803,7 +1817,8 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "-groups", // enables the @group tags in Scaladocs
         "-sourcepath", docsrcDir.value.getAbsolutePath,
         "-doc-title", projectTitle.value +" "+ releaseVersion,
-        "-doc-source-url", scalacticDocSourceUrl)
+        "-doc-source-url", docSourceUrl)
+    }
 }
 // set Compile / console / scalacOptions += "-Xlog-implicits"
 // set Compile / console / scalacOptions += "-Xlog-implicits"

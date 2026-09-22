@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.scalactic.UnitSpec
 import org.scalactic.NormalizingEquality
 import org.scalactic.Resources
 
-import org.scalactic.opaquetypes.NonEmptyStrings.NonEmptyString
+//import org.scalactic.opaquetypes.NonEmpties.NonEmptyString
 
 class NonEmptyStringSpec extends UnitSpec {
   "A NonEmptyString" can "be constructed with one character" in {

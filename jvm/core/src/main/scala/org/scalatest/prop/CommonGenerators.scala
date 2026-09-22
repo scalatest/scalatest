@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -139,17 +139,28 @@ trait CommonGenerators {
     *
     * @group Betweeners
     */
+  // SKIP-DOTTY-START  
   def between[T](from: T, to: T)(implicit ord: Ordering[T], chooser: Chooser[T], gen: Generator[T]): Generator[T] = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def between[T](from: T, to: T)(using ord: Ordering[T], chooser: Chooser[T], gen: Generator[T]): Generator[T] = {
     import ord.mkOrderingOps
     require(from <= to)
     new Generator[T] {
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[T], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[T]], Randomizer) = {
         // Start with the edges of the underlying generator:
         val (base, nextRnd) = gen.initEdges(maxLength, rnd)
         // Snip away anything out of range:
-        val valueEdges = base.filter(i => i >= from && i <= to)
-        // Add the boundaries as edges for our new filter:
-        val fromToEdges = (from :: to :: valueEdges).distinct // distinct in case from equals to, and/or overlaps a value edge
+        val valueEdges = base.filter(rt => rt.value >= from && rt.value <= to)
+        // Add the boundaries as edges for our new filter. Dedupe by value (in case from equals
+        // to, and/or overlaps a value edge); RoseTree uses referential equality, so fold manually.
+        val fromToEdges = {
+          val combined = Rose(from) :: Rose(to) :: valueEdges
+          combined.foldLeft((List.empty[RoseTree[T]], Set.empty[T])) {
+            case ((acc, seen), rt) =>
+              if (seen.contains(rt.value)) (acc, seen)
+              else (acc :+ rt, seen + rt.value)
+          }._1
+        }
         val (allEdges, nextNextRnd) = Randomizer.shuffle(fromToEdges, nextRnd)
         (allEdges.take(maxLength), nextNextRnd)
       }
@@ -831,15 +842,15 @@ trait CommonGenerators {
   //
 
   /**
-    * Given a list of values of type [[T]], this creates a [[Generator]] that will only
+    * Given a list of values of type `T`, this creates a [[Generator]] that will only
     * produce those values.
     *
     * The order in which the values are produced is random, based on the [[Randomizer]] passed
     * in to the `next` function. It may produce the same value multiple times.
     *
-    * @param first a value of type [[T]]
-    * @param second another value of type [[T]]
-    * @param rest more values of type [[T]], as many as you wish
+    * @param first a value of type `T`
+    * @param second another value of type `T`
+    * @param rest more values of type `T`, as many as you wish
     * @tparam T the type that will be produced by the resulting [[Generator]]
     * @return a [[Generator]] that produces exactly the specified values
     *
@@ -875,10 +886,6 @@ trait CommonGenerators {
       }
     }
 
-  // TODO: I wonder if I could get rid of the edges pattern match
-  // by moving this to a different method. Then next is just next
-  // in the distributed stuff. I could then do the pattern match
-  // once and forall in a final method, nextEdge.
   /**
     * Given a number of [[Generator]]s, and the weightings for each one, this creates a [[Generator]]
     * that invokes each of its components according to its weighting.
@@ -896,7 +903,7 @@ trait CommonGenerators {
     *   )
     * }}}
     * The total weighting is (5 + 4 + 1) = 10. So the resulting [[Generator]] will produce
-    * an even number (10 / 5) = 50% the time, an odd number (10 / 4) = 40% of the time, and zero
+    * an even number (10 / 5) = 50% of the time, an odd number (10 / 4) = 40% of the time, and zero
     * (10 / 1) = 10% of the time.
     *
     * Keep in mind that the distribution is invoked randomly, so these are rough proportions. As you
@@ -929,7 +936,6 @@ trait CommonGenerators {
     }
 
     new Generator[T] {
-      private val totalWeight: Int = distribution.toMap.keys.sum
       // gens contains, for each distribution pair, weight generators.
       private val gens: Vector[Generator[T]] =
         distribution flatMap { case (w, g) =>
@@ -983,7 +989,7 @@ trait CommonGenerators {
       def nextImpl(szp: SizeParam, isValidFun: (T, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[T], Randomizer) = {
         val (nextInt, nextRandomizer) = rnd.chooseInt(0, distributees.length - 1)
         val nextGen = distributees(nextInt)
-        nextGen.nextImpl(szp, isValidFun, nextRandomizer) // TODO: Is it correct to pass size and maxSize here?
+        nextGen.nextImpl(szp, isValidFun, nextRandomizer)
       }
     }
   }
@@ -1551,71 +1557,102 @@ trait CommonGenerators {
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def tuple2s[A, B](implicit genOfA: Generator[A], genOfB: Generator[B]): Generator[(A, B)] = Generator.tuple2Generator[A, B]
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple2s[A, B](using genOfA: Generator[A], genOfB: Generator[B]): Generator[(A, B)] = Generator.tuple2Generator[A, B]
 
   /**
     * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def tuple3s[A, B, C](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C]): Generator[(A, B, C)] = Generator.tuple3Generator[A, B, C]
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple3s[A, B, C](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C]): Generator[(A, B, C)] = Generator.tuple3Generator[A, B, C]
 
   /**
     * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def tuple4s[A, B, C, D](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D]): Generator[(A, B, C, D)] = Generator.tuple4Generator[A, B, C, D]
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple4s[A, B, C, D](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D]): Generator[(A, B, C, D)] = Generator.tuple4Generator[A, B, C, D]
 
   /**
     * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def tuple5s[A, B, C, D, E](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E]): Generator[(A, B, C, D, E)] = Generator.tuple5Generator[A, B, C, D, E]
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple5s[A, B, C, D, E](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E]): Generator[(A, B, C, D, E)] = Generator.tuple5Generator[A, B, C, D, E]
 
   /**
     * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START
   def tuple6s[A, B, C, D, E, F](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F]): Generator[(A, B, C, D, E, F)] = Generator.tuple6Generator[A, B, C, D, E, F]
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple6s[A, B, C, D, E, F](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F]): Generator[(A, B, C, D, E, F)] = Generator.tuple6Generator[A, B, C, D, E, F]
 
   /**
     * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def tuple7s[A, B, C, D, E, F, G](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G]): Generator[(A, B, C, D, E, F, G)] = Generator.tuple7Generator[A, B, C, D, E, F, G]
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple7s[A, B, C, D, E, F, G](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G]): Generator[(A, B, C, D, E, F, G)] = Generator.tuple7Generator[A, B, C, D, E, F, G]
 
   /**
     * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def tuple8s[A, B, C, D, E, F, G, H](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H]): Generator[(A, B, C, D, E, F, G, H)] = Generator.tuple8Generator[A, B, C, D, E, F, G, H]
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple8s[A, B, C, D, E, F, G, H](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H]): Generator[(A, B, C, D, E, F, G, H)] = Generator.tuple8Generator[A, B, C, D, E, F, G, H]
 
   /**
     * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def tuple9s[A, B, C, D, E, F, G, H, I](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I]): Generator[(A, B, C, D, E, F, G, H, I)] = Generator.tuple9Generator[A, B, C, D, E, F, G, H, I]
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple9s[A, B, C, D, E, F, G, H, I](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I]): Generator[(A, B, C, D, E, F, G, H, I)] = Generator.tuple9Generator[A, B, C, D, E, F, G, H, I]
 
   /**
     * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def tuple10s[A, B, C, D, E, F, G, H, I, J](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple10s[A, B, C, D, E, F, G, H, I, J](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
                                              genOfJ: Generator[J]): Generator[(A, B, C, D, E, F, G, H, I, J)] = Generator.tuple10Generator[A, B, C, D, E, F, G, H, I, J]
+  
 
   /**
     * See [[tuple2s]] for information on tuple generators.
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START
   def tuple11s[A, B, C, D, E, F, G, H, I, J, K](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple11s[A, B, C, D, E, F, G, H, I, J, K](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
                                                 genOfJ: Generator[J], genOfK: Generator[K]): Generator[(A, B, C, D, E, F, G, H, I, J, K)] = Generator.tuple11Generator[A, B, C, D, E, F, G, H, I, J, K]
 
   /**
@@ -1623,7 +1660,10 @@ trait CommonGenerators {
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def tuple12s[A, B, C, D, E, F, G, H, I, J, K, L](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple12s[A, B, C, D, E, F, G, H, I, J, K, L](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
                                                    genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L)] = Generator.tuple12Generator[A, B, C, D, E, F, G, H, I, J, K, L]
 
   /**
@@ -1631,7 +1671,10 @@ trait CommonGenerators {
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def tuple13s[A, B, C, D, E, F, G, H, I, J, K, L, M](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple13s[A, B, C, D, E, F, G, H, I, J, K, L, M](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
                                                       genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M)] = Generator.tuple13Generator[A, B, C, D, E, F, G, H, I, J, K, L, M]
 
   /**
@@ -1639,7 +1682,10 @@ trait CommonGenerators {
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def tuple14s[A, B, C, D, E, F, G, H, I, J, K, L, M, N](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple14s[A, B, C, D, E, F, G, H, I, J, K, L, M, N](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
                                                          genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N)] = Generator.tuple14Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N]
 
   /**
@@ -1647,7 +1693,10 @@ trait CommonGenerators {
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def tuple15s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple15s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
                                                             genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)] = Generator.tuple15Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]
 
   /**
@@ -1655,7 +1704,10 @@ trait CommonGenerators {
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def tuple16s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple16s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
                                                                genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)] = Generator.tuple16Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]
 
   /**
@@ -1663,7 +1715,10 @@ trait CommonGenerators {
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def tuple17s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple17s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
                                                                   genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] = Generator.tuple17Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]
 
   /**
@@ -1671,7 +1726,10 @@ trait CommonGenerators {
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def tuple18s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple18s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
                                                                      genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] = Generator.tuple18Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]
 
   /**
@@ -1679,7 +1737,10 @@ trait CommonGenerators {
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def tuple19s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple19s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
                                                                         genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] = Generator.tuple19Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]
 
   /**
@@ -1687,7 +1748,10 @@ trait CommonGenerators {
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def tuple20s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple20s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
                                                                            genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S],
                                                                            genOfT: Generator[T]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] = Generator.tuple20Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]
 
@@ -1696,7 +1760,10 @@ trait CommonGenerators {
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def tuple21s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple21s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
                                                                               genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S],
                                                                               genOfT: Generator[T], genOfU: Generator[U]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] = Generator.tuple21Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]
 
@@ -1705,12 +1772,15 @@ trait CommonGenerators {
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def tuple22s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def tuple22s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I],
                                                                                  genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S],
                                                                                  genOfT: Generator[T], genOfU: Generator[U], genOfV: Generator[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] = Generator.tuple22Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]
 
   /**
-    * Given a [[Generator]] for type [[T]], this creates a [[Generator]] for [[Vector]] of [[T]].
+    * Given a [[Generator]] for type `T`, this creates a [[Generator]] for [[Vector]] of `T`.
     *
     * Note that the [[Vector]] type is considered to have a "size", so you can use the configuration parameters
     * [[Configuration.minSize]] and [[Configuration.sizeRange]] to constrain the sizes of the resulting `Vector`s
@@ -1719,24 +1789,30 @@ trait CommonGenerators {
     * The resulting [[Generator]] also has the [[HavingLength]] trait, so you can use it to generate [[Vector]]s
     * with specific lengths.
     *
-    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @param genOfT a [[Generator]] that produces values of type `T`
     * @tparam T the type to produce
     * @return a [[Generator]] that produces values of type `Vector[T]`
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def vectors[T](implicit genOfT: Generator[T]): Generator[Vector[T]] with HavingLength[Vector[T]] = Generator.vectorGenerator
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def vectors[T](using genOfT: Generator[T]): Generator[Vector[T]] with HavingLength[Vector[T]] = Generator.vectorGenerator
 
   /**
     * Given a `Generator[T]`, this creates a `Generator[Option[T]]`.
     *
-    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @param genOfT a [[Generator]] that produces values of type `T`
     * @tparam T the type that we are producing an Option of
     * @return a Generator that produces `Option[T]`
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def options[T](implicit genOfT: Generator[T]): Generator[Option[T]] = Generator.optionGenerator
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def options[T](using genOfT: Generator[T]): Generator[Option[T]] = Generator.optionGenerator
 
   /**
     * Given [[Generator]]s for two types, [[G]] and [[B]], this creates a [[Generator]] for `G Or B`.
@@ -1747,7 +1823,10 @@ trait CommonGenerators {
     * @tparam B the "bad" type for an [[Or]]
     * @return a [[Generator]] that produces `G Or B`
     */
+  // SKIP-DOTTY-START  
   def ors[G, B](implicit genOfG: Generator[G], genOfB: Generator[B]): Generator[G Or B] = Generator.orGenerator
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def ors[G, B](using genOfG: Generator[G], genOfB: Generator[B]): Generator[G Or B] = Generator.orGenerator
 
   /**
     * Given [[Generator]]s for two types, [[L]] and [[R]], this creates a [[Generator]] for `Either[L, R]`.
@@ -1758,21 +1837,27 @@ trait CommonGenerators {
     * @tparam R the Right type for an [[Either]]
     * @return a [[Generator]] that produces `Either[L, R]`
     */
+  // SKIP-DOTTY-START  
   def eithers[L, R](implicit genOfL: Generator[L], genOfR: Generator[R]): Generator[Either[L, R]] = Generator.eitherGenerator
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def eithers[L, R](using genOfL: Generator[L], genOfR: Generator[R]): Generator[Either[L, R]] = Generator.eitherGenerator
 
   /**
     * Given an existing `Generator[T]`, this creates a `Generator[List[T]]`.
     *
-    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @param genOfT a [[Generator]] that produces values of type `T`
     * @tparam T the type that we are producing a List of
-    * @return a List of values of type [[T]]
+    * @return a List of values of type `T`
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def lists[T](implicit genOfT: Generator[T]): Generator[List[T]] with HavingLength[List[T]] = Generator.listGenerator[T]
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def lists[T](using genOfT: Generator[T]): Generator[List[T]] with HavingLength[List[T]] = Generator.listGenerator[T] 
 
   /**
-    * Given a [[Generator]] that produces values of type [[T]], this creates one for a [[Set]] of [[T]].
+    * Given a [[Generator]] that produces values of type `T`, this creates one for a [[Set]] of `T`.
     *
     * Note that the [[Set]] type is considered to have a "size", so you can use the configuration parameters
     * [[Configuration.minSize]] and [[Configuration.sizeRange]] to constrain the sizes of the resulting `Set`s
@@ -1781,16 +1866,19 @@ trait CommonGenerators {
     * The resulting [[Generator]] also has the [[HavingSize]] trait, so you can use it to generate [[Set]]s
     * with specific sizes.
     *
-    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @param genOfT a [[Generator]] that produces values of type `T`
     * @tparam T the type to produce
     * @return a [[Generator]] that produces `Set[T]`.
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def sets[T](implicit genOfT: Generator[T]): Generator[Set[T]] with HavingSize[Set[T]] = Generator.setGenerator
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def sets[T](using genOfT: Generator[T]): Generator[Set[T]] with HavingSize[Set[T]] = Generator.setGenerator
 
   /**
-    * Given a [[Generator]] that produces values of type [[T]], this creates one for a [[SortedSet]] of [[T]].
+    * Given a [[Generator]] that produces values of type `T`, this creates one for a [[SortedSet]] of `T`.
     *
     * Note that the [[SortedSet]] type is considered to have a "size", so you can use the configuration parameters
     * [[Configuration.minSize]] and [[Configuration.sizeRange]] to constrain the sizes of the resulting `SortedSet`s
@@ -1799,13 +1887,16 @@ trait CommonGenerators {
     * The resulting [[Generator]] also has the [[HavingSize]] trait, so you can use it to generate [[SortedSet]]s
     * with specific sizes.
     *
-    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @param genOfT a [[Generator]] that produces values of type `T`
     * @tparam T the type to produce
     * @return a [[Generator]] that produces `SortedSet[T]`.
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def sortedSets[T](implicit genOfT: Generator[T], ordering: Ordering[T]): Generator[SortedSet[T]] with HavingSize[SortedSet[T]] = Generator.sortedSetGenerator
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def sortedSets[T](using genOfT: Generator[T], ordering: Ordering[T]): Generator[SortedSet[T]] with HavingSize[SortedSet[T]] = Generator.sortedSetGenerator
 
   /**
     * Given a [[Generator]] that produces Tuples of key/value pairs, this gives you one that produces [[Map]]s
@@ -1818,14 +1909,17 @@ trait CommonGenerators {
     * The resulting [[Generator]] also has the [[HavingSize]] trait, so you can use it to generate [[Map]]s
     * with specific sizes.
     *
-    * @param genOfTuple2KV a [[Generator]] that produces Tuples of [[K]] and [[V]]
+    * @param genOfTupleKV a [[Generator]] that produces Tuples of [[K]] and [[V]]
     * @tparam K the type of the keys for the [[Map]]
     * @tparam V the type of the values for the [[Map]]
     * @return a [[Generator]] of [[Map]]s from [[K]] to [[V]]
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def maps[K, V](implicit genOfTupleKV: Generator[(K, V)]): Generator[Map[K, V]] with HavingSize[Map[K, V]] = Generator.mapGenerator
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def maps[K, V](using genOfTupleKV: Generator[(K, V)]): Generator[Map[K, V]] with HavingSize[Map[K, V]] = Generator.mapGenerator
 
   /**
     * Given a [[Generator]] that produces Tuples of key/value pairs, this gives you one that produces [[SortedMap]]s
@@ -1838,15 +1932,17 @@ trait CommonGenerators {
     * The resulting [[Generator]] also has the [[HavingSize]] trait, so you can use it to generate [[SortedMap]]s
     * with specific sizes.
     *
-    * @param genOfTuple2KV a [[Generator]] that produces Tuples of [[K]] and [[V]]
+    * @param genOfTupleKV a [[Generator]] that produces Tuples of [[K]] and [[V]]
     * @tparam K the type of the keys for the [[SortedMap]]
     * @tparam V the type of the values for the [[SortedMap]]
     * @return a [[Generator]] of [[SortedMap]]s from [[K]] to [[V]]
     *
     * @group Collections
     */
+  // SKIP-DOTTY-START  
   def sortedMaps[K, V](implicit genOfTupleKV: Generator[(K, V)], ordering: Ordering[K]): Generator[SortedMap[K, V]] with HavingSize[SortedMap[K, V]] = Generator.sortedMapGenerator
-
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def sortedMaps[K, V](using genOfTupleKV: Generator[(K, V)], ordering: Ordering[K]): Generator[SortedMap[K, V]] with HavingSize[SortedMap[K, V]] = Generator.sortedMapGenerator
 
   /**
     * Given a [[Generator]] that produces values of type [[A]], this returns one that produces ''functions'' that return
@@ -1860,7 +1956,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START  
   def function0s[A](implicit genOfA: Generator[A]): Generator[() => A] = Generator.function0Generator[A]
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function0s[A](using genOfA: Generator[A]): Generator[() => A] = Generator.function0Generator[A]
 
   /**
     * Create a [[Generator]] of functions from type [[A]] to type [[B]].
@@ -1897,7 +1996,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START  
   def function1s[A, B](implicit genOfB: Generator[B], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B]): Generator[A => B] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function1s[A, B](using genOfB: Generator[B], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B]): Generator[A => B] =
     Generator.function1Generator[A, B]
 
   /**
@@ -1905,7 +2007,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START  
   def function2s[A, B, C](implicit genOfC: Generator[C], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C]): Generator[(A, B) => C] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function2s[A, B, C](using genOfC: Generator[C], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C]): Generator[(A, B) => C] =
     Generator.function2Generator[A, B, C]
 
   /**
@@ -1913,7 +2018,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START  
   def function3s[A, B, C, D](implicit genOfD: Generator[D], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D]): Generator[(A, B, C) => D] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function3s[A, B, C, D](using genOfD: Generator[D], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D]): Generator[(A, B, C) => D] =
     Generator.function3Generator[A, B, C, D]
 
   /**
@@ -1921,7 +2029,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START  
   def function4s[A, B, C, D, E](implicit genOfE: Generator[E], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E]): Generator[(A, B, C, D) => E] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function4s[A, B, C, D, E](using genOfE: Generator[E], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E]): Generator[(A, B, C, D) => E] =
     Generator.function4Generator[A, B, C, D, E]
 
   /**
@@ -1929,7 +2040,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START  
   def function5s[A, B, C, D, E, F](implicit genOfF: Generator[F], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F]): Generator[(A, B, C, D, E) => F] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function5s[A, B, C, D, E, F](using genOfF: Generator[F], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F]): Generator[(A, B, C, D, E) => F] =
     Generator.function5Generator[A, B, C, D, E, F]
 
   /**
@@ -1937,7 +2051,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START  
   def function6s[A, B, C, D, E, F, G](implicit genOfG: Generator[G], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G]): Generator[(A, B, C, D, E, F) => G] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function6s[A, B, C, D, E, F, G](using genOfG: Generator[G], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G]): Generator[(A, B, C, D, E, F) => G] =
     Generator.function6Generator[A, B, C, D, E, F, G]
 
   /**
@@ -1945,7 +2062,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START  
   def function7s[A, B, C, D, E, F, G, H](implicit genOfH: Generator[H], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H]): Generator[(A, B, C, D, E, F, G) => H] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function7s[A, B, C, D, E, F, G, H](using genOfH: Generator[H], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H]): Generator[(A, B, C, D, E, F, G) => H] =
     Generator.function7Generator[A, B, C, D, E, F, G, H]
 
   /**
@@ -1953,7 +2073,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START  
   def function8s[A, B, C, D, E, F, G, H, I](implicit genOfI: Generator[I], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I]): Generator[(A, B, C, D, E, F, G, H) => I] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function8s[A, B, C, D, E, F, G, H, I](using genOfI: Generator[I], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I]): Generator[(A, B, C, D, E, F, G, H) => I] =
     Generator.function8Generator[A, B, C, D, E, F, G, H, I]
 
   /**
@@ -1961,7 +2084,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START  
   def function9s[A, B, C, D, E, F, G, H, I, J](implicit genOfJ: Generator[J], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J]): Generator[(A, B, C, D, E, F, G, H, I) => J] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function9s[A, B, C, D, E, F, G, H, I, J](using genOfJ: Generator[J], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J]): Generator[(A, B, C, D, E, F, G, H, I) => J] =
     Generator.function9Generator[A, B, C, D, E, F, G, H, I, J]
 
   /**
@@ -1969,7 +2095,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START  
   def function10s[A, B, C, D, E, F, G, H, I, J, K](implicit genOfK: Generator[K], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K]): Generator[(A, B, C, D, E, F, G, H, I, J) => K] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function10s[A, B, C, D, E, F, G, H, I, J, K](using genOfK: Generator[K], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K]): Generator[(A, B, C, D, E, F, G, H, I, J) => K] =
     Generator.function10Generator[A, B, C, D, E, F, G, H, I, J, K]
 
   /**
@@ -1977,7 +2106,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START  
   def function11s[A, B, C, D, E, F, G, H, I, J, K, L](implicit genOfL: Generator[L], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L]): Generator[(A, B, C, D, E, F, G, H, I, J, K) => L] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function11s[A, B, C, D, E, F, G, H, I, J, K, L](using genOfL: Generator[L], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L]): Generator[(A, B, C, D, E, F, G, H, I, J, K) => L] =
     Generator.function11Generator[A, B, C, D, E, F, G, H, I, J, K, L]
 
   /**
@@ -1985,7 +2117,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START  
   def function12s[A, B, C, D, E, F, G, H, I, J, K, L, M](implicit genOfM: Generator[M], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L) => M] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function12s[A, B, C, D, E, F, G, H, I, J, K, L, M](using genOfM: Generator[M], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L) => M] =
     Generator.function12Generator[A, B, C, D, E, F, G, H, I, J, K, L, M]
 
   /**
@@ -1993,7 +2128,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START
   def function13s[A, B, C, D, E, F, G, H, I, J, K, L, M, N](implicit genOfN: Generator[N], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function13s[A, B, C, D, E, F, G, H, I, J, K, L, M, N](using genOfN: Generator[N], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M) => N] =
     Generator.function13Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N]
 
   /**
@@ -2001,7 +2139,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START
   def function14s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](implicit genOfO: Generator[O], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function14s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](using genOfO: Generator[O], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O] =
     Generator.function14Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]
 
   /**
@@ -2009,7 +2150,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START
   def function15s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](implicit genOfP: Generator[P], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function15s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](using genOfP: Generator[P], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P] =
     Generator.function15Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]
 
   /**
@@ -2017,7 +2161,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START
   def function16s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](implicit genOfQ: Generator[Q], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function16s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](using genOfQ: Generator[Q], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q] =
     Generator.function16Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]
 
   /**
@@ -2025,7 +2172,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START
   def function17s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](implicit genOfR: Generator[R], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function17s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](using genOfR: Generator[R], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R] =
     Generator.function17Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]
 
   /**
@@ -2033,7 +2183,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START
   def function18s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](implicit genOfS: Generator[S], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function18s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](using genOfS: Generator[S], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S] =
     Generator.function18Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]
 
   /**
@@ -2041,7 +2194,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START
   def function19s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](implicit genOfT: Generator[T], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function19s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](using genOfT: Generator[T], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T] =
     Generator.function19Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]
 
   /**
@@ -2049,7 +2205,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START
   def function20s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](implicit genOfU: Generator[U], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function20s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](using genOfU: Generator[U], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U] =
     Generator.function20Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]
 
   /**
@@ -2057,7 +2216,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START
   def function21s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](implicit genOfV: Generator[V], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U], typeInfoV: TypeInfo[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function21s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](using genOfV: Generator[V], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U], typeInfoV: TypeInfo[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V] =
     Generator.function21Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]
 
   /**
@@ -2065,7 +2227,10 @@ trait CommonGenerators {
     *
     * @group Functions
     */
+  // SKIP-DOTTY-START
   def function22s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](implicit genOfW: Generator[W], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U], typeInfoV: TypeInfo[V], typeInfoW: TypeInfo[W]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def function22s[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](using genOfW: Generator[W], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U], typeInfoV: TypeInfo[V], typeInfoW: TypeInfo[W]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W] =
     Generator.function22Generator[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W]
 
 
@@ -2118,7 +2283,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B](construct: A => B)(deconstruct: B => A)(implicit genOfA: Generator[A]): Generator[B] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B](construct: A => B)(deconstruct: B => A)(using genOfA: Generator[A]): Generator[B] =
     new GeneratorFor1[A, B](construct, deconstruct)(genOfA)
 
   /**
@@ -2126,7 +2294,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C](construct: (A, B) => C)(deconstruct: C => (A, B))(implicit genOfA: Generator[A], genOfB: Generator[B]): Generator[C] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C](construct: (A, B) => C)(deconstruct: C => (A, B))(using genOfA: Generator[A], genOfB: Generator[B]): Generator[C] =
     new GeneratorFor2[A, B, C](construct, deconstruct)(genOfA, genOfB)
 
   /**
@@ -2134,7 +2305,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D](construct: (A, B, C) => D)(deconstruct: D => (A, B, C))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C]): Generator[D] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D](construct: (A, B, C) => D)(deconstruct: D => (A, B, C))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C]): Generator[D] =
     new GeneratorFor3[A, B, C, D](construct, deconstruct)(genOfA, genOfB, genOfC)
 
   /**
@@ -2142,7 +2316,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D, E](construct: (A, B, C, D) => E)(deconstruct: E => (A, B, C, D))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D]): Generator[E] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D, E](construct: (A, B, C, D) => E)(deconstruct: E => (A, B, C, D))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D]): Generator[E] =
     new GeneratorFor4[A, B, C, D, E](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD)
 
   /**
@@ -2150,7 +2327,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D, E, F](construct: (A, B, C, D, E) => F)(deconstruct: F => (A, B, C, D, E))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E]): Generator[F] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D, E, F](construct: (A, B, C, D, E) => F)(deconstruct: F => (A, B, C, D, E))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E]): Generator[F] =
     new GeneratorFor5[A, B, C, D, E, F](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE)
 
   /**
@@ -2158,7 +2338,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D, E, F, G](construct: (A, B, C, D, E, F) => G)(deconstruct: G => (A, B, C, D, E, F))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F]): Generator[G] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D, E, F, G](construct: (A, B, C, D, E, F) => G)(deconstruct: G => (A, B, C, D, E, F))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F]): Generator[G] =
     new GeneratorFor6[A, B, C, D, E, F, G](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF)
 
   /**
@@ -2166,7 +2349,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D, E, F, G, H](construct: (A, B, C, D, E, F, G) => H)(deconstruct: H => (A, B, C, D, E, F, G))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D, E, F, G, H](construct: (A, B, C, D, E, F, G) => H)(deconstruct: H => (A, B, C, D, E, F, G))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
                                                                                                                           genOfG: Generator[G]): Generator[H] =
     new GeneratorFor7[A, B, C, D, E, F, G, H](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG)
 
@@ -2175,7 +2361,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D, E, F, G, H, I](construct: (A, B, C, D, E, F, G, H) => I)(deconstruct: I => (A, B, C, D, E, F, G, H))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D, E, F, G, H, I](construct: (A, B, C, D, E, F, G, H) => I)(deconstruct: I => (A, B, C, D, E, F, G, H))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
                                                                                                                                    genOfG: Generator[G], genOfH: Generator[H]): Generator[I] =
     new GeneratorFor8[A, B, C, D, E, F, G, H, I](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH)
 
@@ -2184,7 +2373,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D, E, F, G, H, I, J](construct: (A, B, C, D, E, F, G, H, I) => J)(deconstruct: J => (A, B, C, D, E, F, G, H, I))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D, E, F, G, H, I, J](construct: (A, B, C, D, E, F, G, H, I) => J)(deconstruct: J => (A, B, C, D, E, F, G, H, I))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
                                                                                                                                             genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I]): Generator[J] =
     new GeneratorFor9[A, B, C, D, E, F, G, H, I, J](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI)
 
@@ -2193,7 +2385,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K](construct: (A, B, C, D, E, F, G, H, I, J) => K)(deconstruct: K => (A, B, C, D, E, F, G, H, I, J))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D, E, F, G, H, I, J, K](construct: (A, B, C, D, E, F, G, H, I, J) => K)(deconstruct: K => (A, B, C, D, E, F, G, H, I, J))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
                                                                                                                                                      genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J]): Generator[K] =
     new GeneratorFor10[A, B, C, D, E, F, G, H, I, J, K](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ)
 
@@ -2202,7 +2397,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L](construct: (A, B, C, D, E, F, G, H, I, J, K) => L)(deconstruct: L => (A, B, C, D, E, F, G, H, I, J, K))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L](construct: (A, B, C, D, E, F, G, H, I, J, K) => L)(deconstruct: L => (A, B, C, D, E, F, G, H, I, J, K))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
                                                                                                                                                               genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K]): Generator[L] =
     new GeneratorFor11[A, B, C, D, E, F, G, H, I, J, K, L](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK)
 
@@ -2211,7 +2409,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M](construct: (A, B, C, D, E, F, G, H, I, J, K, L) => M)(deconstruct: M => (A, B, C, D, E, F, G, H, I, J, K, L))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M](construct: (A, B, C, D, E, F, G, H, I, J, K, L) => M)(deconstruct: M => (A, B, C, D, E, F, G, H, I, J, K, L))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
                                                                                                                                                                        genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L]): Generator[M] =
     new GeneratorFor12[A, B, C, D, E, F, G, H, I, J, K, L, M](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL)
 
@@ -2220,7 +2421,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M) => N)(deconstruct: N => (A, B, C, D, E, F, G, H, I, J, K, L, M))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M) => N)(deconstruct: N => (A, B, C, D, E, F, G, H, I, J, K, L, M))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
                                                                                                                                                                                 genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M]): Generator[N] =
     new GeneratorFor13[A, B, C, D, E, F, G, H, I, J, K, L, M, N](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM)
 
@@ -2229,7 +2433,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O)(deconstruct: O => (A, B, C, D, E, F, G, H, I, J, K, L, M, N))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) => O)(deconstruct: O => (A, B, C, D, E, F, G, H, I, J, K, L, M, N))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
                                                                                                                                                                                          genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
                                                                                                                                                                                          genOfN: Generator[N]): Generator[O] =
     new GeneratorFor14[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN)
@@ -2239,7 +2446,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P)(deconstruct: P => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => P)(deconstruct: P => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
                                                                                                                                                                                                   genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
                                                                                                                                                                                                   genOfN: Generator[N], genOfO: Generator[O]): Generator[P] =
     new GeneratorFor15[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO)
@@ -2249,7 +2459,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q)(deconstruct: Q => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => Q)(deconstruct: Q => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
                                                                                                                                                                                                            genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
                                                                                                                                                                                                            genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P]): Generator[Q] =
     new GeneratorFor16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP)
@@ -2259,7 +2472,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R)(deconstruct: R => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => R)(deconstruct: R => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
                                                                                                                                                                                                                     genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
                                                                                                                                                                                                                     genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q]): Generator[R] =
     new GeneratorFor17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ)
@@ -2269,7 +2485,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S)(deconstruct: S => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => S)(deconstruct: S => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
                                                                                                                                                                                                                              genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
                                                                                                                                                                                                                              genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R]): Generator[S] =
     new GeneratorFor18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR)
@@ -2279,7 +2498,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T)(deconstruct: T => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => T)(deconstruct: T => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
                                                                                                                                                                                                                                       genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
                                                                                                                                                                                                                                       genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S]): Generator[T] =
     new GeneratorFor19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS)
@@ -2289,7 +2511,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U)(deconstruct: U => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => U)(deconstruct: U => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
                                                                                                                                                                                                                                                genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
                                                                                                                                                                                                                                                genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T]): Generator[U] =
     new GeneratorFor20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](construct, deconstruct)(genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS, genOfT)
@@ -2299,7 +2524,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V)(deconstruct: V => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => V)(deconstruct: V => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
                                                                                                                                                                                                                                                         genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
                                                                                                                                                                                                                                                         genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T],
                                                                                                                                                                                                                                                         genOfU: Generator[U]): Generator[V] =
@@ -2310,7 +2538,10 @@ trait CommonGenerators {
     *
     * @group InstancesOf
     */
+  // SKIP-DOTTY-START  
   def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W)(deconstruct: W => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V))(implicit genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def instancesOf[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](construct: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W)(deconstruct: W => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V))(using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F],
                                                                                                                                                                                                                                                                  genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M],
                                                                                                                                                                                                                                                                  genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T],
                                                                                                                                                                                                                                                                  genOfU: Generator[U], genOfV: Generator[V]): Generator[W] =
@@ -2347,34 +2578,60 @@ trait CommonGenerators {
     *
     * @param count the number of values to generate
     * @param genOfA the [[Generator]] to use
+    * @param minSize the minimum size to pass to the [[Generator]] (defaults to `PosZInt(0)`)
+    * @param sizeRange the range added to `minSize` to derive the maximum size (defaults to `PosZInt(100)`)
     * @param pf a [[PartialFunction]] that takes the generated values, and sorts them into "buckets" by String names
     * @tparam A the type to be generated
     * @return statistics on how many values wound up in each bucket
     *
     * @group Tools
     */
-  // classify will need to use the same sizing algo as forAll, and same edges approach
-  def classify[A](count: PosInt, genOfA: Generator[A])(pf: PartialFunction[A, String]): Classification = {
+  def classify[A](count: PosInt, genOfA: Generator[A], minSize: PosZInt = PosZInt(0), sizeRange: PosZInt = PosZInt(100))(pf: PartialFunction[A, String]): Classification = {
+    val maxSize = PosZInt.ensuringValid(minSize.value + sizeRange.value)
 
-    val (initEdges, rnd1) = genOfA.initEdges(100, Randomizer.default)
+    // Mimic forAll's sizing: precompute a sequence of sizes with calcSizes, consume them in order,
+    // then fall back to choosing random sizes between minSize and maxSize.
+    val initRnd = Randomizer.default
+    val (initialSizes, afterSizesRnd) = calcSizes(minSize, maxSize, initRnd)
+    val (initEdges, rnd1) = genOfA.initEdges(PosZInt.ensuringValid(count / 5), afterSizesRnd)
     @tailrec
-    def loop(currentCount: Int, edges: List[A], rnd: Randomizer, acc: Map[String, PosZInt]): Map[String, PosZInt] = {
+    def loop(currentCount: Int, edges: List[RoseTree[A]], rnd: Randomizer, sizes: List[PosZInt], acc: Map[String, PosZInt]): Map[String, PosZInt] = {
       if (currentCount >= count) acc
       else {
-        val (nextRoseTreeOfA, nextEdges, nextRnd) = genOfA.next(SizeParam(PosZInt(0), PosZInt(100), PosZInt(100)), edges, rnd) // TODO: I think this need to mimic forAll.
-        if (pf.isDefinedAt(nextRoseTreeOfA.value)) {
-          val category = pf(nextRoseTreeOfA.value)
-          val prevTotal = acc.getOrElse(category, PosZInt(0))
-          val nextAcc = acc + (category -> PosZInt.ensuringValid(prevTotal + 1))
-          loop(currentCount + 1, nextEdges, nextRnd, nextAcc)
-        }
-        else {
-          loop(currentCount + 1, nextEdges, nextRnd, acc)
-        }
+        val (size, nextSizes, nextRnd) =
+          sizes match {
+            case head :: tail => (head, tail, rnd)
+            case Nil =>
+              val (sz, nextNextRnd) = rnd.choosePosZInt(minSize, maxSize)
+              (sz, Nil, nextNextRnd)
+          }
+        val (nextRoseTreeOfA, nextEdges, nextNextRnd) = genOfA.next(SizeParam(PosZInt(0), maxSize, size), edges, nextRnd)
+        val nextAcc =
+          if (pf.isDefinedAt(nextRoseTreeOfA.value)) {
+            val category = pf(nextRoseTreeOfA.value)
+            val prevTotal = acc.getOrElse(category, PosZInt(0))
+            acc + (category -> PosZInt.ensuringValid(prevTotal + 1))
+          }
+          else acc
+        loop(currentCount + 1, nextEdges, nextNextRnd, nextSizes, nextAcc)
       }
     }
-    val theMap = loop(0, initEdges, rnd1, Map.empty)
+    val theMap = loop(0, initEdges, rnd1, initialSizes, Map.empty)
     Classification(count, theMap)
+  }
+
+  private def calcSizes(minSize: PosZInt, maxSize: PosZInt, initRndm: Randomizer): (List[PosZInt], Randomizer) = {
+    @tailrec
+    def sizesLoop(sizes: List[PosZInt], szCount: Int, rndm: Randomizer): (List[PosZInt], Randomizer) = {
+      sizes match {
+        case Nil => sizesLoop(List(minSize), 1, rndm)
+        case szs if szCount < 10 =>
+          val (nextSize, nextRndm) = rndm.choosePosZInt(minSize, maxSize)
+          sizesLoop(nextSize :: sizes, szCount + 1, nextRndm)
+        case _ => (sizes.sorted, rndm)
+      }
+    }
+    sizesLoop(Nil, 0, initRndm)
   }
 
   /**
@@ -2398,15 +2655,23 @@ trait CommonGenerators {
       }
     }
 
+  /**
+    * Delays construction of a [[Generator]] until it is first used.
+    *
+    * This is useful when a [[Generator]] is expensive to construct, or when defining one recursively --
+    * for example, a tree generator whose definition needs to refer to itself.
+    *
+    * @param gen the [[Generator]] to construct lazily, on first use
+    * @return a [[Generator]] that constructs and delegates to `gen` on first use
+    */
   def lazily[T](gen: => Generator[T]): Generator[T] = {
     new Generator[T] {
       private lazy val underlying: Generator[T] = gen
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[T], Randomizer) = underlying.initEdges(maxLength, rnd)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[T]], Randomizer) = underlying.initEdges(maxLength, rnd)
 
       override def canonicals: LazyListOrStream[RoseTree[T]] = underlying.canonicals
 
-      // gens contains, for each distribution pair, weight generators.
       def nextImpl(szp: SizeParam, isValidFun: (T, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[T], Randomizer) = {
         gen.nextImpl(szp, isValidFun, rnd)
       }

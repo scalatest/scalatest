@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,9 +70,9 @@ import org.scalactic.ColCompatHelper.LazyListOrStream
   * elements. The test system will try using the Generator with a variety of sizes; you can control
   * the maximum and minimum sizes via [[Configuration]].
   *
-  * Decide whether the concept of ''size'' is relevant for your type. If it is relevant, you should mix the
-  * [[HavingSize]] or [[HavingLength]] trait into your Generator, and you'll want to take
-  * it into account in your `next` and `shrink` functions.
+   * Decide whether the concept of ''size'' is relevant for your type. If it is relevant, you should mix the
+   * [[HavingSize]] or [[HavingLength]] trait into your Generator, and take it into account in your
+   * `nextImpl` implementation.
   *
   * ===Randomization===
   *
@@ -127,12 +127,12 @@ import org.scalactic.ColCompatHelper.LazyListOrStream
   * values, to see if those also fail. So for example, if a String of length 15 causes a failure, its
   * Generator could try Strings of length 3, and then 1, and then 0, to see if those also cause failure.
   *
-  * You do ''not'' have to implement the [[Generator.shrink]] method, but it is helpful to do so when it makes sense;
-  * the test system will use that to produce smaller, easier-to-debug examples when something fails.
-  *
-  * One important rule: the values returned from `shrink` must always be smaller than -- not equal to --
-  * the values passed in. Otherwise, an infinite loop can result. Also, similar to Canonicals, the
-  * "largest" shrunken values should be returned at the front of this LazyListOrStream, with more shrunken values later.
+   * You do ''not'' have to implement the [[Generator.shrinksForValue]] method, but it is helpful to do so when it makes sense;
+   * the test system will use that to produce smaller, easier-to-debug examples when something fails.
+   *
+   * One important rule: the values returned from `shrinksForValue` must always be smaller than -- not equal to --
+   * the values passed in. Otherwise, an infinite loop can result. Also, similar to Canonicals, the
+   * "largest" shrunken values should be returned at the front of this LazyListOrStream, with more shrunken values later.
   *
   * @tparam T the type that this Generator produces
   */
@@ -145,6 +145,11 @@ trait Generator[T] { thisGeneratorOfT =>
     * idea to think about whether there are appropriate edge cases for this type. (By default, this is empty,
     * so you can get your Generator working first, and think about edge cases after that.)
     *
+    * Each edge case is returned as a [[RoseTree]], so that a Generator may, if it wishes, attach shrinking
+    * structure to an edge (for example, an Option Generator can wrap each inner edge in a rose tree that
+    * preserves the underlying element's shrinking behavior). Where the Generator has no special shrink
+    * structure for a given edge, it may simply wrap the value in a [[Rose]].
+    *
     * It is common, but not required, to randomize the order of the edge cases here. If so, you should
     * use the [[Randomizer.shuffle]] function for this, so that the order is reproducible if something fails.
     * If you don't use the [[Randomizer]], just return it unchanged as part of the returned tuple.
@@ -156,7 +161,7 @@ trait Generator[T] { thisGeneratorOfT =>
     * @param rnd the [[Randomizer]] that should be used if you want randomization of the edges
     * @return a Tuple: the list of edges, and the next [[Randomizer]]
     */
-  def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[T], Randomizer) = (Nil, rnd)
+  def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[T]], Randomizer) = (Nil, rnd)
 
   /**
     * Implementation that generates the next value of type `T` using the provided `SizeParam`,
@@ -199,7 +204,7 @@ trait Generator[T] { thisGeneratorOfT =>
     *
     * This function returns a Tuple of three fields:
     *
-    *   - The next value of type [[T]] to try evaluating.
+    *   - The next value of type `T` to try evaluating.
     *   - The remaining edges ''without'' the one that you are using. That is, if this function
     *     received a non-empty `edges` List, it should usually return the head as the next
     *     value, and the tail as the remainder after that.
@@ -213,10 +218,10 @@ trait Generator[T] { thisGeneratorOfT =>
     * @return a Tuple of the next value, the remaining edges, and the resulting [[Randomizer]],
     *         as described above.
     */
-  def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (RoseTree[T], List[T], Randomizer) = 
-    edges.filter(e => isValid(e, szp)) match {
+  def next(szp: SizeParam, edges: List[RoseTree[T]], rnd: Randomizer): (RoseTree[T], List[RoseTree[T]], Randomizer) = 
+    edges.filter(rt => isValid(rt.value, szp)) match {
       case head :: tail =>
-        (roseTreeOfEdge(head, szp, isValid), tail, rnd)
+        (roseTreeOfEdge(head.value, szp, isValid), tail, rnd)
       case _ =>
         @tailrec
         def loop(count: Int, nextRnd: Randomizer): (RoseTree[T], Randomizer) = {
@@ -233,8 +238,8 @@ trait Generator[T] { thisGeneratorOfT =>
     }
 
   /**
-    * Given a function from types [[T]] to [[U]], return a new [[Generator]] that produces
-    * values of type [[U]].
+    * Given a function from types `T` to `U`, return a new [[Generator]] that produces
+    * values of type `U`.
     *
     * For example, say that you needed a Generator that only creates even Ints. We already
     * have [[Generator.intGenerator]], so one way to write this would be:
@@ -253,15 +258,15 @@ trait Generator[T] { thisGeneratorOfT =>
     * This often makes it much easier to create a new Generator, if you have an existing
     * one you can base it on.
     *
-    * @param f a function from [[T]] to [[U]]
+    * @param f a function from `T` to `U`
     * @tparam U the type of Generator you want to create
     * @return a new Generator, based on this one and the given transformation function
     */
   def map[U](f: T => U): Generator[U] =
     new Generator[U] { thisGeneratorOfU => 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[U], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[U]], Randomizer) = {
         val (listOfT, nextRnd) = thisGeneratorOfT.initEdges(maxLength, rnd)
-        (listOfT.map(f), nextRnd)
+        (listOfT.map(rt => rt.map(f)), nextRnd)
       }
       def nextImpl(szp: SizeParam, isValidFun: (U, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[U], Randomizer) = {
         val (nextRoseTreeOfT, _, nextRandomizer) = thisGeneratorOfT.next(szp, Nil, rnd)
@@ -273,15 +278,27 @@ trait Generator[T] { thisGeneratorOfT =>
       }
     }
 
-  // This map method can be used if the function from T to U is invertible. For example, if f
-  // is a function from Int => Option[Int] that just wraps each Int in a Some, (n: Int) => (Some(n): Option[Int]),
-  // the g function can be a function that unwraps it back to Int: (n: Option[Int]) => n.get. The point of this
-  // method is to map the Generator while preserving an interesting shrinksForValue method. To do that we need
-  // the U to T function, because shrinksToValue takes a U in the resulting Generator[U].
+  /**
+    * Maps this [[Generator]] via an invertible function, while preserving its shrinking behavior.
+    *
+    * The plain [[map]] method produces a Generator whose `shrinksForValue` is empty, because the
+    * system would have no way to translate a shrunken `U` back into a `T` to shrink further. If the
+    * mapping function `f` happens to be invertible, you can supply its inverse `g`, and this method
+    * will preserve an interesting shrinking behavior: it shrinks the original `T` values via
+    * ''this'' Generator's `shrinksForValue`, then maps each result back through `f`.
+    *
+    * For example, if `f` is a function from `Int => Option[Int]` that just wraps each `Int` in a `Some`,
+    * `(n: Int) => Some(n)`, then `g` can be a function that unwraps it back to `Int`: `(n: Option[Int]) => n.get`.
+    *
+    * @param f a function from `T` to `U`
+    * @param g the inverse of `f`, a function from `U` back to `T`
+    * @tparam U the type of Generator you want to create
+    * @return a new Generator, based on this one and the given transformation functions, that still shrinks meaningfully
+    */
   def mapInvertible[U](f: T => U, g: U => T): Generator[U] = {
     new Generator[U] { thisGeneratorOfU =>
       private val underlying: Generator[U] = thisGeneratorOfT.map(f)
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[U], Randomizer) = underlying.initEdges(maxLength, rnd)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[U]], Randomizer) = underlying.initEdges(maxLength, rnd)
       def nextImpl(szp: SizeParam, isValidFun: (U, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[U], Randomizer) = underlying.nextImpl(szp, isValidFun, rnd)
       override def map[V](f: U => V): Generator[V] = underlying.map(f)
       override def flatMap[V](f: U => Generator[V]): Generator[V] = underlying.flatMap(f)
@@ -322,25 +339,25 @@ trait Generator[T] { thisGeneratorOfT =>
   def flatMap[U](f: T => Generator[U]): Generator[U] = {
     new Generator[U] {
       thisGeneratorOfU =>
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[U], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[U]], Randomizer) = {
         val (listOfT, nextRnd) = thisGeneratorOfT.initEdges(maxLength, rnd)
-        val listOfGenOfU: List[Generator[U]] = listOfT.map(f)
+        val listOfGenOfU: List[Generator[U]] = listOfT.map(rt => f(rt.value))
         // We only want at most maxLength edges. In cases where we are composing many generators,
         // The total space of the combinations can get huge. We want to stop as soon as we reach
         // maxLength, but we want over time to include points from the entire space of
         // possible edges. So we shuffle the list of generators before we use them. That way from
         // run to run, different generators can get used.
         val (shuffledListOfGenOfU, nextNextRnd): (List[Generator[U]], Randomizer) =
-          if (listOfGenOfU.lengthCompare(1) > 1)
+          if (listOfGenOfU.lengthCompare(1) > 0)
             Randomizer.shuffle(listOfGenOfU, nextRnd)
           else
             (listOfGenOfU, nextRnd)
-        val (listOfU, nextNextNextRnd): (List[U], Randomizer) = {
+        val (listOfU, nextNextNextRnd): (List[RoseTree[U]], Randomizer) = {
           @tailrec
-          def loop(remainingGenOfU: List[Generator[U]], nRnd: Randomizer, acc: Set[U]): (List[U], Randomizer) = {
+          def loop(remainingGenOfU: List[Generator[U]], nRnd: Randomizer, acc: Map[U, RoseTree[U]]): (List[RoseTree[U]], Randomizer) = {
             val accSize = acc.size
             if (accSize >= maxLength.value) {
-              val accList = acc.toList
+              val accList = acc.values.toList
               val (shuffledListOfU, nnRnd) =
                 if (accSize > maxLength.value) {
                   // To try and touch all the possibilities over time, if the List from which we are about
@@ -355,12 +372,13 @@ trait Generator[T] { thisGeneratorOfT =>
               remainingGenOfU match {
                 case head :: tail =>
                   val (listOfU, nnRnd) = head.initEdges(maxLength, nRnd)
-                  loop(tail, nnRnd, acc ++ listOfU)
-                case _ => (acc.toList, nRnd)
+                  val newAcc = listOfU.foldLeft(acc) { case (a, rt) => a.updated(rt.value, rt) }
+                  loop(tail, nnRnd, newAcc)
+                case _ => (acc.values.toList, nRnd)
               }
           }
 
-          loop(listOfGenOfU, nextRnd, Set.empty)
+          loop(shuffledListOfGenOfU, nextNextRnd, Map.empty)
         }
         (listOfU, nextNextNextRnd)
       }
@@ -435,14 +453,12 @@ trait Generator[T] { thisGeneratorOfT =>
     */
   def isValid(value: T, size: SizeParam): Boolean = true
 
-// XXX
   /**
-    * Some simple, "ordinary" values of type [[T]].
+    * Some simple, "ordinary" values of type `T`.
     *
-    * [[canonicals]] are used for certain higher-order functions, mainly during [[shrink]].
-    * For example, when the system is trying to simplify a `List[T]`, it will look for
-    * canonical values of [[T]] to try putting into that simpler list, to see if that still
-    * causes the property to fail.
+    * [[canonicals]] are used for certain higher-order functions, mainly during shrinking. For example,
+    * when the system is trying to simplify a `List[T]`, it will look for canonical values of `T` to try
+    * putting into that simpler list, to see if that still causes the property to fail.
     *
     * For example, a few of the common types provide these canonicals:
     *
@@ -453,17 +469,12 @@ trait Generator[T] { thisGeneratorOfT =>
     * You do not have to provide canonicals for a Generator. By default, this simply
     * returns an empty [[LazyListOrStream]].
     *
-    * This function takes a [[Randomizer]] to use as a parameter, in case canonical generation
-    * for this type has a random element to it. If you use this [[Randomizer]], return the
-    * ''next'' one. If you don't use it, just use the passed-in one.
-    *
-    * @param rnd a [[Randomizer]] to use if this function requires any random data
-    * @return the canonical values for this type (if any), and the next [[Randomizer]]
+    * @return the canonical values for this type (if any)
     */
   def canonicals: LazyListOrStream[RoseTree[T]] = LazyListOrStream.empty
 
   /**
-    * Fetch a generated value of type [[T]].
+    * Fetch a generated value of type `T`.
     *
     * [[sample]] allows you to experiment with this [[Generator]] in a convenient, ad-hoc way.
     * Each time you call it, it will create a new [[Randomizer]] and a random size, and
@@ -472,7 +483,7 @@ trait Generator[T] { thisGeneratorOfT =>
     * You should not need to override this method; it is here to let you play with your
     * Generator as you build it, and see what sort of values are actually coming out.
     *
-    * @return a generated value of type [[T]]
+    * @return a generated value of type `T`
     */
   final def sample: T = {
     val rnd = Randomizer.default
@@ -483,7 +494,7 @@ trait Generator[T] { thisGeneratorOfT =>
   }
 
   /**
-    * Generate a number of values of type [[T]].
+    * Generate a number of values of type `T`.
     *
     * This is essentially the same as [[sample]], and all the same comments apply, but this
     * will generate as many values as you ask for.
@@ -505,8 +516,26 @@ trait Generator[T] { thisGeneratorOfT =>
     loop(0, Randomizer.default, Nil)
   }
 
-  // Could just use an empty LazyList to say I don't have any, but I think we should differentiate between we aren't producing
-  // any from the value is already fully shrunk (like "" for String).
+  /**
+    * Offer some simpler ("smaller") alternatives to the given value, for use when shrinking a failing example.
+    *
+    * When a property check fails, the test system tries to simplify the failing values, looking for an
+    * easier-to-debug example that still causes the property to fail. It does this by repeatedly calling
+    * this method: each [[RoseTree]] in the returned stream is one possible simplification of `theValue`,
+    * which the system will try in turn, shrinking further if that alternative also fails.
+    *
+    * The alternatives must always be ''smaller'' than -- never equal to or larger than -- `theValue`,
+    * or shrinking can loop forever. Order them from "largest" to "smallest", in the same sense that
+    * [[canonicals]] are ordered. For example, an `Int` generator might shrink 100 towards 0 by offering
+    * 50 and -50, then eventually 0 itself as the final, simplest value.
+    *
+    * Return `None` if this Generator offers no shrinking for its values at all (the default).
+    * Return `Some` of an empty [[LazyListOrStream]] to indicate that `theValue` cannot be simplified any
+    * further -- for example, the empty String is already fully shrunk.
+    *
+    * @param theValue the value that caused the property to fail, to be simplified
+    * @return `Some` of a possibly-empty stream of simpler alternatives, or `None` if this Generator does not shrink
+    */
   def shrinksForValue(theValue: T): Option[LazyListOrStream[RoseTree[T]]] = None
 }
 
@@ -542,8 +571,8 @@ object Generator {
     * generate anything except the subtype. That would be sound, but you wouldn't get a good variety of
     * supertype values. This way, the subtype/supertype conversion is somewhat better-controlled.
     *
-    * @param genOfT a [[Generator]] that produces values of [[T]]
-    * @param ev implicit evidence that [[T]] is a subtype of [[U]]
+    * @param genOfT a [[Generator]] that produces values of `T`
+    * @param ev implicit evidence that `T` is a subtype of `U`
     * @tparam T the subtype that we have a [[Generator]] for
     * @tparam U the supertype that we want a [[Generator]] for
     * @return a `Generator[U]` derived from the `Generator[T]`
@@ -561,7 +590,6 @@ object Generator {
   //
   // TBD: should canonicals also be listed here? It seems a bit asymmetrical that edges and canonicals are
   // handled differently.
-  //
 
   private[prop] val byteEdges = List(Byte.MinValue, -1.toByte, 0.toByte, 1.toByte, Byte.MaxValue)
   private[prop] val shortEdges = List(Short.MinValue, -1.toShort, 0.toShort, 1.toShort, Short.MaxValue)
@@ -666,9 +694,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Byte], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[Byte]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(byteEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       
       override def roseTreeOfEdge(edge: Byte, sizeParam: SizeParam, isValidFun: (Byte, SizeParam) => Boolean): RoseTree[Byte] = {
@@ -735,9 +763,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Short], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[Short]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(shortEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: Short, sizeParam: SizeParam, isValidFun: (Short, SizeParam) => Boolean): RoseTree[Short] = NextRoseTree(edge)(sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (Short, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[Short], Randomizer) = {
@@ -799,9 +827,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Char], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[Char]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(charEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: Char, sizeParam: SizeParam, isValidFun: (Char, SizeParam) => Boolean): RoseTree[Char] = NextRoseTree(edge)(sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (Char, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[Char], Randomizer) = {
@@ -867,9 +895,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Int], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[Int]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(intEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: Int, sizeParam: SizeParam, isValidFun: (Int, SizeParam) => Boolean): RoseTree[Int] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (Int, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[Int], Randomizer) = {
@@ -930,9 +958,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Long], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[Long]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(longEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: Long, sizeParam: SizeParam, isValidFun: (Long, SizeParam) => Boolean): RoseTree[Long] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (Long, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[Long], Randomizer) = {
@@ -1031,8 +1059,8 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Float], Randomizer) = {
-        (floatEdges.take(maxLength), rnd)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[Float]], Randomizer) = {
+        (floatEdges.take(maxLength).map(v => Rose(v)), rnd)
       }
       override def roseTreeOfEdge(edge: Float, sizeParam: SizeParam, isValidFun: (Float, SizeParam) => Boolean): RoseTree[Float] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (Float, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[Float], Randomizer) = {
@@ -1132,8 +1160,8 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Double], Randomizer) = {
-        (doubleEdges.take(maxLength), rnd)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[Double]], Randomizer) = {
+        (doubleEdges.take(maxLength).map(v => Rose(v)), rnd)
       }
       override def roseTreeOfEdge(edge: Double, sizeParam: SizeParam, isValidFun: (Double, SizeParam) => Boolean): RoseTree[Double] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (Double, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[Double], Randomizer) = {
@@ -1190,9 +1218,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosInt], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosInt]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posIntEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: PosInt, sizeParam: SizeParam, isValidFun: (PosInt, SizeParam) => Boolean): RoseTree[PosInt] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (PosInt, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[PosInt], Randomizer) = {
@@ -1250,9 +1278,9 @@ object Generator {
 //DOTTY-ONLY
 //DOTTY-ONLY   private val edges: List[PosInt] = List(PosInt.MinValue, PosInt.ensuringValid(2), PosInt.MaxValue)
 //DOTTY-ONLY
-//DOTTY-ONLY   override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosInt], Randomizer) = {
+//DOTTY-ONLY   override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosInt]], Randomizer) = {
 //DOTTY-ONLY     val (allEdges, nextRnd) = Randomizer.shuffle(edges, rnd)
-//DOTTY-ONLY     (allEdges.take(maxLength), nextRnd)
+//DOTTY-ONLY     (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
 //DOTTY-ONLY   }
 //DOTTY-ONLY
 //DOTTY-ONLY   override def roseTreeOfEdge(edge: PosInt, sizeParam: SizeParam, isValidFun: (PosInt, SizeParam) => Boolean): RoseTree[PosInt] =
@@ -1314,9 +1342,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZInt], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosZInt]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZIntEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: PosZInt, sizeParam: SizeParam, isValidFun: (PosZInt, SizeParam) => Boolean): RoseTree[PosZInt] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (PosZInt, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[PosZInt], Randomizer) = {
@@ -1369,9 +1397,9 @@ object Generator {
 //DOTTY-ONLY
 //DOTTY-ONLY     private val edges: List[opaquetypes.PosInts.PosZInt] = List(opaquetypes.PosInts.PosZInt.MinValue, opaquetypes.PosInts.PosZInt.ensuringValid(1), opaquetypes.PosInts.PosZInt.MaxValue)
 //DOTTY-ONLY
-//DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[opaquetypes.PosInts.PosZInt], Randomizer) = {
+//DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[opaquetypes.PosInts.PosZInt]], Randomizer) = {
 //DOTTY-ONLY       val (allEdges, nextRnd) = Randomizer.shuffle(edges, rnd)
-//DOTTY-ONLY       (allEdges.take(maxLength), nextRnd)
+//DOTTY-ONLY       (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
 //DOTTY-ONLY     }
 //DOTTY-ONLY
 //DOTTY-ONLY     override def roseTreeOfEdge(edge: opaquetypes.PosInts.PosZInt, sizeParam: SizeParam, isValidFun: (opaquetypes.PosInts.PosZInt, SizeParam) => Boolean): RoseTree[opaquetypes.PosInts.PosZInt] =
@@ -1437,9 +1465,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosLong], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosLong]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posLongEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: PosLong, sizeParam: SizeParam, isValidFun: (PosLong, SizeParam) => Boolean): RoseTree[PosLong] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (PosLong, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[PosLong], Randomizer) = {
@@ -1495,9 +1523,9 @@ object Generator {
 //DOTTY-ONLY
 //DOTTY-ONLY   private val edges: List[PosLong] = List(PosLong.MinValue, PosLong.ensuringValid(2L), PosLong.MaxValue)
 //DOTTY-ONLY
-//DOTTY-ONLY   override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosLong], Randomizer) = {
+//DOTTY-ONLY   override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosLong]], Randomizer) = {
 //DOTTY-ONLY     val (allEdges, nextRnd) = Randomizer.shuffle(edges, rnd)
-//DOTTY-ONLY     (allEdges.take(maxLength), nextRnd)
+//DOTTY-ONLY     (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
 //DOTTY-ONLY   }
 //DOTTY-ONLY
 //DOTTY-ONLY   override def roseTreeOfEdge(edge: PosLong, sizeParam: SizeParam, isValidFun: (PosLong, SizeParam) => Boolean): RoseTree[PosLong] =
@@ -1559,9 +1587,9 @@ object Generator {
         }
       }
       
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZLong], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosZLong]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZLongEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: PosZLong, sizeParam: SizeParam, isValidFun: (PosZLong, SizeParam) => Boolean): RoseTree[PosZLong] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (PosZLong, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[PosZLong], Randomizer) = {
@@ -1617,9 +1645,9 @@ object Generator {
 //DOTTY-ONLY
 //DOTTY-ONLY     private val edges: List[PosZLong] = List(PosZLong.MinValue, PosZLong.ensuringValid(1L), PosZLong.MaxValue)
 //DOTTY-ONLY
-//DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZLong], Randomizer) = {
+//DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosZLong]], Randomizer) = {
 //DOTTY-ONLY       val (allEdges, nextRnd) = Randomizer.shuffle(edges, rnd)
-//DOTTY-ONLY       (allEdges.take(maxLength), nextRnd)
+//DOTTY-ONLY       (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
 //DOTTY-ONLY     }
 //DOTTY-ONLY
 //DOTTY-ONLY     override def roseTreeOfEdge(edge: PosZLong, sizeParam: SizeParam, isValidFun: (PosZLong, SizeParam) => Boolean): RoseTree[PosZLong] =
@@ -1698,9 +1726,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosFloat], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosFloat]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posFloatEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: PosFloat, sizeParam: SizeParam, isValidFun: (PosFloat, SizeParam) => Boolean): RoseTree[PosFloat] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (PosFloat, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[PosFloat], Randomizer) = {
@@ -1772,9 +1800,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosFiniteFloat], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosFiniteFloat]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posFiniteFloatEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: PosFiniteFloat, sizeParam: SizeParam, isValidFun: (PosFiniteFloat, SizeParam) => Boolean): RoseTree[PosFiniteFloat] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (PosFiniteFloat, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[PosFiniteFloat], Randomizer) = {
@@ -1806,7 +1834,7 @@ object Generator {
   //DOTTY-ONLY given Generator[PosFiniteFloat] = posFiniteFloatGenerator
 
   /**
-    * A [[Generator]] that produces Floats, excluding infinity.
+    * A [[Generator]] that produces FiniteFloats, excluding infinity and NaN.
     */
   // SKIP-DOTTY-START
   implicit val finiteFloatGenerator: Generator[FiniteFloat] =
@@ -1854,9 +1882,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[FiniteFloat], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[FiniteFloat]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(finiteFloatEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: FiniteFloat, sizeParam: SizeParam, isValidFun: (FiniteFloat, SizeParam) => Boolean): RoseTree[FiniteFloat] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (FiniteFloat, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[FiniteFloat], Randomizer) = {
@@ -1885,7 +1913,13 @@ object Generator {
   //DOTTY-ONLY /**
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[FiniteFloat]] values.
   //DOTTY-ONLY   */
-  //DOTTY-ONLY given Generator[FiniteFloat] = finiteFloatGenerator  
+  //DOTTY-ONLY given Generator[FiniteFloat] = finiteFloatGenerator
+
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[org.scalactic.opaquetypes.FiniteFloat]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given opaqueFiniteFloatGenerator: Generator[org.scalactic.opaquetypes.FiniteFloat] =
+  //DOTTY-ONLY   finiteFloatGenerator.map(f => org.scalactic.opaquetypes.FiniteFloat.ensuringValid(f.value))
 
   /**
     * A [[Generator]] that produces Doubles, excluding infinity.
@@ -1936,9 +1970,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[FiniteDouble], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[FiniteDouble]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(finiteDoubleEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: FiniteDouble, sizeParam: SizeParam, isValidFun: (FiniteDouble, SizeParam) => Boolean): RoseTree[FiniteDouble] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (FiniteDouble, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[FiniteDouble], Randomizer) = {
@@ -1968,6 +2002,11 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[FiniteDouble]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[FiniteDouble] = finiteDoubleGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.FiniteDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesFiniteDoubleGenerator: Generator[org.scalactic.opaquetypes.FiniteDouble] =
+  //DOTTY-ONLY   finiteDoubleGenerator.map(d => org.scalactic.opaquetypes.FiniteDouble.ensuringValid(d.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_FiniteDouble: Generator[org.scalactic.opaquetypes.FiniteDouble] = opaquetypesFiniteDoubleGenerator
 
   /**
     * A [[Generator]] that produces positive Floats, including zero and infinity.
@@ -2022,9 +2061,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZFloat], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosZFloat]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZFloatEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: PosZFloat, sizeParam: SizeParam, isValidFun: (PosZFloat, SizeParam) => Boolean): RoseTree[PosZFloat] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (PosZFloat, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[PosZFloat], Randomizer) = {
@@ -2099,9 +2138,9 @@ object Generator {
 //DOTTY-ONLY
 //DOTTY-ONLY   private val edges: List[PosZFloat] = List(PosZFloat.ensuringValid(-0.0f), PosZFloat.ensuringValid(0.0f), PosZFloat.MinPositiveValue, PosZFloat.ensuringValid(1.0f), PosZFloat.MaxValue, PosZFloat.PositiveInfinity)
 //DOTTY-ONLY
-//DOTTY-ONLY   override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZFloat], Randomizer) = {
+//DOTTY-ONLY   override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosZFloat]], Randomizer) = {
 //DOTTY-ONLY     val (allEdges, nextRnd) = Randomizer.shuffle(edges, rnd)
-//DOTTY-ONLY     (allEdges.take(maxLength), nextRnd)
+//DOTTY-ONLY     (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
 //DOTTY-ONLY   }
 //DOTTY-ONLY
 //DOTTY-ONLY   override def roseTreeOfEdge(edge: PosZFloat, sizeParam: SizeParam, isValidFun: (PosZFloat, SizeParam) => Boolean): RoseTree[PosZFloat] = NextRoseTree(edge, sizeParam, isValidFun)
@@ -2172,9 +2211,9 @@ object Generator {
 //DOTTY-ONLY
 //DOTTY-ONLY     private val edges: List[PosFloat] = List(PosFloat.ensuringValid(Float.MinPositiveValue), PosFloat.ensuringValid(1.0f), PosFloat.ensuringValid(Float.MaxValue), PosFloat.ensuringValid(Float.PositiveInfinity))
 //DOTTY-ONLY
-//DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosFloat], Randomizer) = {
+//DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosFloat]], Randomizer) = {
 //DOTTY-ONLY       val (allEdges, nextRnd) = Randomizer.shuffle(edges, rnd)
-//DOTTY-ONLY       (allEdges.take(maxLength), nextRnd)
+//DOTTY-ONLY       (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
 //DOTTY-ONLY     }
 //DOTTY-ONLY
 //DOTTY-ONLY     override def roseTreeOfEdge(edge: PosFloat, sizeParam: SizeParam, isValidFun: (PosFloat, SizeParam) => Boolean): RoseTree[PosFloat] =
@@ -2254,9 +2293,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZFiniteFloat], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosZFiniteFloat]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZFiniteFloatEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: PosZFiniteFloat, sizeParam: SizeParam, isValidFun: (PosZFiniteFloat, SizeParam) => Boolean): RoseTree[PosZFiniteFloat] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (PosZFiniteFloat, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[PosZFiniteFloat], Randomizer) = {
@@ -2323,9 +2362,9 @@ object Generator {
 //DOTTY-ONLY     // finite edges only (no infinities)
 //DOTTY-ONLY     private val edges: List[PosZFiniteFloat] = List(PosZFiniteFloat.ensuringValid(Float.MinPositiveValue), PosZFiniteFloat.ensuringValid(1.0f), PosZFiniteFloat.ensuringValid(Float.MaxValue))
 //DOTTY-ONLY
-//DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZFiniteFloat], Randomizer) = {
+//DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosZFiniteFloat]], Randomizer) = {
 //DOTTY-ONLY       val (allEdges, nextRnd) = Randomizer.shuffle(edges, rnd)
-//DOTTY-ONLY       (allEdges.take(maxLength), nextRnd)
+//DOTTY-ONLY       (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
 //DOTTY-ONLY     }
 //DOTTY-ONLY
 //DOTTY-ONLY     override def roseTreeOfEdge(edge: PosZFiniteFloat, sizeParam: SizeParam, isValidFun: (PosZFiniteFloat, SizeParam) => Boolean): RoseTree[PosZFiniteFloat] =
@@ -2396,9 +2435,9 @@ object Generator {
 //DOTTY-ONLY
 //DOTTY-ONLY     private val edges: List[PosFiniteFloat] = List(PosFiniteFloat.MinValue, PosFiniteFloat.ensuringValid(1.0f), PosFiniteFloat.MaxValue)
 //DOTTY-ONLY
-//DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosFiniteFloat], Randomizer) = {
+//DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosFiniteFloat]], Randomizer) = {
 //DOTTY-ONLY       val (allEdges, nextRnd) = Randomizer.shuffle(edges, rnd)
-//DOTTY-ONLY       (allEdges.take(maxLength), nextRnd)
+//DOTTY-ONLY       (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
 //DOTTY-ONLY     }
 //DOTTY-ONLY
 //DOTTY-ONLY     override def roseTreeOfEdge(edge: PosFiniteFloat, sizeParam: SizeParam, isValidFun: (PosFiniteFloat, SizeParam) => Boolean): RoseTree[PosFiniteFloat] =
@@ -2479,9 +2518,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosDouble], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosDouble]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posDoubleEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: PosDouble, sizeParam: SizeParam, isValidFun: (PosDouble, SizeParam) => Boolean): RoseTree[PosDouble] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (PosDouble, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[PosDouble], Randomizer) = {
@@ -2548,9 +2587,9 @@ object Generator {
   //DOTTY-ONLY
   //DOTTY-ONLY     private val edges: List[PosDouble] = List(PosDouble.ensuringValid(Double.MinPositiveValue), PosDouble.ensuringValid(1.0), PosDouble.ensuringValid(Double.MaxValue), PosDouble.ensuringValid(Double.PositiveInfinity))
   //DOTTY-ONLY
-  //DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosDouble], Randomizer) = {
+  //DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosDouble]], Randomizer) = {
   //DOTTY-ONLY       val (allEdges, nextRnd) = Randomizer.shuffle(edges, rnd)
-  //DOTTY-ONLY       (allEdges.take(maxLength), nextRnd)
+  //DOTTY-ONLY       (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
   //DOTTY-ONLY     }
   //DOTTY-ONLY
   //DOTTY-ONLY     override def roseTreeOfEdge(edge: PosDouble, sizeParam: SizeParam, isValidFun: (PosDouble, SizeParam) => Boolean): RoseTree[PosDouble] =
@@ -2628,9 +2667,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosFiniteDouble], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosFiniteDouble]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posFiniteDoubleEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: PosFiniteDouble, sizeParam: SizeParam, isValidFun: (PosFiniteDouble, SizeParam) => Boolean): RoseTree[PosFiniteDouble] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (PosFiniteDouble, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[PosFiniteDouble], Randomizer) = {
@@ -2660,6 +2699,53 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[PosFiniteDouble]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[PosFiniteDouble] = posFiniteDoubleGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.PosDoubles.PosFiniteDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesPosFiniteDoubleGenerator: Generator[org.scalactic.opaquetypes.PosDoubles.PosFiniteDouble] =
+  //DOTTY-ONLY   new Generator[org.scalactic.opaquetypes.PosDoubles.PosFiniteDouble] {
+  //DOTTY-ONLY
+  //DOTTY-ONLY   import org.scalactic.opaquetypes.PosDoubles.PosFiniteDouble
+  //DOTTY-ONLY
+  //DOTTY-ONLY     case class NextRoseTree(value: PosFiniteDouble, sizeParam: SizeParam, isValidFun: (PosFiniteDouble, SizeParam) => Boolean) extends RoseTree[PosFiniteDouble] {
+  //DOTTY-ONLY       def shrinks: LazyListOrStream[RoseTree[PosFiniteDouble]] = {
+  //DOTTY-ONLY         def resLazyListOrStream(theValue: PosFiniteDouble): LazyListOrStream[RoseTree[PosFiniteDouble]] = {
+  //DOTTY-ONLY           val dv: Double = theValue.value
+  //DOTTY-ONLY           if (dv == 1.0) LazyListOrStream.empty
+  //DOTTY-ONLY           else {
+  //DOTTY-ONLY             val nearest = PosFiniteDouble.ensuringValid(math.max(1.0, math.floor(dv)))
+  //DOTTY-ONLY             if (isValidFun(nearest, sizeParam)) Rose(nearest) #:: LazyListOrStream.empty
+  //DOTTY-ONLY             else LazyListOrStream.empty
+  //DOTTY-ONLY           }
+  //DOTTY-ONLY         }
+  //DOTTY-ONLY         resLazyListOrStream(value)
+  //DOTTY-ONLY       }
+  //DOTTY-ONLY     }
+  //DOTTY-ONLY
+  //DOTTY-ONLY     private val edges: List[PosFiniteDouble] = List(PosFiniteDouble.ensuringValid(1.0), PosFiniteDouble.ensuringValid(Double.MaxValue))
+  //DOTTY-ONLY
+//DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosFiniteDouble]], Randomizer) = {
+  //DOTTY-ONLY       val (allEdges, nextRnd) = Randomizer.shuffle(edges, rnd)
+  //DOTTY-ONLY       (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
+  //DOTTY-ONLY     }
+
+  //DOTTY-ONLY     override def roseTreeOfEdge(edge: PosFiniteDouble, sizeParam: SizeParam, isValidFun: (PosFiniteDouble, SizeParam) => Boolean): RoseTree[PosFiniteDouble] =
+  //DOTTY-ONLY       NextRoseTree(edge, sizeParam, isValidFun)
+  //DOTTY-ONLY
+  //DOTTY-ONLY     def nextImpl(szp: SizeParam, isValidFun: (PosFiniteDouble, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[PosFiniteDouble], Randomizer) = {
+  //DOTTY-ONLY       val (anyPosFiniteDouble, rnd2) = rnd.nextPosFiniteDouble
+  //DOTTY-ONLY       val p = PosFiniteDouble.ensuringValid(anyPosFiniteDouble.value)
+  //DOTTY-ONLY       (NextRoseTree(p, szp, isValidFun), rnd2)
+  //DOTTY-ONLY     }
+  //DOTTY-ONLY
+  //DOTTY-ONLY     override def canonicals: LazyListOrStream[RoseTree[PosFiniteDouble]] =
+  //DOTTY-ONLY       LazyListOrStream(PosFiniteDouble.ensuringValid(1.0)).map(v => Rose(v))
+  //DOTTY-ONLY
+  //DOTTY-ONLY     override def toString = "Generator[org.scalactic.opaquetypes.PosDoubles.PosFiniteDouble]"
+  //DOTTY-ONLY
+  //DOTTY-ONLY     override def shrinksForValue(valueToShrink: PosFiniteDouble): Option[LazyListOrStream[RoseTree[PosFiniteDouble]]] =
+  //DOTTY-ONLY       Some(NextRoseTree(valueToShrink, SizeParam(PosZInt.ensuringValid(1), PosZInt.ensuringValid(0), PosZInt.ensuringValid(1)), isValid).shrinks)
+  //DOTTY-ONLY   }
+  //DOTTY-ONLY given given_Generator_opaquetypes_PosFiniteDouble: Generator[org.scalactic.opaquetypes.PosDoubles.PosFiniteDouble] = opaquetypesPosFiniteDoubleGenerator
 
   /**
     * A [[Generator]] that produces positive Doubles, including zero and infinity.
@@ -2714,9 +2800,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZDouble], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosZDouble]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZDoubleEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: PosZDouble, sizeParam: SizeParam, isValidFun: (PosZDouble, SizeParam) => Boolean): RoseTree[PosZDouble] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (PosZDouble, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[PosZDouble], Randomizer) = {
@@ -2776,9 +2862,9 @@ object Generator {
   //DOTTY-ONLY
   //DOTTY-ONLY     private val edges: List[PosZDouble] = List(PosZDouble.ensuringValid(0.0), PosZDouble.ensuringValid(1.0), PosZDouble.ensuringValid(Double.MaxValue), PosZDouble.ensuringValid(Double.PositiveInfinity))
   //DOTTY-ONLY
-  //DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZDouble], Randomizer) = {
+  //DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosZDouble]], Randomizer) = {
   //DOTTY-ONLY       val (allEdges, nextRnd) = Randomizer.shuffle(edges, rnd)
-  //DOTTY-ONLY       (allEdges.take(maxLength), nextRnd)
+  //DOTTY-ONLY       (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
   //DOTTY-ONLY     }
   //DOTTY-ONLY
   //DOTTY-ONLY     override def roseTreeOfEdge(edge: PosZDouble, sizeParam: SizeParam, isValidFun: (PosZDouble, SizeParam) => Boolean): RoseTree[PosZDouble] =
@@ -2864,9 +2950,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZFiniteDouble], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosZFiniteDouble]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZFiniteDoubleEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: PosZFiniteDouble, sizeParam: SizeParam, isValidFun: (PosZFiniteDouble, SizeParam) => Boolean): RoseTree[PosZFiniteDouble] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (PosZFiniteDouble, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[PosZFiniteDouble], Randomizer) = {
@@ -2932,9 +3018,9 @@ object Generator {
   //DOTTY-ONLY
   //DOTTY-ONLY     private val edges: List[PosZFiniteDouble] = List(PosZFiniteDouble.MinValue, PosZFiniteDouble.MinPositiveValue, PosZFiniteDouble.ensuringValid(1.0), PosZFiniteDouble.MaxValue)
   //DOTTY-ONLY
-  //DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZFiniteDouble], Randomizer) = {
+  //DOTTY-ONLY     override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[PosZFiniteDouble]], Randomizer) = {
   //DOTTY-ONLY       val (allEdges, nextRnd) = Randomizer.shuffle(edges, rnd)
-  //DOTTY-ONLY       (allEdges.take(maxLength), nextRnd)
+  //DOTTY-ONLY       (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
   //DOTTY-ONLY     }
   //DOTTY-ONLY
   //DOTTY-ONLY     override def roseTreeOfEdge(edge: PosZFiniteDouble, sizeParam: SizeParam, isValidFun: (PosZFiniteDouble, SizeParam) => Boolean): RoseTree[PosZFiniteDouble] =
@@ -3027,9 +3113,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroDouble], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[NonZeroDouble]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroDoubleEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: NonZeroDouble, sizeParam: SizeParam, isValidFun: (NonZeroDouble, SizeParam) => Boolean): RoseTree[NonZeroDouble] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NonZeroDouble, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NonZeroDouble], Randomizer) = {
@@ -3110,9 +3196,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFiniteDouble], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[NonZeroFiniteDouble]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFiniteDoubleEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: NonZeroFiniteDouble, sizeParam: SizeParam, isValidFun: (NonZeroFiniteDouble, SizeParam) => Boolean): RoseTree[NonZeroFiniteDouble] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NonZeroFiniteDouble, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NonZeroFiniteDouble], Randomizer) = {
@@ -3198,9 +3284,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFloat], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[NonZeroFloat]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFloatEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: NonZeroFloat, sizeParam: SizeParam, isValidFun: (NonZeroFloat, SizeParam) => Boolean): RoseTree[NonZeroFloat] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NonZeroFloat, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NonZeroFloat], Randomizer) = {
@@ -3280,9 +3366,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFiniteFloat], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[NonZeroFiniteFloat]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFiniteFloatEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: NonZeroFiniteFloat, sizeParam: SizeParam, isValidFun: (NonZeroFiniteFloat, SizeParam) => Boolean): RoseTree[NonZeroFiniteFloat] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NonZeroFiniteFloat, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NonZeroFiniteFloat], Randomizer) = {
@@ -3336,11 +3422,11 @@ object Generator {
           }
           resLazyListOrStream(value)
         }
-      } // TODO Confirm OK without Roses. I.e., will the last one have an empty shrinks method?
+      }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroInt], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[NonZeroInt]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroIntEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: NonZeroInt, sizeParam: SizeParam, isValidFun: (NonZeroInt, SizeParam) => Boolean): RoseTree[NonZeroInt] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NonZeroInt, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NonZeroInt], Randomizer) = {
@@ -3371,6 +3457,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NonZeroInt] = nonZeroIntGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NonZeroInts.NonZeroInt independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNonZeroIntGenerator: Generator[org.scalactic.opaquetypes.NonZeroInts.NonZeroInt] =
+  //DOTTY-ONLY   nonZeroIntGenerator.map(i => org.scalactic.opaquetypes.NonZeroInts.NonZeroInt.ensuringValid(i.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NonZeroInt: Generator[org.scalactic.opaquetypes.NonZeroInts.NonZeroInt] = opaquetypesNonZeroIntGenerator
+
   /**
     * A [[Generator]] that produces Longs, excluding zero.
     */
@@ -3394,11 +3485,11 @@ object Generator {
           }
           resLazyListOrStream(value)
         }
-      } // TODO Confirm OK without Roses. I.e., will the last one have an empty shrinks method?
+      }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroLong], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[NonZeroLong]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroLongEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: NonZeroLong, sizeParam: SizeParam, isValidFun: (NonZeroLong, SizeParam) => Boolean): RoseTree[NonZeroLong] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NonZeroLong, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NonZeroLong], Randomizer) = {
@@ -3428,6 +3519,21 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NonZeroLong]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NonZeroLong] = nonZeroLongGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NonZeroLongs.NonZeroLong independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNonZeroLongGenerator: Generator[org.scalactic.opaquetypes.NonZeroLongs.NonZeroLong] =
+  //DOTTY-ONLY   nonZeroLongGenerator.map(l => org.scalactic.opaquetypes.NonZeroLongs.NonZeroLong.ensuringValid(l.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NonZeroLong: Generator[org.scalactic.opaquetypes.NonZeroLongs.NonZeroLong] = opaquetypesNonZeroLongGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NonZeroFloats.NonZeroFloat independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNonZeroFloatGenerator: Generator[org.scalactic.opaquetypes.NonZeroFloats.NonZeroFloat] =
+  //DOTTY-ONLY   nonZeroFloatGenerator.map(f => org.scalactic.opaquetypes.NonZeroFloats.NonZeroFloat.ensuringValid(f.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NonZeroFloat: Generator[org.scalactic.opaquetypes.NonZeroFloats.NonZeroFloat] = opaquetypesNonZeroFloatGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NonZeroDoubles.NonZeroDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNonZeroDoubleGenerator: Generator[org.scalactic.opaquetypes.NonZeroDoubles.NonZeroDouble] =
+  //DOTTY-ONLY   nonZeroDoubleGenerator.map(d => org.scalactic.opaquetypes.NonZeroDoubles.NonZeroDouble.ensuringValid(d.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NonZeroDouble: Generator[org.scalactic.opaquetypes.NonZeroDoubles.NonZeroDouble] = opaquetypesNonZeroDoubleGenerator
 
   /**
     * A [[Generator]] that produces negative Doubles, excluding zero but including infinity.
@@ -3474,9 +3580,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegDouble], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[NegDouble]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negDoubleEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: NegDouble, sizeParam: SizeParam, isValidFun: (NegDouble, SizeParam) => Boolean): RoseTree[NegDouble] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NegDouble, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NegDouble], Randomizer) = {
@@ -3506,6 +3612,11 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegDouble]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegDouble] = negDoubleGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegDoubles.NegDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegDoubleGenerator: Generator[org.scalactic.opaquetypes.NegDoubles.NegDouble] =
+  //DOTTY-ONLY   negDoubleGenerator.map(f => org.scalactic.opaquetypes.NegDoubles.NegDouble.ensuringValid(f.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegDouble: Generator[org.scalactic.opaquetypes.NegDoubles.NegDouble] = opaquetypesNegDoubleGenerator
 
   /**
     * A [[Generator]] that produces negative Doubles, excluding zero and infinity.
@@ -3548,9 +3659,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegFiniteDouble], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[NegFiniteDouble]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negFiniteDoubleEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: NegFiniteDouble, sizeParam: SizeParam, isValidFun: (NegFiniteDouble, SizeParam) => Boolean): RoseTree[NegFiniteDouble] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NegFiniteDouble, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NegFiniteDouble], Randomizer) = {
@@ -3580,6 +3691,11 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegFiniteDouble]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegFiniteDouble] = negFiniteDoubleGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegDoubles.NegFiniteDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegFiniteDoubleGenerator: Generator[org.scalactic.opaquetypes.NegDoubles.NegFiniteDouble] =
+  //DOTTY-ONLY   negFiniteDoubleGenerator.map(f => org.scalactic.opaquetypes.NegDoubles.NegFiniteDouble.ensuringValid(f.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegFiniteDouble: Generator[org.scalactic.opaquetypes.NegDoubles.NegFiniteDouble] = opaquetypesNegFiniteDoubleGenerator
 
   /**
     * A [[Generator]] that produces negative Floats, excluding zero but including infinity.
@@ -3626,9 +3742,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegFloat], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[NegFloat]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negFloatEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: NegFloat, sizeParam: SizeParam, isValidFun: (NegFloat, SizeParam) => Boolean): RoseTree[NegFloat] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NegFloat, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NegFloat], Randomizer) = {
@@ -3658,6 +3774,11 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegFloat]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegFloat] = negFloatGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegFloats.NegFloat independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegFloatGenerator: Generator[org.scalactic.opaquetypes.NegFloats.NegFloat] =
+  //DOTTY-ONLY   negFloatGenerator.map(f => org.scalactic.opaquetypes.NegFloats.NegFloat.ensuringValid(f.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegFloat: Generator[org.scalactic.opaquetypes.NegFloats.NegFloat] = opaquetypesNegFloatGenerator
 
   /**
     * A [[Generator]] that produces negative Floats, excluding zero and infinity.
@@ -3700,9 +3821,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegFiniteFloat], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[NegFiniteFloat]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negFiniteFloatEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: NegFiniteFloat, sizeParam: SizeParam, isValidFun: (NegFiniteFloat, SizeParam) => Boolean): RoseTree[NegFiniteFloat] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NegFiniteFloat, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NegFiniteFloat], Randomizer) = {
@@ -3733,6 +3854,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegFiniteFloat] = negFiniteFloatGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegFloats.NegFiniteFloat independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegFiniteFloatGenerator: Generator[org.scalactic.opaquetypes.NegFloats.NegFiniteFloat] =
+  //DOTTY-ONLY   negFiniteFloatGenerator.map(f => org.scalactic.opaquetypes.NegFloats.NegFiniteFloat.ensuringValid(f.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegFiniteFloat: Generator[org.scalactic.opaquetypes.NegFloats.NegFiniteFloat] = opaquetypesNegFiniteFloatGenerator
+
   /**
     * A [[Generator]] that produces negative Ints, excluding zero.
     */
@@ -3760,9 +3886,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegInt], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[NegInt]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negIntEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: NegInt, sizeParam: SizeParam, isValidFun: (NegInt, SizeParam) => Boolean): RoseTree[NegInt] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NegInt, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NegInt], Randomizer) = {
@@ -3793,6 +3919,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegInt] = negIntGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegInts.NegInt independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegIntGenerator: Generator[org.scalactic.opaquetypes.NegInts.NegInt] =
+  //DOTTY-ONLY   negIntGenerator.map(i => org.scalactic.opaquetypes.NegInts.NegInt.ensuringValid(i.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegInt: Generator[org.scalactic.opaquetypes.NegInts.NegInt] = opaquetypesNegIntGenerator
+
   /**
     * A [[Generator]] that produces negative Longs, excluding zero.
     */
@@ -3818,11 +3949,11 @@ object Generator {
           }
           resLazyListOrStream(value)
         }
-      } // TODO: Confirm OK with no Roses.
+      }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegLong], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[NegLong]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negLongEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: NegLong, sizeParam: SizeParam, isValidFun: (NegLong, SizeParam) => Boolean): RoseTree[NegLong] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NegLong, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NegLong], Randomizer) = {
@@ -3852,6 +3983,11 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegLong]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegLong] = negLongGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegLongs.NegLong independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegLongGenerator: Generator[org.scalactic.opaquetypes.NegLongs.NegLong] =
+  //DOTTY-ONLY   negLongGenerator.map(l => org.scalactic.opaquetypes.NegLongs.NegLong.ensuringValid(l.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegLong: Generator[org.scalactic.opaquetypes.NegLongs.NegLong] = opaquetypesNegLongGenerator
 
   /**
     * A [[Generator]] that produces negative Doubles, including zero and infinity.
@@ -3906,9 +4042,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZDouble], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[NegZDouble]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZDoubleEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: NegZDouble, sizeParam: SizeParam, isValidFun: (NegZDouble, SizeParam) => Boolean): RoseTree[NegZDouble] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NegZDouble, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NegZDouble], Randomizer) = {
@@ -3938,6 +4074,11 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegZDouble]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegZDouble] = negZDoubleGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegDoubles.NegZDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegZDoubleGenerator: Generator[org.scalactic.opaquetypes.NegDoubles.NegZDouble] =
+  //DOTTY-ONLY   negZDoubleGenerator.map(d => org.scalactic.opaquetypes.NegDoubles.NegZDouble.ensuringValid(d.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegZDouble: Generator[org.scalactic.opaquetypes.NegDoubles.NegZDouble] = opaquetypesNegZDoubleGenerator
 
   /**
     * A [[Generator]] that produces negative Doubles, including zero but excluding infinity.
@@ -3988,9 +4129,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZFiniteDouble], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[NegZFiniteDouble]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZFiniteDoubleEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: NegZFiniteDouble, sizeParam: SizeParam, isValidFun: (NegZFiniteDouble, SizeParam) => Boolean): RoseTree[NegZFiniteDouble] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NegZFiniteDouble, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NegZFiniteDouble], Randomizer) = {
@@ -4020,6 +4161,11 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegZFiniteDouble]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegZFiniteDouble] = negZFiniteDoubleGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegDoubles.NegZFiniteDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegZFiniteDoubleGenerator: Generator[org.scalactic.opaquetypes.NegDoubles.NegZFiniteDouble] =
+  //DOTTY-ONLY   negZFiniteDoubleGenerator.map(d => org.scalactic.opaquetypes.NegDoubles.NegZFiniteDouble.ensuringValid(d.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegZFiniteDouble: Generator[org.scalactic.opaquetypes.NegDoubles.NegZFiniteDouble] = opaquetypesNegZFiniteDoubleGenerator
 
   /**
     * A [[Generator]] that produces negative Floats, including zero and infinity.
@@ -4074,9 +4220,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZFloat], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[NegZFloat]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZFloatEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: NegZFloat, sizeParam: SizeParam, isValidFun: (NegZFloat, SizeParam) => Boolean): RoseTree[NegZFloat] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NegZFloat, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NegZFloat], Randomizer) = {
@@ -4106,6 +4252,11 @@ object Generator {
   //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NegZFloat]] values.
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegZFloat] = negZFloatGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegFloats.NegZFloat independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegZFloatGenerator: Generator[org.scalactic.opaquetypes.NegFloats.NegZFloat] =
+  //DOTTY-ONLY   negZFloatGenerator.map(f => org.scalactic.opaquetypes.NegFloats.NegZFloat.ensuringValid(f.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegZFloat: Generator[org.scalactic.opaquetypes.NegFloats.NegZFloat] = opaquetypesNegZFloatGenerator
 
   /**
     * A [[Generator]] that produces negative Floats, including zero but excluding infinity.
@@ -4156,9 +4307,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZFiniteFloat], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[NegZFiniteFloat]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZFiniteFloatEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: NegZFiniteFloat, sizeParam: SizeParam, isValidFun: (NegZFiniteFloat, SizeParam) => Boolean): RoseTree[NegZFiniteFloat] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NegZFiniteFloat, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NegZFiniteFloat], Randomizer) = {
@@ -4189,6 +4340,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegZFiniteFloat] = negZFiniteFloatGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegFloats.NegZFiniteFloat independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegZFiniteFloatGenerator: Generator[org.scalactic.opaquetypes.NegFloats.NegZFiniteFloat] =
+  //DOTTY-ONLY   negZFiniteFloatGenerator.map(f => org.scalactic.opaquetypes.NegFloats.NegZFiniteFloat.ensuringValid(f.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegZFiniteFloat: Generator[org.scalactic.opaquetypes.NegFloats.NegZFiniteFloat] = opaquetypesNegZFiniteFloatGenerator
+
   /**
     * A [[Generator]] that produces negative Ints, including zero.
     */
@@ -4214,11 +4370,11 @@ object Generator {
           }
           resLazyListOrStream(value)
         }
-      } // TODO Confirm OK with no Rose.
+      }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZInt], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[NegZInt]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZIntEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: NegZInt, sizeParam: SizeParam, isValidFun: (NegZInt, SizeParam) => Boolean): RoseTree[NegZInt] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NegZInt, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NegZInt], Randomizer) = {
@@ -4249,6 +4405,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegZInt] = negZIntGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegInts.NegZInt independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegZIntGenerator: Generator[org.scalactic.opaquetypes.NegInts.NegZInt] =
+  //DOTTY-ONLY   negZIntGenerator.map(i => org.scalactic.opaquetypes.NegInts.NegZInt.ensuringValid(i.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegZInt: Generator[org.scalactic.opaquetypes.NegInts.NegZInt] = opaquetypesNegZIntGenerator
+
   /**
     * A [[Generator]] that produces negative Longs, including zero.
     */
@@ -4274,11 +4435,11 @@ object Generator {
           }
           resLazyListOrStream(value)
         }
-      } // TODO Confirm OK no Rose.
+      }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZLong], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[NegZLong]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZLongEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: NegZLong, sizeParam: SizeParam, isValidFun: (NegZLong, SizeParam) => Boolean): RoseTree[NegZLong] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NegZLong, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NegZLong], Randomizer) = {
@@ -4309,6 +4470,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NegZLong] = negZLongGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NegLongs.NegZLong independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNegZLongGenerator: Generator[org.scalactic.opaquetypes.NegLongs.NegZLong] =
+  //DOTTY-ONLY   negZLongGenerator.map(i => org.scalactic.opaquetypes.NegLongs.NegZLong.ensuringValid(i.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NegZLong: Generator[org.scalactic.opaquetypes.NegLongs.NegZLong] = opaquetypesNegZLongGenerator
+
   /**
     * A [[Generator]] that produces Chars, but only the ones that represent digits.
     */
@@ -4336,9 +4502,9 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NumericChar], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[NumericChar]], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(numericCharEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
+        (allEdges.take(maxLength).map(v => Rose(v)), nextRnd)
       }
       override def roseTreeOfEdge(edge: NumericChar, sizeParam: SizeParam, isValidFun: (NumericChar, SizeParam) => Boolean): RoseTree[NumericChar] = NextRoseTree(edge)(sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NumericChar, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NumericChar], Randomizer) = {
@@ -4369,6 +4535,11 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[NumericChar] = numericCharGenerator
 
+  //DOTTY-ONLY /* Generator that produces opaquetypes.Numerics.NumericChar independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNumericCharGenerator: Generator[org.scalactic.opaquetypes.Numerics.NumericChar] =
+  //DOTTY-ONLY   numericCharGenerator.map(c => org.scalactic.opaquetypes.Numerics.NumericChar.ensuringValid(c.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NumericChar: Generator[org.scalactic.opaquetypes.Numerics.NumericChar] = opaquetypesNumericCharGenerator
+
   // Should throw IAE on negative size in all generators, even the ones that ignore size.
   /**
     * A [[Generator]] that produces arbitrary [[String]]s.
@@ -4385,7 +4556,6 @@ object Generator {
 
       // For strings, we won't shrink the characters.  We could, but the trees could get really big. Just cut the length of
       // the list in half and try both halves each round, using the same characters.
-      // TODO: Write a test for this shrinks implementation.
       case class NextRoseTree(value: String)(sizeParam: SizeParam, isValidFun: (String, SizeParam) => Boolean) extends RoseTree[String] {
         def shrinks: LazyListOrStream[RoseTree[String]] = {
           def resLazyListOrStream(theValue: String): LazyListOrStream[RoseTree[String]] = {
@@ -4411,8 +4581,8 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[String], Randomizer) = {
-        (stringEdges.take(maxLength), rnd)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[String]], Randomizer) = {
+        (stringEdges.take(maxLength).map(v => Rose(v)), rnd)
       }
       override def roseTreeOfEdge(edge: String, sizeParam: SizeParam, isValidFun: (String, SizeParam) => Boolean): RoseTree[String] = NextRoseTree(edge)(sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (String, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[String], Randomizer) = {
@@ -4436,9 +4606,9 @@ object Generator {
   /**
     * Given an existing `Generator[T]`, this creates a `Generator[List[T]]`.
     *
-    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @param genOfT a [[Generator]] that produces values of type `T`
     * @tparam T the type that we are producing a List of
-    * @return a List of values of type [[T]]
+    * @return a List of values of type `T`
     */
   // SKIP-DOTTY-START
   implicit def listGenerator[T](implicit genOfT: Generator[T]): Generator[List[T]] with HavingLength[List[T]] =
@@ -4450,7 +4620,6 @@ object Generator {
       // For lists, we won't bother shrinking the elements. We could, but the trees could get very big.
       // So we will just cut the length of the list in half and try both
       // halves each round, using the same elements.
-      // TODO: Write a test for this shrinks implementation.
       case class NextRoseTree(value: List[T], sizeParam: SizeParam, isValidFun: (List[T], SizeParam) => Boolean) extends RoseTree[List[T]] {
         def shrinks: LazyListOrStream[RoseTree[List[T]]] = {
           def resLazyListOrStream(theValue: List[T]): LazyListOrStream[RoseTree[List[T]]] = {
@@ -4475,8 +4644,8 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = {
-        (listEdges.take(maxLength), rnd)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[List[T]]], Randomizer) = {
+        (listEdges.take(maxLength).map(v => Rose(v)), rnd)
       }
 
       override def roseTreeOfEdge(edge: List[T], sizeParam: SizeParam, isValidFun: (List[T], SizeParam) => Boolean): RoseTree[List[T]] = NextRoseTree(edge, sizeParam, isValidFun)
@@ -4549,23 +4718,23 @@ object Generator {
   //DOTTY-ONLY given givenListGenerator[T](using genOfT: Generator[T]): (Generator[List[T]] with HavingLength[List[T]]) = listGenerator(using genOfT)
 
   /**
-    * Given a [[Generator]] that produces values of type [[T]], this returns one that produces ''functions'' that return
+    * Given a [[Generator]] that produces values of type `T`, this returns one that produces ''functions'' that return
     * a T.
     *
-    * The functions produced here are nullary -- they take no parameters, they just produce values of type [[T]].
+    * The functions produced here are nullary -- they take no parameters, they just produce values of type `T`.
     *
-    * @param genOfT a [[Generator]] that produces values of [[T]]
+    * @param genOfT a [[Generator]] that produces values of `T`
     * @tparam T the type to produce
-    * @return a [[Generator]] that produces functions that return values of type [[T]]
+    * @return a [[Generator]] that produces functions that return values of type `T`
     */
   // SKIP-DOTTY-START
   implicit def function0Generator[T](implicit genOfT: Generator[T]): Generator[() => T] = {
   // SKIP-DOTTY-END
   //DOTTY-ONLY def function0Generator[T](implicit genOfT: Generator[T]): Generator[() => T] = {
     new Generator[() => T] { thisGeneratorOfFunction0 =>
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[() => T], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[() => T]], Randomizer) = {
         val (edgesOfT, nextRnd) = genOfT.initEdges(maxLength, rnd)
-        val edges = edgesOfT.map(t => PrettyFunction0(t))
+        val edges = edgesOfT.map(rt => rt.map(t => PrettyFunction0(t)))
         (edges, nextRnd)
       }
       def nextImpl(szp: SizeParam, isValidFun: (() => T, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[() => T], Randomizer) = {
@@ -5671,9 +5840,9 @@ object Generator {
   //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W](using genOfW: Generator[W], typeInfoA: TypeInfo[A], typeInfoB: TypeInfo[B], typeInfoC: TypeInfo[C], typeInfoD: TypeInfo[D], typeInfoE: TypeInfo[E], typeInfoF: TypeInfo[F], typeInfoG: TypeInfo[G], typeInfoH: TypeInfo[H], typeInfoI: TypeInfo[I], typeInfoJ: TypeInfo[J], typeInfoK: TypeInfo[K], typeInfoL: TypeInfo[L], typeInfoM: TypeInfo[M], typeInfoN: TypeInfo[N], typeInfoO: TypeInfo[O], typeInfoP: TypeInfo[P], typeInfoQ: TypeInfo[Q], typeInfoR: TypeInfo[R], typeInfoS: TypeInfo[S], typeInfoT: TypeInfo[T], typeInfoU: TypeInfo[U], typeInfoV: TypeInfo[V], typeInfoW: TypeInfo[W]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) => W] = function22Generator(using genOfW, typeInfoA, typeInfoB, typeInfoC, typeInfoD, typeInfoE, typeInfoF, typeInfoG, typeInfoH, typeInfoI, typeInfoJ, typeInfoK, typeInfoL, typeInfoM, typeInfoN, typeInfoO, typeInfoP, typeInfoQ, typeInfoR, typeInfoS, typeInfoT, typeInfoU, typeInfoV, typeInfoW)
 
   /**
-    * Given a [[Generator]] for type [[T]], this provides one for `Option[T]`.
+    * Given a [[Generator]] for type `T`, this provides one for `Option[T]`.
     *
-    * @param genOfT a [[Generator]] that produces type [[T]]
+    * @param genOfT a [[Generator]] that produces type `T`
     * @tparam T the type to generate
     * @return a [[Generator]] that produces `Option[T]`
     */
@@ -5713,11 +5882,11 @@ object Generator {
 
     new Generator[Option[T]] {
 
-      // TODO: Ah, maybe edges should return List[RoseTree[Option[T]], Randomizer] instead. Then it could be shrunken.
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Option[T]], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[Option[T]]], Randomizer) = {
         // Subtract one from length, and we'll wrap those in Somes. Subtract one so that None can be the first edge.
+        // Each inner edge is carried as a RoseTree so it preserves the underlying element's shrinking behavior.
         val (edgesOfT, nextRnd) = genOfT.initEdges(if (maxLength > 0) PosZInt.ensuringValid((maxLength - 1)) else 0, rnd)
-        val edges = None :: edgesOfT.map(t => Some(t))
+        val edges = Rose(None: Option[T]) :: edgesOfT.map(rt => rt.map(t => Some(t): Option[T]))
         (edges, nextRnd)
       }
 
@@ -5801,20 +5970,20 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[G Or B], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[G Or B]], Randomizer) = {
         val (edgesOfG, nextRnd) = genOfG.initEdges(maxLength, rnd)
         val (edgesOfB, nextNextRnd) = genOfB.initEdges(maxLength, nextRnd)
         // Fill up to maxLength, favoring Good over Bad if maxLength is odd. Else just dividing it
         // down the middle, half Good, half Bad. And filling in with the other if one side runs out.
         @tailrec
-        def loop(count: Int, remainingG: List[G], remainingB: List[B], acc: List[G Or B]): List[G Or B] = {
+        def loop(count: Int, remainingG: List[RoseTree[G]], remainingB: List[RoseTree[B]], acc: List[RoseTree[G Or B]]): List[RoseTree[G Or B]] = {
           (count, remainingG, remainingB) match {
             case (0, _, _) => acc
             case (_, Nil, Nil) => acc
-            case (c, gHead :: gTail, Nil) => loop(c - 1, gTail, Nil, Good(gHead) :: acc)
-            case (c, Nil, bHead :: bTail) => loop(c - 1, Nil, bTail, Bad(bHead) :: acc)
-            case (c, gHead :: gTail, _) if c % 2 == 0 => loop(c - 1, gTail, remainingB, Good(gHead) :: acc)
-            case (c, _, bHead :: bTail) => loop(c - 1, remainingG, bTail, Bad(bHead) :: acc)
+            case (c, gHead :: gTail, Nil) => loop(c - 1, gTail, Nil, gHead.map(g => Good(g): G Or B) :: acc)
+            case (c, Nil, bHead :: bTail) => loop(c - 1, Nil, bTail, bHead.map(b => Bad(b): G Or B) :: acc)
+            case (c, gHead :: gTail, _) if c % 2 == 0 => loop(c - 1, gTail, remainingB, gHead.map(g => Good(g): G Or B) :: acc)
+            case (c, _, bHead :: bTail) => loop(c - 1, remainingG, bTail, bHead.map(b => Bad(b): G Or B) :: acc)
           }
         }
         (loop(maxLength, edgesOfG, edgesOfB, Nil), nextNextRnd)
@@ -5901,20 +6070,20 @@ object Generator {
         }
       }
 
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Either[L, R]], Randomizer) = {
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[Either[L, R]]], Randomizer) = {
         val (edgesOfL, nextRnd) = genOfL.initEdges(maxLength, rnd)
         val (edgesOfR, nextNextRnd) = genOfR.initEdges(maxLength, nextRnd)
         // Fill up to maxLength, favoring Right over Left if maxLength is odd. Else just dividing it
         // down the middle, half Right, half Left. And filling in with the other if one side runs out.
         @tailrec
-        def loop(count: Int, remainingR: List[R], remainingL: List[L], acc: List[Either[L, R]]): List[Either[L, R]] = {
+        def loop(count: Int, remainingR: List[RoseTree[R]], remainingL: List[RoseTree[L]], acc: List[RoseTree[Either[L, R]]]): List[RoseTree[Either[L, R]]] = {
           (count, remainingR, remainingL) match {
             case (0, _, _) => acc
             case (_, Nil, Nil) => acc
-            case (c, rHead :: rTail, Nil) => loop(c - 1, rTail, Nil, Right(rHead) :: acc)
-            case (c, Nil, lHead :: lTail) => loop(c - 1, Nil, lTail, Left(lHead) :: acc)
-            case (c, rHead :: rTail, _) if c % 2 == 0 => loop(c - 1, rTail, remainingL, Right(rHead) :: acc)
-            case (c, _, lHead :: lTail) => loop(c - 1, remainingR, lTail, Left(lHead) :: acc)
+            case (c, rHead :: rTail, Nil) => loop(c - 1, rTail, Nil, rHead.map(r => Right(r): Either[L, R]) :: acc)
+            case (c, Nil, lHead :: lTail) => loop(c - 1, Nil, lTail, lHead.map(l => Left(l): Either[L, R]) :: acc)
+            case (c, rHead :: rTail, _) if c % 2 == 0 => loop(c - 1, rTail, remainingL, rHead.map(r => Right(r): Either[L, R]) :: acc)
+            case (c, _, lHead :: lTail) => loop(c - 1, remainingR, lTail, lHead.map(l => Left(l): Either[L, R]) :: acc)
           }
         }
         (loop(maxLength, edgesOfR, edgesOfL, Nil), nextNextRnd)
@@ -5931,9 +6100,6 @@ object Generator {
       def nextImpl(szp: SizeParam, isValidFun: (Either[L, R], SizeParam) => Boolean, rnd: Randomizer): (RoseTree[Either[L, R]], Randomizer) = {
         val (nextInt, nextRnd) = rnd.nextInt
         if (nextInt % 4 == 0) {
-          // TODO: Here I was not sure if I should just map the RoseTree or takes
-          // its value and wrap that in a shrink call. Might be the same thing ultimately.
-          // Will check that later. Actually I'll try mapping first.
           val (nextRoseTreeOfL, _, nextRnd) = genOfL.filter(l => isValidFun(Left(l), szp)).next(szp, Nil, rnd)
           (nextRoseTreeOfL.map(l => Left(l)), nextRnd)
         }
@@ -6214,7 +6380,7 @@ object Generator {
   //DOTTY-ONLY given [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](using genOfA: Generator[A], genOfB: Generator[B], genOfC: Generator[C], genOfD: Generator[D], genOfE: Generator[E], genOfF: Generator[F], genOfG: Generator[G], genOfH: Generator[H], genOfI: Generator[I], genOfJ: Generator[J], genOfK: Generator[K], genOfL: Generator[L], genOfM: Generator[M], genOfN: Generator[N], genOfO: Generator[O], genOfP: Generator[P], genOfQ: Generator[Q], genOfR: Generator[R], genOfS: Generator[S], genOfT: Generator[T], genOfU: Generator[U], genOfV: Generator[V]): Generator[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] = tuple22Generator(using genOfA, genOfB, genOfC, genOfD, genOfE, genOfF, genOfG, genOfH, genOfI, genOfJ, genOfK, genOfL, genOfM, genOfN, genOfO, genOfP, genOfQ, genOfR, genOfS, genOfT, genOfU, genOfV)  
 
   /**
-    * Given a [[Generator]] for type [[T]], this creates one for a [[Vector]] of [[T]].
+    * Given a [[Generator]] for type `T`, this creates one for a [[Vector]] of `T`.
     *
     * Note that the [[Vector]] type is considered to have a "size", so you can use the configuration parameters
     * [[Configuration.minSize]] and [[Configuration.sizeRange]] to constrain the sizes of the resulting `Vector`s
@@ -6223,7 +6389,7 @@ object Generator {
     * The resulting [[Generator]] also has the [[HavingLength]] trait, so you can use it to generate [[Vector]]s
     * with specific lengths.
     *
-    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @param genOfT a [[Generator]] that produces values of type `T`
     * @tparam T the type to produce
     * @return a [[Generator]] that produces values of type `Vector[T]`
     */
@@ -6312,7 +6478,7 @@ object Generator {
   //DOTTY-ONLY given givenVectorGenerator[T](using genOfT: Generator[T]): (Generator[Vector[T]] with HavingLength[Vector[T]]) = vectorGenerator(using genOfT)
   
   /**
-    * Given a [[Generator]] that produces values of type [[T]], this creates one for a [[Set]] of [[T]].
+    * Given a [[Generator]] that produces values of type `T`, this creates one for a [[Set]] of `T`.
     *
     * Note that the [[Set]] type is considered to have a "size", so you can use the configuration parameters
     * [[Configuration.minSize]] and [[Configuration.sizeRange]] to constrain the sizes of the resulting `Set`s
@@ -6321,7 +6487,7 @@ object Generator {
     * The resulting [[Generator]] also has the [[HavingSize]] trait, so you can use it to generate [[Set]]s
     * with specific sizes.
     *
-    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @param genOfT a [[Generator]] that produces values of type `T`
     * @tparam T the type to produce
     * @return a [[Generator]] that produces `Set[T]`.
     */
@@ -6410,7 +6576,7 @@ object Generator {
   //DOTTY-ONLY given givenSetGenerator[T](using genOfT: Generator[T]): (Generator[Set[T]] with HavingSize[Set[T]]) = setGenerator(using genOfT)
 
   /**
-    * Given a [[Generator]] that produces values of type [[T]], this creates one for a [[SortedSet]] of [[T]].
+    * Given a [[Generator]] that produces values of type `T`, this creates one for a [[SortedSet]] of `T`.
     *
     * Note that the [[SortedSet]] type is considered to have a "size", so you can use the configuration parameters
     * [[Configuration.minSize]] and [[Configuration.sizeRange]] to constrain the sizes of the resulting `SortedSet`s
@@ -6419,7 +6585,7 @@ object Generator {
     * The resulting [[Generator]] also has the [[HavingSize]] trait, so you can use it to generate [[SortedSet]]s
     * with specific sizes.
     *
-    * @param genOfT a [[Generator]] that produces values of type [[T]]
+    * @param genOfT a [[Generator]] that produces values of type `T`
     * @tparam T the type to produce
     * @return a [[Generator]] that produces `SortedSet[T]`.
     */

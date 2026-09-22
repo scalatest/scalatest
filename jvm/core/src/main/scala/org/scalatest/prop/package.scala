@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2025 Artima, Inc.
+ * Copyright 2001-2026 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -452,7 +452,7 @@ package object prop {
     *
     * This is mainly helpful when generating random Functions -- since the inputs for a test run are
     * complex, you need more than a simple random seed to reproduce the same results. In order to make
-    * this more useful, the `toString` of a instance of a Function [[Generator]] shows how to invoke
+    * this more useful, the `toString` of an instance of a Function [[Generator]] shows how to invoke
     * `valueOf()` to reproduce the same result.
     *
     * @param first The first parameter to use for calculating the seed.
