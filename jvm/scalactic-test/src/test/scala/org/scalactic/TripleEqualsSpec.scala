@@ -163,6 +163,86 @@ class TripleEqualsSpec extends funspec.AnyFunSpec with NonImplicitAssertions {
 */
     }
 
+    describe("the constraint methods") {
+
+      it("should construct the type-checked and conversion constraints") {
+
+        import scala.annotation.nowarn
+
+        new TripleEquals {
+
+          val eqSuper: Equivalence[Super] = Equivalence.default[Super]
+          val subToSuper: Sub <:< Super = implicitly[Sub <:< Super]
+
+          implicit val eqInt: Equality[Int] = Equality.default[Int]
+          assert(unconstrainedEquality[Int, Int].isInstanceOf[TripleEqualsSupport.EqualityConstraint[Int, Int]])
+
+          assert(lowPriorityTypeCheckedConstraint[Sub, Super](eqSuper, subToSuper).isInstanceOf[TripleEqualsSupport.AToBEquivalenceConstraint[Sub, Super]])
+          assert(convertEquivalenceToAToBConstraint[Sub, Super](eqSuper)(subToSuper).isInstanceOf[TripleEqualsSupport.AToBEquivalenceConstraint[Sub, Super]])
+
+          assert(typeCheckedConstraint[Super, Sub](eqSuper, subToSuper).isInstanceOf[TripleEqualsSupport.BToAEquivalenceConstraint[Super, Sub]])
+          assert(convertEquivalenceToBToAConstraint[Super, Sub](eqSuper)(subToSuper).isInstanceOf[TripleEqualsSupport.BToAEquivalenceConstraint[Super, Sub]])
+
+          val superToSub: Super => Sub = (s: Super) => new Sub(s.size)
+          val subToSuperFn: Sub => Super = (s: Sub) => s: Super
+
+          val a = lowPriorityConversionCheckedConstraint[Sub, Super](eqSuper, subToSuperFn)
+          val b = convertEquivalenceToAToBConversionConstraint[Sub, Super](eqSuper)(subToSuperFn)
+          val c = conversionCheckedConstraint[Super, Sub](eqSuper, superToSub)
+          val d = convertEquivalenceToBToAConversionConstraint[Super, Sub](eqSuper)(superToSub)
+
+          assert(a != null)
+          assert(b != null)
+          assert(c != null)
+          assert(d != null)
+        }
+      }
+
+      it("should construct a CheckingEqualizer") {
+
+        new TripleEquals {
+
+          val checkEq = convertToCheckingEqualizer[Int](1)
+          assert(checkEq.isInstanceOf[CheckingEqualizer[Int]])
+        }
+      }
+    }
+
+    describe("with a CheckingEqualizer") {
+
+      it("should compare using === and !== with a Constraint") {
+
+        new TripleEquals {
+
+          val ce = new CheckingEqualizer[Super](super1)
+
+          implicit val eqSup: Equality[Super] = Equality.default[Super]
+          val supSubConstraint: Super CanEqual Sub = unconstrainedEquality[Super, Sub]
+
+          assert(ce.===[Sub](sub1)(supSubConstraint))
+          assert(ce.!==[Sub](sub2)(supSubConstraint))
+        }
+      }
+
+      it("should compare against a Spread with === and !==") {
+
+        import org.scalactic.Tolerance._
+
+        new TripleEquals {
+
+          val ce = new CheckingEqualizer[Double](2.0)
+
+          assert(ce === (2.0 +- 0.1))
+          assert(!(ce === (5.0 +- 0.1)))
+          assert(ce !== (5.0 +- 0.1))
+          assert(!(ce !== (2.0 +- 0.1)))
+
+          assert(!(ce === (null: TripleEqualsSupport.Spread[Double])))
+          assert(ce !== (null: TripleEqualsSupport.Spread[Double]))
+        }
+      }
+    }
+
     describe("with TypeCheckedTripleEquals") {
 
 /*
