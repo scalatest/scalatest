@@ -155,7 +155,7 @@ class ShouldBePropertyMatcherSpec extends AnyFunSpec with ReturnsNormallyThrowsA
       assert(caught9.getMessage === s"$bookPrettified was an goodRead")
     }
 
-    it("should do nothing if the the property returns true, when used in a logical-and expression") {
+    it("should do nothing if the property returns true, when used in a logical-and expression") {
 
       myFile should ((be (file)) and (be (file)))
       myFile should (be (file) and (be (file)))
