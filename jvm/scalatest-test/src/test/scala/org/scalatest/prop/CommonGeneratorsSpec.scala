@@ -3517,8 +3517,8 @@ If it doesn't show up for a while, please delete this comment.
             val sz = if (szp.maxSize < upperLimit) szp.maxSize else upperLimit
             SizeParam(0, sz, sz)
           }
-          val sizelimitedLists = lists[Int].havingSizesDeterminedBy(limitedSize)
-          forAll (sizelimitedLists) { xs => xs.size should be <= upperLimit.value }
+          val sizeLimitedLists = lists[Int].havingSizesDeterminedBy(limitedSize)
+          forAll (sizeLimitedLists) { xs => xs.size should be <= upperLimit.value }
         }
       }
     }
