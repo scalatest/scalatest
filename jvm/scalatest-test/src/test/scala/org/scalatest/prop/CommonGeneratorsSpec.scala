@@ -3154,9 +3154,9 @@ If it doesn't show up for a while, please delete this comment.
         val oddInts = for { i <- intsBetween(0, 100000) } yield 2 * i + 1
         val oddAndEvenInts =
           frequency(
-            1 -> oddInts,
-            2 -> evenInts,
-            4 -> specificValue(0)
+            PosInt(1) -> oddInts,
+            PosInt(2) -> evenInts,
+            PosInt(4) -> specificValue(0)
           )
 
         val classification: Classification =
@@ -3175,8 +3175,8 @@ If it doesn't show up for a while, please delete this comment.
       }
       "throws IllegalArgumentException if passed less than two arguments" in {
         "frequency()" shouldNot compile
-        "frequency(1 -> ints)" shouldNot compile
-        "frequency(1 -> intsBetween(1, 10), 5 -> specificValue(0))" should compile
+        "frequency(PosInt(1) -> ints)" shouldNot compile
+        "frequency(PosInt(1) -> intsBetween(1, 10), PosInt(5) -> specificValue(0))" should compile
       }
     }
     "offer an evenly method that takes a varargs of generators and produces a generator" that {
