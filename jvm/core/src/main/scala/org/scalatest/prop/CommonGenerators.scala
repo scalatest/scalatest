@@ -924,16 +924,8 @@ trait CommonGenerators {
     *
     * @group Higher
     */
-  def frequency[T](first: (Int, Generator[T]), second: (Int, Generator[T]), rest: (Int, Generator[T])*): Generator[T] = {
-    val distribution: Vector[(Int, Generator[T])] = (first +: second +: rest).toVector
-    // Take Int not PosInt, because Scala won't apply  multiple implicit
-    // conversions, such as one for PosInt => Int, and another for Int => Generator[Int].
-    // So just do a require.
-    
-    import org.scalactic.Requirements._
-    require {
-      distribution forall { case (w, _) => w >= 1 }
-    }
+  def frequency[T](first: (PosInt, Generator[T]), second: (PosInt, Generator[T]), rest: (PosInt, Generator[T])*): Generator[T] = {
+    val distribution: Vector[(PosInt, Generator[T])] = (first +: second +: rest).toVector
 
     new Generator[T] {
       // gens contains, for each distribution pair, weight generators.
