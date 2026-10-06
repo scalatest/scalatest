@@ -1584,6 +1584,11 @@ object PosDoubles {
       */
     val MinValue: PosFiniteDouble = Double.MinPositiveValue
 
+    /** The smallest positive value greater than <code>0.0</code> representable as a [[PosFiniteDouble]],
+      * which is <code>Double.MinPositiveValue</code>.
+      */
+    val MinPositiveValue: PosFiniteDouble = Double.MinPositiveValue
+
     extension (p: PosFiniteDouble) {
       /** Applies the given <code>Double =&gt; Double</code> function to the underlying
         * <code>Double</code> value, and returns the result as a [[PosFiniteDouble]] if

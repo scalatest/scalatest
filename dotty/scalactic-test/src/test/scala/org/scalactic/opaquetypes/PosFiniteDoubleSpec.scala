@@ -157,6 +157,7 @@ class PosFiniteDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matche
     it("should offer MaxValue and MinValue constants") {
       PosFiniteDouble.MaxValue shouldEqual PosFiniteDouble.from(Double.MaxValue).get
       PosFiniteDouble.MinValue shouldEqual PosFiniteDouble.from(Double.MinPositiveValue).get
+      PosFiniteDouble.MinPositiveValue shouldEqual PosFiniteDouble(Double.MinPositiveValue)
     }
     it("should not offer a PositiveInfinity constant") {
       "PosFiniteDouble.PositiveInfinity" shouldNot compile

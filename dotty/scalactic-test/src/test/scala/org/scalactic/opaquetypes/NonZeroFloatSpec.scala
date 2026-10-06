@@ -660,6 +660,17 @@ class NonZeroFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers 
       }
     }
 
+    describe("Ordering") {
+      it("should provide an Ordering that works for both negative and positive values") {
+        NonZeroFloat(-1924396667.0f) should be <= NonZeroFloat(1081481977.0f)
+      }
+
+      it("should be sortable") {
+        val xs = List(NonZeroFloat(2.0F), NonZeroFloat(-1.5F), NonZeroFloat(3.25F), NonZeroFloat(-0.25F))
+        xs.sorted shouldEqual List(NonZeroFloat(-1.5F), NonZeroFloat(-0.25F), NonZeroFloat(2.0F), NonZeroFloat(3.25F))
+      }
+    }
+
   }
 
 }

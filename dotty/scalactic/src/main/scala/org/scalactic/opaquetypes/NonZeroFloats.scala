@@ -181,6 +181,11 @@ object NonZeroFloats {
     given Conversion[NonZeroFloat, NonZeroDoubles.NonZeroDouble] with {
       def apply(x: NonZeroFloat): NonZeroDoubles.NonZeroDouble = NonZeroDoubles.NonZeroDouble.ensuringValid(x.toDouble)
     }
+
+    /** Ordering instance for NonZeroFloat that orders by numeric value. */
+    given Ordering[NonZeroFloat] with {
+      def compare(x: NonZeroFloat, y: NonZeroFloat): Int = x.compareTo(y)
+    }
   }
 
   // Extension methods at NonZeroFloats level for NonZeroFloat
