@@ -648,6 +648,14 @@ class NonZeroFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers 
       }
     }
 
+    describe("constants") {
+      it("should expose MaxValue, MinValue and MinPositiveValue") {
+        NonZeroFloat.MaxValue.value shouldBe Float.MaxValue
+        NonZeroFloat.MinValue.value shouldBe Float.MinValue
+        NonZeroFloat.MinPositiveValue.value shouldBe Float.MinPositiveValue
+      }
+    }
+
   }
 
 }

@@ -236,6 +236,16 @@ object NonZeroDoubles {
       def compare(x: NonZeroDouble, y: NonZeroDouble): Int = x.compareTo(y)
     }
 
+    /** The largest value representable as a [[NonZeroDouble]], which is
+      * <code>Double.MaxValue</code>.
+      */
+    val MaxValue: NonZeroDouble = Double.MaxValue
+
+    /** The smallest value representable as a [[NonZeroDouble]], which is
+      * <code>Double.MinValue</code> (i.e. <code>-Double.MaxValue</code>).
+      */
+    val MinValue: NonZeroDouble = Double.MinValue
+
     /** The positive infinity value, which is <code>NonZeroDouble.ensuringValid(Double.PositiveInfinity)</code>. */
     val PositiveInfinity: NonZeroDouble = NonZeroDouble.ensuringValid(Double.PositiveInfinity)
 

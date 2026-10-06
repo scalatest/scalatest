@@ -135,6 +135,21 @@ object NonZeroFloats {
     def fromOrElse(value: Float, default: => NonZeroFloat): NonZeroFloat =
       if (isValid(value)) value else default
 
+    /** The largest value representable as a [[NonZeroFloat]], which is
+      * <code>Float.MaxValue</code>.
+      */
+    val MaxValue: NonZeroFloat = Float.MaxValue
+
+    /** The smallest value representable as a [[NonZeroFloat]], which is
+      * <code>Float.MinValue</code> (i.e. <code>-Float.MaxValue</code>).
+      */
+    val MinValue: NonZeroFloat = Float.MinValue
+
+    /** The smallest positive value greater than <code>0.0f</code> representable as a [[NonZeroFloat]],
+      * which is <code>Float.MinPositiveValue</code>.
+      */
+    val MinPositiveValue: NonZeroFloat = Float.MinPositiveValue
+
     /** Implicitly widens a [[NonZeroFloat]] to a plain <code>Float</code>. */
     given Conversion[NonZeroFloat, Float] with {
       def apply(x: NonZeroFloat): Float = x

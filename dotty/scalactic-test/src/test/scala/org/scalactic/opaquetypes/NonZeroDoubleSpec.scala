@@ -631,6 +631,14 @@ class NonZeroDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers
       }
     }
 
+    describe("constants") {
+      it("should expose MaxValue, MinValue and MinPositiveValue") {
+        NonZeroDouble.MaxValue.value shouldBe Double.MaxValue
+        NonZeroDouble.MinValue.value shouldBe Double.MinValue
+        NonZeroDouble.MinPositiveValue.value shouldBe Double.MinPositiveValue
+      }
+    }
+
   }
 
 }
