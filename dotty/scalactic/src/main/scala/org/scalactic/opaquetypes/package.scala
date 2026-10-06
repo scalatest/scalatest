@@ -186,6 +186,10 @@ package object opaquetypes {
   type NumericChar = Numerics.NumericChar
   /** Value alias for the [[org.scalactic.opaquetypes.Numerics.NumericChar]] companion. */
   val NumericChar: Numerics.NumericChar.type = Numerics.NumericChar
+  /** Type alias for [[org.scalactic.opaquetypes.Numerics.NumericString]]. */
+  type NumericString = Numerics.NumericString
+  /** Value alias for the [[org.scalactic.opaquetypes.Numerics.NumericString]] companion. */
+  val NumericString: Numerics.NumericString.type = Numerics.NumericString
 
   // NonEmpty types
 
