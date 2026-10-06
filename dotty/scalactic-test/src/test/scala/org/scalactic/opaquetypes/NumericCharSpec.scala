@@ -391,10 +391,14 @@ class NumericCharSpec extends funspec.AnyFunSpec with matchers.should.Matchers w
         (p + long) shouldEqual (p.toChar + long)
       }
       forAll { (p: NumericChar, float: Float) =>
-        (p + float) shouldEqual (p.toChar + float)
+        val x = p + float
+        val y = p.toChar + float
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (p: NumericChar, double: Double) =>
-        (p + double) shouldEqual (p.toChar + double)
+        val x = p + double
+        val y = p.toChar + double
+        areEqualForgivingNaNs(x, y)
       }
     }
 

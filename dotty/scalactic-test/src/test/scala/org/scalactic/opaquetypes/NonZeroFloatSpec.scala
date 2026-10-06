@@ -379,11 +379,32 @@ class NonZeroFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers 
         (p + long) shouldEqual (p.toFloat + long)
       }
       forAll { (p: NonZeroFloat, float: Float) =>
-        (p + float) shouldEqual (p.toFloat + float)
+        val x = p + float
+        val y = p.toFloat + float
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (p: NonZeroFloat, double: Double) =>
-        (p + double) shouldEqual (p.toFloat + double)
+        val x = p + double
+        val y = p.toFloat + double
+        areEqualForgivingNaNs(x, y)
       }
+    }
+
+    it("should handle NaN results from + with opposite-signed Infinity consistently (regression test)") {
+      // When p is PositiveInfinity and float/double is NegativeInfinity (or the reverse),
+      // both p + x and p.toFloat + x produce NaN. Since NaN != NaN in IEEE 754, plain
+      // shouldEqual fails. Use areEqualForgivingNaNs.
+      val posInf: NonZeroFloat = NonZeroFloat.ensuringValid(Float.PositiveInfinity)
+      val negInf: NonZeroFloat = NonZeroFloat.ensuringValid(Float.NegativeInfinity)
+      areEqualForgivingNaNs(posInf + Float.NegativeInfinity, posInf.toFloat + Float.NegativeInfinity)
+      areEqualForgivingNaNs(negInf + Float.PositiveInfinity, negInf.toFloat + Float.PositiveInfinity)
+      areEqualForgivingNaNs(posInf + Double.NegativeInfinity, posInf.toFloat + Double.NegativeInfinity)
+      areEqualForgivingNaNs(negInf + Double.PositiveInfinity, negInf.toFloat + Double.PositiveInfinity)
+      // A NaN operand likewise produces NaN on both sides.
+      val nanF: Float = Float.NaN
+      val nanD: Double = Double.NaN
+      areEqualForgivingNaNs(posInf + nanF, posInf.toFloat + nanF)
+      areEqualForgivingNaNs(posInf + nanD, posInf.toFloat + nanD)
     }
 
     it("should offer a '-' method that is consistent with Float") {

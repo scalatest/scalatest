@@ -371,10 +371,14 @@ class NonZeroLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers w
         (p + long) shouldEqual (p.toLong + long)
       }
       forAll { (p: NonZeroLong, float: Float) =>
-        (p + float) shouldEqual (p.toLong + float)
+        val x = p + float
+        val y = p.toLong + float
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (p: NonZeroLong, double: Double) =>
-        (p + double) shouldEqual (p.toLong + double)
+        val x = p + double
+        val y = p.toLong + double
+        areEqualForgivingNaNs(x, y)
       }
     }
 
