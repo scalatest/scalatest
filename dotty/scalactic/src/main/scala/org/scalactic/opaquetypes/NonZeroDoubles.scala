@@ -111,12 +111,12 @@ object NonZeroDoubles {
       * @throws AssertionError if <code>d</code> is zero
       */
     def ensuringValid(d: Double): NonZeroDouble =
-      if (d == 0.0)
+      if (d == 0.0 || d.isNaN)
         throw new AssertionError(Resources.invalidNonZeroDouble)
       else d
 
-    /** Returns <code>Some(NonZeroDouble)</code> if the given <code>Double</code> is non-zero,
-      * or <code>None</code> otherwise.
+    /** Returns <code>Some(NonZeroDouble)</code> if the given <code>Double</code> is non-zero
+      * and not NaN, or <code>None</code> otherwise.
       *
       * <p>
       * This factory method inspects the value at runtime.  Use the compile-time
@@ -124,10 +124,10 @@ object NonZeroDoubles {
       * </p>
       *
       * @param d the <code>Double</code> to inspect
-      * @return <code>Some(NonZeroDouble)</code> if <code>d != 0.0</code>, else <code>None</code>
+      * @return <code>Some(NonZeroDouble)</code> if <code>d != 0.0 && !d.isNaN</code>, else <code>None</code>
       */
     def from(d: Double): Option[NonZeroDouble] =
-      if (d == 0.0) None else Some(d)
+      if (d == 0.0 || d.isNaN) None else Some(d)
 
     /** Implicitly widens a [[NonZeroDouble]] to a plain <code>Double</code>. */
     given Conversion[NonZeroDouble, Double] with {

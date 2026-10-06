@@ -90,17 +90,17 @@ object NonZeroFloats {
       * @throws AssertionError if `f` is zero
       */
     def ensuringValid(f: Float): NonZeroFloat =
-      if (f == 0.0f)
+      if (f == 0.0f || f.isNaN)
         throw new AssertionError(Resources.invalidNonZeroFloat)
       else f
 
-    /** Construct a [[NonZeroFloat]] from a runtime `Float` if it is non-zero.
+    /** Construct a [[NonZeroFloat]] from a runtime `Float` if it is non-zero and not NaN.
       *
       * @param f the `Float` to validate
-      * @return `Some(NonZeroFloat)` when `f != 0.0f`, else `None`
+      * @return `Some(NonZeroFloat)` when `f != 0.0f && !f.isNaN`, else `None`
       */
     def from(f: Float): Option[NonZeroFloat] =
-      if (f == 0.0f) None else Some(f)
+      if (f == 0.0f || f.isNaN) None else Some(f)
 
     /** Implicitly widens a [[NonZeroFloat]] to a plain <code>Float</code>. */
     given Conversion[NonZeroFloat, Float] with {
