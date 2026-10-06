@@ -150,6 +150,12 @@ object NonZeroFloats {
       */
     val MinPositiveValue: NonZeroFloat = Float.MinPositiveValue
 
+    /** The positive infinity value, which is <code>NonZeroFloat.ensuringValid(Float.PositiveInfinity)</code>. */
+    val PositiveInfinity: NonZeroFloat = NonZeroFloat.ensuringValid(Float.PositiveInfinity)
+
+    /** The negative infinity value, which is <code>NonZeroFloat.ensuringValid(Float.NegativeInfinity)</code>. */
+    val NegativeInfinity: NonZeroFloat = NonZeroFloat.ensuringValid(Float.NegativeInfinity)
+
     /** Implicitly widens a [[NonZeroFloat]] to a plain <code>Float</code>. */
     given Conversion[NonZeroFloat, Float] with {
       def apply(x: NonZeroFloat): Float = x

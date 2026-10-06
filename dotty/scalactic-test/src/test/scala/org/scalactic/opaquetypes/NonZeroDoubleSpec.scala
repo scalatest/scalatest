@@ -637,6 +637,10 @@ class NonZeroDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers
         NonZeroDouble.MinValue.value shouldBe Double.MinValue
         NonZeroDouble.MinPositiveValue.value shouldBe Double.MinPositiveValue
       }
+      it("should expose PositiveInfinity and NegativeInfinity") {
+        NonZeroDouble.PositiveInfinity.value shouldBe Double.PositiveInfinity
+        NonZeroDouble.NegativeInfinity.value shouldBe Double.NegativeInfinity
+      }
     }
 
   }

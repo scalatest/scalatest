@@ -395,8 +395,8 @@ class NonZeroFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers 
       // When p is PositiveInfinity and float/double is NegativeInfinity (or the reverse),
       // both p + x and p.toFloat + x produce NaN. Since NaN != NaN in IEEE 754, plain
       // shouldEqual fails. Use areEqualForgivingNaNs.
-      val posInf: NonZeroFloat = NonZeroFloat.ensuringValid(Float.PositiveInfinity)
-      val negInf: NonZeroFloat = NonZeroFloat.ensuringValid(Float.NegativeInfinity)
+      val posInf: NonZeroFloat = NonZeroFloat.PositiveInfinity
+      val negInf: NonZeroFloat = NonZeroFloat.NegativeInfinity
       areEqualForgivingNaNs(posInf + Float.NegativeInfinity, posInf.toFloat + Float.NegativeInfinity)
       areEqualForgivingNaNs(negInf + Float.PositiveInfinity, negInf.toFloat + Float.PositiveInfinity)
       areEqualForgivingNaNs(posInf + Double.NegativeInfinity, posInf.toFloat + Double.NegativeInfinity)
@@ -653,6 +653,10 @@ class NonZeroFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers 
         NonZeroFloat.MaxValue.value shouldBe Float.MaxValue
         NonZeroFloat.MinValue.value shouldBe Float.MinValue
         NonZeroFloat.MinPositiveValue.value shouldBe Float.MinPositiveValue
+      }
+      it("should expose PositiveInfinity and NegativeInfinity") {
+        NonZeroFloat.PositiveInfinity.value shouldBe Float.PositiveInfinity
+        NonZeroFloat.NegativeInfinity.value shouldBe Float.NegativeInfinity
       }
     }
 
