@@ -940,13 +940,13 @@ object PosDoubles {
       def apply(x: Int): PosZFiniteDouble = x.toDouble
     }
 
-    /** Converts a compile-time non-negative <code>Long</code> literal to a [[PosZFiniteDouble]].
+    /** Blocking Long conversion to prevent precision loss. Long to Double can lose precision for values > 2^53.
       *
-      * The inline overload is checked at compile time; the runtime overload
-      * performs no validation (all non-negative <code>Long</code> values widen
-      * safely to a finite <code>Double</code>).
+      * This conversion always produces a compile-time error for literals and throws
+      * <code>AssertionError</code> at runtime for non-literals. Use explicit
+      * widening: <code>PosZFiniteDouble(x.toDouble)</code>.
       *
-      * @throws compile-time error if the literal is negative or not a literal
+      * @throws scala.compiletime.error unconditionally for literals
       */
     given Conversion[Long, PosZFiniteDouble] with {
       inline def apply[L <: Long & Singleton](inline x: L): PosZFiniteDouble =
@@ -1306,12 +1306,13 @@ object PosDoubles {
       def apply(x: Int): PosFiniteDouble = x.toDouble
     }
 
-    /** Converts a compile-time positive <code>Long</code> literal to a [[PosFiniteDouble]].
+    /** Blocking Long conversion to prevent precision loss. Long to Double can lose precision for values > 2^53.
       *
-      * The inline overload validates literals at compile time. The runtime overload
-      * widens the value to <code>Double</code> without additional checks.
+      * This conversion always produces a compile-time error for literals and throws
+      * <code>AssertionError</code> at runtime for non-literals. Use explicit
+      * widening: <code>PosFiniteDouble(x.toDouble)</code>.
       *
-      * @throws compile-time error if the literal is non-positive or not a literal
+      * @throws scala.compiletime.error unconditionally for literals
       */
     given Conversion[Long, PosFiniteDouble] with {
       inline def apply[L <: Long & Singleton](inline x: L): PosFiniteDouble =

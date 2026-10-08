@@ -74,17 +74,15 @@ object NonZeroDoubles {
           error("NonZeroDouble.apply requires an integer or double literal")
       }
 
-    /** Compile-time factory for creating a [[NonZeroDouble]] from a long literal. */
+    /** Blocking Long literal apply to prevent precision loss. Long to Double can lose precision for values > 2^53.
+      *
+      * This overload always produces a compile-time error. Use explicit widening:
+      * `NonZeroDouble(x.toDouble)`.
+      *
+      * @throws scala.compiletime.error unconditionally
+      */
     inline def apply[L <: Long & Singleton](inline l: L): NonZeroDouble =
-      inline constValueOpt[L] match {
-        case Some(v: Long) =>
-          inline if v != 0L then
-            v.toDouble.asInstanceOf[NonZeroDouble]
-          else
-            error("NonZeroDouble cannot be instantiated with zero")
-        case None =>
-          error("NonZeroDouble.apply requires a long or double literal")
-      }
+      error("NonZeroDouble.apply from Long is not supported due to potential precision loss. Use explicit toDouble: NonZeroDouble(x.toDouble)")
 
     /** Compile-time factory for creating a [[NonZeroDouble]] from a float literal. */
     inline def apply[F <: Float & Singleton](inline f: F): NonZeroDouble =
@@ -199,20 +197,13 @@ object NonZeroDoubles {
       def apply(x: Int): NonZeroDouble = NonZeroDouble.ensuringValid(x.toDouble)
     }
 
-    /** Convert Long to [[NonZeroDouble]] via compile-time or runtime validation. */
+    /** Blocking Long conversion to prevent precision loss. Long to Double can lose precision for values > 2^53. */
     given Conversion[Long, NonZeroDouble] with {
       inline def apply[L <: Long & Singleton](inline x: L): NonZeroDouble =
-        inline constValueOpt[L] match {
-          case Some(v: Long) =>
-            inline if v == 0L then
-              error("NonZeroDouble cannot be instantiated with zero")
-            else
-              v.toDouble.asInstanceOf[NonZeroDouble]
-          case None =>
-            error("NonZeroDouble conversion requires a long literal")
-        }
+        error("NonZeroDouble conversion from Long is not supported due to potential precision loss. Use explicit toDouble: NonZeroDouble(x.toDouble)")
 
-      def apply(x: Long): NonZeroDouble = NonZeroDouble.ensuringValid(x.toDouble)
+      def apply(x: Long): NonZeroDouble =
+        throw new AssertionError("NonZeroDouble conversion from Long is not supported due to potential precision loss. Use explicit toDouble: NonZeroDouble(x.toDouble)")
     }
 
     /** Convert Float to [[NonZeroDouble]] via compile-time or runtime validation. */

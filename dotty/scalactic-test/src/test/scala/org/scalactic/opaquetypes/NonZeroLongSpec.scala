@@ -58,8 +58,9 @@ class NonZeroLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers w
       (NonZeroLong(3): Long) shouldEqual 3L
       (NonZeroLong(3).toFloat: Float) shouldEqual 3.0f
       (NonZeroLong(3).toDouble: Double) shouldEqual 3.0
-      (NonZeroLong(3L): NonZeroFloat) shouldEqual NonZeroFloat(3.0f)
-      (NonZeroLong(3L): NonZeroDouble) shouldEqual NonZeroDouble(3.0)
+      // Sanity check that widening conversions from NonZeroLong to NonZeroFloat and NonZeroDouble should not work.
+      "(NonZeroLong(3L): NonZeroFloat)" shouldNot compile
+      "(NonZeroLong(3L): NonZeroDouble)" shouldNot compile
       "(NonZeroLong(3): Int)" shouldNot compile
       "(NonZeroLong(3): PosInt)" shouldNot compile
       "(NonZeroLong(3): PosLong)" shouldNot compile
@@ -526,12 +527,14 @@ class NonZeroLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers w
       }
              forAll { (p: NonZeroLong) =>
         def widen(value: NonZeroFloat): NonZeroFloat = value
-        widen(p) shouldEqual widen(NonZeroFloat.from(p.toLong).get)
+        "widen(p) shouldEqual widen(NonZeroFloat.from(p.toLong).get)" shouldNot compile
+        succeed
       }
              
       forAll { (p: NonZeroLong) =>
         def widen(value: NonZeroDouble): NonZeroDouble = value
-        widen(p) shouldEqual widen(NonZeroDouble.from(p.toLong).get)
+        "widen(p) shouldEqual widen(NonZeroDouble.from(p.toLong).get)" shouldNot compile
+        succeed
       }
              
     }
