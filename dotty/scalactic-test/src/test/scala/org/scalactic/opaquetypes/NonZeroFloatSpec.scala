@@ -5,6 +5,7 @@ import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import scala.util.Try
 import scala.util.{Try, Success, Failure}
 import org.scalactic.Equality
+import org.scalactic.{Or, Good, Bad, Pass, Fail}
 
 import org.scalactic.opaquetypes.NonZeroFloats.NonZeroFloat
 
@@ -379,11 +380,32 @@ class NonZeroFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers 
         (p + long) shouldEqual (p.toFloat + long)
       }
       forAll { (p: NonZeroFloat, float: Float) =>
-        (p + float) shouldEqual (p.toFloat + float)
+        val x = p + float
+        val y = p.toFloat + float
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (p: NonZeroFloat, double: Double) =>
-        (p + double) shouldEqual (p.toFloat + double)
+        val x = p + double
+        val y = p.toFloat + double
+        areEqualForgivingNaNs(x, y)
       }
+    }
+
+    it("should handle NaN results from + with opposite-signed Infinity consistently (regression test)") {
+      // When p is PositiveInfinity and float/double is NegativeInfinity (or the reverse),
+      // both p + x and p.toFloat + x produce NaN. Since NaN != NaN in IEEE 754, plain
+      // shouldEqual fails. Use areEqualForgivingNaNs.
+      val posInf: NonZeroFloat = NonZeroFloat.PositiveInfinity
+      val negInf: NonZeroFloat = NonZeroFloat.NegativeInfinity
+      areEqualForgivingNaNs(posInf + Float.NegativeInfinity, posInf.toFloat + Float.NegativeInfinity)
+      areEqualForgivingNaNs(negInf + Float.PositiveInfinity, negInf.toFloat + Float.PositiveInfinity)
+      areEqualForgivingNaNs(posInf + Double.NegativeInfinity, posInf.toFloat + Double.NegativeInfinity)
+      areEqualForgivingNaNs(negInf + Double.PositiveInfinity, negInf.toFloat + Double.PositiveInfinity)
+      // A NaN operand likewise produces NaN on both sides.
+      val nanF: Float = Float.NaN
+      val nanD: Double = Double.NaN
+      areEqualForgivingNaNs(posInf + nanF, posInf.toFloat + nanF)
+      areEqualForgivingNaNs(posInf + nanD, posInf.toFloat + nanD)
     }
 
     it("should offer a '-' method that is consistent with Float") {
@@ -528,6 +550,125 @@ class NonZeroFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers 
         widen(NonZeroDouble.from(p.toFloat).get) shouldEqual widen(NonZeroDouble.from(p.toFloat).get)
       }
              
+    }
+
+    describe("from") {
+      it("should return Some(NonZeroFloat) for non-zero, non-NaN Float values") {
+        NonZeroFloat.from(1.0f).map(_.value) shouldBe Some(1.0f)
+        NonZeroFloat.from(-1.0f).map(_.value) shouldBe Some(-1.0f)
+        NonZeroFloat.from(Float.MinPositiveValue).map(_.value) shouldBe Some(Float.MinPositiveValue)
+        NonZeroFloat.from(Float.PositiveInfinity).map(_.value) shouldBe Some(Float.PositiveInfinity)
+        NonZeroFloat.from(Float.NegativeInfinity).map(_.value) shouldBe Some(Float.NegativeInfinity)
+      }
+      it("should return None for zero and NaN") {
+        NonZeroFloat.from(0.0f) shouldBe None
+        NonZeroFloat.from(-0.0f) shouldBe None
+        NonZeroFloat.from(Float.NaN) shouldBe None
+      }
+    }
+
+    describe("ensuringValid") {
+      it("should return the NonZeroFloat for values that are non-zero and not NaN") {
+        NonZeroFloat.ensuringValid(1.0f).value shouldBe 1.0f
+        NonZeroFloat.ensuringValid(-1.0f).value shouldBe -1.0f
+        NonZeroFloat.ensuringValid(Float.MinPositiveValue).value shouldEqual Float.MinPositiveValue
+        NonZeroFloat.ensuringValid(Float.PositiveInfinity).value shouldEqual Float.PositiveInfinity
+        NonZeroFloat.ensuringValid(Float.NegativeInfinity).value shouldEqual Float.NegativeInfinity
+      }
+      it("should throw AssertionError for zero and NaN") {
+        an[AssertionError] should be thrownBy NonZeroFloat.ensuringValid(0.0f)
+        an[AssertionError] should be thrownBy NonZeroFloat.ensuringValid(-0.0f)
+        an[AssertionError] should be thrownBy NonZeroFloat.ensuringValid(Float.NaN)
+      }
+    }
+
+    describe("isValid") {
+      it("should return true for non-zero, non-NaN values") {
+        NonZeroFloat.isValid(1.0f) shouldBe true
+        NonZeroFloat.isValid(-1.0f) shouldBe true
+        NonZeroFloat.isValid(Float.MinPositiveValue) shouldBe true
+        NonZeroFloat.isValid(Float.PositiveInfinity) shouldBe true
+        NonZeroFloat.isValid(Float.NegativeInfinity) shouldBe true
+      }
+      it("should return false for zero and NaN") {
+        NonZeroFloat.isValid(0.0f) shouldBe false
+        NonZeroFloat.isValid(-0.0f) shouldBe false
+        NonZeroFloat.isValid(Float.NaN) shouldBe false
+      }
+    }
+
+    describe("tryingValid") {
+      it("should return Success for valid values") {
+        NonZeroFloat.tryingValid(42.0f).get.value shouldBe 42.0f
+        NonZeroFloat.tryingValid(Float.PositiveInfinity).get.value shouldEqual Float.PositiveInfinity
+      }
+      it("should return Failure for invalid values") {
+        NonZeroFloat.tryingValid(0.0f) should matchPattern { case Failure(_: AssertionError) => }
+        NonZeroFloat.tryingValid(Float.NaN) should matchPattern { case Failure(_: AssertionError) => }
+      }
+    }
+
+    describe("Or / Validation helpers") {
+      it("should return Good for valid values and Bad otherwise") {
+        NonZeroFloat.goodOrElse(42.0f)(_ => "err") match {
+          case Good(value) => value.value shouldBe 42.0f
+          case _ => fail("expected Good")
+        }
+        NonZeroFloat.goodOrElse(0.0f)(_ => "err") shouldBe Bad("err")
+        NonZeroFloat.goodOrElse(Float.NaN)(_ => "err") shouldBe Bad("err")
+      }
+      it("should return Right for valid values and Left otherwise") {
+        NonZeroFloat.rightOrElse(42.0f)(_ => "err") match {
+          case Right(value) => value.value shouldBe 42.0f
+          case _ => fail("expected Right")
+        }
+        NonZeroFloat.rightOrElse(0.0f)(_ => "err") shouldBe Left("err")
+        NonZeroFloat.rightOrElse(Float.NaN)(_ => "err") shouldBe Left("err")
+      }
+      it("should return Pass for valid values and Fail otherwise") {
+        NonZeroFloat.passOrElse(42.0f)(_ => "err") shouldBe Pass
+        NonZeroFloat.passOrElse(0.0f)(_ => "err") shouldBe Fail("err")
+        NonZeroFloat.passOrElse(Float.NaN)(_ => "err") shouldBe Fail("err")
+      }
+      it("should return the default from fromOrElse when invalid") {
+        NonZeroFloat.fromOrElse(42.0f, NonZeroFloat(1.0f)).value shouldBe 42.0f
+        NonZeroFloat.fromOrElse(0.0f, NonZeroFloat(1.0f)).value shouldBe 1.0f
+        NonZeroFloat.fromOrElse(Float.NaN, NonZeroFloat(1.0f)).value shouldBe 1.0f
+      }
+    }
+
+    describe("ensuringValid extension") {
+      it("should apply the function when the result is a valid NonZeroFloat") {
+        NonZeroFloat.ensuringValid(42.0f).ensuringValid(_ * 2).value shouldBe 84.0f
+        NonZeroFloat.ensuringValid(42.0f).ensuringValid(_ / 2).value shouldBe 21.0f
+      }
+      it("should throw AssertionError when the result is zero or NaN") {
+        an[AssertionError] should be thrownBy NonZeroFloat.ensuringValid(42.0f).ensuringValid(_ * 0)
+        an[AssertionError] should be thrownBy NonZeroFloat.ensuringValid(42.0f).ensuringValid(_ => Float.NaN)
+      }
+    }
+
+    describe("constants") {
+      it("should expose MaxValue, MinValue and MinPositiveValue") {
+        NonZeroFloat.MaxValue.value shouldBe Float.MaxValue
+        NonZeroFloat.MinValue.value shouldBe Float.MinValue
+        NonZeroFloat.MinPositiveValue.value shouldBe Float.MinPositiveValue
+      }
+      it("should expose PositiveInfinity and NegativeInfinity") {
+        NonZeroFloat.PositiveInfinity.value shouldBe Float.PositiveInfinity
+        NonZeroFloat.NegativeInfinity.value shouldBe Float.NegativeInfinity
+      }
+    }
+
+    describe("Ordering") {
+      it("should provide an Ordering that works for both negative and positive values") {
+        NonZeroFloat(-1924396667.0f) should be <= NonZeroFloat(1081481977.0f)
+      }
+
+      it("should be sortable") {
+        val xs = List(NonZeroFloat(2.0F), NonZeroFloat(-1.5F), NonZeroFloat(3.25F), NonZeroFloat(-0.25F))
+        xs.sorted shouldEqual List(NonZeroFloat(-1.5F), NonZeroFloat(-0.25F), NonZeroFloat(2.0F), NonZeroFloat(3.25F))
+      }
     }
 
   }

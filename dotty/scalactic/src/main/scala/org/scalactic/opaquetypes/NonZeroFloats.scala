@@ -36,13 +36,13 @@ object NonZeroFloats {
   import NegDoubles.{NegDouble, NegZDouble, NegZFiniteDouble, NegFiniteDouble}
   import Finites.{FiniteFloat, FiniteDouble}
 
-  /** Opaque type alias for <code>Float</code> that represents any non-zero <code>Float</code> value.
+  /** Opaque type alias for <code>Float</code> that represents any non-zero, non-NaN <code>Float</code> value.
     *
     *  <p>
-    *  Instances of this type are guaranteed to satisfy <code>!= 0.0f</code>.
+    *  Instances of this type are guaranteed to satisfy <code>!= 0.0f</code> and be
+    *  not <code>NaN</code>.
     *  Unlike [[NonZeroFiniteFloat]], this type permits infinite values
-    *  (<code>Float.PositiveInfinity</code> and <code>Float.NegativeInfinity</code>)
-    *  as well as <code>Float.NaN</code>.
+    *  (<code>Float.PositiveInfinity</code> and <code>Float.NegativeInfinity</code>).
     *  </p>
     *
     *  @see [[NonZeroFloat]] companion object for factory methods and conversions.
@@ -90,17 +90,71 @@ object NonZeroFloats {
       * @throws AssertionError if `f` is zero
       */
     def ensuringValid(f: Float): NonZeroFloat =
-      if (f == 0.0f)
+      if (f == 0.0f || f.isNaN)
         throw new AssertionError(Resources.invalidNonZeroFloat)
       else f
 
-    /** Construct a [[NonZeroFloat]] from a runtime `Float` if it is non-zero.
+    /** Construct a [[NonZeroFloat]] from a runtime `Float` if it is non-zero and not NaN.
       *
       * @param f the `Float` to validate
-      * @return `Some(NonZeroFloat)` when `f != 0.0f`, else `None`
+      * @return `Some(NonZeroFloat)` when `f != 0.0f && !f.isNaN`, else `None`
       */
     def from(f: Float): Option[NonZeroFloat] =
-      if (f == 0.0f) None else Some(f)
+      if (f == 0.0f || f.isNaN) None else Some(f)
+
+    /** Runtime factory that returns Success for valid input, Failure otherwise.
+      *
+      * @param value the Float to validate
+      * @return Success(NonZeroFloat) if value is non-zero and not NaN,
+      *   else Failure(AssertionError)
+      */
+    def tryingValid(value: Float): Try[NonZeroFloat] =
+      if (isValid(value)) Success(value)
+      else Failure(new AssertionError(Resources.invalidNonZeroFloat))
+
+    /** Predicate indicating whether the given Float is valid for [[NonZeroFloat]].
+      *
+      * @param value the Float to validate
+      * @return true if value is non-zero and not NaN, else false
+      */
+    def isValid(value: Float): Boolean = value != 0.0f && !value.isNaN
+
+    /** Validate a value and return Pass, else Fail(f(value)). */
+    def passOrElse[E](value: Float)(f: Float => E): Validation[E] =
+      if (isValid(value)) Pass else Fail(f(value))
+
+    /** Validate a value and return Good(NonZeroFloat), else Bad(f(value)). */
+    def goodOrElse[B](value: Float)(f: Float => B): NonZeroFloat Or B =
+      if (isValid(value)) Good(value) else Bad(f(value))
+
+    /** Validate a value and return Right(NonZeroFloat), else Left(f(value)). */
+    def rightOrElse[L](value: Float)(f: Float => L): Either[L, NonZeroFloat] =
+      if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))
+
+    /** Return a validated value or the provided default if invalid. */
+    def fromOrElse(value: Float, default: => NonZeroFloat): NonZeroFloat =
+      if (isValid(value)) value else default
+
+    /** The largest value representable as a [[NonZeroFloat]], which is
+      * <code>Float.MaxValue</code>.
+      */
+    val MaxValue: NonZeroFloat = Float.MaxValue
+
+    /** The smallest value representable as a [[NonZeroFloat]], which is
+      * <code>Float.MinValue</code> (i.e. <code>-Float.MaxValue</code>).
+      */
+    val MinValue: NonZeroFloat = Float.MinValue
+
+    /** The smallest positive value greater than <code>0.0f</code> representable as a [[NonZeroFloat]],
+      * which is <code>Float.MinPositiveValue</code>.
+      */
+    val MinPositiveValue: NonZeroFloat = Float.MinPositiveValue
+
+    /** The positive infinity value, which is <code>NonZeroFloat.ensuringValid(Float.PositiveInfinity)</code>. */
+    val PositiveInfinity: NonZeroFloat = NonZeroFloat.ensuringValid(Float.PositiveInfinity)
+
+    /** The negative infinity value, which is <code>NonZeroFloat.ensuringValid(Float.NegativeInfinity)</code>. */
+    val NegativeInfinity: NonZeroFloat = NonZeroFloat.ensuringValid(Float.NegativeInfinity)
 
     /** Implicitly widens a [[NonZeroFloat]] to a plain <code>Float</code>. */
     given Conversion[NonZeroFloat, Float] with {
@@ -127,6 +181,11 @@ object NonZeroFloats {
     given Conversion[NonZeroFloat, NonZeroDoubles.NonZeroDouble] with {
       def apply(x: NonZeroFloat): NonZeroDoubles.NonZeroDouble = NonZeroDoubles.NonZeroDouble.ensuringValid(x.toDouble)
     }
+
+    /** Ordering instance for NonZeroFloat that orders by numeric value. */
+    given Ordering[NonZeroFloat] with {
+      def compare(x: NonZeroFloat, y: NonZeroFloat): Int = x.compareTo(y)
+    }
   }
 
   // Extension methods at NonZeroFloats level for NonZeroFloat
@@ -151,6 +210,19 @@ object NonZeroFloats {
 
     /** Lesser of this and that value. */
     def min(that: NonZeroFloat): NonZeroFloat = if (x <= that) x else that
+
+    /** Apply `f` to the underlying Float and require the result to remain a valid
+      * [[NonZeroFloat]] (non-zero and not NaN).
+      *
+      * @param f the function to apply
+      * @return f(x) as a [[NonZeroFloat]]
+      * @throws AssertionError if f(x) is zero or NaN
+      */
+    def ensuringValid(f: Float => Float): NonZeroFloat = {
+      val candidateResult: Float = f(x)
+      if (NonZeroFloat.isValid(candidateResult)) candidateResult
+      else throw new AssertionError(Resources.invalidNonZeroFloat)
+    }
 
     // Arithmetic operations - return appropriate types
     @annotation.targetName("plusByte")

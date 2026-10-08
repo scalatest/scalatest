@@ -3,7 +3,7 @@ package org.scalactic.opaquetypes
 import org.scalactic.Equality
 import org.scalatest._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
-import scala.util.Try
+import scala.util.{Try, Success, Failure}
 
 import org.scalactic.opaquetypes.NonZeroDoubles.NonZeroDouble
 import org.scalactic.{Pass, Fail}
@@ -533,6 +533,114 @@ class NonZeroDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers
         widen(p) shouldEqual widen(p.toDouble)
       }
              
+    }
+
+    describe("from") {
+      it("should return Some(NonZeroDouble) for non-zero, non-NaN Double values") {
+        NonZeroDouble.from(1.0).map(_.value) shouldBe Some(1.0)
+        NonZeroDouble.from(-1.0).map(_.value) shouldBe Some(-1.0)
+        NonZeroDouble.from(Double.MinPositiveValue).map(_.value) shouldBe Some(Double.MinPositiveValue)
+        NonZeroDouble.from(Double.PositiveInfinity).map(_.value) shouldBe Some(Double.PositiveInfinity)
+        NonZeroDouble.from(Double.NegativeInfinity).map(_.value) shouldBe Some(Double.NegativeInfinity)
+      }
+      it("should return None for zero and NaN") {
+        NonZeroDouble.from(0.0) shouldBe None
+        NonZeroDouble.from(-0.0) shouldBe None
+        NonZeroDouble.from(Double.NaN) shouldBe None
+      }
+    }
+
+    describe("ensuringValid") {
+      it("should return the NonZeroDouble for values that are non-zero and not NaN") {
+        NonZeroDouble.ensuringValid(1.0).value shouldBe 1.0
+        NonZeroDouble.ensuringValid(-1.0).value shouldBe -1.0
+        NonZeroDouble.ensuringValid(Double.MinPositiveValue).value shouldEqual Double.MinPositiveValue
+        NonZeroDouble.ensuringValid(Double.PositiveInfinity).value shouldEqual Double.PositiveInfinity
+        NonZeroDouble.ensuringValid(Double.NegativeInfinity).value shouldEqual Double.NegativeInfinity
+      }
+      it("should throw AssertionError for zero and NaN") {
+        an[AssertionError] should be thrownBy NonZeroDouble.ensuringValid(0.0)
+        an[AssertionError] should be thrownBy NonZeroDouble.ensuringValid(-0.0)
+        an[AssertionError] should be thrownBy NonZeroDouble.ensuringValid(Double.NaN)
+      }
+    }
+
+    describe("isValid") {
+      it("should return true for non-zero, non-NaN values") {
+        NonZeroDouble.isValid(1.0) shouldBe true
+        NonZeroDouble.isValid(-1.0) shouldBe true
+        NonZeroDouble.isValid(Double.MinPositiveValue) shouldBe true
+        NonZeroDouble.isValid(Double.PositiveInfinity) shouldBe true
+        NonZeroDouble.isValid(Double.NegativeInfinity) shouldBe true
+      }
+      it("should return false for zero and NaN") {
+        NonZeroDouble.isValid(0.0) shouldBe false
+        NonZeroDouble.isValid(-0.0) shouldBe false
+        NonZeroDouble.isValid(Double.NaN) shouldBe false
+      }
+    }
+
+    describe("tryingValid") {
+      it("should return Success for valid values") {
+        NonZeroDouble.tryingValid(42.0).get.value shouldBe 42.0
+        NonZeroDouble.tryingValid(Double.PositiveInfinity).get.value shouldEqual Double.PositiveInfinity
+      }
+      it("should return Failure for invalid values") {
+        NonZeroDouble.tryingValid(0.0) should matchPattern { case Failure(_: AssertionError) => }
+        NonZeroDouble.tryingValid(Double.NaN) should matchPattern { case Failure(_: AssertionError) => }
+      }
+    }
+
+    describe("Or / Validation helpers") {
+      it("should return Good for valid values and Bad otherwise") {
+        NonZeroDouble.goodOrElse(42.0)(_ => "err") match {
+          case Good(value) => value.value shouldBe 42.0
+          case _ => fail("expected Good")
+        }
+        NonZeroDouble.goodOrElse(0.0)(_ => "err") shouldBe Bad("err")
+        NonZeroDouble.goodOrElse(Double.NaN)(_ => "err") shouldBe Bad("err")
+      }
+      it("should return Right for valid values and Left otherwise") {
+        NonZeroDouble.rightOrElse(42.0)(_ => "err") match {
+          case Right(value) => value.value shouldBe 42.0
+          case _ => fail("expected Right")
+        }
+        NonZeroDouble.rightOrElse(0.0)(_ => "err") shouldBe Left("err")
+        NonZeroDouble.rightOrElse(Double.NaN)(_ => "err") shouldBe Left("err")
+      }
+      it("should return Pass for valid values and Fail otherwise") {
+        NonZeroDouble.passOrElse(42.0)(_ => "err") shouldBe Pass
+        NonZeroDouble.passOrElse(0.0)(_ => "err") shouldBe Fail("err")
+        NonZeroDouble.passOrElse(Double.NaN)(_ => "err") shouldBe Fail("err")
+      }
+      it("should return the default from fromOrElse when invalid") {
+        NonZeroDouble.fromOrElse(42.0, NonZeroDouble(1.0)).value shouldBe 42.0
+        NonZeroDouble.fromOrElse(0.0, NonZeroDouble(1.0)).value shouldBe 1.0
+        NonZeroDouble.fromOrElse(Double.NaN, NonZeroDouble(1.0)).value shouldBe 1.0
+      }
+    }
+
+    describe("ensuringValid extension") {
+      it("should apply the function when the result is a valid NonZeroDouble") {
+        NonZeroDouble.ensuringValid(42.0).ensuringValid(_ * 2).value shouldBe 84.0
+        NonZeroDouble.ensuringValid(42.0).ensuringValid(_ / 2).value shouldBe 21.0
+      }
+      it("should throw AssertionError when the result is zero or NaN") {
+        an[AssertionError] should be thrownBy NonZeroDouble.ensuringValid(42.0).ensuringValid(_ * 0)
+        an[AssertionError] should be thrownBy NonZeroDouble.ensuringValid(42.0).ensuringValid(_ => Double.NaN)
+      }
+    }
+
+    describe("constants") {
+      it("should expose MaxValue, MinValue and MinPositiveValue") {
+        NonZeroDouble.MaxValue.value shouldBe Double.MaxValue
+        NonZeroDouble.MinValue.value shouldBe Double.MinValue
+        NonZeroDouble.MinPositiveValue.value shouldBe Double.MinPositiveValue
+      }
+      it("should expose PositiveInfinity and NegativeInfinity") {
+        NonZeroDouble.PositiveInfinity.value shouldBe Double.PositiveInfinity
+        NonZeroDouble.NegativeInfinity.value shouldBe Double.NegativeInfinity
+      }
     }
 
   }

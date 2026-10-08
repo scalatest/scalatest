@@ -161,6 +161,7 @@ class PosFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
       PosFloat.MaxValue shouldEqual PosFloat.from(Float.MaxValue).get
       PosFloat.MinValue shouldEqual
         PosFloat.from(Float.MinPositiveValue).get
+      PosFloat.MinPositiveValue shouldEqual PosFloat(Float.MinPositiveValue)
     }
     it("should offer a PositiveInfinity method") {
       PosFloat.PositiveInfinity shouldEqual PosFloat.ensuringValid(Float.PositiveInfinity)
