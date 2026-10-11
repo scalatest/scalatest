@@ -176,4 +176,424 @@ class PercentageIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers
       }
     }
   }
+  describe("PercentageInt") {
+    it("should be automatically widened to compatible AnyVal targets") {
+      (Percentages.PercentageInt(50) : Int) shouldEqual 50
+      "(Percentages.PercentageInt(50) : Byte)" shouldNot compile
+      "(Percentages.PercentageInt(50) : Short)" shouldNot compile
+      "(Percentages.PercentageInt(50) : Char)" shouldNot compile
+      "(Percentages.PercentageInt(50) : Long)" shouldNot compile
+      "(Percentages.PercentageInt(50) : Float)" shouldNot compile
+      "(Percentages.PercentageInt(50) : Double)" shouldNot compile
+      "(Percentages.PercentageInt(50) : PosInts.PosInt)" shouldNot compile
+      "(Percentages.PercentageInt(50) : PosInts.PosZInt)" shouldNot compile
+      "(Percentages.PercentageInt(50) : NegInts.NegInt)" shouldNot compile
+      "(Percentages.PercentageInt(50) : NegInts.NegZInt)" shouldNot compile
+      "(Percentages.PercentageInt(50) : NonZeroInts.NonZeroInt)" shouldNot compile
+      "(Percentages.PercentageInt(50) : Numerics.NumericChar)" shouldNot compile
+      "(Percentages.PercentageInt(50) : PosLongs.PosLong)" shouldNot compile
+      "(Percentages.PercentageInt(50) : PosLongs.PosZLong)" shouldNot compile
+      "(Percentages.PercentageInt(50) : NegLongs.NegLong)" shouldNot compile
+      "(Percentages.PercentageInt(50) : NegLongs.NegZLong)" shouldNot compile
+      "(Percentages.PercentageInt(50) : NonZeroLongs.NonZeroLong)" shouldNot compile
+      "(Percentages.PercentageInt(50) : PosFloats.PosFloat)" shouldNot compile
+      "(Percentages.PercentageInt(50) : PosFloats.PosZFloat)" shouldNot compile
+      "(Percentages.PercentageInt(50) : NegFloats.NegFloat)" shouldNot compile
+      "(Percentages.PercentageInt(50) : NegFloats.NegZFloat)" shouldNot compile
+      "(Percentages.PercentageInt(50) : NonZeroFloats.NonZeroFloat)" shouldNot compile
+      "(Percentages.PercentageInt(50) : NonZeroFloats.NonZeroFiniteFloat)" shouldNot compile
+      "(Percentages.PercentageInt(50) : PosFloats.PosFiniteFloat)" shouldNot compile
+      "(Percentages.PercentageInt(50) : PosFloats.PosZFiniteFloat)" shouldNot compile
+      "(Percentages.PercentageInt(50) : NegFloats.NegFiniteFloat)" shouldNot compile
+      "(Percentages.PercentageInt(50) : NegFloats.NegZFiniteFloat)" shouldNot compile
+      "(Percentages.PercentageInt(50) : Finites.FiniteFloat)" shouldNot compile
+      "(Percentages.PercentageInt(50) : PosDoubles.PosDouble)" shouldNot compile
+      "(Percentages.PercentageInt(50) : PosDoubles.PosZDouble)" shouldNot compile
+      "(Percentages.PercentageInt(50) : NegDoubles.NegDouble)" shouldNot compile
+      "(Percentages.PercentageInt(50) : NegDoubles.NegZDouble)" shouldNot compile
+      "(Percentages.PercentageInt(50) : NonZeroDoubles.NonZeroDouble)" shouldNot compile
+      "(Percentages.PercentageInt(50) : NonZeroDoubles.NonZeroFiniteDouble)" shouldNot compile
+      "(Percentages.PercentageInt(50) : PosDoubles.PosFiniteDouble)" shouldNot compile
+      "(Percentages.PercentageInt(50) : PosDoubles.PosZFiniteDouble)" shouldNot compile
+      "(Percentages.PercentageInt(50) : NegDoubles.NegFiniteDouble)" shouldNot compile
+      "(Percentages.PercentageInt(50) : NegDoubles.NegZFiniteDouble)" shouldNot compile
+      "(Percentages.PercentageInt(50) : Finites.FiniteDouble)" shouldNot compile
+    }
+    it("when a compatible AnyVal is passed to a + method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      Percentages.PercentageInt(50) + 3.toByte shouldEqual 53
+      Percentages.PercentageInt(50) + 3.toShort shouldEqual 53
+      Percentages.PercentageInt(50) + '3' shouldEqual 101
+      Percentages.PercentageInt(50) + 3 shouldEqual 53
+      Percentages.PercentageInt(50) + 3L shouldEqual 53L
+      Percentages.PercentageInt(50) + 3.0f shouldEqual 53.0f
+      Percentages.PercentageInt(50) + 3.0 shouldEqual 53.0
+      Percentages.PercentageInt(50) + PosInts.PosInt(3) shouldEqual 53
+      Percentages.PercentageInt(50) + PosInts.PosZInt(3) shouldEqual 53
+      Percentages.PercentageInt(50) + NegInts.NegInt(-3) shouldEqual 47
+      Percentages.PercentageInt(50) + NegInts.NegZInt(-3) shouldEqual 47
+      Percentages.PercentageInt(50) + NonZeroInts.NonZeroInt(3) shouldEqual 53
+      Percentages.PercentageInt(50) + PosLongs.PosLong(3L) shouldEqual 53L
+      Percentages.PercentageInt(50) + PosLongs.PosZLong(3L) shouldEqual 53L
+      Percentages.PercentageInt(50) + NegLongs.NegLong(-3L) shouldEqual 47L
+      Percentages.PercentageInt(50) + NegLongs.NegZLong(-3L) shouldEqual 47L
+      Percentages.PercentageInt(50) + NonZeroLongs.NonZeroLong(3L) shouldEqual 53L
+      Percentages.PercentageInt(50) + PosFloats.PosFloat(3.0f) shouldEqual 53.0f
+      Percentages.PercentageInt(50) + PosFloats.PosZFloat(3.0f) shouldEqual 53.0f
+      Percentages.PercentageInt(50) + NegFloats.NegFloat(-3.0f) shouldEqual 47.0f
+      Percentages.PercentageInt(50) + NegFloats.NegZFloat(-3.0f) shouldEqual 47.0f
+      Percentages.PercentageInt(50) + NonZeroFloats.NonZeroFloat(3.0f) shouldEqual 53.0f
+      Percentages.PercentageInt(50) + NonZeroFloats.NonZeroFiniteFloat(3.0f) shouldEqual 53.0f
+      Percentages.PercentageInt(50) + PosFloats.PosFiniteFloat(3.0f) shouldEqual 53.0f
+      Percentages.PercentageInt(50) + PosFloats.PosZFiniteFloat(3.0f) shouldEqual 53.0f
+      Percentages.PercentageInt(50) + NegFloats.NegFiniteFloat(-3.0f) shouldEqual 47.0f
+      Percentages.PercentageInt(50) + NegFloats.NegZFiniteFloat(-3.0f) shouldEqual 47.0f
+      Percentages.PercentageInt(50) + Finites.FiniteFloat(3.0f) shouldEqual 53.0f
+      Percentages.PercentageInt(50) + PosDoubles.PosDouble(3.0) shouldEqual 53.0
+      Percentages.PercentageInt(50) + NegDoubles.NegDouble(-3.0) shouldEqual 47.0
+      Percentages.PercentageInt(50) + NegDoubles.NegZDouble(-3.0) shouldEqual 47.0
+      Percentages.PercentageInt(50) + NonZeroDoubles.NonZeroDouble(3.0) shouldEqual 53.0
+      Percentages.PercentageInt(50) + NonZeroDoubles.NonZeroFiniteDouble(3.0) shouldEqual 53.0
+      Percentages.PercentageInt(50) + PosDoubles.PosFiniteDouble(3.0) shouldEqual 53.0
+      Percentages.PercentageInt(50) + PosDoubles.PosZFiniteDouble(3.0) shouldEqual 53.0
+      Percentages.PercentageInt(50) + NegDoubles.NegFiniteDouble(-3.0) shouldEqual 47.0
+      Percentages.PercentageInt(50) + NegDoubles.NegZFiniteDouble(-3.0) shouldEqual 47.0
+      Percentages.PercentageInt(50) + Finites.FiniteDouble(3.0) shouldEqual 53.0
+    }
+    it("when a compatible AnyVal is passed to a - method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      Percentages.PercentageInt(50) - 3.toByte shouldEqual 47
+      Percentages.PercentageInt(50) - 3.toShort shouldEqual 47
+      Percentages.PercentageInt(50) - '3' shouldEqual -1
+      Percentages.PercentageInt(50) - 3 shouldEqual 47
+      Percentages.PercentageInt(50) - 3L shouldEqual 47L
+      Percentages.PercentageInt(50) - 3.0f shouldEqual 47.0f
+      Percentages.PercentageInt(50) - 3.0 shouldEqual 47.0
+      Percentages.PercentageInt(50) - PosInts.PosInt(3) shouldEqual 47
+      Percentages.PercentageInt(50) - PosInts.PosZInt(3) shouldEqual 47
+      Percentages.PercentageInt(50) - NegInts.NegInt(-3) shouldEqual 53
+      Percentages.PercentageInt(50) - NegInts.NegZInt(-3) shouldEqual 53
+      Percentages.PercentageInt(50) - NonZeroInts.NonZeroInt(3) shouldEqual 47
+      Percentages.PercentageInt(50) - PosLongs.PosLong(3L) shouldEqual 47L
+      Percentages.PercentageInt(50) - PosLongs.PosZLong(3L) shouldEqual 47L
+      Percentages.PercentageInt(50) - NegLongs.NegLong(-3L) shouldEqual 53L
+      Percentages.PercentageInt(50) - NegLongs.NegZLong(-3L) shouldEqual 53L
+      Percentages.PercentageInt(50) - NonZeroLongs.NonZeroLong(3L) shouldEqual 47L
+      Percentages.PercentageInt(50) - PosFloats.PosFloat(3.0f) shouldEqual 47.0f
+      Percentages.PercentageInt(50) - PosFloats.PosZFloat(3.0f) shouldEqual 47.0f
+      Percentages.PercentageInt(50) - NegFloats.NegFloat(-3.0f) shouldEqual 53.0f
+      Percentages.PercentageInt(50) - NegFloats.NegZFloat(-3.0f) shouldEqual 53.0f
+      Percentages.PercentageInt(50) - NonZeroFloats.NonZeroFloat(3.0f) shouldEqual 47.0f
+      Percentages.PercentageInt(50) - NonZeroFloats.NonZeroFiniteFloat(3.0f) shouldEqual 47.0f
+      Percentages.PercentageInt(50) - PosFloats.PosFiniteFloat(3.0f) shouldEqual 47.0f
+      Percentages.PercentageInt(50) - PosFloats.PosZFiniteFloat(3.0f) shouldEqual 47.0f
+      Percentages.PercentageInt(50) - NegFloats.NegFiniteFloat(-3.0f) shouldEqual 53.0f
+      Percentages.PercentageInt(50) - NegFloats.NegZFiniteFloat(-3.0f) shouldEqual 53.0f
+      Percentages.PercentageInt(50) - Finites.FiniteFloat(3.0f) shouldEqual 47.0f
+      Percentages.PercentageInt(50) - PosDoubles.PosDouble(3.0) shouldEqual 47.0
+      Percentages.PercentageInt(50) - NegDoubles.NegDouble(-3.0) shouldEqual 53.0
+      Percentages.PercentageInt(50) - NegDoubles.NegZDouble(-3.0) shouldEqual 53.0
+      Percentages.PercentageInt(50) - NonZeroDoubles.NonZeroDouble(3.0) shouldEqual 47.0
+      Percentages.PercentageInt(50) - NonZeroDoubles.NonZeroFiniteDouble(3.0) shouldEqual 47.0
+      Percentages.PercentageInt(50) - PosDoubles.PosFiniteDouble(3.0) shouldEqual 47.0
+      Percentages.PercentageInt(50) - PosDoubles.PosZFiniteDouble(3.0) shouldEqual 47.0
+      Percentages.PercentageInt(50) - NegDoubles.NegFiniteDouble(-3.0) shouldEqual 53.0
+      Percentages.PercentageInt(50) - NegDoubles.NegZFiniteDouble(-3.0) shouldEqual 53.0
+      Percentages.PercentageInt(50) - Finites.FiniteDouble(3.0) shouldEqual 47.0
+    }
+    it("when a compatible AnyVal is passed to a * method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      Percentages.PercentageInt(50) * 3.toByte shouldEqual 150
+      Percentages.PercentageInt(50) * 3.toShort shouldEqual 150
+      Percentages.PercentageInt(50) * '3' shouldEqual 2550
+      Percentages.PercentageInt(50) * 3 shouldEqual 150
+      Percentages.PercentageInt(50) * 3L shouldEqual 150L
+      Percentages.PercentageInt(50) * 3.0f shouldEqual 150.0f
+      Percentages.PercentageInt(50) * 3.0 shouldEqual 150.0
+      Percentages.PercentageInt(50) * PosInts.PosInt(3) shouldEqual 150
+      Percentages.PercentageInt(50) * PosInts.PosZInt(3) shouldEqual 150
+      Percentages.PercentageInt(50) * NegInts.NegInt(-3) shouldEqual -150
+      Percentages.PercentageInt(50) * NegInts.NegZInt(-3) shouldEqual -150
+      Percentages.PercentageInt(50) * NonZeroInts.NonZeroInt(3) shouldEqual 150
+      Percentages.PercentageInt(50) * PosLongs.PosLong(3L) shouldEqual 150L
+      Percentages.PercentageInt(50) * PosLongs.PosZLong(3L) shouldEqual 150L
+      Percentages.PercentageInt(50) * NegLongs.NegLong(-3L) shouldEqual -150L
+      Percentages.PercentageInt(50) * NegLongs.NegZLong(-3L) shouldEqual -150L
+      Percentages.PercentageInt(50) * NonZeroLongs.NonZeroLong(3L) shouldEqual 150L
+      Percentages.PercentageInt(50) * PosFloats.PosFloat(3.0f) shouldEqual 150.0f
+      Percentages.PercentageInt(50) * PosFloats.PosZFloat(3.0f) shouldEqual 150.0f
+      Percentages.PercentageInt(50) * NegFloats.NegFloat(-3.0f) shouldEqual -150.0f
+      Percentages.PercentageInt(50) * NegFloats.NegZFloat(-3.0f) shouldEqual -150.0f
+      Percentages.PercentageInt(50) * NonZeroFloats.NonZeroFloat(3.0f) shouldEqual 150.0f
+      Percentages.PercentageInt(50) * NonZeroFloats.NonZeroFiniteFloat(3.0f) shouldEqual 150.0f
+      Percentages.PercentageInt(50) * PosFloats.PosFiniteFloat(3.0f) shouldEqual 150.0f
+      Percentages.PercentageInt(50) * PosFloats.PosZFiniteFloat(3.0f) shouldEqual 150.0f
+      Percentages.PercentageInt(50) * NegFloats.NegFiniteFloat(-3.0f) shouldEqual -150.0f
+      Percentages.PercentageInt(50) * NegFloats.NegZFiniteFloat(-3.0f) shouldEqual -150.0f
+      Percentages.PercentageInt(50) * Finites.FiniteFloat(3.0f) shouldEqual 150.0f
+      Percentages.PercentageInt(50) * PosDoubles.PosDouble(3.0) shouldEqual 150.0
+      Percentages.PercentageInt(50) * NegDoubles.NegDouble(-3.0) shouldEqual -150.0
+      Percentages.PercentageInt(50) * NegDoubles.NegZDouble(-3.0) shouldEqual -150.0
+      Percentages.PercentageInt(50) * NonZeroDoubles.NonZeroDouble(3.0) shouldEqual 150.0
+      Percentages.PercentageInt(50) * NonZeroDoubles.NonZeroFiniteDouble(3.0) shouldEqual 150.0
+      Percentages.PercentageInt(50) * PosDoubles.PosFiniteDouble(3.0) shouldEqual 150.0
+      Percentages.PercentageInt(50) * PosDoubles.PosZFiniteDouble(3.0) shouldEqual 150.0
+      Percentages.PercentageInt(50) * NegDoubles.NegFiniteDouble(-3.0) shouldEqual -150.0
+      Percentages.PercentageInt(50) * NegDoubles.NegZFiniteDouble(-3.0) shouldEqual -150.0
+      Percentages.PercentageInt(50) * Finites.FiniteDouble(3.0) shouldEqual 150.0
+    }
+    it("when a compatible AnyVal is passed to a / method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      Percentages.PercentageInt(50) / 3.toByte shouldEqual 16
+      Percentages.PercentageInt(50) / 3.toShort shouldEqual 16
+      Percentages.PercentageInt(50) / '3' shouldEqual 0
+      Percentages.PercentageInt(50) / 3 shouldEqual 16
+      Percentages.PercentageInt(50) / 3L shouldEqual 16L
+      Percentages.PercentageInt(50) / 3.0f shouldEqual 16.666666666666668f
+      Percentages.PercentageInt(50) / 3.0 shouldEqual 16.666666666666668
+      Percentages.PercentageInt(50) / PosInts.PosInt(3) shouldEqual 16
+      Percentages.PercentageInt(50) / PosInts.PosZInt(3) shouldEqual 16
+      Percentages.PercentageInt(50) / NegInts.NegInt(-3) shouldEqual -16
+      Percentages.PercentageInt(50) / NegInts.NegZInt(-3) shouldEqual -16
+      Percentages.PercentageInt(50) / NonZeroInts.NonZeroInt(3) shouldEqual 16
+      Percentages.PercentageInt(50) / PosLongs.PosLong(3L) shouldEqual 16L
+      Percentages.PercentageInt(50) / PosLongs.PosZLong(3L) shouldEqual 16L
+      Percentages.PercentageInt(50) / NegLongs.NegLong(-3L) shouldEqual -16L
+      Percentages.PercentageInt(50) / NegLongs.NegZLong(-3L) shouldEqual -16L
+      Percentages.PercentageInt(50) / NonZeroLongs.NonZeroLong(3L) shouldEqual 16L
+      Percentages.PercentageInt(50) / PosFloats.PosFloat(3.0f) shouldEqual 16.666666666666668f
+      Percentages.PercentageInt(50) / PosFloats.PosZFloat(3.0f) shouldEqual 16.666666666666668f
+      Percentages.PercentageInt(50) / NegFloats.NegFloat(-3.0f) shouldEqual -16.666666666666668f
+      Percentages.PercentageInt(50) / NegFloats.NegZFloat(-3.0f) shouldEqual -16.666666666666668f
+      Percentages.PercentageInt(50) / NonZeroFloats.NonZeroFloat(3.0f) shouldEqual 16.666666666666668f
+      Percentages.PercentageInt(50) / NonZeroFloats.NonZeroFiniteFloat(3.0f) shouldEqual 16.666666666666668f
+      Percentages.PercentageInt(50) / PosFloats.PosFiniteFloat(3.0f) shouldEqual 16.666666666666668f
+      Percentages.PercentageInt(50) / PosFloats.PosZFiniteFloat(3.0f) shouldEqual 16.666666666666668f
+      Percentages.PercentageInt(50) / NegFloats.NegFiniteFloat(-3.0f) shouldEqual -16.666666666666668f
+      Percentages.PercentageInt(50) / NegFloats.NegZFiniteFloat(-3.0f) shouldEqual -16.666666666666668f
+      Percentages.PercentageInt(50) / Finites.FiniteFloat(3.0f) shouldEqual 16.666666666666668f
+      Percentages.PercentageInt(50) / PosDoubles.PosDouble(3.0) shouldEqual 16.666666666666668
+      Percentages.PercentageInt(50) / NegDoubles.NegDouble(-3.0) shouldEqual -16.666666666666668
+      Percentages.PercentageInt(50) / NegDoubles.NegZDouble(-3.0) shouldEqual -16.666666666666668
+      Percentages.PercentageInt(50) / NonZeroDoubles.NonZeroDouble(3.0) shouldEqual 16.666666666666668
+      Percentages.PercentageInt(50) / NonZeroDoubles.NonZeroFiniteDouble(3.0) shouldEqual 16.666666666666668
+      Percentages.PercentageInt(50) / PosDoubles.PosFiniteDouble(3.0) shouldEqual 16.666666666666668
+      Percentages.PercentageInt(50) / PosDoubles.PosZFiniteDouble(3.0) shouldEqual 16.666666666666668
+      Percentages.PercentageInt(50) / NegDoubles.NegFiniteDouble(-3.0) shouldEqual -16.666666666666668
+      Percentages.PercentageInt(50) / NegDoubles.NegZFiniteDouble(-3.0) shouldEqual -16.666666666666668
+      Percentages.PercentageInt(50) / Finites.FiniteDouble(3.0) shouldEqual 16.666666666666668
+    }
+    it("when a compatible AnyVal is passed to a % method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      Percentages.PercentageInt(50) % 3.toByte shouldEqual 2
+      Percentages.PercentageInt(50) % 3.toShort shouldEqual 2
+      Percentages.PercentageInt(50) % '3' shouldEqual 50
+      Percentages.PercentageInt(50) % 3 shouldEqual 2
+      Percentages.PercentageInt(50) % 3L shouldEqual 2L
+      Percentages.PercentageInt(50) % 3.0f shouldEqual 2.0f
+      Percentages.PercentageInt(50) % 3.0 shouldEqual 2.0
+      Percentages.PercentageInt(50) % PosInts.PosInt(3) shouldEqual 2
+      Percentages.PercentageInt(50) % PosInts.PosZInt(3) shouldEqual 2
+      Percentages.PercentageInt(50) % NegInts.NegInt(-3) shouldEqual 2
+      Percentages.PercentageInt(50) % NegInts.NegZInt(-3) shouldEqual 2
+      Percentages.PercentageInt(50) % NonZeroInts.NonZeroInt(3) shouldEqual 2
+      Percentages.PercentageInt(50) % PosLongs.PosLong(3L) shouldEqual 2L
+      Percentages.PercentageInt(50) % PosLongs.PosZLong(3L) shouldEqual 2L
+      Percentages.PercentageInt(50) % NegLongs.NegLong(-3L) shouldEqual 2L
+      Percentages.PercentageInt(50) % NegLongs.NegZLong(-3L) shouldEqual 2L
+      Percentages.PercentageInt(50) % NonZeroLongs.NonZeroLong(3L) shouldEqual 2L
+      Percentages.PercentageInt(50) % PosFloats.PosFloat(3.0f) shouldEqual 2.0f
+      Percentages.PercentageInt(50) % PosFloats.PosZFloat(3.0f) shouldEqual 2.0f
+      Percentages.PercentageInt(50) % NegFloats.NegFloat(-3.0f) shouldEqual 2.0f
+      Percentages.PercentageInt(50) % NegFloats.NegZFloat(-3.0f) shouldEqual 2.0f
+      Percentages.PercentageInt(50) % NonZeroFloats.NonZeroFloat(3.0f) shouldEqual 2.0f
+      Percentages.PercentageInt(50) % NonZeroFloats.NonZeroFiniteFloat(3.0f) shouldEqual 2.0f
+      Percentages.PercentageInt(50) % PosFloats.PosFiniteFloat(3.0f) shouldEqual 2.0f
+      Percentages.PercentageInt(50) % PosFloats.PosZFiniteFloat(3.0f) shouldEqual 2.0f
+      Percentages.PercentageInt(50) % NegFloats.NegFiniteFloat(-3.0f) shouldEqual 2.0f
+      Percentages.PercentageInt(50) % NegFloats.NegZFiniteFloat(-3.0f) shouldEqual 2.0f
+      Percentages.PercentageInt(50) % Finites.FiniteFloat(3.0f) shouldEqual 2.0f
+      Percentages.PercentageInt(50) % PosDoubles.PosDouble(3.0) shouldEqual 2.0
+      Percentages.PercentageInt(50) % NegDoubles.NegDouble(-3.0) shouldEqual 2.0
+      Percentages.PercentageInt(50) % NegDoubles.NegZDouble(-3.0) shouldEqual 2.0
+      Percentages.PercentageInt(50) % NonZeroDoubles.NonZeroDouble(3.0) shouldEqual 2.0
+      Percentages.PercentageInt(50) % NonZeroDoubles.NonZeroFiniteDouble(3.0) shouldEqual 2.0
+      Percentages.PercentageInt(50) % PosDoubles.PosFiniteDouble(3.0) shouldEqual 2.0
+      Percentages.PercentageInt(50) % PosDoubles.PosZFiniteDouble(3.0) shouldEqual 2.0
+      Percentages.PercentageInt(50) % NegDoubles.NegFiniteDouble(-3.0) shouldEqual 2.0
+      Percentages.PercentageInt(50) % NegDoubles.NegZFiniteDouble(-3.0) shouldEqual 2.0
+      Percentages.PercentageInt(50) % Finites.FiniteDouble(3.0) shouldEqual 2.0
+    }
+    it("should offer '<' comparison that is consistent with Int") {
+      (Percentages.PercentageInt(50) < 3.toByte) shouldEqual false
+      (Percentages.PercentageInt(50) < 3.toShort) shouldEqual false
+      (Percentages.PercentageInt(50) < '3') shouldEqual true
+      (Percentages.PercentageInt(50) < 3) shouldEqual false
+      (Percentages.PercentageInt(50) < 3L) shouldEqual false
+      (Percentages.PercentageInt(50) < 3.0f) shouldEqual false
+      (Percentages.PercentageInt(50) < 3.0) shouldEqual false
+      (Percentages.PercentageInt(50) < PosInts.PosInt(3)) shouldEqual false
+      (Percentages.PercentageInt(50) < PosInts.PosZInt(3)) shouldEqual false
+      (Percentages.PercentageInt(50) < NegInts.NegInt(-3)) shouldEqual false
+      (Percentages.PercentageInt(50) < NegInts.NegZInt(-3)) shouldEqual false
+      (Percentages.PercentageInt(50) < NonZeroInts.NonZeroInt(3)) shouldEqual false
+      (Percentages.PercentageInt(50) < PosLongs.PosLong(3L)) shouldEqual false
+      (Percentages.PercentageInt(50) < PosLongs.PosZLong(3L)) shouldEqual false
+      (Percentages.PercentageInt(50) < NegLongs.NegLong(-3L)) shouldEqual false
+      (Percentages.PercentageInt(50) < NegLongs.NegZLong(-3L)) shouldEqual false
+      (Percentages.PercentageInt(50) < NonZeroLongs.NonZeroLong(3L)) shouldEqual false
+      (Percentages.PercentageInt(50) < PosFloats.PosFloat(3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) < PosFloats.PosZFloat(3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) < NegFloats.NegFloat(-3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) < NegFloats.NegZFloat(-3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) < NonZeroFloats.NonZeroFloat(3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) < NonZeroFloats.NonZeroFiniteFloat(3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) < PosFloats.PosFiniteFloat(3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) < PosFloats.PosZFiniteFloat(3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) < NegFloats.NegFiniteFloat(-3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) < NegFloats.NegZFiniteFloat(-3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) < Finites.FiniteFloat(3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) < PosDoubles.PosDouble(3.0)) shouldEqual false
+      (Percentages.PercentageInt(50) < NegDoubles.NegDouble(-3.0)) shouldEqual false
+      (Percentages.PercentageInt(50) < NegDoubles.NegZDouble(-3.0)) shouldEqual false
+      (Percentages.PercentageInt(50) < NonZeroDoubles.NonZeroDouble(3.0)) shouldEqual false
+      (Percentages.PercentageInt(50) < NonZeroDoubles.NonZeroFiniteDouble(3.0)) shouldEqual false
+      (Percentages.PercentageInt(50) < PosDoubles.PosFiniteDouble(3.0)) shouldEqual false
+      (Percentages.PercentageInt(50) < PosDoubles.PosZFiniteDouble(3.0)) shouldEqual false
+      (Percentages.PercentageInt(50) < NegDoubles.NegFiniteDouble(-3.0)) shouldEqual false
+      (Percentages.PercentageInt(50) < NegDoubles.NegZFiniteDouble(-3.0)) shouldEqual false
+      (Percentages.PercentageInt(50) < Finites.FiniteDouble(3.0)) shouldEqual false
+    }
+    it("should offer '<=' comparison that is consistent with Int") {
+      (Percentages.PercentageInt(50) <= 3.toByte) shouldEqual false
+      (Percentages.PercentageInt(50) <= 3.toShort) shouldEqual false
+      (Percentages.PercentageInt(50) <= '3') shouldEqual true
+      (Percentages.PercentageInt(50) <= 3) shouldEqual false
+      (Percentages.PercentageInt(50) <= 3L) shouldEqual false
+      (Percentages.PercentageInt(50) <= 3.0f) shouldEqual false
+      (Percentages.PercentageInt(50) <= 3.0) shouldEqual false
+      (Percentages.PercentageInt(50) <= PosInts.PosInt(3)) shouldEqual false
+      (Percentages.PercentageInt(50) <= PosInts.PosZInt(3)) shouldEqual false
+      (Percentages.PercentageInt(50) <= NegInts.NegInt(-3)) shouldEqual false
+      (Percentages.PercentageInt(50) <= NegInts.NegZInt(-3)) shouldEqual false
+      (Percentages.PercentageInt(50) <= NonZeroInts.NonZeroInt(3)) shouldEqual false
+      (Percentages.PercentageInt(50) <= PosLongs.PosLong(3L)) shouldEqual false
+      (Percentages.PercentageInt(50) <= PosLongs.PosZLong(3L)) shouldEqual false
+      (Percentages.PercentageInt(50) <= NegLongs.NegLong(-3L)) shouldEqual false
+      (Percentages.PercentageInt(50) <= NegLongs.NegZLong(-3L)) shouldEqual false
+      (Percentages.PercentageInt(50) <= NonZeroLongs.NonZeroLong(3L)) shouldEqual false
+      (Percentages.PercentageInt(50) <= PosFloats.PosFloat(3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) <= PosFloats.PosZFloat(3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) <= NegFloats.NegFloat(-3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) <= NegFloats.NegZFloat(-3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) <= NonZeroFloats.NonZeroFloat(3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) <= NonZeroFloats.NonZeroFiniteFloat(3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) <= PosFloats.PosFiniteFloat(3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) <= PosFloats.PosZFiniteFloat(3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) <= NegFloats.NegFiniteFloat(-3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) <= NegFloats.NegZFiniteFloat(-3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) <= Finites.FiniteFloat(3.0f)) shouldEqual false
+      (Percentages.PercentageInt(50) <= PosDoubles.PosDouble(3.0)) shouldEqual false
+      (Percentages.PercentageInt(50) <= NegDoubles.NegDouble(-3.0)) shouldEqual false
+      (Percentages.PercentageInt(50) <= NegDoubles.NegZDouble(-3.0)) shouldEqual false
+      (Percentages.PercentageInt(50) <= NonZeroDoubles.NonZeroDouble(3.0)) shouldEqual false
+      (Percentages.PercentageInt(50) <= NonZeroDoubles.NonZeroFiniteDouble(3.0)) shouldEqual false
+      (Percentages.PercentageInt(50) <= PosDoubles.PosFiniteDouble(3.0)) shouldEqual false
+      (Percentages.PercentageInt(50) <= PosDoubles.PosZFiniteDouble(3.0)) shouldEqual false
+      (Percentages.PercentageInt(50) <= NegDoubles.NegFiniteDouble(-3.0)) shouldEqual false
+      (Percentages.PercentageInt(50) <= NegDoubles.NegZFiniteDouble(-3.0)) shouldEqual false
+      (Percentages.PercentageInt(50) <= Finites.FiniteDouble(3.0)) shouldEqual false
+    }
+    it("should offer '>' comparison that is consistent with Int") {
+      (Percentages.PercentageInt(50) > 3.toByte) shouldEqual true
+      (Percentages.PercentageInt(50) > 3.toShort) shouldEqual true
+      (Percentages.PercentageInt(50) > '3') shouldEqual false
+      (Percentages.PercentageInt(50) > 3) shouldEqual true
+      (Percentages.PercentageInt(50) > 3L) shouldEqual true
+      (Percentages.PercentageInt(50) > 3.0f) shouldEqual true
+      (Percentages.PercentageInt(50) > 3.0) shouldEqual true
+      (Percentages.PercentageInt(50) > PosInts.PosInt(3)) shouldEqual true
+      (Percentages.PercentageInt(50) > PosInts.PosZInt(3)) shouldEqual true
+      (Percentages.PercentageInt(50) > NegInts.NegInt(-3)) shouldEqual true
+      (Percentages.PercentageInt(50) > NegInts.NegZInt(-3)) shouldEqual true
+      (Percentages.PercentageInt(50) > NonZeroInts.NonZeroInt(3)) shouldEqual true
+      (Percentages.PercentageInt(50) > PosLongs.PosLong(3L)) shouldEqual true
+      (Percentages.PercentageInt(50) > PosLongs.PosZLong(3L)) shouldEqual true
+      (Percentages.PercentageInt(50) > NegLongs.NegLong(-3L)) shouldEqual true
+      (Percentages.PercentageInt(50) > NegLongs.NegZLong(-3L)) shouldEqual true
+      (Percentages.PercentageInt(50) > NonZeroLongs.NonZeroLong(3L)) shouldEqual true
+      (Percentages.PercentageInt(50) > PosFloats.PosFloat(3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) > PosFloats.PosZFloat(3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) > NegFloats.NegFloat(-3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) > NegFloats.NegZFloat(-3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) > NonZeroFloats.NonZeroFloat(3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) > NonZeroFloats.NonZeroFiniteFloat(3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) > PosFloats.PosFiniteFloat(3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) > PosFloats.PosZFiniteFloat(3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) > NegFloats.NegFiniteFloat(-3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) > NegFloats.NegZFiniteFloat(-3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) > Finites.FiniteFloat(3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) > PosDoubles.PosDouble(3.0)) shouldEqual true
+      (Percentages.PercentageInt(50) > NegDoubles.NegDouble(-3.0)) shouldEqual true
+      (Percentages.PercentageInt(50) > NegDoubles.NegZDouble(-3.0)) shouldEqual true
+      (Percentages.PercentageInt(50) > NonZeroDoubles.NonZeroDouble(3.0)) shouldEqual true
+      (Percentages.PercentageInt(50) > NonZeroDoubles.NonZeroFiniteDouble(3.0)) shouldEqual true
+      (Percentages.PercentageInt(50) > PosDoubles.PosFiniteDouble(3.0)) shouldEqual true
+      (Percentages.PercentageInt(50) > PosDoubles.PosZFiniteDouble(3.0)) shouldEqual true
+      (Percentages.PercentageInt(50) > NegDoubles.NegFiniteDouble(-3.0)) shouldEqual true
+      (Percentages.PercentageInt(50) > NegDoubles.NegZFiniteDouble(-3.0)) shouldEqual true
+      (Percentages.PercentageInt(50) > Finites.FiniteDouble(3.0)) shouldEqual true
+    }
+    it("should offer '>=' comparison that is consistent with Int") {
+      (Percentages.PercentageInt(50) >= 3.toByte) shouldEqual true
+      (Percentages.PercentageInt(50) >= 3.toShort) shouldEqual true
+      (Percentages.PercentageInt(50) >= '3') shouldEqual false
+      (Percentages.PercentageInt(50) >= 3) shouldEqual true
+      (Percentages.PercentageInt(50) >= 3L) shouldEqual true
+      (Percentages.PercentageInt(50) >= 3.0f) shouldEqual true
+      (Percentages.PercentageInt(50) >= 3.0) shouldEqual true
+      (Percentages.PercentageInt(50) >= PosInts.PosInt(3)) shouldEqual true
+      (Percentages.PercentageInt(50) >= PosInts.PosZInt(3)) shouldEqual true
+      (Percentages.PercentageInt(50) >= NegInts.NegInt(-3)) shouldEqual true
+      (Percentages.PercentageInt(50) >= NegInts.NegZInt(-3)) shouldEqual true
+      (Percentages.PercentageInt(50) >= NonZeroInts.NonZeroInt(3)) shouldEqual true
+      (Percentages.PercentageInt(50) >= PosLongs.PosLong(3L)) shouldEqual true
+      (Percentages.PercentageInt(50) >= PosLongs.PosZLong(3L)) shouldEqual true
+      (Percentages.PercentageInt(50) >= NegLongs.NegLong(-3L)) shouldEqual true
+      (Percentages.PercentageInt(50) >= NegLongs.NegZLong(-3L)) shouldEqual true
+      (Percentages.PercentageInt(50) >= NonZeroLongs.NonZeroLong(3L)) shouldEqual true
+      (Percentages.PercentageInt(50) >= PosFloats.PosFloat(3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) >= PosFloats.PosZFloat(3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) >= NegFloats.NegFloat(-3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) >= NegFloats.NegZFloat(-3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) >= NonZeroFloats.NonZeroFloat(3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) >= NonZeroFloats.NonZeroFiniteFloat(3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) >= PosFloats.PosFiniteFloat(3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) >= PosFloats.PosZFiniteFloat(3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) >= NegFloats.NegFiniteFloat(-3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) >= NegFloats.NegZFiniteFloat(-3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) >= Finites.FiniteFloat(3.0f)) shouldEqual true
+      (Percentages.PercentageInt(50) >= PosDoubles.PosDouble(3.0)) shouldEqual true
+      (Percentages.PercentageInt(50) >= NegDoubles.NegDouble(-3.0)) shouldEqual true
+      (Percentages.PercentageInt(50) >= NegDoubles.NegZDouble(-3.0)) shouldEqual true
+      (Percentages.PercentageInt(50) >= NonZeroDoubles.NonZeroDouble(3.0)) shouldEqual true
+      (Percentages.PercentageInt(50) >= NonZeroDoubles.NonZeroFiniteDouble(3.0)) shouldEqual true
+      (Percentages.PercentageInt(50) >= PosDoubles.PosFiniteDouble(3.0)) shouldEqual true
+      (Percentages.PercentageInt(50) >= PosDoubles.PosZFiniteDouble(3.0)) shouldEqual true
+      (Percentages.PercentageInt(50) >= NegDoubles.NegFiniteDouble(-3.0)) shouldEqual true
+      (Percentages.PercentageInt(50) >= NegDoubles.NegZFiniteDouble(-3.0)) shouldEqual true
+      (Percentages.PercentageInt(50) >= Finites.FiniteDouble(3.0)) shouldEqual true
+    }
+    it("should offer 'min' and 'max' methods that are consistent with Int") {
+      succeed
+    }
+    it("should return the same type from its unary_+ method") {
+      +Percentages.PercentageInt(50) shouldEqual Percentages.PercentageInt(50)
+    }
+    it("should offer a unary - method that is consistent with Int") {
+      (-Percentages.PercentageInt(50)) shouldEqual -50
+    }
+    it("should offer widening methods for basic type Int that are consistent with Int") {
+      def widen(value: Int): Int = value
+      widen(Percentages.PercentageInt(50)) shouldEqual 50
+    }
+    it("should have a toString consistent with Int") {
+      (Percentages.PercentageInt(50) : Int).toString shouldBe 50.toString
+    }
+  }
 }

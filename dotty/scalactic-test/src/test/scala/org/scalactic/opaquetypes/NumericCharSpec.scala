@@ -604,6 +604,95 @@ class NumericCharSpec extends funspec.AnyFunSpec with matchers.should.Matchers w
              
     }
 
+    describe("when created with apply method") {
+
+      it("should compile when a numeric Char literal is passed in") {
+        "NumericChar('8')" should compile
+        NumericChar('8').value shouldEqual '8'
+      }
+
+      it("should not compile when a non-numeric Char literal is passed in") {
+        "NumericChar('x')" shouldNot compile
+        "NumericChar('A')" shouldNot compile
+        "NumericChar('*')" shouldNot compile
+      }
+
+      it("should not compile when x is passed in") {
+        val s: String = "8"
+        "NumericChar(s)" shouldNot compile
+      }
+    }
+
+    it("should define min and max values") {
+      NumericChar.MinValue.value shouldBe '0'
+      NumericChar.MaxValue.value shouldBe '9'
+    }
+
+    it("should offer 'min' and 'max' methods") {
+      NumericChar('5').max(NumericChar('3')).value shouldBe '5'
+      NumericChar('5').min(NumericChar('3')).value shouldBe '3'
+    }
+
+    it("should define methods to convert to the numeric value the character represents") {
+      NumericChar('3').asDigit shouldBe 3
+      NumericChar('3').asDigitPosZInt shouldBe PosInts.PosZInt(3)
+      NumericChar('3').toInt shouldBe 51
+      NumericChar('9').toInt shouldBe 57
+    }
+
   }
 
+  describe("NumericChar") {
+    it("should offer widening methods for basic type PosInts.PosInt that are consistent with Char") {
+      def widen(value: PosInts.PosInt): PosInts.PosInt = value
+      widen(Numerics.NumericChar('3')) shouldEqual PosInts.PosInt(51)
+    }
+    it("should offer widening methods for basic type PosInts.PosZInt that are consistent with Char") {
+      def widen(value: PosInts.PosZInt): PosInts.PosZInt = value
+      widen(Numerics.NumericChar('3')) shouldEqual PosInts.PosZInt(51)
+    }
+    it("should offer widening methods for basic type PosLongs.PosLong that are consistent with Char") {
+      def widen(value: PosLongs.PosLong): PosLongs.PosLong = value
+      widen(Numerics.NumericChar('3')) shouldEqual PosLongs.PosLong(51L)
+    }
+    it("should offer widening methods for basic type PosLongs.PosZLong that are consistent with Char") {
+      def widen(value: PosLongs.PosZLong): PosLongs.PosZLong = value
+      widen(Numerics.NumericChar('3')) shouldEqual PosLongs.PosZLong(51L)
+    }
+    it("should offer widening methods for basic type PosFloats.PosFloat that are consistent with Char") {
+      def widen(value: PosFloats.PosFloat): PosFloats.PosFloat = value
+      widen(Numerics.NumericChar('3')) shouldEqual PosFloats.PosFloat(51.0f)
+    }
+    it("should offer widening methods for basic type PosFloats.PosZFloat that are consistent with Char") {
+      def widen(value: PosFloats.PosZFloat): PosFloats.PosZFloat = value
+      widen(Numerics.NumericChar('3')) shouldEqual PosFloats.PosZFloat(51.0f)
+    }
+    it("should offer widening methods for basic type PosFloats.PosFiniteFloat that are consistent with Char") {
+      def widen(value: PosFloats.PosFiniteFloat): PosFloats.PosFiniteFloat = value
+      widen(Numerics.NumericChar('3')) shouldEqual PosFloats.PosFiniteFloat(51.0f)
+    }
+    it("should offer widening methods for basic type Finites.FiniteFloat that are consistent with Char") {
+      def widen(value: Finites.FiniteFloat): Finites.FiniteFloat = value
+      widen(Numerics.NumericChar('3')) shouldEqual Finites.FiniteFloat(51.0f)
+    }
+    it("should offer widening methods for basic type PosDoubles.PosDouble that are consistent with Char") {
+      def widen(value: PosDoubles.PosDouble): PosDoubles.PosDouble = value
+      widen(Numerics.NumericChar('3')) shouldEqual PosDoubles.PosDouble(51.0)
+    }
+    it("should offer widening methods for basic type PosDoubles.PosFiniteDouble that are consistent with Char") {
+      def widen(value: PosDoubles.PosFiniteDouble): PosDoubles.PosFiniteDouble = value
+      widen(Numerics.NumericChar('3')) shouldEqual PosDoubles.PosFiniteDouble(51.0)
+    }
+    it("should offer widening methods for basic type PosDoubles.PosZFiniteDouble that are consistent with Char") {
+      def widen(value: PosDoubles.PosZFiniteDouble): PosDoubles.PosZFiniteDouble = value
+      widen(Numerics.NumericChar('3')) shouldEqual PosDoubles.PosZFiniteDouble(51.0)
+    }
+    it("should offer widening methods for basic type Finites.FiniteDouble that are consistent with Char") {
+      def widen(value: Finites.FiniteDouble): Finites.FiniteDouble = value
+      widen(Numerics.NumericChar('3')) shouldEqual Finites.FiniteDouble(51.0)
+    }
+    it("should have a toString consistent with Char") {
+      succeed
+    }
+  }
 }

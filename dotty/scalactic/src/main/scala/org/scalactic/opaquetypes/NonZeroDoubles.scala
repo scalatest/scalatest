@@ -825,7 +825,12 @@ object NonZeroDoubles {
     inline def apply[D <: Double & Singleton](inline d: D): NonZeroFiniteDouble =
       inline constValueOpt[D] match {
         case Some(v: Double) =>
-          inline if v != 0.0 && v != Double.PositiveInfinity && v != Double.NegativeInfinity && v != Double.NaN then
+          // The final conjunct, v == v, is an "is not NaN" check. I can't use !v.isNaN here because an
+          // `inline if` condition must reduce to a constant at compile time, and a method call like `isNaN`
+          // is not constant-foldable. Directly comparing to Double.NaN wouldn't work either, because per
+          // IEEE 754 NaN != NaN is true, so NaN would slip through. Comparing v to itself instead catches
+          // NaN (NaN == NaN is false) while evaluating to true for every other double.
+          inline if v != 0.0 && v != Double.PositiveInfinity && v != Double.NegativeInfinity && v == v then
             v
           else
             error("NonZeroFiniteDouble cannot be instantiated with zero, infinity, or NaN")
@@ -836,7 +841,7 @@ object NonZeroDoubles {
     /** Returns <code>true</code> if the provided <code>Double</code> is a valid [[NonZeroFiniteDouble]]
       * value — that is, if it is both <code>!= 0.0</code> and finite (<code>isFinite</code>).
       */
-    def isValid(value: Double): Boolean = value != 0.0 && value != Double.PositiveInfinity && value != Double.NegativeInfinity && value != Double.NaN
+    def isValid(value: Double): Boolean = value != 0.0 && value != Double.PositiveInfinity && value != Double.NegativeInfinity && !value.isNaN
 
     /** Returns <code>Some(NonZeroFiniteDouble)</code> if the given <code>Double</code> is a valid
       * [[NonZeroFiniteDouble]] (non-zero and finite), or <code>None</code> otherwise.
@@ -897,10 +902,10 @@ object NonZeroDoubles {
       */
     val MaxValue: NonZeroFiniteDouble = Double.MaxValue
 
-    /** The smallest value representable as a positive and finite [[NonZeroFiniteDouble]], which is
-      * <code>NonZeroFiniteDouble(Double.MinPositiveValue)</code>.
+    /** The most negative value representable as a finite [[NonZeroFiniteDouble]], which is
+      * <code>NonZeroFiniteDouble(Double.MinValue)</code>.
       */
-    val MinValue: NonZeroFiniteDouble = Double.MinPositiveValue
+    val MinValue: NonZeroFiniteDouble = Double.MinValue
 
     /** The smallest positive value representable as a [[NonZeroFiniteDouble]], which is
       * <code>NonZeroFiniteDouble(Double.MinPositiveValue)</code>.
@@ -917,6 +922,11 @@ object NonZeroDoubles {
         if (NonZeroFiniteDouble.isValid(candidateResult)) NonZeroFiniteDouble.ensuringValid(candidateResult)
         else throw new AssertionError(s"${candidateResult.toString()}, the result of applying the passed function to ${p.toString()}, was not a valid NonZeroFiniteDouble")
       }
+    }
+
+    /** Ordering instance for NonZeroFiniteDouble that orders by numeric value. */
+    given Ordering[NonZeroFiniteDouble] with {
+      def compare(x: NonZeroFiniteDouble, y: NonZeroFiniteDouble): Int = x.compareTo(y)
     }
   }
 }

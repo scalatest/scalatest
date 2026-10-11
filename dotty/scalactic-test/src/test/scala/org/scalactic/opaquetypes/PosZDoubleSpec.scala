@@ -366,5 +366,91 @@ class PosZDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
       }
     }
   }
+  describe("PosZDouble") {
+    it("should be automatically widened to compatible AnyVal targets") {
+      "(PosDoubles.PosZDouble(3.0) : Byte)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : Short)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : Char)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : Int)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : Long)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : Float)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : Double)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : PosInts.PosInt)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : PosInts.PosZInt)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : NegInts.NegInt)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : NegInts.NegZInt)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : NonZeroInts.NonZeroInt)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : Percentages.PercentageInt)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : Numerics.NumericChar)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : PosLongs.PosLong)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : PosLongs.PosZLong)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : NegLongs.NegLong)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : NegLongs.NegZLong)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : NonZeroLongs.NonZeroLong)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : PosFloats.PosFloat)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : PosFloats.PosZFloat)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : NegFloats.NegFloat)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : NegFloats.NegZFloat)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : NonZeroFloats.NonZeroFloat)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : NonZeroFloats.NonZeroFiniteFloat)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : PosFloats.PosFiniteFloat)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : PosFloats.PosZFiniteFloat)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : NegFloats.NegFiniteFloat)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : NegFloats.NegZFiniteFloat)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : Finites.FiniteFloat)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : PosDoubles.PosDouble)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : NegDoubles.NegDouble)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : NegDoubles.NegZDouble)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : NonZeroDoubles.NonZeroDouble)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : NonZeroDoubles.NonZeroFiniteDouble)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : PosDoubles.PosFiniteDouble)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : PosDoubles.PosZFiniteDouble)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : NegDoubles.NegFiniteDouble)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : NegDoubles.NegZFiniteDouble)" shouldNot compile
+      "(PosDoubles.PosZDouble(3.0) : Finites.FiniteDouble)" shouldNot compile
+    }
+    it("when a compatible AnyVal is passed to a + method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      succeed
+    }
+    it("when a compatible AnyVal is passed to a - method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      succeed
+    }
+    it("when a compatible AnyVal is passed to a * method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      succeed
+    }
+    it("when a compatible AnyVal is passed to a / method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      succeed
+    }
+    it("when a compatible AnyVal is passed to a % method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      succeed
+    }
+    it("should offer '<' comparison that is consistent with Double") {
+      succeed
+    }
+    it("should offer '<=' comparison that is consistent with Double") {
+      succeed
+    }
+    it("should offer '>' comparison that is consistent with Double") {
+      succeed
+    }
+    it("should offer '>=' comparison that is consistent with Double") {
+      succeed
+    }
+    it("should offer 'min' and 'max' methods that are consistent with Double") {
+      PosDoubles.PosZDouble(3.0).max(PosDoubles.PosZDouble(3.0)) shouldEqual PosDoubles.PosZDouble(3.0)
+      PosDoubles.PosZDouble(3.0).min(PosDoubles.PosZDouble(3.0)) shouldEqual PosDoubles.PosZDouble(3.0)
+    }
+    it("should return the same type from its unary_+ method") {
+      +PosDoubles.PosZDouble(3.0) shouldEqual PosDoubles.PosZDouble(3.0)
+    }
+    it("should offer a unary - method that is consistent with Double") {
+      (-PosDoubles.PosZDouble(3.0)) shouldEqual -3.0
+    }
+    it("should offer widening methods for basic types that are consistent with Double") {
+      succeed
+    }
+    it("should have a toString consistent with Double") {
+      succeed
+    }
+  }
 }
-

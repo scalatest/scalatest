@@ -319,4 +319,433 @@ class NegZFiniteDoubleSpec extends funspec.AnyFunSpec with matchers.should.Match
       an [AssertionError] should be thrownBy { NegZFiniteDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
     }
   }
+  describe("NegZFiniteDouble") {
+    it("should be automatically widened to compatible AnyVal targets") {
+      (NegDoubles.NegZFiniteDouble(-3.0) : Double) shouldEqual -3.0
+      (NegDoubles.NegZFiniteDouble(-3.0) : NegDoubles.NegZDouble) shouldEqual NegDoubles.NegZDouble(-3.0)
+      (NegDoubles.NegZFiniteDouble(-3.0) : NonZeroDoubles.NonZeroDouble) shouldEqual NonZeroDoubles.NonZeroDouble(-3.0)
+      "(NegDoubles.NegZFiniteDouble(-3.0) : Byte)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : Short)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : Char)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : Int)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : Long)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : Float)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : PosInts.PosInt)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : PosInts.PosZInt)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : NegInts.NegInt)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : NegInts.NegZInt)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : NonZeroInts.NonZeroInt)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : Percentages.PercentageInt)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : Numerics.NumericChar)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : PosLongs.PosLong)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : PosLongs.PosZLong)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : NegLongs.NegLong)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : NegLongs.NegZLong)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : NonZeroLongs.NonZeroLong)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : PosFloats.PosFloat)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : PosFloats.PosZFloat)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : NegFloats.NegFloat)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : NegFloats.NegZFloat)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : NonZeroFloats.NonZeroFloat)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : NonZeroFloats.NonZeroFiniteFloat)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : PosFloats.PosFiniteFloat)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : PosFloats.PosZFiniteFloat)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : NegFloats.NegFiniteFloat)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : NegFloats.NegZFiniteFloat)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : Finites.FiniteFloat)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : PosDoubles.PosDouble)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : PosDoubles.PosZDouble)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : NegDoubles.NegDouble)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : NonZeroDoubles.NonZeroFiniteDouble)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : PosDoubles.PosFiniteDouble)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : PosDoubles.PosZFiniteDouble)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : NegDoubles.NegFiniteDouble)" shouldNot compile
+      "(NegDoubles.NegZFiniteDouble(-3.0) : Finites.FiniteDouble)" shouldNot compile
+    }
+    it("when a compatible AnyVal is passed to a + method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      NegDoubles.NegZFiniteDouble(-3.0) + 3.toByte shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + 3.toShort shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + '3' shouldEqual 48.0
+      NegDoubles.NegZFiniteDouble(-3.0) + 3 shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + 3L shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + 3.0f shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + 3.0 shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + PosInts.PosInt(3) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + PosInts.PosZInt(3) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + NegInts.NegInt(-3) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) + NegInts.NegZInt(-3) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) + NonZeroInts.NonZeroInt(3) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + Percentages.PercentageInt(50) shouldEqual 47.0
+      NegDoubles.NegZFiniteDouble(-3.0) + PosLongs.PosLong(3L) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + PosLongs.PosZLong(3L) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + NegLongs.NegLong(-3L) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) + NegLongs.NegZLong(-3L) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) + NonZeroLongs.NonZeroLong(3L) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + PosFloats.PosFloat(3.0f) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + PosFloats.PosZFloat(3.0f) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + NegFloats.NegFloat(-3.0f) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) + NegFloats.NegZFloat(-3.0f) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) + NonZeroFloats.NonZeroFloat(3.0f) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + NonZeroFloats.NonZeroFiniteFloat(3.0f) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + PosFloats.PosFiniteFloat(3.0f) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + PosFloats.PosZFiniteFloat(3.0f) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + NegFloats.NegFiniteFloat(-3.0f) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) + NegFloats.NegZFiniteFloat(-3.0f) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) + Finites.FiniteFloat(3.0f) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + PosDoubles.PosDouble(3.0) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + NegDoubles.NegDouble(-3.0) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) + NegDoubles.NegZDouble(-3.0) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) + NonZeroDoubles.NonZeroDouble(3.0) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + NonZeroDoubles.NonZeroFiniteDouble(3.0) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + PosDoubles.PosFiniteDouble(3.0) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + PosDoubles.PosZFiniteDouble(3.0) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) + NegDoubles.NegFiniteDouble(-3.0) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) + Finites.FiniteDouble(3.0) shouldEqual 0.0
+    }
+    it("when a compatible AnyVal is passed to a - method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      NegDoubles.NegZFiniteDouble(-3.0) - 3.toByte shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - 3.toShort shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - '3' shouldEqual -54.0
+      NegDoubles.NegZFiniteDouble(-3.0) - 3 shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - 3L shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - 3.0f shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - 3.0 shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - PosInts.PosInt(3) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - PosInts.PosZInt(3) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - NegInts.NegInt(-3) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) - NegInts.NegZInt(-3) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) - NonZeroInts.NonZeroInt(3) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - Percentages.PercentageInt(50) shouldEqual -53.0
+      NegDoubles.NegZFiniteDouble(-3.0) - PosLongs.PosLong(3L) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - PosLongs.PosZLong(3L) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - NegLongs.NegLong(-3L) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) - NegLongs.NegZLong(-3L) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) - NonZeroLongs.NonZeroLong(3L) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - PosFloats.PosFloat(3.0f) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - PosFloats.PosZFloat(3.0f) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - NegFloats.NegFloat(-3.0f) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) - NegFloats.NegZFloat(-3.0f) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) - NonZeroFloats.NonZeroFloat(3.0f) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - NonZeroFloats.NonZeroFiniteFloat(3.0f) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - PosFloats.PosFiniteFloat(3.0f) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - PosFloats.PosZFiniteFloat(3.0f) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - NegFloats.NegFiniteFloat(-3.0f) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) - NegFloats.NegZFiniteFloat(-3.0f) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) - Finites.FiniteFloat(3.0f) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - PosDoubles.PosDouble(3.0) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - NegDoubles.NegDouble(-3.0) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) - NegDoubles.NegZDouble(-3.0) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) - NonZeroDoubles.NonZeroDouble(3.0) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - NonZeroDoubles.NonZeroFiniteDouble(3.0) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - PosDoubles.PosFiniteDouble(3.0) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - PosDoubles.PosZFiniteDouble(3.0) shouldEqual -6.0
+      NegDoubles.NegZFiniteDouble(-3.0) - NegDoubles.NegFiniteDouble(-3.0) shouldEqual 0.0
+      NegDoubles.NegZFiniteDouble(-3.0) - Finites.FiniteDouble(3.0) shouldEqual -6.0
+    }
+    it("when a compatible AnyVal is passed to a * method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      NegDoubles.NegZFiniteDouble(-3.0) * 3.toByte shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * 3.toShort shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * '3' shouldEqual -153.0
+      NegDoubles.NegZFiniteDouble(-3.0) * 3 shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * 3L shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * 3.0f shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * 3.0 shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * PosInts.PosInt(3) shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * PosInts.PosZInt(3) shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * NegInts.NegInt(-3) shouldEqual 9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * NegInts.NegZInt(-3) shouldEqual 9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * NonZeroInts.NonZeroInt(3) shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * Percentages.PercentageInt(50) shouldEqual -150.0
+      NegDoubles.NegZFiniteDouble(-3.0) * PosLongs.PosLong(3L) shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * PosLongs.PosZLong(3L) shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * NegLongs.NegLong(-3L) shouldEqual 9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * NegLongs.NegZLong(-3L) shouldEqual 9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * NonZeroLongs.NonZeroLong(3L) shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * PosFloats.PosFloat(3.0f) shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * PosFloats.PosZFloat(3.0f) shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * NegFloats.NegFloat(-3.0f) shouldEqual 9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * NegFloats.NegZFloat(-3.0f) shouldEqual 9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * NonZeroFloats.NonZeroFloat(3.0f) shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * NonZeroFloats.NonZeroFiniteFloat(3.0f) shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * PosFloats.PosFiniteFloat(3.0f) shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * PosFloats.PosZFiniteFloat(3.0f) shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * NegFloats.NegFiniteFloat(-3.0f) shouldEqual 9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * NegFloats.NegZFiniteFloat(-3.0f) shouldEqual 9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * Finites.FiniteFloat(3.0f) shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * PosDoubles.PosDouble(3.0) shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * NegDoubles.NegDouble(-3.0) shouldEqual 9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * NegDoubles.NegZDouble(-3.0) shouldEqual 9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * NonZeroDoubles.NonZeroDouble(3.0) shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * NonZeroDoubles.NonZeroFiniteDouble(3.0) shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * PosDoubles.PosFiniteDouble(3.0) shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * PosDoubles.PosZFiniteDouble(3.0) shouldEqual -9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * NegDoubles.NegFiniteDouble(-3.0) shouldEqual 9.0
+      NegDoubles.NegZFiniteDouble(-3.0) * Finites.FiniteDouble(3.0) shouldEqual -9.0
+    }
+    it("when a compatible AnyVal is passed to a / method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      NegDoubles.NegZFiniteDouble(-3.0) / 3.toByte shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / 3.toShort shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / '3' shouldEqual -0.058823529411764705
+      NegDoubles.NegZFiniteDouble(-3.0) / 3 shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / 3L shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / 3.0f shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / 3.0 shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / PosInts.PosInt(3) shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / PosInts.PosZInt(3) shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / NegInts.NegInt(-3) shouldEqual 1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / NegInts.NegZInt(-3) shouldEqual 1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / NonZeroInts.NonZeroInt(3) shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / Percentages.PercentageInt(50) shouldEqual -0.06
+      NegDoubles.NegZFiniteDouble(-3.0) / PosLongs.PosLong(3L) shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / PosLongs.PosZLong(3L) shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / NegLongs.NegLong(-3L) shouldEqual 1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / NegLongs.NegZLong(-3L) shouldEqual 1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / NonZeroLongs.NonZeroLong(3L) shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / PosFloats.PosFloat(3.0f) shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / PosFloats.PosZFloat(3.0f) shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / NegFloats.NegFloat(-3.0f) shouldEqual 1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / NegFloats.NegZFloat(-3.0f) shouldEqual 1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / NonZeroFloats.NonZeroFloat(3.0f) shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / NonZeroFloats.NonZeroFiniteFloat(3.0f) shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / PosFloats.PosFiniteFloat(3.0f) shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / PosFloats.PosZFiniteFloat(3.0f) shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / NegFloats.NegFiniteFloat(-3.0f) shouldEqual 1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / NegFloats.NegZFiniteFloat(-3.0f) shouldEqual 1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / Finites.FiniteFloat(3.0f) shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / PosDoubles.PosDouble(3.0) shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / NegDoubles.NegDouble(-3.0) shouldEqual 1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / NegDoubles.NegZDouble(-3.0) shouldEqual 1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / NonZeroDoubles.NonZeroDouble(3.0) shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / NonZeroDoubles.NonZeroFiniteDouble(3.0) shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / PosDoubles.PosFiniteDouble(3.0) shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / PosDoubles.PosZFiniteDouble(3.0) shouldEqual -1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / NegDoubles.NegFiniteDouble(-3.0) shouldEqual 1.0
+      NegDoubles.NegZFiniteDouble(-3.0) / Finites.FiniteDouble(3.0) shouldEqual -1.0
+    }
+    it("when a compatible AnyVal is passed to a % method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      NegDoubles.NegZFiniteDouble(-3.0) % 3.toByte shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % 3.toShort shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % '3' shouldEqual -3.0
+      NegDoubles.NegZFiniteDouble(-3.0) % 3 shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % 3L shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % 3.0f shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % 3.0 shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % PosInts.PosInt(3) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % PosInts.PosZInt(3) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % NegInts.NegInt(-3) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % NegInts.NegZInt(-3) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % NonZeroInts.NonZeroInt(3) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % Percentages.PercentageInt(50) shouldEqual -3.0
+      NegDoubles.NegZFiniteDouble(-3.0) % PosLongs.PosLong(3L) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % PosLongs.PosZLong(3L) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % NegLongs.NegLong(-3L) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % NegLongs.NegZLong(-3L) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % NonZeroLongs.NonZeroLong(3L) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % PosFloats.PosFloat(3.0f) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % PosFloats.PosZFloat(3.0f) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % NegFloats.NegFloat(-3.0f) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % NegFloats.NegZFloat(-3.0f) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % NonZeroFloats.NonZeroFloat(3.0f) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % NonZeroFloats.NonZeroFiniteFloat(3.0f) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % PosFloats.PosFiniteFloat(3.0f) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % PosFloats.PosZFiniteFloat(3.0f) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % NegFloats.NegFiniteFloat(-3.0f) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % NegFloats.NegZFiniteFloat(-3.0f) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % Finites.FiniteFloat(3.0f) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % PosDoubles.PosDouble(3.0) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % NegDoubles.NegDouble(-3.0) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % NegDoubles.NegZDouble(-3.0) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % NonZeroDoubles.NonZeroDouble(3.0) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % NonZeroDoubles.NonZeroFiniteDouble(3.0) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % PosDoubles.PosFiniteDouble(3.0) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % PosDoubles.PosZFiniteDouble(3.0) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % NegDoubles.NegFiniteDouble(-3.0) shouldEqual -0.0
+      NegDoubles.NegZFiniteDouble(-3.0) % Finites.FiniteDouble(3.0) shouldEqual -0.0
+    }
+    it("should offer '<' comparison that is consistent with Double") {
+      (NegDoubles.NegZFiniteDouble(-3.0) < 3.toByte) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < 3.toShort) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < '3') shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < 3) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < 3L) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < 3.0f) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < 3.0) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < PosInts.PosInt(3)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < PosInts.PosZInt(3)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < NegInts.NegInt(-3)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) < NegInts.NegZInt(-3)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) < NonZeroInts.NonZeroInt(3)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < Percentages.PercentageInt(50)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < PosLongs.PosLong(3L)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < PosLongs.PosZLong(3L)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < NegLongs.NegLong(-3L)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) < NegLongs.NegZLong(-3L)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) < NonZeroLongs.NonZeroLong(3L)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < PosFloats.PosFloat(3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < PosFloats.PosZFloat(3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < NegFloats.NegFloat(-3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) < NegFloats.NegZFloat(-3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) < NonZeroFloats.NonZeroFloat(3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < NonZeroFloats.NonZeroFiniteFloat(3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < PosFloats.PosFiniteFloat(3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < PosFloats.PosZFiniteFloat(3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < NegFloats.NegFiniteFloat(-3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) < NegFloats.NegZFiniteFloat(-3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) < Finites.FiniteFloat(3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < PosDoubles.PosDouble(3.0)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < NegDoubles.NegDouble(-3.0)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) < NegDoubles.NegZDouble(-3.0)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) < NonZeroDoubles.NonZeroDouble(3.0)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < NonZeroDoubles.NonZeroFiniteDouble(3.0)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < PosDoubles.PosFiniteDouble(3.0)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < PosDoubles.PosZFiniteDouble(3.0)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) < NegDoubles.NegFiniteDouble(-3.0)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) < Finites.FiniteDouble(3.0)) shouldEqual true
+    }
+    it("should offer '<=' comparison that is consistent with Double") {
+      (NegDoubles.NegZFiniteDouble(-3.0) <= 3.toByte) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= 3.toShort) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= '3') shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= 3) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= 3L) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= 3.0f) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= 3.0) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= PosInts.PosInt(3)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= PosInts.PosZInt(3)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= NegInts.NegInt(-3)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= NegInts.NegZInt(-3)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= NonZeroInts.NonZeroInt(3)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= Percentages.PercentageInt(50)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= PosLongs.PosLong(3L)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= PosLongs.PosZLong(3L)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= NegLongs.NegLong(-3L)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= NegLongs.NegZLong(-3L)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= NonZeroLongs.NonZeroLong(3L)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= PosFloats.PosFloat(3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= PosFloats.PosZFloat(3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= NegFloats.NegFloat(-3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= NegFloats.NegZFloat(-3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= NonZeroFloats.NonZeroFloat(3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= NonZeroFloats.NonZeroFiniteFloat(3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= PosFloats.PosFiniteFloat(3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= PosFloats.PosZFiniteFloat(3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= NegFloats.NegFiniteFloat(-3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= NegFloats.NegZFiniteFloat(-3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= Finites.FiniteFloat(3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= PosDoubles.PosDouble(3.0)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= NegDoubles.NegDouble(-3.0)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= NegDoubles.NegZDouble(-3.0)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= NonZeroDoubles.NonZeroDouble(3.0)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= NonZeroDoubles.NonZeroFiniteDouble(3.0)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= PosDoubles.PosFiniteDouble(3.0)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= PosDoubles.PosZFiniteDouble(3.0)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= NegDoubles.NegFiniteDouble(-3.0)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) <= Finites.FiniteDouble(3.0)) shouldEqual true
+    }
+    it("should offer '>' comparison that is consistent with Double") {
+      (NegDoubles.NegZFiniteDouble(-3.0) > 3.toByte) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > 3.toShort) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > '3') shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > 3) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > 3L) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > 3.0f) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > 3.0) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > PosInts.PosInt(3)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > PosInts.PosZInt(3)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > NegInts.NegInt(-3)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > NegInts.NegZInt(-3)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > NonZeroInts.NonZeroInt(3)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > Percentages.PercentageInt(50)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > PosLongs.PosLong(3L)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > PosLongs.PosZLong(3L)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > NegLongs.NegLong(-3L)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > NegLongs.NegZLong(-3L)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > NonZeroLongs.NonZeroLong(3L)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > PosFloats.PosFloat(3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > PosFloats.PosZFloat(3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > NegFloats.NegFloat(-3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > NegFloats.NegZFloat(-3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > NonZeroFloats.NonZeroFloat(3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > NonZeroFloats.NonZeroFiniteFloat(3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > PosFloats.PosFiniteFloat(3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > PosFloats.PosZFiniteFloat(3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > NegFloats.NegFiniteFloat(-3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > NegFloats.NegZFiniteFloat(-3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > Finites.FiniteFloat(3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > PosDoubles.PosDouble(3.0)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > NegDoubles.NegDouble(-3.0)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > NegDoubles.NegZDouble(-3.0)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > NonZeroDoubles.NonZeroDouble(3.0)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > NonZeroDoubles.NonZeroFiniteDouble(3.0)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > PosDoubles.PosFiniteDouble(3.0)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > PosDoubles.PosZFiniteDouble(3.0)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > NegDoubles.NegFiniteDouble(-3.0)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) > Finites.FiniteDouble(3.0)) shouldEqual false
+    }
+    it("should offer '>=' comparison that is consistent with Double") {
+      (NegDoubles.NegZFiniteDouble(-3.0) >= 3.toByte) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= 3.toShort) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= '3') shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= 3) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= 3L) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= 3.0f) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= 3.0) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= PosInts.PosInt(3)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= PosInts.PosZInt(3)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= NegInts.NegInt(-3)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) >= NegInts.NegZInt(-3)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) >= NonZeroInts.NonZeroInt(3)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= Percentages.PercentageInt(50)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= PosLongs.PosLong(3L)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= PosLongs.PosZLong(3L)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= NegLongs.NegLong(-3L)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) >= NegLongs.NegZLong(-3L)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) >= NonZeroLongs.NonZeroLong(3L)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= PosFloats.PosFloat(3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= PosFloats.PosZFloat(3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= NegFloats.NegFloat(-3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) >= NegFloats.NegZFloat(-3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) >= NonZeroFloats.NonZeroFloat(3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= NonZeroFloats.NonZeroFiniteFloat(3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= PosFloats.PosFiniteFloat(3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= PosFloats.PosZFiniteFloat(3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= NegFloats.NegFiniteFloat(-3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) >= NegFloats.NegZFiniteFloat(-3.0f)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) >= Finites.FiniteFloat(3.0f)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= PosDoubles.PosDouble(3.0)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= NegDoubles.NegDouble(-3.0)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) >= NegDoubles.NegZDouble(-3.0)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) >= NonZeroDoubles.NonZeroDouble(3.0)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= NonZeroDoubles.NonZeroFiniteDouble(3.0)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= PosDoubles.PosFiniteDouble(3.0)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= PosDoubles.PosZFiniteDouble(3.0)) shouldEqual false
+      (NegDoubles.NegZFiniteDouble(-3.0) >= NegDoubles.NegFiniteDouble(-3.0)) shouldEqual true
+      (NegDoubles.NegZFiniteDouble(-3.0) >= Finites.FiniteDouble(3.0)) shouldEqual false
+    }
+    it("should offer 'min' and 'max' methods that are consistent with Double") {
+      NegDoubles.NegZFiniteDouble(-3.0).max(NegDoubles.NegZFiniteDouble(-3.0)) shouldEqual NegDoubles.NegZFiniteDouble(-3.0)
+      NegDoubles.NegZFiniteDouble(-3.0).min(NegDoubles.NegZFiniteDouble(-3.0)) shouldEqual NegDoubles.NegZFiniteDouble(-3.0)
+    }
+    it("should return the same type from its unary_+ method") {
+      succeed
+    }
+    it("should offer a unary - method that is consistent with Double") {
+      (-NegDoubles.NegZFiniteDouble(-3.0)) shouldEqual 3.0
+    }
+    it("should offer widening methods for basic type Double that are consistent with Double") {
+      def widen(value: Double): Double = value
+      widen(NegDoubles.NegZFiniteDouble(-3.0)) shouldEqual -3.0
+    }
+    it("should offer widening methods for basic type NegDoubles.NegZDouble that are consistent with Double") {
+      def widen(value: NegDoubles.NegZDouble): NegDoubles.NegZDouble = value
+      widen(NegDoubles.NegZFiniteDouble(-3.0)) shouldEqual NegDoubles.NegZDouble(-3.0)
+    }
+    it("should offer widening methods for basic type NonZeroDoubles.NonZeroDouble that are consistent with Double") {
+      def widen(value: NonZeroDoubles.NonZeroDouble): NonZeroDoubles.NonZeroDouble = value
+      widen(NegDoubles.NegZFiniteDouble(-3.0)) shouldEqual NonZeroDoubles.NonZeroDouble(-3.0)
+    }
+    it("should have a toString consistent with Double") {
+      (NegDoubles.NegZFiniteDouble(-3.0) : Double).toString shouldBe -3.0.toString
+    }
+  }
 }

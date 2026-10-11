@@ -631,6 +631,126 @@ class NonZeroDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers
       }
     }
 
+    describe("when created with apply method") {
+
+      it("should compile when 8, 8.0f, or 8.0 is passed in, but not 8L") {
+        "NonZeroDouble(8)" should compile
+        NonZeroDouble(8).value shouldEqual 8.0
+        "NonZeroDouble(8L)" shouldNot compile
+        "NonZeroDouble(8.0f)" should compile
+        NonZeroDouble(8.0f).value shouldEqual 8.0
+        "NonZeroDouble(8.0)" should compile
+        NonZeroDouble(8.0).value shouldEqual 8.0
+      }
+
+      it("should not compile when 0, 0L, 0.0f, or 0.0 is passed in") {
+        "NonZeroDouble(0)" shouldNot compile
+        "NonZeroDouble(0L)" shouldNot compile
+        "NonZeroDouble(0.0f)" shouldNot compile
+        "NonZeroDouble(0.0)" shouldNot compile
+      }
+
+      it("should compile when -8, -8.0f, or -8.0 is passed in, but not -8L") {
+        "NonZeroDouble(-8)" should compile
+        NonZeroDouble(-8).value shouldEqual -8.0
+        "NonZeroDouble(-8L)" shouldNot compile
+        "NonZeroDouble(-8.0f)" should compile
+        NonZeroDouble(-8.0f).value shouldEqual -8.0
+        "NonZeroDouble(-8.0)" should compile
+        NonZeroDouble(-8.0).value shouldEqual -8.0
+      }
+
+      }
+
+    describe("when specified as a plain-old Double") {
+
+      def takesNonZeroDouble(pos: NonZeroDouble): Double = pos.value
+
+      it("should compile when 8, 8.0f, or 8.0 is passed in, but not 8L") {
+        "takesNonZeroDouble(8)" should compile
+        takesNonZeroDouble(8) shouldEqual 8.0
+        "takesNonZeroDouble(8L)" shouldNot compile
+        "takesNonZeroDouble(8.0f)" should compile
+        takesNonZeroDouble(8.0f) shouldEqual 8.0
+        "takesNonZeroDouble(8.0)" should compile
+        takesNonZeroDouble(8.0) shouldEqual 8.0
+      }
+
+      it("should compile when -8, -8.0f, or -8.0 is passed in, but not -8L") {
+        "takesNonZeroDouble(-8)" should compile
+        takesNonZeroDouble(-8) shouldEqual -8.0
+        "takesNonZeroDouble(-8L)" shouldNot compile
+        "takesNonZeroDouble(-8.0f)" should compile
+        takesNonZeroDouble(-8.0f) shouldEqual -8.0
+        "takesNonZeroDouble(-8.0)" should compile
+        takesNonZeroDouble(-8.0) shouldEqual -8.0
+      }
+    }
+
+    it("should offer MaxValue, MinValue, and MinPositiveValue factory methods") {
+      NonZeroDouble.MaxValue shouldEqual NonZeroDouble.from(Double.MaxValue).get
+      NonZeroDouble.MinValue shouldEqual NonZeroDouble.from(Double.MinValue).get
+      NonZeroDouble.MinPositiveValue shouldEqual NonZeroDouble.from(Double.MinPositiveValue).get
+    }
+
+    it("should offer PositiveInfinity and NegativeInfinity factory methods") {
+      NonZeroDouble.PositiveInfinity shouldEqual NonZeroDouble.ensuringValid(Double.PositiveInfinity)
+      NonZeroDouble.NegativeInfinity shouldEqual NonZeroDouble.ensuringValid(Double.NegativeInfinity)
+    }
+
+    it("should offer a isPosInfinity method that returns true if the instance is PositiveInfinity") {
+      NonZeroDouble.ensuringValid(Double.PositiveInfinity).isPosInfinity shouldBe true
+      NonZeroDouble(-1.0).isPosInfinity shouldBe false
+    }
+
+    it("should offer a isNegInfinity method that returns true if the instance is NegativeInfinity") {
+      NonZeroDouble.ensuringValid(Double.NegativeInfinity).isNegInfinity shouldBe true
+      NonZeroDouble(-1.0).isNegInfinity shouldBe false
+    }
+
+    it("should offer an 'isWhole' method that is consistent with Double") {
+      NonZeroDouble(3.0).isWhole shouldBe true
+      NonZeroDouble(-3.0).isWhole shouldBe true
+      NonZeroDouble(2.5).isWhole shouldBe false
+    }
+
+    it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Double") {
+      NonZeroDouble(2.0).toRadians shouldEqual math.toRadians(2.0)
+      NonZeroDouble(2.0).toDegrees shouldEqual math.toDegrees(2.0)
+    }
+
+    it("should offer 'round', 'ceil', and 'floor' methods") {
+      NonZeroDouble(3.6).round.value shouldBe 4L
+      NonZeroDouble(-3.6).round.value shouldBe -4L
+      NonZeroDouble(3.6).ceil.value shouldBe 4.0
+      NonZeroDouble(-3.6).ceil.value shouldBe -3.0
+      NonZeroDouble(3.6).floor.value shouldBe 3.0
+      NonZeroDouble(-3.6).floor.value shouldBe -4.0
+    }
+
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      NonZeroDouble(3.0).isFinite should be (true)
+      NonZeroDouble.NegativeInfinity.isFinite should be (false)
+      NonZeroDouble.PositiveInfinity.isFinite should be (false)
+    }
+
+    it("should offer an isInfinite method that returns true if the value represents positive or negative infinity") {
+      NonZeroDouble(3.0).isInfinite should be (false)
+      NonZeroDouble.NegativeInfinity.isInfinite should be (true)
+      NonZeroDouble.PositiveInfinity.isInfinite should be (true)
+    }
+
+    describe("Ordering") {
+      it("should provide an Ordering that works for both negative and positive values") {
+        NonZeroDouble(-1924396667.0) should be <= NonZeroDouble(1081481977.0)
+      }
+
+      it("should be sortable") {
+        val xs = List(NonZeroDouble(2.2), NonZeroDouble(4.4), NonZeroDouble(1.1), NonZeroDouble(3.3))
+        xs.sorted shouldEqual List(NonZeroDouble(1.1), NonZeroDouble(2.2), NonZeroDouble(3.3), NonZeroDouble(4.4))
+      }
+    }
+
     describe("constants") {
       it("should expose MaxValue, MinValue and MinPositiveValue") {
         NonZeroDouble.MaxValue.value shouldBe Double.MaxValue
@@ -645,4 +765,10 @@ class NonZeroDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers
 
   }
 
+  describe("NonZeroDouble") {
+    it("should offer widening methods for basic type Double that are consistent with Double") {
+      def widen(value: Double): Double = value
+      widen(NonZeroDoubles.NonZeroDouble(3.0)) shouldEqual 3.0
+    }
+  }
 }

@@ -660,6 +660,109 @@ class NonZeroFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers 
       }
     }
 
+    describe("when created with apply method") {
+
+      it("should compile when 8.0F is passed in") {
+        "NonZeroFloat(8.0F)" should compile
+        NonZeroFloat(8.0F).value shouldEqual 8.0F
+      }
+
+      it("should not compile when 0.0F is passed in") {
+        "NonZeroFloat(0.0F)" shouldNot compile
+      }
+
+      it("should compile when -8.0F is passed in") {
+        "NonZeroFloat(-8.0F)" should compile
+        NonZeroFloat(-8.0F).value shouldEqual -8.0F
+      }
+
+      it("should not compile when 8 or 8L is passed in due to precision loss") {
+        "NonZeroFloat(8)" shouldNot compile
+        "NonZeroFloat(8L)" shouldNot compile
+      }
+
+      it("should not compile when x is passed in") {
+        val a: Double = -8.0
+        "NonZeroFloat(a)" shouldNot compile
+      }
+    }
+
+    describe("when specified as a plain-old Float") {
+
+      def takesNonZeroFloat(pos: NonZeroFloat): Float = pos.value
+
+      it("should compile when 8.0F is passed in") {
+        "takesNonZeroFloat(8.0F)" should compile
+        takesNonZeroFloat(8.0F) shouldEqual 8.0F
+      }
+
+      it("should compile when -8.0F is passed in") {
+        "takesNonZeroFloat(-8.0F)" should compile
+        takesNonZeroFloat(-8.0F) shouldEqual -8.0F
+      }
+
+      it("should not compile when 8 or 8L is passed in due to the absence of precision-losing conversions") {
+        "takesNonZeroFloat(8)" shouldNot compile
+        "takesNonZeroFloat(8L)" shouldNot compile
+      }
+    }
+
+    it("should offer MaxValue and MinValue factory methods") {
+      NonZeroFloat.MaxValue shouldEqual NonZeroFloat.from(Float.MaxValue).get
+      NonZeroFloat.MinValue shouldEqual NonZeroFloat.from(Float.MinValue).get
+    }
+
+    it("should offer PositiveInfinity and NegativeInfinity factory methods") {
+      NonZeroFloat.PositiveInfinity shouldEqual NonZeroFloat.ensuringValid(Float.PositiveInfinity)
+      NonZeroFloat.NegativeInfinity shouldEqual NonZeroFloat.ensuringValid(Float.NegativeInfinity)
+    }
+
+    it("should offer a MinPositiveValue factory method") {
+      NonZeroFloat.MinPositiveValue shouldEqual NonZeroFloat.ensuringValid(Float.MinPositiveValue)
+    }
+
+    it("should offer a isPosInfinity method that returns true if the instance is PositiveInfinity") {
+      NonZeroFloat.ensuringValid(Float.PositiveInfinity).isPosInfinity shouldBe true
+      NonZeroFloat(-1.0f).isPosInfinity shouldBe false
+    }
+
+    it("should offer a isNegInfinity method that returns true if the instance is NegativeInfinity") {
+      NonZeroFloat.ensuringValid(Float.NegativeInfinity).isNegInfinity shouldBe true
+      NonZeroFloat(-1.0f).isNegInfinity shouldBe false
+    }
+
+    it("should offer an 'isWhole' method that is consistent with Float") {
+      NonZeroFloat(3.0f).isWhole shouldBe true
+      NonZeroFloat(-3.0f).isWhole shouldBe true
+      NonZeroFloat(2.5f).isWhole shouldBe false
+    }
+
+    it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Float") {
+      NonZeroFloat(2.0f).toRadians shouldEqual math.toRadians(2.0f).toFloat
+      NonZeroFloat(2.0f).toDegrees shouldEqual math.toDegrees(2.0f).toFloat
+    }
+
+    it("should offer 'round', 'ceil', and 'floor' methods") {
+      NonZeroFloat(3.6f).round.value shouldBe 4L
+      NonZeroFloat(-3.6f).round.value shouldBe -4L
+      NonZeroFloat(3.6f).ceil.value shouldBe 4.0f
+      NonZeroFloat(-3.6f).ceil.value shouldBe -3.0f
+      NonZeroFloat(3.6f).floor.value shouldBe 3.0f
+      NonZeroFloat(-3.6f).floor.value shouldBe -4.0f
+    }
+
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      NonZeroFloat(3.0f).isFinite should be (true)
+      NonZeroFloat.NegativeInfinity.isFinite should be (false)
+      NonZeroFloat.PositiveInfinity.isFinite should be (false)
+    }
+
+    it("should offer an isInfinite method that returns true if the value represents positive or negative infinity") {
+      NonZeroFloat(3.0f).isInfinite should be (false)
+      NonZeroFloat.NegativeInfinity.isInfinite should be (true)
+      NonZeroFloat.PositiveInfinity.isInfinite should be (true)
+    }
+
     describe("Ordering") {
       it("should provide an Ordering that works for both negative and positive values") {
         NonZeroFloat(-1924396667.0f) should be <= NonZeroFloat(1081481977.0f)
@@ -673,4 +776,17 @@ class NonZeroFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers 
 
   }
 
+  describe("NonZeroFloat") {
+    it("should offer widening methods for basic type Float that are consistent with Float") {
+      def widen(value: Float): Float = value
+      widen(NonZeroFloats.NonZeroFloat(3.0f)) shouldEqual 3.0f
+    }
+    it("should offer widening methods for basic type NonZeroDoubles.NonZeroDouble that are consistent with Float") {
+      def widen(value: NonZeroDoubles.NonZeroDouble): NonZeroDoubles.NonZeroDouble = value
+      widen(NonZeroFloats.NonZeroFloat(3.0f)) shouldEqual NonZeroDoubles.NonZeroDouble(3.0)
+    }
+    it("should have a toString consistent with Float") {
+      (NonZeroFloats.NonZeroFloat(3.0f) : Float).toString shouldBe 3.0f.toString
+    }
+  }
 }
