@@ -748,15 +748,15 @@ class FiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers w
     it("should return the same type from its unary_+ method") {
       +Finites.FiniteFloat(3.0f) shouldEqual Finites.FiniteFloat(3.0f)
     }
-    it("should offer a unary - method that is consistent with Float") {
-      succeed
-    }
     it("should offer widening methods for basic type Float that are consistent with Float") {
       def widen(value: Float): Float = value
       widen(Finites.FiniteFloat(3.0f)) shouldEqual 3.0f
     }
     it("should have a toString consistent with Float") {
       (Finites.FiniteFloat(3.0f) : Float).toString shouldBe 3.0f.toString
+    }
+    it("should offer a unary - method that is consistent with Float") {
+      (-Finites.FiniteFloat(3.0f)) shouldEqual -3.0f
     }
   }
 }

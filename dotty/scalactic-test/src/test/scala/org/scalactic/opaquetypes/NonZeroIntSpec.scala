@@ -777,15 +777,15 @@ class NonZeroIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers wi
     it("should return the same type from its unary_+ method") {
       +NonZeroInts.NonZeroInt(3) shouldEqual NonZeroInts.NonZeroInt(3)
     }
-    it("should offer a unary - method that is consistent with Int") {
-      succeed
-    }
     it("should offer widening methods for basic type Int that are consistent with Int") {
       def widen(value: Int): Int = value
       widen(NonZeroInts.NonZeroInt(3)) shouldEqual 3
     }
     it("should have a toString consistent with Int") {
       (NonZeroInts.NonZeroInt(3) : Int).toString shouldBe 3.toString
+    }
+    it("should offer a unary - method that is consistent with Int") {
+      (-NonZeroInts.NonZeroInt(3)) shouldEqual -3
     }
   }
 }

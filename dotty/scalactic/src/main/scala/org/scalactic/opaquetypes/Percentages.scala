@@ -164,5 +164,11 @@ object Percentages {
 
     /** True if this value is the minimum, 0. */
     def isMin: Boolean = x == 0
+
+    /** Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise. */
+    def max(that: PercentageInt): PercentageInt = math.max(x, that)
+
+    /** Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise. */
+    def min(that: PercentageInt): PercentageInt = math.min(x, that)
   }
 }

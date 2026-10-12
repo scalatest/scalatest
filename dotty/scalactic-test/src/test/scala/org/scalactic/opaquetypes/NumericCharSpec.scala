@@ -692,7 +692,7 @@ class NumericCharSpec extends funspec.AnyFunSpec with matchers.should.Matchers w
       widen(Numerics.NumericChar('3')) shouldEqual Finites.FiniteDouble(51.0)
     }
     it("should have a toString consistent with Char") {
-      succeed
+      Numerics.NumericChar('3').value.toString shouldBe "3"
     }
   }
 }

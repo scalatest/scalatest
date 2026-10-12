@@ -579,9 +579,6 @@ class PercentageIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers
       (Percentages.PercentageInt(50) >= NegDoubles.NegZFiniteDouble(-3.0)) shouldEqual true
       (Percentages.PercentageInt(50) >= Finites.FiniteDouble(3.0)) shouldEqual true
     }
-    it("should offer 'min' and 'max' methods that are consistent with Int") {
-      succeed
-    }
     it("should return the same type from its unary_+ method") {
       +Percentages.PercentageInt(50) shouldEqual Percentages.PercentageInt(50)
     }
@@ -594,6 +591,10 @@ class PercentageIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers
     }
     it("should have a toString consistent with Int") {
       (Percentages.PercentageInt(50) : Int).toString shouldBe 50.toString
+    }
+    it("should offer 'min' and 'max' methods that are consistent with Int") {
+      Percentages.PercentageInt(50).max(Percentages.PercentageInt(50)) shouldEqual Percentages.PercentageInt(50)
+      Percentages.PercentageInt(50).min(Percentages.PercentageInt(50)) shouldEqual Percentages.PercentageInt(50)
     }
   }
 }

@@ -340,6 +340,11 @@ object PosDoubles {
       def apply(x: Double): PosZDouble = PosZDouble.ensuringValid(x)
     }
 
+    /** Implicitly widens a [[PosZDouble]] to a plain <code>Double</code>. */
+    given Conversion[PosZDouble, Double] with {
+      def apply(x: PosZDouble): Double = x
+    }
+
     extension (p: PosZDouble) {
       /** Return the underlying Double value. */
       def value: Double = p

@@ -729,12 +729,6 @@ class PosZFiniteDoubleSpec extends funspec.AnyFunSpec with matchers.should.Match
       PosDoubles.PosZFiniteDouble(3.0).max(PosDoubles.PosZFiniteDouble(3.0)) shouldEqual PosDoubles.PosZFiniteDouble(3.0)
       PosDoubles.PosZFiniteDouble(3.0).min(PosDoubles.PosZFiniteDouble(3.0)) shouldEqual PosDoubles.PosZFiniteDouble(3.0)
     }
-    it("should return the same type from its unary_+ method") {
-      succeed
-    }
-    it("should offer a unary - method that is consistent with Double") {
-      succeed
-    }
     it("should offer widening methods for basic type Double that are consistent with Double") {
       def widen(value: Double): Double = value
       widen(PosDoubles.PosZFiniteDouble(3.0)) shouldEqual 3.0
@@ -745,6 +739,12 @@ class PosZFiniteDoubleSpec extends funspec.AnyFunSpec with matchers.should.Match
     }
     it("should have a toString consistent with Double") {
       (PosDoubles.PosZFiniteDouble(3.0) : Double).toString shouldBe 3.0.toString
+    }
+    it("should return the same type from its unary_+ method") {
+      +PosDoubles.PosZFiniteDouble(3.0) shouldEqual PosDoubles.PosZFiniteDouble(3.0)
+    }
+    it("should offer a unary - method that is consistent with Double") {
+      (-PosDoubles.PosZFiniteDouble(3.0)) shouldEqual -3.0
     }
   }
 }

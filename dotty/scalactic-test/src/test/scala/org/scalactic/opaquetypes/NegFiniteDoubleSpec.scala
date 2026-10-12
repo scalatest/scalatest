@@ -708,9 +708,6 @@ class NegFiniteDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matche
       NegDoubles.NegFiniteDouble(-3.0).max(NegDoubles.NegFiniteDouble(-3.0)) shouldEqual NegDoubles.NegFiniteDouble(-3.0)
       NegDoubles.NegFiniteDouble(-3.0).min(NegDoubles.NegFiniteDouble(-3.0)) shouldEqual NegDoubles.NegFiniteDouble(-3.0)
     }
-    it("should return the same type from its unary_+ method") {
-      succeed
-    }
     it("should offer a unary - method that is consistent with Double") {
       (-NegDoubles.NegFiniteDouble(-3.0)) shouldEqual 3.0
     }
@@ -736,6 +733,9 @@ class NegFiniteDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matche
     }
     it("should have a toString consistent with Double") {
       (NegDoubles.NegFiniteDouble(-3.0) : Double).toString shouldBe -3.0.toString
+    }
+    it("should return the same type from its unary_+ method") {
+      +NegDoubles.NegFiniteDouble(-3.0) shouldEqual NegDoubles.NegFiniteDouble(-3.0)
     }
   }
 }

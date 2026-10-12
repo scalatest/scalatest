@@ -703,15 +703,15 @@ class PosFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matcher
     it("should return the same type from its unary_+ method") {
       +PosFloats.PosFiniteFloat(3.0f) shouldEqual PosFloats.PosFiniteFloat(3.0f)
     }
-    it("should offer a unary - method that is consistent with Float") {
-      succeed
-    }
     it("should offer widening methods for basic type Float that are consistent with Float") {
       def widen(value: Float): Float = value
       widen(PosFloats.PosFiniteFloat(3.0f)) shouldEqual 3.0f
     }
     it("should have a toString consistent with Float") {
       (PosFloats.PosFiniteFloat(3.0f) : Float).toString shouldBe 3.0f.toString
+    }
+    it("should offer a unary - method that is consistent with Float") {
+      (-PosFloats.PosFiniteFloat(3.0f)) shouldEqual -3.0f
     }
   }
 }

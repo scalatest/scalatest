@@ -721,9 +721,6 @@ class NegZFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matche
       NegFloats.NegZFiniteFloat(-3.0f).max(NegFloats.NegZFiniteFloat(-3.0f)) shouldEqual NegFloats.NegZFiniteFloat(-3.0f)
       NegFloats.NegZFiniteFloat(-3.0f).min(NegFloats.NegZFiniteFloat(-3.0f)) shouldEqual NegFloats.NegZFiniteFloat(-3.0f)
     }
-    it("should return the same type from its unary_+ method") {
-      succeed
-    }
     it("should offer a unary - method that is consistent with Float") {
       (-NegFloats.NegZFiniteFloat(-3.0f)) shouldEqual 3.0f
     }
@@ -737,6 +734,9 @@ class NegZFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matche
     }
     it("should have a toString consistent with Float") {
       (NegFloats.NegZFiniteFloat(-3.0f) : Float).toString shouldBe -3.0f.toString
+    }
+    it("should return the same type from its unary_+ method") {
+      +NegFloats.NegZFiniteFloat(-3.0f) shouldEqual NegFloats.NegZFiniteFloat(-3.0f)
     }
   }
 }

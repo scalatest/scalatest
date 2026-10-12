@@ -756,18 +756,18 @@ class NegIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with G
       NegInts.NegInt(-3).max(NegInts.NegInt(-3)) shouldEqual NegInts.NegInt(-3)
       NegInts.NegInt(-3).min(NegInts.NegInt(-3)) shouldEqual NegInts.NegInt(-3)
     }
-    it("should return the same type from its unary_+ method") {
-      succeed
-    }
-    it("should offer a unary - method that is consistent with Int") {
-      succeed
-    }
     it("should offer widening methods for basic type Int that are consistent with Int") {
       def widen(value: Int): Int = value
       widen(NegInts.NegInt(-3)) shouldEqual -3
     }
     it("should have a toString consistent with Int") {
       (NegInts.NegInt(-3) : Int).toString shouldBe -3.toString
+    }
+    it("should return the same type from its unary_+ method") {
+      +NegInts.NegInt(-3) shouldEqual NegInts.NegInt(-3)
+    }
+    it("should offer a unary - method that is consistent with Int") {
+      (-NegInts.NegInt(-3)) shouldEqual 3
     }
   }
 }

@@ -774,15 +774,15 @@ class FiniteDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers 
     it("should return the same type from its unary_+ method") {
       +Finites.FiniteDouble(3.0) shouldEqual Finites.FiniteDouble(3.0)
     }
-    it("should offer a unary - method that is consistent with Double") {
-      succeed
-    }
     it("should offer widening methods for basic type Double that are consistent with Double") {
       def widen(value: Double): Double = value
       widen(Finites.FiniteDouble(3.0)) shouldEqual 3.0
     }
     it("should have a toString consistent with Double") {
       (Finites.FiniteDouble(3.0) : Double).toString shouldBe 3.0.toString
+    }
+    it("should offer a unary - method that is consistent with Double") {
+      (-Finites.FiniteDouble(3.0)) shouldEqual -3.0
     }
   }
 }

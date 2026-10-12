@@ -742,12 +742,6 @@ class NegFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
       NegFloats.NegFloat(-3.0f).max(NegFloats.NegFloat(-3.0f)) shouldEqual NegFloats.NegFloat(-3.0f)
       NegFloats.NegFloat(-3.0f).min(NegFloats.NegFloat(-3.0f)) shouldEqual NegFloats.NegFloat(-3.0f)
     }
-    it("should return the same type from its unary_+ method") {
-      succeed
-    }
-    it("should offer a unary - method that is consistent with Float") {
-      succeed
-    }
     it("should offer widening methods for basic type Float that are consistent with Float") {
       def widen(value: Float): Float = value
       widen(NegFloats.NegFloat(-3.0f)) shouldEqual -3.0f
@@ -758,6 +752,12 @@ class NegFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
     }
     it("should have a toString consistent with Float") {
       (NegFloats.NegFloat(-3.0f) : Float).toString shouldBe -3.0f.toString
+    }
+    it("should return the same type from its unary_+ method") {
+      +NegFloats.NegFloat(-3.0f) shouldEqual NegFloats.NegFloat(-3.0f)
+    }
+    it("should offer a unary - method that is consistent with Float") {
+      (-NegFloats.NegFloat(-3.0f)) shouldEqual 3.0f
     }
   }
 }

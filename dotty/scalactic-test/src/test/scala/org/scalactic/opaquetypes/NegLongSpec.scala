@@ -399,9 +399,6 @@ class NegLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
       "(NegLongs.NegLong(-3L) : NegDoubles.NegZFiniteDouble)" shouldNot compile
       "(NegLongs.NegLong(-3L) : Finites.FiniteDouble)" shouldNot compile
     }
-    it("when a compatible AnyVal is passed to a + method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
-      succeed
-    }
     it("when a compatible AnyVal is passed to a - method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
       NegLongs.NegLong(-3L) - 3.toByte shouldEqual -6L
       NegLongs.NegLong(-3L) - 3.toShort shouldEqual -6L
@@ -738,6 +735,19 @@ class NegLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
     }
     it("should have a toString consistent with Long") {
       (NegLongs.NegLong(-3L) : Long).toString shouldBe -3L.toString
+    }
+    it("when a compatible AnyVal is passed to a + method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      NegLongs.NegLong(-3L) + 3.toByte shouldEqual 0L
+      NegLongs.NegLong(-3L) + 3.toShort shouldEqual 0L
+      NegLongs.NegLong(-3L) + '3' shouldEqual 48L
+      NegLongs.NegLong(-3L) + 3 shouldEqual 0L
+      NegLongs.NegLong(-3L) + 3L shouldEqual 0L
+      NegLongs.NegLong(-3L) + 3.0f shouldEqual 0.0f
+      NegLongs.NegLong(-3L) + 3.0 shouldEqual 0.0
+      NegLongs.NegLong(-3L) + PosInts.PosInt(3) shouldEqual 0L
+      NegLongs.NegLong(-3L) + NegInts.NegInt(-3) shouldEqual -6L
+      NegLongs.NegLong(-3L) + PosDoubles.PosDouble(3.0) shouldEqual 0.0
+      NegLongs.NegLong(-3L) + NegDoubles.NegDouble(-3.0) shouldEqual -6.0
     }
   }
 }
