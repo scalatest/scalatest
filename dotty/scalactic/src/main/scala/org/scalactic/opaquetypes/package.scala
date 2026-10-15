@@ -21,6 +21,8 @@ package org.scalactic
   * within `org.scalactic.opaquetypes`.
   */
 package object opaquetypes {
+
+  import scala.annotation.targetName
   /** Type alias for [[org.scalactic.opaquetypes.NegInts.NegInt]]. */
   type NegInt = NegInts.NegInt
   /** Value alias for the [[org.scalactic.opaquetypes.NegInts.NegInt]] companion. */
@@ -36,6 +38,70 @@ package object opaquetypes {
   /** Value alias for the [[org.scalactic.opaquetypes.NegLongs.NegLong]] companion. */
   val NegLong: NegLongs.NegLong.type = NegLongs.NegLong
   export NegLongs.NegLong.*
+
+  // Scala 3.9 no longer prefers an opaque type's own prefix-operator extension
+  // method over the candidate reached through its widening `Conversion` when
+  // both are found in the companion object's implicit scope, which makes
+  // expressions such as `-x` ambiguous. Re-exposing the operators here makes
+  // them lexically available, where they take precedence and resolve without
+  // an import. `@targetName` disambiguates the underlying JVM signatures of
+  // opaque types that share the same representation.
+  extension (p: Finites.FiniteFloat) {
+    @targetName("opaquetypes$FiniteFloat$unary_-")
+    def unary_- : Finites.FiniteFloat = Finites.FiniteFloat.unary_-(p)
+  }
+  extension (p: Finites.FiniteDouble) {
+    @targetName("opaquetypes$FiniteDouble$unary_-")
+    def unary_- : Finites.FiniteDouble = Finites.FiniteDouble.unary_-(p)
+  }
+  extension (p: NegDoubles.NegZDouble) {
+    @targetName("opaquetypes$NegZDouble$unary_+")
+    def unary_+ : NegDoubles.NegZDouble = NegDoubles.NegZDouble.unary_+(p)
+  }
+  extension (p: NegDoubles.NegDouble) {
+    @targetName("opaquetypes$NegDouble$unary_+")
+    def unary_+ : NegDoubles.NegDouble = NegDoubles.NegDouble.unary_+(p)
+    @targetName("opaquetypes$NegDouble$unary_-")
+    def unary_- : PosDoubles.PosDouble = NegDoubles.NegDouble.unary_-(p)
+  }
+  extension (p: NegFloats.NegZFloat) {
+    @targetName("opaquetypes$NegZFloat$unary_+")
+    def unary_+ : NegFloats.NegZFloat = NegFloats.NegZFloat.unary_+(p)
+  }
+  extension (p: NegFloats.NegFloat) {
+    @targetName("opaquetypes$NegFloat$unary_+")
+    def unary_+ : NegFloats.NegFloat = NegFloats.NegFloat.unary_+(p)
+    @targetName("opaquetypes$NegFloat$unary_-")
+    def unary_- : PosFloats.PosFloat = NegFloats.NegFloat.unary_-(p)
+  }
+  extension (p: NegFloats.NegFiniteFloat) {
+    @targetName("opaquetypes$NegFiniteFloat$unary_+")
+    def unary_+ : NegFloats.NegFiniteFloat = NegFloats.NegFiniteFloat.unary_+(p)
+    @targetName("opaquetypes$NegFiniteFloat$unary_-")
+    def unary_- : PosFloats.PosFiniteFloat = NegFloats.NegFiniteFloat.unary_-(p)
+  }
+  extension (x: NegInts.NegInt) {
+    @targetName("opaquetypes$NegInt$unary_+")
+    def unary_+ : NegInts.NegInt = NegInts.NegInt.unary_+(x)
+    @targetName("opaquetypes$NegInt$unary_-")
+    def unary_- : Int = NegInts.NegInt.unary_-(x)
+    @targetName("opaquetypes$NegInt$unary_~")
+    def unary_~ : Int = NegInts.NegInt.unary_~(x)
+  }
+  extension (x: NonZeroInts.NonZeroInt) {
+    @targetName("opaquetypes$NonZeroInt$unary_-")
+    def unary_- : NonZeroInts.NonZeroInt = NonZeroInts.NonZeroInt.unary_-(x)
+  }
+  extension (p: PosDoubles.PosZDouble) {
+    @targetName("opaquetypes$PosZDouble$unary_+")
+    def unary_+ : PosDoubles.PosZDouble = PosDoubles.PosZDouble.unary_+(p)
+    @targetName("opaquetypes$PosZDouble$unary_-")
+    def unary_- : NegDoubles.NegZDouble = PosDoubles.PosZDouble.unary_-(p)
+  }
+  extension (p: PosFloats.PosFiniteFloat) {
+    @targetName("opaquetypes$PosFiniteFloat$unary_-")
+    def unary_- : NegFloats.NegFiniteFloat = PosFloats.PosFiniteFloat.unary_-(p)
+  }
 
   /** Type alias for [[org.scalactic.opaquetypes.NegLongs.NegZLong]]. */
   type NegZLong = NegLongs.NegZLong

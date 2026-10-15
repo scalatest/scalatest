@@ -208,7 +208,7 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
   // SKIP-DOTTY-START
   implicit def convertGenSetToCombinable[G, ERR, X, EVERY[b] <: Every[b], SET[e] <: GenSet[e]](xs: SET[X with (G Or EVERY[ERR])])(implicit cbf: CanBuildFrom[SET[X with (G Or EVERY[ERR])], G, SET[G]]): Combinable[G, ERR, SET] = 
   // SKIP-DOTTY-END
-  //DOTTY-ONLY def convertGenSetToCombinable[G, ERR, X, EVERY[b] <: Every[b], SET[e] <: GenSet[e]](xs: SET[X with (G Or EVERY[ERR])])(using cbf: CanBuildFrom[SET[X with (G Or EVERY[ERR])], G, SET[G]]): Combinable[G, ERR, SET] = 
+  //DOTTY-ONLY def convertGenSetToCombinable[G, ERR, X, EVERY[b] <: Every[b], SET[e] <: GenSet[e]](xs: SET[X & (G Or EVERY[ERR])])(using cbf: CanBuildFrom[SET[X & (G Or EVERY[ERR])], G, SET[G]]): Combinable[G, ERR, SET] = 
     new Combinable[G, ERR, SET] {
 
       def combined: SET[G] Or Every[ERR] = {
@@ -228,7 +228,7 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
         tempOr map (_.result())
       }
     }
-  //DOTTY-ONLY extension [G, ERR, X, EVERY[b] <: Every[b], SET[e] <: GenSet[e]](xs: SET[X with (G Or EVERY[ERR])])(using cbf: CanBuildFrom[SET[X with (G Or EVERY[ERR])], G, SET[G]]) {
+  //DOTTY-ONLY extension [G, ERR, X, EVERY[b] <: Every[b], SET[e] <: GenSet[e]](xs: SET[X & (G Or EVERY[ERR])])(using cbf: CanBuildFrom[SET[X & (G Or EVERY[ERR])], G, SET[G]]) {
   //DOTTY-ONLY   def combined: SET[G] Or Every[ERR] = convertGenSetToCombinable(xs)(using cbf).combined
   //DOTTY-ONLY }  
 
