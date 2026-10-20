@@ -39,7 +39,7 @@ Building ScalaTest
 The followings are needed for building ScalaTest:
 
 *   JDK 8
-*   [SBT 1.3.13](https://www.scala-sbt.org/1.x/docs/Setup.html)
+*   [SBT 1.13.0](https://www.scala-sbt.org/1.x/docs/Setup.html)
 
 use the following SBT options instead:
 
