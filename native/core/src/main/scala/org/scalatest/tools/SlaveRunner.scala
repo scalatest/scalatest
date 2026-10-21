@@ -19,7 +19,7 @@ import org.scalatest.{Resources, Tracker}
 import org.scalatest.events.Summary
 import sbt.testing.{Framework => BaseFramework, Event => SbtEvent, Status => SbtStatus, _}
 import ArgsParser._
-import org.scalatest.prop.Seed
+import org.scalatest.prop.Configuration.Seed
 
 import scala.scalanative.reflect.Reflect
 

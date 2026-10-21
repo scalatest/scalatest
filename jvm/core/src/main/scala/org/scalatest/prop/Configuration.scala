@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicReference
 trait Configuration {
 
   import Configuration.{PropertyCheckConfiguration, PropertyCheckConfigParam, 
-                        MinSuccessful, MaxDiscardedFactor, MinSize, SizeRange, Workers}
+                        MinSuccessful, MaxDiscardedFactor, MinSize, SizeRange, Workers, Seed}
   
   /**
    * Returns a <code>MinSuccessful</code> property check configuration parameter containing the passed value, which specifies the minimum number of successful
@@ -74,6 +74,20 @@ trait Configuration {
   def workers(value: PosInt): Workers = new Workers(value)
 
   /**
+   * Returns a <code>Seed</code> property check configuration parameter containing the passed value, which specifies the initial seed
+   * to use for the random data generated during property evaluation.
+   *
+   * <p>
+   * When a seed is specified, the property check will be deterministic: re-running the same property check
+   * with the same seed will generate exactly the same "random" data. This is useful for reproducing a failure
+   * that was reported with an Init Seed value, without needing to pass the <code>-S</code> flag to the entire
+   * test run.
+   * </p>
+   *
+   */
+  def seed(value: Long): Seed = Seed(value)
+
+  /**
     * Given some optional [[PropertyCheckConfigParam]]s and a [[PropertyCheckConfiguration]], compute the resulting
     * [[Configuration.Parameter]].
     *
@@ -93,6 +107,7 @@ trait Configuration {
     var pminSize: Option[Int] = None
     var psizeRange: Option[Int] = None
     var pworkers: Option[Int] = None
+    var pinitSeed: Option[Long] = None
 
     var minSuccessfulTotalFound = 0
     var maxDiscardedTotalFound = 0
@@ -100,6 +115,7 @@ trait Configuration {
     var minSizeTotalFound = 0
     var sizeRangeTotalFound = 0
     var workersTotalFound = 0
+    var initSeedTotalFound = 0
 
     for (configParam <- configParams) {
       configParam match {
@@ -118,6 +134,9 @@ trait Configuration {
         case Workers(value) =>
           pworkers = Some(value)
           workersTotalFound += 1
+        case Seed(value) =>
+          pinitSeed = Some(value)
+          initSeedTotalFound += 1
       }
     }
 
@@ -132,6 +151,8 @@ trait Configuration {
       throw new IllegalArgumentException("can pass at most one SizeRange config parameters, but " + sizeRangeTotalFound + " were passed")
     if (workersTotalFound > 1)
       throw new IllegalArgumentException("can pass at most one Workers config parameters, but " + workersTotalFound + " were passed")
+    if (initSeedTotalFound > 1)
+      throw new IllegalArgumentException("can pass at most one Seed config parameters, but " + initSeedTotalFound + " were passed")
 
     val minSuccessfulTests: Int = minSuccessful.getOrElse(config.minSuccessful)
 
@@ -147,7 +168,8 @@ trait Configuration {
         PosZDouble.from(maxDiscardRatio).getOrElse(config.maxDiscardedFactor),
         PosZInt.from(minSize).getOrElse(config.minSize),
         PosZInt.from(maxSize - minSize).getOrElse(config.sizeRange),
-        PosInt.from(pworkers.getOrElse(config.workers)).getOrElse(config.workers)
+        PosInt.from(pworkers.getOrElse(config.workers)).getOrElse(config.workers),
+        pinitSeed.orElse(config.initSeed)
       )
 
     if(
@@ -224,12 +246,16 @@ object Configuration extends Configuration {
     * @param sizeRange    the maximum size parameter to provide to ScalaCheck, which it will use when
     *                     generating objects for which size matters (such as strings or lists); see [[SizeRange]]
     * @param workers      number of worker threads to use when evaluating a property; see [[Workers]]
+   * @param initSeed     an optional seed value to use for the random data generated during property
+   *                     evaluation; when set, property checks become deterministic, generating the same
+   *                     "random" data on every run; see [[Seed]]
     */
   case class PropertyCheckConfiguration(minSuccessful: PosInt = PosInt(10),
                                         maxDiscardedFactor: PosZDouble = PosZDouble(5.0),
                                         minSize: PosZInt = PosZInt(0),
                                         sizeRange: PosZInt = PosZInt(100),
-                                        workers: PosInt = PosInt(1))
+                                        workers: PosInt = PosInt(1),
+                                        initSeed: Option[Long] = None)
 
   /**
    * Abstract class defining a family of configuration parameters for property checks.
@@ -341,7 +367,61 @@ object Configuration extends Configuration {
    *
    * @author Bill Venners
    */
-  case class Workers(value: PosInt) extends PropertyCheckConfigParam                                      
+  case class Workers(value: PosInt) extends PropertyCheckConfigParam
+
+  /**
+   * A [[PropertyCheckConfigParam]] that specifies a seed for generating random values for property checks.
+   *
+   * <p>
+   * When a seed is specified, the property check will be deterministic: re-running the same property check
+   * with the same seed will generate exactly the same "random" data. This is useful for reproducing a failure
+   * that was reported with an Init Seed value, without needing to pass the <code>-S</code> flag to the entire
+   * test run.
+   * </p>
+   *
+   * @param value the seed value to use for randomization
+   */
+  case class Seed(value: Long) extends PropertyCheckConfigParam
+
+  /**
+   * Companion object for the `Seed` class.
+   */
+  object Seed {
+
+    import java.util.concurrent.atomic.AtomicReference
+
+    /**
+      * This seed is empty under ordinary circumstances. It is here so that the test
+      * Runner can poke in a seed value to be used during a test run. If set, it will be used
+      * as the seed for all calls to [[Seed.default]].
+      */
+    private[scalatest] val configuredRef: AtomicReference[Option[Long]] = new AtomicReference(None)
+
+    /**
+     * Creates a new Seed using default approach, which is initialized based on the current time.
+     *
+     * This should not be considered a strong source of seed for randomness -- in cases where high entropy really
+     * matters, it's a bit mediocre -- but for general purposes it's typically good enough.
+     */
+    def default: Seed = 
+      Seed(
+        configuredRef.get() match {
+          case Some(value) => value
+          case None => System.currentTimeMillis()
+        }
+      )
+
+    /**
+     * Retrieves an optional `Seed` object based on the currently configured seed value.
+     *
+     * If a seed value has been configured (i.e., set in `configuredRef`), this method will return a `Some` 
+     * containing a `Seed` instance initialized with that value. Otherwise, it returns `None`, indicating that
+     * no seed value has been explicitly configured.
+     *
+     * @return an optional `Seed` containing the configured seed value, or `None` if no seed has been set
+     */
+    def configured: Option[Seed] = configuredRef.get().map(Seed(_))  
+  }
 
   /**
     * The parameters that define how a property evaluation should be executed.
@@ -360,12 +440,15 @@ object Configuration extends Configuration {
     * @param sizeRange    the maximum size parameter to provide to ScalaCheck, which it will use when
     *                     generating objects for which size matters (such as strings or lists); see [[SizeRange]]
     * @param workers      number of worker threads to use when evaluating a property; see [[Workers]]
+   * @param initSeed     an optional seed value to use for the random data generated during property
+   *                     evaluation; see [[Seed]]
     */
   case class Parameter(minSuccessful: PosInt = PosInt(10),
                        maxDiscardedFactor: PosZDouble = PosZDouble(5.0),
                        minSize: PosZInt = PosZInt(0),
                        sizeRange: PosZInt = PosZInt(100),
-                       workers: PosInt = PosInt(1)) {
+                       workers: PosInt = PosInt(1),
+                       initSeed: Option[Long] = None) {
 
     import org.scalactic.Requirements._
 

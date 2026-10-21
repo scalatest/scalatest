@@ -34,7 +34,7 @@ import org.scalatest.events.SuiteStarting
 import org.scalatest.events.TopOfClass
 import org.scalatest.time.{Seconds, Span}
 import org.scalatools.testing.{Framework => SbtFramework, _}
-import org.scalatest.prop.Seed
+import org.scalatest.prop.Configuration.Seed
 
 /**
  * Class that makes ScalaTest tests visible to SBT (prior to version 0.13).

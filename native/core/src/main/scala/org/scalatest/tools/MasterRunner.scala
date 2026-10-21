@@ -23,7 +23,7 @@ import scala.scalanative.reflect.Reflect
 
 import scala.compat.Platform
 import ArgsParser._
-import org.scalatest.prop.Seed
+import org.scalatest.prop.Configuration.Seed
 
 import java.io.PrintWriter
 

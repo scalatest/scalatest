@@ -87,4 +87,10 @@ class PropertyCheckConfigParamSuite extends AnyFunSuite with Matchers {
     Workers(2).value.value should be (2)
     Workers(5678).value.value should be (5678)
   }
+
+  test("seed value is passed value") {
+    Seed(123L).value should be (123L)
+    Seed(0L).value should be (0L)
+    Seed(-123L).value should be (-123L)
+  }
 }
