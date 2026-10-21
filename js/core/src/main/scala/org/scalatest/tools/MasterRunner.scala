@@ -23,7 +23,7 @@ import scala.scalajs.reflect.Reflect
 
 import scala.compat.Platform
 import ArgsParser._
-import org.scalatest.prop.Seed
+import org.scalatest.prop.Configuration.Seed
 
 class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClassLoader: ClassLoader) extends Runner {
 

@@ -2358,7 +2358,7 @@ object Randomizer {
     *
     * @return A Randomizer, ready to begin producing random values.
     */
-  def default: Randomizer = new Randomizer(Seed.default.value)
+  def default: Randomizer = new Randomizer(Configuration.Seed.default.value)
 
   /**
     * A Randomizer, initialized with the specified seed value.

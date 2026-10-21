@@ -245,7 +245,11 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // This can be set by a cmd line param.
+      val initRnd =
+        config.initSeed match {
+          case Some(seed) => Randomizer(seed)
+          case None => Randomizer.default // This can be set by a cmd line param.
+        }
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       // ensuringValid will always succeed because /ing a PosInt by a positive number will always yield a positive or zero
@@ -343,7 +347,11 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // This can be set by a cmd line param.
+      val initRnd =
+        config.initSeed match {
+          case Some(seed) => Randomizer(seed)
+          case None => Randomizer.default // This can be set by a cmd line param.
+        }
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
@@ -448,7 +456,11 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // This can be set by a cmd line param.
+      val initRnd =
+        config.initSeed match {
+          case Some(seed) => Randomizer(seed)
+          case None => Randomizer.default // This can be set by a cmd line param.
+        }
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
@@ -562,7 +574,11 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // This can be set by a cmd line param.
+      val initRnd =
+        config.initSeed match {
+          case Some(seed) => Randomizer(seed)
+          case None => Randomizer.default // This can be set by a cmd line param.
+        }
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
@@ -682,7 +698,11 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // This can be set by a cmd line param.
+      val initRnd =
+        config.initSeed match {
+          case Some(seed) => Randomizer(seed)
+          case None => Randomizer.default // This can be set by a cmd line param.
+        }
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
@@ -811,7 +831,11 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // This can be set by a cmd line param.
+      val initRnd =
+        config.initSeed match {
+          case Some(seed) => Randomizer(seed)
+          case None => Randomizer.default // This can be set by a cmd line param.
+        }
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
@@ -1089,7 +1113,11 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // This can be set by a cmd line param.
+      val initRnd =
+        config.initSeed match {
+          case Some(seed) => Randomizer(seed)
+          case None => Randomizer.default // This can be set by a cmd line param.
+        }
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       // ensuringValid will always succeed because /ing a PosInt by a positive number will always yield a positive or zero
@@ -1243,7 +1271,11 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // This can be set by a cmd line param.
+      val initRnd =
+        config.initSeed match {
+          case Some(seed) => Randomizer(seed)
+          case None => Randomizer.default // This can be set by a cmd line param.
+        }
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
@@ -1404,7 +1436,11 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // This can be set by a cmd line param.
+      val initRnd =
+        config.initSeed match {
+          case Some(seed) => Randomizer(seed)
+          case None => Randomizer.default // This can be set by a cmd line param.
+        }
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
@@ -1573,7 +1609,11 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // This can be set by a cmd line param.
+      val initRnd =
+        config.initSeed match {
+          case Some(seed) => Randomizer(seed)
+          case None => Randomizer.default // This can be set by a cmd line param.
+        }
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
@@ -1750,7 +1790,11 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // This can be set by a cmd line param.
+      val initRnd =
+        config.initSeed match {
+          case Some(seed) => Randomizer(seed)
+          case None => Randomizer.default // This can be set by a cmd line param.
+        }
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive
@@ -1936,7 +1980,11 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
         }
       }
 
-      val initRnd = Randomizer.default // This can be set by a cmd line param.
+      val initRnd =
+        config.initSeed match {
+          case Some(seed) => Randomizer(seed)
+          case None => Randomizer.default // This can be set by a cmd line param.
+        }
       val initSeed = initRnd.seed
       val (initialSizes, afterSizesRnd) = PropCheckerAsserting.calcSizes(minSize, maxSize, initRnd)
       val maxEdges = PosZInt.ensuringValid(config.minSuccessful / 5) // Because PosInt / positive Int is always going to be positive

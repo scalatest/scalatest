@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import Suite.{mergeMap, SELECTED_TAG}
 import ArgsParser._
 import org.scalactic.Requirements._
-import org.scalatest.prop.Seed
+import org.scalatest.prop.Configuration.Seed
 
 /*
 Command line args:
