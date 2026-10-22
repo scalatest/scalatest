@@ -4404,6 +4404,105 @@ If it doesn't show up for a while, please delete this comment.
         implicitGenSamples shouldEqual namedGenSamples
       }
     }
+    "offer a numericStrings method" that {
+      "returns the default implicit generator that produces arbitrary NumericStrings" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NumericString]]
+        val namedGen = numericStrings
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a nonEmptyStrings method" that {
+      "returns the default implicit generator that produces arbitrary NonEmptyStrings" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NonEmptyString]]
+        val namedGen = nonEmptyStrings
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a nonEmptyLists method" that {
+      "returns the default implicit generator that produces arbitrary NonEmptyLists" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NonEmptyList[Int]]]
+        val namedGen = nonEmptyLists[Int]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a nonEmptyVectors method" that {
+      "returns the default implicit generator that produces arbitrary NonEmptyVectors" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NonEmptyVector[Int]]]
+        val namedGen = nonEmptyVectors[Int]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a nonEmptySets method" that {
+      "returns the default implicit generator that produces arbitrary NonEmptySets" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NonEmptySet[Int]]]
+        val namedGen = nonEmptySets[Int]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a nonEmptyMaps method" that {
+      "returns the default implicit generator that produces arbitrary NonEmptyMaps" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NonEmptyMap[Int, Int]]]
+        val namedGen = nonEmptyMaps[Int, Int]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        implicitGenEdges.map(_.value) shouldEqual namedGenEdges.map(_.value)
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples shouldEqual namedGenSamples
+      }
+    }
+    "offer a nonEmptyArrays method" that {
+      "returns the default implicit generator that produces arbitrary NonEmptyArrays" in {
+        import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+        val implicitGen = implicitly[Generator[NonEmptyArray[Int]]]
+        val namedGen = nonEmptyArrays[Int]
+        val rnd = Randomizer.default
+        val (implicitGenEdges, _) = implicitGen.initEdges(100, rnd)
+        val (namedGenEdges, _) = namedGen.initEdges(100, rnd)
+        // NonEmptyArray does not override equals, so compare the contents of the arrays instead.
+        implicitGenEdges.map(_.value.toArray.toList) shouldEqual namedGenEdges.map(_.value.toArray.toList)
+        val implicitGenSamples = samplesForGen(implicitGen, 100, rnd)
+        val namedGenSamples = samplesForGen(namedGen, 100, rnd)
+        implicitGenSamples.map(_.toArray.toList) shouldEqual namedGenSamples.map(_.toArray.toList)
+      }
+    }
     "offer a finiteFloatValues method" that {
       "returns the default implicit generator that produces arbitrary FiniteFloats" in {
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._

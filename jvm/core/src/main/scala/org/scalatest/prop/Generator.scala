@@ -19,6 +19,7 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.anyvals._
 import org.scalactic.{Bad, Good, Or}
 import scala.annotation.tailrec
+import scala.reflect.ClassTag
 import org.scalactic.source.TypeInfo
 import org.scalatest.Resources
 import CommonGenerators.first1000Primes
@@ -1915,11 +1916,10 @@ object Generator {
   //DOTTY-ONLY   */
   //DOTTY-ONLY given Generator[FiniteFloat] = finiteFloatGenerator
 
-  //DOTTY-ONLY /**
-  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[org.scalactic.opaquetypes.FiniteFloat]] values.
-  //DOTTY-ONLY   */
-  //DOTTY-ONLY given opaqueFiniteFloatGenerator: Generator[org.scalactic.opaquetypes.FiniteFloat] =
+  //DOTTY-ONLY /* Generator that produces opaquetypes.FiniteFloat independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesFiniteFloatGenerator: Generator[org.scalactic.opaquetypes.FiniteFloat] =
   //DOTTY-ONLY   finiteFloatGenerator.map(f => org.scalactic.opaquetypes.FiniteFloat.ensuringValid(f.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_FiniteFloat: Generator[org.scalactic.opaquetypes.FiniteFloat] = opaquetypesFiniteFloatGenerator
 
   /**
     * A [[Generator]] that produces Doubles, excluding infinity.
@@ -6873,4 +6873,246 @@ object Generator {
       override def shrinksForValue(valueToShrink: SortedMap[K, V]): Option[LazyListOrStream[RoseTree[SortedMap[K, V]]]] = Some(NextRoseTree(valueToShrink, SizeParam(0, 0, 0), isValid).shrinks)
     }
   //DOTTY-ONLY given givenSortedMapGenerator[K, V](using genOfTuple2KV: Generator[(K, V)], ordering: Ordering[K]): (Generator[SortedMap[K, V]] with HavingSize[SortedMap[K, V]]) = sortedMapGenerator(using genOfTuple2KV, ordering)
+
+  /**
+    * A [[Generator]] that produces [[List]]s that are guaranteed to contain at least one element.
+    *
+    * This is the basis for the [[Generator]]s of the various ''non-empty'' collection types,
+    * such as `org.scalactic.anyvals.NonEmptyList` and `org.scalactic.opaquetypes.NonEmpties.NonEmptyList`.
+    *
+    * @param genOfT a [[Generator]] that produces values of type `T`
+    * @tparam T the type of the elements of the produced [[List]]s
+    * @return a [[Generator]] that produces non-empty [[List]]s of `T`
+    */
+  private def nonEmptyListOf[T](genOfT: Generator[T]): Generator[List[T]] =
+    new Generator[List[T]] {
+
+      case class NextRoseTree(value: List[T], sizeParam: SizeParam, isValidFun: (List[T], SizeParam) => Boolean) extends RoseTree[List[T]] {
+        def shrinks: LazyListOrStream[RoseTree[List[T]]] = {
+          def resLazyListOrStream(theValue: List[T]): LazyListOrStream[RoseTree[List[T]]] = {
+            if (theValue.length <= 1)
+              LazyListOrStream.empty[RoseTree[List[T]]]
+            else {
+              val halfSize = theValue.length / 2
+              val firstHalf = theValue.take(halfSize)
+              val secondHalf = theValue.drop(halfSize)
+              // If value has an odd number of elements, the second half will be one element longer than the first half.
+              LazyListOrStream(secondHalf, firstHalf)
+                .filter(v => isValidFun(v, sizeParam))
+                .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyListOrStream(firstHalf)
+            }
+          }
+          resLazyListOrStream(value)
+        }
+      }
+
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[RoseTree[List[T]]], Randomizer) = {
+        val (firstElement, _, nextRnd) = genOfT.next(SizeParam(1, 0, 1), Nil, rnd)
+        val edges = List(List(firstElement.value), List(firstElement.value, firstElement.value))
+        (edges.take(maxLength).map(v => Rose(v)), nextRnd)
+      }
+
+      override def roseTreeOfEdge(edge: List[T], sizeParam: SizeParam, isValidFun: (List[T], SizeParam) => Boolean): RoseTree[List[T]] =
+        NextRoseTree(edge, sizeParam, isValidFun)
+
+      def nextImpl(szp: SizeParam, isValidFun: (List[T], SizeParam) => Boolean, rnd: Randomizer): (RoseTree[List[T]], Randomizer) = {
+        val (size, nextRnd) = rnd.choosePosZInt(szp.minSize, szp.maxSize)
+        // A non-empty collection must contain at least one element, no matter what size was asked for.
+        val targetSize = if (size.value < 1) 1 else size.value
+        @tailrec
+        def loop(remaining: Int, result: List[T], rnd: Randomizer): (RoseTree[List[T]], Randomizer) =
+          if (remaining <= 0)
+            (NextRoseTree(result.reverse, szp, isValidFun), rnd)
+          else {
+            val (nextRoseTreeOfT, _, nextRnd) = genOfT.next(szp, Nil, rnd)
+            loop(remaining - 1, nextRoseTreeOfT.value :: result, nextRnd)
+          }
+        loop(targetSize, Nil, nextRnd)
+      }
+
+      override def canonicals: LazyListOrStream[RoseTree[List[T]]] =
+        genOfT.canonicals.map(rt => Rose(rt.value :: Nil))
+
+      override def shrinksForValue(valueToShrink: List[T]): Option[LazyListOrStream[RoseTree[List[T]]]] =
+        Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
+    }
+
+  /**
+    * A [[Generator]] that produces [[NumericString]]s, that is, [[String]]s that contain only digit characters.
+    */
+  // SKIP-DOTTY-START
+  implicit val numericStringGenerator: Generator[NumericString] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val numericStringGenerator: Generator[NumericString] =
+    nonEmptyListOf(numericCharGenerator).mapInvertible(
+      chars => NumericString.ensuringValid(chars.map(_.value).mkString),
+      numericString => numericString.value.toList.map(c => NumericChar.ensuringValid(c))
+    )
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NumericString]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NumericString] = numericStringGenerator
+
+  /**
+    * A [[Generator]] that produces [[NonEmptyString]]s, that is, [[String]]s that contain at least one character.
+    */
+  // SKIP-DOTTY-START
+  implicit val nonEmptyStringGenerator: Generator[NonEmptyString] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY val nonEmptyStringGenerator: Generator[NonEmptyString] =
+    nonEmptyListOf(charGenerator).mapInvertible(
+      chars => NonEmptyString(chars.head, chars.tail: _*),
+      nonEmptyString => nonEmptyString.theString.toList
+    )
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NonEmptyString]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given Generator[NonEmptyString] = nonEmptyStringGenerator
+
+  /**
+    * A [[Generator]] that produces [[NonEmptyList]]s, that is, [[List]]s that contain at least one element.
+    *
+    * @param genOfT a [[Generator]] that produces values of type `T`
+    * @tparam T the type of the elements of the produced [[NonEmptyList]]s
+    * @return a [[Generator]] that produces non-empty [[List]]s of `T`
+    */
+  // SKIP-DOTTY-START
+  implicit def nonEmptyListGenerator[T](implicit genOfT: Generator[T]): Generator[NonEmptyList[T]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def nonEmptyListGenerator[T](using genOfT: Generator[T]): Generator[NonEmptyList[T]] =
+    nonEmptyListOf(genOfT).mapInvertible(
+      list => NonEmptyList(list.head, list.tail: _*),
+      nonEmptyList => nonEmptyList.toList
+    )
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NonEmptyList]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given givenNonEmptyListGenerator[T](using genOfT: Generator[T]): Generator[NonEmptyList[T]] = nonEmptyListGenerator(using genOfT)
+
+  /**
+    * A [[Generator]] that produces [[NonEmptyVector]]s, that is, [[Vector]]s that contain at least one element.
+    *
+    * @param genOfT a [[Generator]] that produces values of type `T`
+    * @tparam T the type of the elements of the produced [[NonEmptyVector]]s
+    * @return a [[Generator]] that produces non-empty [[Vector]]s of `T`
+    */
+  // SKIP-DOTTY-START
+  implicit def nonEmptyVectorGenerator[T](implicit genOfT: Generator[T]): Generator[NonEmptyVector[T]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def nonEmptyVectorGenerator[T](using genOfT: Generator[T]): Generator[NonEmptyVector[T]] =
+    nonEmptyListOf(genOfT).mapInvertible(
+      list => NonEmptyVector(list.head, list.tail: _*),
+      nonEmptyVector => nonEmptyVector.toVector.toList
+    )
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NonEmptyVector]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given givenNonEmptyVectorGenerator[T](using genOfT: Generator[T]): Generator[NonEmptyVector[T]] = nonEmptyVectorGenerator(using genOfT)
+
+  /**
+    * A [[Generator]] that produces [[NonEmptySet]]s, that is, [[Set]]s that contain at least one element.
+    *
+    * @param genOfT a [[Generator]] that produces values of type `T`
+    * @tparam T the type of the elements of the produced [[NonEmptySet]]s
+    * @return a [[Generator]] that produces non-empty [[Set]]s of `T`
+    */
+  // SKIP-DOTTY-START
+  implicit def nonEmptySetGenerator[T](implicit genOfT: Generator[T]): Generator[NonEmptySet[T]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def nonEmptySetGenerator[T](using genOfT: Generator[T]): Generator[NonEmptySet[T]] =
+    nonEmptyListOf(genOfT).mapInvertible(
+      list => NonEmptySet(list.head, list.tail: _*),
+      nonEmptySet => nonEmptySet.toSet.toList
+    )
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NonEmptySet]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given givenNonEmptySetGenerator[T](using genOfT: Generator[T]): Generator[NonEmptySet[T]] = nonEmptySetGenerator(using genOfT)
+
+  /**
+    * A [[Generator]] that produces [[NonEmptyMap]]s, that is, [[Map]]s that contain at least one entry.
+    *
+    * @param genOfTuple2KV a [[Generator]] that produces Tuples of key and value types
+    * @tparam K the type of the keys of the produced [[NonEmptyMap]]s
+    * @tparam V the type of the values of the produced [[NonEmptyMap]]s
+    * @return a [[Generator]] that produces non-empty [[Map]]s from `K` to `V`
+    */
+  // SKIP-DOTTY-START
+  implicit def nonEmptyMapGenerator[K, V](implicit genOfTuple2KV: Generator[(K, V)]): Generator[NonEmptyMap[K, V]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def nonEmptyMapGenerator[K, V](using genOfTuple2KV: Generator[(K, V)]): Generator[NonEmptyMap[K, V]] =
+    nonEmptyListOf(genOfTuple2KV).mapInvertible(
+      list => NonEmptyMap(list.head, list.tail: _*),
+      nonEmptyMap => nonEmptyMap.toMap.toList
+    )
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NonEmptyMap]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given givenNonEmptyMapGenerator[K, V](using genOfTuple2KV: Generator[(K, V)]): Generator[NonEmptyMap[K, V]] = nonEmptyMapGenerator(using genOfTuple2KV)
+
+  /**
+    * A [[Generator]] that produces [[NonEmptyArray]]s, that is, [[Array]]s that contain at least one element.
+    *
+    * @param genOfT a [[Generator]] that produces values of type `T`
+    * @param classTag a [[ClassTag]] for the element type
+    * @tparam T the type of the elements of the produced [[NonEmptyArray]]s
+    * @return a [[Generator]] that produces non-empty [[Array]]s of `T`
+    */
+  // SKIP-DOTTY-START
+  implicit def nonEmptyArrayGenerator[T](implicit genOfT: Generator[T], classTag: ClassTag[T]): Generator[NonEmptyArray[T]] =
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def nonEmptyArrayGenerator[T](using genOfT: Generator[T], classTag: ClassTag[T]): Generator[NonEmptyArray[T]] =
+    nonEmptyListOf(genOfT).mapInvertible(
+      list => NonEmptyArray(list.head, list.tail: _*),
+      nonEmptyArray => nonEmptyArray.toArray.toList
+    )
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY   * A given instance of [[Generator]] that produces [[NonEmptyArray]] values.
+  //DOTTY-ONLY   */
+  //DOTTY-ONLY given givenNonEmptyArrayGenerator[T](using genOfT: Generator[T], classTag: ClassTag[T]): Generator[NonEmptyArray[T]] = nonEmptyArrayGenerator(using genOfT, classTag)
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.Numerics.NumericString independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNumericStringGenerator: Generator[org.scalactic.opaquetypes.Numerics.NumericString] =
+  //DOTTY-ONLY   numericStringGenerator.map(s => org.scalactic.opaquetypes.Numerics.NumericString.ensuringValid(s.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NumericString: Generator[org.scalactic.opaquetypes.Numerics.NumericString] = opaquetypesNumericStringGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NonEmpties.NonEmptyString independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNonEmptyStringGenerator: Generator[org.scalactic.opaquetypes.NonEmpties.NonEmptyString] =
+  //DOTTY-ONLY   nonEmptyStringGenerator.map(s => org.scalactic.opaquetypes.NonEmpties.NonEmptyString.ensuringValid(s.theString))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NonEmptyString: Generator[org.scalactic.opaquetypes.NonEmpties.NonEmptyString] = opaquetypesNonEmptyStringGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NonEmpties.NonEmptyList independently of anyvals. */
+  //DOTTY-ONLY def opaquetypesNonEmptyListGenerator[T](using genOfT: Generator[T]): Generator[org.scalactic.opaquetypes.NonEmpties.NonEmptyList[T]] =
+  //DOTTY-ONLY   nonEmptyListGenerator(using genOfT).map(l => org.scalactic.opaquetypes.NonEmpties.NonEmptyList.ensuringValid(l.toList))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NonEmptyList[T](using genOfT: Generator[T]): Generator[org.scalactic.opaquetypes.NonEmpties.NonEmptyList[T]] = opaquetypesNonEmptyListGenerator(using genOfT)
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NonEmpties.NonEmptyVector independently of anyvals. */
+  //DOTTY-ONLY def opaquetypesNonEmptyVectorGenerator[T](using genOfT: Generator[T]): Generator[org.scalactic.opaquetypes.NonEmpties.NonEmptyVector[T]] =
+  //DOTTY-ONLY   nonEmptyVectorGenerator(using genOfT).map(v => org.scalactic.opaquetypes.NonEmpties.NonEmptyVector.ensuringValid(v.toVector))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NonEmptyVector[T](using genOfT: Generator[T]): Generator[org.scalactic.opaquetypes.NonEmpties.NonEmptyVector[T]] = opaquetypesNonEmptyVectorGenerator(using genOfT)
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NonEmpties.NonEmptySet independently of anyvals. */
+  //DOTTY-ONLY def opaquetypesNonEmptySetGenerator[T](using genOfT: Generator[T]): Generator[org.scalactic.opaquetypes.NonEmpties.NonEmptySet[T]] =
+  //DOTTY-ONLY   nonEmptySetGenerator(using genOfT).map(s => org.scalactic.opaquetypes.NonEmpties.NonEmptySet.ensuringValid(s.toSet))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NonEmptySet[T](using genOfT: Generator[T]): Generator[org.scalactic.opaquetypes.NonEmpties.NonEmptySet[T]] = opaquetypesNonEmptySetGenerator(using genOfT)
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NonEmpties.NonEmptyMap independently of anyvals. */
+  //DOTTY-ONLY def opaquetypesNonEmptyMapGenerator[K, V](using genOfTuple2KV: Generator[(K, V)]): Generator[org.scalactic.opaquetypes.NonEmpties.NonEmptyMap[K, V]] =
+  //DOTTY-ONLY   nonEmptyMapGenerator(using genOfTuple2KV).map(m => org.scalactic.opaquetypes.NonEmpties.NonEmptyMap.ensuringValid(m.toMap))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NonEmptyMap[K, V](using genOfTuple2KV: Generator[(K, V)]): Generator[org.scalactic.opaquetypes.NonEmpties.NonEmptyMap[K, V]] = opaquetypesNonEmptyMapGenerator(using genOfTuple2KV)
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NonEmpties.NonEmptyArray independently of anyvals. */
+  //DOTTY-ONLY def opaquetypesNonEmptyArrayGenerator[T](using genOfT: Generator[T], classTag: ClassTag[T]): Generator[org.scalactic.opaquetypes.NonEmpties.NonEmptyArray[T]] =
+  //DOTTY-ONLY   nonEmptyArrayGenerator(using genOfT, classTag).map(a => org.scalactic.opaquetypes.NonEmpties.NonEmptyArray.ensuringValid(a.toArray))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NonEmptyArray[T](using genOfT: Generator[T], classTag: ClassTag[T]): Generator[org.scalactic.opaquetypes.NonEmpties.NonEmptyArray[T]] = opaquetypesNonEmptyArrayGenerator(using genOfT, classTag)
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NonZeroFloats.NonZeroFiniteFloat independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNonZeroFiniteFloatGenerator: Generator[org.scalactic.opaquetypes.NonZeroFloats.NonZeroFiniteFloat] =
+  //DOTTY-ONLY   nonZeroFiniteFloatGenerator.map(f => org.scalactic.opaquetypes.NonZeroFloats.NonZeroFiniteFloat.ensuringValid(f.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NonZeroFiniteFloat: Generator[org.scalactic.opaquetypes.NonZeroFloats.NonZeroFiniteFloat] = opaquetypesNonZeroFiniteFloatGenerator
+
+  //DOTTY-ONLY /* Generator that produces opaquetypes.NonZeroDoubles.NonZeroFiniteDouble independently of anyvals. */
+  //DOTTY-ONLY val opaquetypesNonZeroFiniteDoubleGenerator: Generator[org.scalactic.opaquetypes.NonZeroDoubles.NonZeroFiniteDouble] =
+  //DOTTY-ONLY   nonZeroFiniteDoubleGenerator.map(d => org.scalactic.opaquetypes.NonZeroDoubles.NonZeroFiniteDouble.ensuringValid(d.value))
+  //DOTTY-ONLY given given_Generator_opaquetypes_NonZeroFiniteDouble: Generator[org.scalactic.opaquetypes.NonZeroDoubles.NonZeroFiniteDouble] = opaquetypesNonZeroFiniteDoubleGenerator
 }

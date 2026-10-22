@@ -4027,6 +4027,268 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
     }
 
+    describe("for NumericString") {
+      it("should produce only non-empty numeric strings") {
+        val gen = Generator.numericStringGenerator
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = gen.next(SizeParam(1, 0, 1), List.empty, rd)
+          rs.value.value.length should be > 0
+          all(rs.value.value.toList) should (be >= '0' and be <= '9')
+          newRd
+        }
+      }
+
+      it("should shrink NumericStrings") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NumericString]) =>
+          val shrinks: LazyListOrStream[NumericString] = shrinkRoseTree.shrinks.map(_.value)
+          all(shrinks.toList.flatMap(_.value.toList)) should (be >= '0' and be <= '9')
+          if (shrinkRoseTree.value.value.length > 1)
+            shrinks should not be empty
+          else
+            shrinks shouldBe empty
+        }
+      }
+    }
+
+    describe("for NonEmptyString") {
+      it("should produce only non-empty strings") {
+        val gen = Generator.nonEmptyStringGenerator
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = gen.next(SizeParam(1, 0, 1), List.empty, rd)
+          rs.value.theString.length should be > 0
+          newRd
+        }
+      }
+
+      it("should shrink NonEmptyStrings") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NonEmptyString]) =>
+          val shrinks: LazyListOrStream[NonEmptyString] = shrinkRoseTree.shrinks.map(_.value)
+          all(shrinks.toList.map(_.theString.length)) should be > 0
+          if (shrinkRoseTree.value.theString.length > 1)
+            shrinks should not be empty
+          else
+            shrinks shouldBe empty
+        }
+      }
+    }
+
+    describe("for NonEmptyList") {
+      it("should produce only non-empty lists") {
+        val gen = Generator.nonEmptyListGenerator[Int]
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = gen.next(SizeParam(1, 0, 1), List.empty, rd)
+          rs.value.toList.length should be > 0
+          newRd
+        }
+      }
+
+      it("should shrink NonEmptyLists") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NonEmptyList[Int]]) =>
+          val shrinks: LazyListOrStream[NonEmptyList[Int]] = shrinkRoseTree.shrinks.map(_.value)
+          all(shrinks.toList.map(_.toList.length)) should be > 0
+          if (shrinkRoseTree.value.toList.length > 1)
+            shrinks should not be empty
+          else
+            shrinks shouldBe empty
+        }
+      }
+    }
+
+    describe("for NonEmptyVector") {
+      it("should produce only non-empty vectors") {
+        val gen = Generator.nonEmptyVectorGenerator[Int]
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = gen.next(SizeParam(1, 0, 1), List.empty, rd)
+          rs.value.toVector.length should be > 0
+          newRd
+        }
+      }
+
+      it("should shrink NonEmptyVectors") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NonEmptyVector[Int]]) =>
+          val shrinks: LazyListOrStream[NonEmptyVector[Int]] = shrinkRoseTree.shrinks.map(_.value)
+          all(shrinks.toList.map(_.toVector.length)) should be > 0
+          if (shrinkRoseTree.value.toVector.length > 1)
+            shrinks should not be empty
+          else
+            shrinks shouldBe empty
+        }
+      }
+    }
+
+    describe("for NonEmptySet") {
+      it("should produce only non-empty sets") {
+        val gen = Generator.nonEmptySetGenerator[Int]
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = gen.next(SizeParam(1, 0, 1), List.empty, rd)
+          rs.value.toSet.size should be > 0
+          newRd
+        }
+      }
+
+      it("should shrink NonEmptySets") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NonEmptySet[Int]]) =>
+          val shrinks: LazyListOrStream[NonEmptySet[Int]] = shrinkRoseTree.shrinks.map(_.value)
+          all(shrinks.toList.map(_.toSet.size)) should be > 0
+          if (shrinkRoseTree.value.toSet.size > 1)
+            shrinks should not be empty
+          else
+            shrinks shouldBe empty
+        }
+      }
+    }
+
+    describe("for NonEmptyMap") {
+      it("should produce only non-empty maps") {
+        val gen = Generator.nonEmptyMapGenerator[Int, Int]
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = gen.next(SizeParam(1, 0, 1), List.empty, rd)
+          rs.value.toMap.size should be > 0
+          newRd
+        }
+      }
+
+      it("should shrink NonEmptyMaps") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NonEmptyMap[Int, Int]]) =>
+          val shrinks: LazyListOrStream[NonEmptyMap[Int, Int]] = shrinkRoseTree.shrinks.map(_.value)
+          all(shrinks.toList.map(_.toMap.size)) should be > 0
+          if (shrinkRoseTree.value.toMap.size > 1)
+            shrinks should not be empty
+          else
+            shrinks shouldBe empty
+        }
+      }
+    }
+
+    describe("for NonEmptyArray") {
+      it("should produce only non-empty arrays") {
+        val gen = Generator.nonEmptyArrayGenerator[Int]
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = gen.next(SizeParam(1, 0, 1), List.empty, rd)
+          rs.value.toArray.length should be > 0
+          newRd
+        }
+      }
+
+      it("should shrink NonEmptyArrays") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NonEmptyArray[Int]]) =>
+          val shrinks: LazyListOrStream[NonEmptyArray[Int]] = shrinkRoseTree.shrinks.map(_.value)
+          all(shrinks.toList.map(_.toArray.length)) should be > 0
+          if (shrinkRoseTree.value.toArray.length > 1)
+            shrinks should not be empty
+          else
+            shrinks shouldBe empty
+        }
+      }
+    }
+
+    //DOTTY-ONLY describe("for opaquetypes NumericString") {
+    //DOTTY-ONLY   it("should produce only non-empty numeric strings") {
+    //DOTTY-ONLY     val gen = Generator.opaquetypesNumericStringGenerator
+    //DOTTY-ONLY     (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+    //DOTTY-ONLY       val (rs, _, newRd) = gen.next(SizeParam(1, 0, 1), List.empty, rd)
+    //DOTTY-ONLY       rs.value.value.length should be > 0
+    //DOTTY-ONLY       all(rs.value.value.toList) should (be >= '0' and be <= '9')
+    //DOTTY-ONLY       newRd
+    //DOTTY-ONLY     }
+    //DOTTY-ONLY   }
+    //DOTTY-ONLY }
+    //
+    //DOTTY-ONLY describe("for opaquetypes NonEmptyString") {
+    //DOTTY-ONLY   it("should produce only non-empty strings") {
+    //DOTTY-ONLY     val gen = Generator.opaquetypesNonEmptyStringGenerator
+    //DOTTY-ONLY     (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+    //DOTTY-ONLY       val (rs, _, newRd) = gen.next(SizeParam(1, 0, 1), List.empty, rd)
+    //DOTTY-ONLY       rs.value.length should be > 0
+    //DOTTY-ONLY       newRd
+    //DOTTY-ONLY     }
+    //DOTTY-ONLY   }
+    //DOTTY-ONLY }
+    //
+    //DOTTY-ONLY describe("for opaquetypes NonEmptyList") {
+    //DOTTY-ONLY   it("should produce only non-empty lists") {
+    //DOTTY-ONLY     val gen = Generator.opaquetypesNonEmptyListGenerator[Int]
+    //DOTTY-ONLY     (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+    //DOTTY-ONLY       val (rs, _, newRd) = gen.next(SizeParam(1, 0, 1), List.empty, rd)
+    //DOTTY-ONLY       rs.value.length should be > 0
+    //DOTTY-ONLY       newRd
+    //DOTTY-ONLY     }
+    //DOTTY-ONLY   }
+    //DOTTY-ONLY }
+    //
+    //DOTTY-ONLY describe("for opaquetypes NonEmptyVector") {
+    //DOTTY-ONLY   it("should produce only non-empty vectors") {
+    //DOTTY-ONLY     val gen = Generator.opaquetypesNonEmptyVectorGenerator[Int]
+    //DOTTY-ONLY     (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+    //DOTTY-ONLY       val (rs, _, newRd) = gen.next(SizeParam(1, 0, 1), List.empty, rd)
+    //DOTTY-ONLY       rs.value.length should be > 0
+    //DOTTY-ONLY       newRd
+    //DOTTY-ONLY     }
+    //DOTTY-ONLY   }
+    //DOTTY-ONLY }
+    //
+    //DOTTY-ONLY describe("for opaquetypes NonEmptySet") {
+    //DOTTY-ONLY   it("should produce only non-empty sets") {
+    //DOTTY-ONLY     val gen = Generator.opaquetypesNonEmptySetGenerator[Int]
+    //DOTTY-ONLY     (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+    //DOTTY-ONLY       val (rs, _, newRd) = gen.next(SizeParam(1, 0, 1), List.empty, rd)
+    //DOTTY-ONLY       rs.value.size should be > 0
+    //DOTTY-ONLY       newRd
+    //DOTTY-ONLY     }
+    //DOTTY-ONLY   }
+    //DOTTY-ONLY }
+    //
+    //DOTTY-ONLY describe("for opaquetypes NonEmptyMap") {
+    //DOTTY-ONLY   it("should produce only non-empty maps") {
+    //DOTTY-ONLY     val gen = Generator.opaquetypesNonEmptyMapGenerator[Int, Int]
+    //DOTTY-ONLY     (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+    //DOTTY-ONLY       val (rs, _, newRd) = gen.next(SizeParam(1, 0, 1), List.empty, rd)
+    //DOTTY-ONLY       rs.value.size should be > 0
+    //DOTTY-ONLY       newRd
+    //DOTTY-ONLY     }
+    //DOTTY-ONLY   }
+    //DOTTY-ONLY }
+    //
+    //DOTTY-ONLY describe("for opaquetypes NonEmptyArray") {
+    //DOTTY-ONLY   it("should produce only non-empty arrays") {
+    //DOTTY-ONLY     val gen = Generator.opaquetypesNonEmptyArrayGenerator[Int]
+    //DOTTY-ONLY     (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+    //DOTTY-ONLY       val (rs, _, newRd) = gen.next(SizeParam(1, 0, 1), List.empty, rd)
+    //DOTTY-ONLY       rs.value.length should be > 0
+    //DOTTY-ONLY       newRd
+    //DOTTY-ONLY     }
+    //DOTTY-ONLY   }
+    //DOTTY-ONLY }
+    //
+    //DOTTY-ONLY describe("for opaquetypes NonZeroFiniteFloat") {
+    //DOTTY-ONLY   it("should produce only non-zero finite floats") {
+    //DOTTY-ONLY     val gen = Generator.opaquetypesNonZeroFiniteFloatGenerator
+    //DOTTY-ONLY     (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+    //DOTTY-ONLY       val (rs, _, newRd) = gen.next(SizeParam(1, 0, 1), List.empty, rd)
+    //DOTTY-ONLY       rs.value.value should not be 0.0f
+    //DOTTY-ONLY       newRd
+    //DOTTY-ONLY     }
+    //DOTTY-ONLY   }
+    //DOTTY-ONLY }
+    //
+    //DOTTY-ONLY describe("for opaquetypes NonZeroFiniteDouble") {
+    //DOTTY-ONLY   it("should produce only non-zero finite doubles") {
+    //DOTTY-ONLY     val gen = Generator.opaquetypesNonZeroFiniteDoubleGenerator
+    //DOTTY-ONLY     (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+    //DOTTY-ONLY       val (rs, _, newRd) = gen.next(SizeParam(1, 0, 1), List.empty, rd)
+    //DOTTY-ONLY       rs.value.value should not be 0.0
+    //DOTTY-ONLY       newRd
+    //DOTTY-ONLY     }
+    //DOTTY-ONLY   }
+    //DOTTY-ONLY }
+
     describe("for Strings") {
       it("should offer a String generator that returns a string whose length equals the passed size") {
 
