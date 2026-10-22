@@ -19,6 +19,7 @@ import org.scalactic._
 import org.scalactic.anyvals._
 
 import scala.annotation.tailrec
+import scala.reflect.ClassTag
 import org.scalactic.source.TypeInfo
 import org.scalactic.Requirements._
 import org.scalatest.prop.Generator.function1Generator
@@ -1296,6 +1297,20 @@ trait CommonGenerators {
   val numericChars: Generator[NumericChar] = Generator.numericCharGenerator
 
   /**
+    * A [[Generator]] that produces [[NumericString]] values.
+    *
+    * @group Common
+    */
+  val numericStrings: Generator[NumericString] = Generator.numericStringGenerator
+
+  /**
+    * A [[Generator]] that produces [[NonEmptyString]] values.
+    *
+    * @group Common
+    */
+  val nonEmptyStrings: Generator[NonEmptyString] = Generator.nonEmptyStringGenerator
+
+  /**
     * A [[Generator]] that produces positive [[Int]] values, not including zero.
     *
     * @group Values
@@ -1943,6 +1958,90 @@ trait CommonGenerators {
   def sortedMaps[K, V](implicit genOfTupleKV: Generator[(K, V)], ordering: Ordering[K]): Generator[SortedMap[K, V]] with HavingSize[SortedMap[K, V]] = Generator.sortedMapGenerator
   // SKIP-DOTTY-END
   //DOTTY-ONLY def sortedMaps[K, V](using genOfTupleKV: Generator[(K, V)], ordering: Ordering[K]): Generator[SortedMap[K, V]] with HavingSize[SortedMap[K, V]] = Generator.sortedMapGenerator
+
+  /**
+    * Given a [[Generator]] that produces values of type `T`, this creates one for a [[NonEmptyList]] of `T`.
+    *
+    * Unlike [[lists]], the [[NonEmptyList]]s produced by this [[Generator]] always contain at least one element.
+    *
+    * @param genOfT a [[Generator]] that produces values of type `T`
+    * @tparam T the type to produce
+    * @return a [[Generator]] that produces `NonEmptyList[T]`.
+    *
+    * @group Collections
+    */
+  // SKIP-DOTTY-START  
+  def nonEmptyLists[T](implicit genOfT: Generator[T]): Generator[NonEmptyList[T]] = Generator.nonEmptyListGenerator[T]
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def nonEmptyLists[T](using genOfT: Generator[T]): Generator[NonEmptyList[T]] = Generator.nonEmptyListGenerator[T]
+
+  /**
+    * Given a [[Generator]] that produces values of type `T`, this creates one for a [[NonEmptyVector]] of `T`.
+    *
+    * Unlike [[vectors]], the [[NonEmptyVector]]s produced by this [[Generator]] always contain at least one element.
+    *
+    * @param genOfT a [[Generator]] that produces values of type `T`
+    * @tparam T the type to produce
+    * @return a [[Generator]] that produces `NonEmptyVector[T]`.
+    *
+    * @group Collections
+    */
+  // SKIP-DOTTY-START  
+  def nonEmptyVectors[T](implicit genOfT: Generator[T]): Generator[NonEmptyVector[T]] = Generator.nonEmptyVectorGenerator[T]
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def nonEmptyVectors[T](using genOfT: Generator[T]): Generator[NonEmptyVector[T]] = Generator.nonEmptyVectorGenerator[T]
+
+  /**
+    * Given a [[Generator]] that produces values of type `T`, this creates one for a [[NonEmptySet]] of `T`.
+    *
+    * Unlike [[sets]], the [[NonEmptySet]]s produced by this [[Generator]] always contain at least one element.
+    *
+    * @param genOfT a [[Generator]] that produces values of type `T`
+    * @tparam T the type to produce
+    * @return a [[Generator]] that produces `NonEmptySet[T]`.
+    *
+    * @group Collections
+    */
+  // SKIP-DOTTY-START  
+  def nonEmptySets[T](implicit genOfT: Generator[T]): Generator[NonEmptySet[T]] = Generator.nonEmptySetGenerator[T]
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def nonEmptySets[T](using genOfT: Generator[T]): Generator[NonEmptySet[T]] = Generator.nonEmptySetGenerator[T]
+
+  /**
+    * Given a [[Generator]] that produces Tuples of key/value pairs, this gives you one that produces [[NonEmptyMap]]s
+    * with those pairs.
+    *
+    * Unlike [[maps]], the [[NonEmptyMap]]s produced by this [[Generator]] always contain at least one entry.
+    *
+    * @param genOfTupleKV a [[Generator]] that produces Tuples of [[K]] and [[V]]
+    * @tparam K the type of the keys for the [[NonEmptyMap]]
+    * @tparam V the type of the values for the [[NonEmptyMap]]
+    * @return a [[Generator]] of [[NonEmptyMap]]s from [[K]] to [[V]]
+    *
+    * @group Collections
+    */
+  // SKIP-DOTTY-START  
+  def nonEmptyMaps[K, V](implicit genOfTupleKV: Generator[(K, V)]): Generator[NonEmptyMap[K, V]] = Generator.nonEmptyMapGenerator[K, V]
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def nonEmptyMaps[K, V](using genOfTupleKV: Generator[(K, V)]): Generator[NonEmptyMap[K, V]] = Generator.nonEmptyMapGenerator[K, V]
+
+  /**
+    * Given a [[Generator]] that produces values of type `T`, this creates one for a [[NonEmptyArray]] of `T`.
+    *
+    * Unlike an ordinary [[Array]], the [[NonEmptyArray]]s produced by this [[Generator]] always contain at least
+    * one element.
+    *
+    * @param genOfT a [[Generator]] that produces values of type `T`
+    * @param classTag a [[ClassTag]] for the element type
+    * @tparam T the type to produce
+    * @return a [[Generator]] that produces `NonEmptyArray[T]`.
+    *
+    * @group Collections
+    */
+  // SKIP-DOTTY-START  
+  def nonEmptyArrays[T](implicit genOfT: Generator[T], classTag: ClassTag[T]): Generator[NonEmptyArray[T]] = Generator.nonEmptyArrayGenerator[T]
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY def nonEmptyArrays[T](using genOfT: Generator[T], classTag: ClassTag[T]): Generator[NonEmptyArray[T]] = Generator.nonEmptyArrayGenerator[T]
 
   /**
     * Given a [[Generator]] that produces values of type [[A]], this returns one that produces ''functions'' that return
