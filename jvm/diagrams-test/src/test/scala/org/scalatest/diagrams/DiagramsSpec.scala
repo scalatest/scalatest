@@ -2182,6 +2182,19 @@ class DiagramsSpec extends AnyFunSpec with Matchers with Diagrams {
         e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
       }
 
+      it("should include function values passed as operands in the diagram when is used to check f == g") {
+        val f: Int => Int = _ + 1
+        val g: Int => Int = _ + 2
+        val e = intercept[TestFailedException] {
+          assert(f == g)
+        }
+        val message = e.message.get
+        message should include ("assert(f == g)")
+        message should include (f.toString)
+        message should include (g.toString)
+        message should include ("false")
+      }
+
       it("should do nothing when is used to check l1.exists(_ == 3)") {
         assert(l1.exists(_ == 3))
       }

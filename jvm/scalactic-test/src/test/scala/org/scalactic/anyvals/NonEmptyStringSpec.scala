@@ -1238,7 +1238,13 @@ class NonEmptyStringSpec extends UnitSpec {
   }
   it should "have an updated method" in {
     NonEmptyString("1").updated(0, '2') shouldBe NonEmptyString("2")
-    an [IndexOutOfBoundsException] should be thrownBy { NonEmptyString("1").updated(1, '2') }
+    // SKIP-SCALATESTJS-START
+    an [IndexOutOfBoundsException] should be thrownBy { // In Scala.js this throws org.scalajs.linker.runtime.UndefinedBehaviorError
+      NonEmptyString("1").updated(1, '2')
+    }
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val ubError = the [Throwable] thrownBy { NonEmptyString("1").updated(1, '2') }
+    //SCALATESTJS-ONLY ubError.getClass.getName shouldBe "org.scalajs.linker.runtime.UndefinedBehaviorError"
     NonEmptyString("111").updated(1, '2') shouldBe NonEmptyString("121")
     NonEmptyString("111").updated(2, '2') shouldBe NonEmptyString("112")
     NonEmptyString("111").updated(0, '2') shouldBe NonEmptyString("211")
