@@ -398,7 +398,9 @@ object Configuration extends Configuration {
     private[scalatest] val configuredRef: AtomicReference[Option[Long]] = new AtomicReference(None)
 
     /**
-     * Creates a new Seed using default approach, which is initialized based on the current time.
+     * Creates a new Seed using the default approach: if a seed has been configured (for example, via the
+     * <code>-S</code> command line argument of the test runner), that value is used; otherwise the seed is
+     * initialized based on the current time.
      *
      * This should not be considered a strong source of seed for randomness -- in cases where high entropy really
      * matters, it's a bit mediocre -- but for general purposes it's typically good enough.
