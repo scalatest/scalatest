@@ -23,7 +23,7 @@ import ArgsParser._
 import scala.scalajs.reflect.Reflect
 
 import scala.compat.Platform
-import org.scalatest.prop.Seed
+import org.scalatest.prop.Configuration.Seed
 
 class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClassLoader: ClassLoader, notifyServer: String => Unit) extends Runner {
 

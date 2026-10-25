@@ -39,7 +39,7 @@ import Suite.formatterForSuiteStarting
 import Suite.mergeMap
 import Suite.getSuiteClassName
 // import org.scalatest.prop.Randomizer
-import org.scalatest.prop.Seed
+import org.scalatest.prop.Configuration.Seed
 
 
 /**

@@ -43,5 +43,33 @@ class ConfigurationSpec extends AnyFunSpec with Matchers with GeneratorDrivenPro
         Configuration.Parameter(PosInt(5), PosZDouble(0.5), PosZInt.MaxValue, PosZInt(1), PosInt(1))
       }
     }
+
+    it("should accept initSeed") {
+      val param = Configuration.Parameter(PosInt(10), PosZDouble(5.0), PosZInt(0), PosZInt(100), PosInt(1), Some(123L))
+      param.initSeed should be (Some(123L))
+    }
+
+  describe("Configuration.getParameter") {
+    it("should accept Seed config param") {
+      val param = Configuration.getParameter(Seq(Configuration.Seed(42L)), Configuration.PropertyCheckConfiguration())
+      param.initSeed should be (Some(42L))
+    }
+
+    it("should accept initSeed from PropertyCheckConfiguration") {
+      val param = Configuration.getParameter(Seq(), Configuration.PropertyCheckConfiguration(initSeed = Some(123L)))
+      param.initSeed should be (Some(123L))
+    }
+
+    it("should give precedence to config param over configuration") {
+      val param = Configuration.getParameter(Seq(Configuration.Seed(99L)), Configuration.PropertyCheckConfiguration(initSeed = Some(123L)))
+      param.initSeed should be (Some(99L))
+    }
+
+    it("should throw if more than one Seed passed") {
+      intercept[IllegalArgumentException] {
+        Configuration.getParameter(Seq(Configuration.Seed(1L), Configuration.Seed(2L)), Configuration.PropertyCheckConfiguration())
+      }
+    }
   }
+}
 }
