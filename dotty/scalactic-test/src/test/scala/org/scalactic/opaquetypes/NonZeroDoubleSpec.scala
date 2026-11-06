@@ -3,7 +3,7 @@ package org.scalactic.opaquetypes
 import org.scalactic.Equality
 import org.scalatest._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
-import scala.util.Try
+import scala.util.{Try, Success, Failure}
 
 import org.scalactic.opaquetypes.NonZeroDoubles.NonZeroDouble
 import org.scalactic.{Pass, Fail}
@@ -535,6 +535,240 @@ class NonZeroDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers
              
     }
 
+    describe("from") {
+      it("should return Some(NonZeroDouble) for non-zero, non-NaN Double values") {
+        NonZeroDouble.from(1.0).map(_.value) shouldBe Some(1.0)
+        NonZeroDouble.from(-1.0).map(_.value) shouldBe Some(-1.0)
+        NonZeroDouble.from(Double.MinPositiveValue).map(_.value) shouldBe Some(Double.MinPositiveValue)
+        NonZeroDouble.from(Double.PositiveInfinity).map(_.value) shouldBe Some(Double.PositiveInfinity)
+        NonZeroDouble.from(Double.NegativeInfinity).map(_.value) shouldBe Some(Double.NegativeInfinity)
+      }
+      it("should return None for zero and NaN") {
+        NonZeroDouble.from(0.0) shouldBe None
+        NonZeroDouble.from(-0.0) shouldBe None
+        NonZeroDouble.from(Double.NaN) shouldBe None
+      }
+    }
+
+    describe("ensuringValid") {
+      it("should return the NonZeroDouble for values that are non-zero and not NaN") {
+        NonZeroDouble.ensuringValid(1.0).value shouldBe 1.0
+        NonZeroDouble.ensuringValid(-1.0).value shouldBe -1.0
+        NonZeroDouble.ensuringValid(Double.MinPositiveValue).value shouldEqual Double.MinPositiveValue
+        NonZeroDouble.ensuringValid(Double.PositiveInfinity).value shouldEqual Double.PositiveInfinity
+        NonZeroDouble.ensuringValid(Double.NegativeInfinity).value shouldEqual Double.NegativeInfinity
+      }
+      it("should throw AssertionError for zero and NaN") {
+        an[AssertionError] should be thrownBy NonZeroDouble.ensuringValid(0.0)
+        an[AssertionError] should be thrownBy NonZeroDouble.ensuringValid(-0.0)
+        an[AssertionError] should be thrownBy NonZeroDouble.ensuringValid(Double.NaN)
+      }
+    }
+
+    describe("isValid") {
+      it("should return true for non-zero, non-NaN values") {
+        NonZeroDouble.isValid(1.0) shouldBe true
+        NonZeroDouble.isValid(-1.0) shouldBe true
+        NonZeroDouble.isValid(Double.MinPositiveValue) shouldBe true
+        NonZeroDouble.isValid(Double.PositiveInfinity) shouldBe true
+        NonZeroDouble.isValid(Double.NegativeInfinity) shouldBe true
+      }
+      it("should return false for zero and NaN") {
+        NonZeroDouble.isValid(0.0) shouldBe false
+        NonZeroDouble.isValid(-0.0) shouldBe false
+        NonZeroDouble.isValid(Double.NaN) shouldBe false
+      }
+    }
+
+    describe("tryingValid") {
+      it("should return Success for valid values") {
+        NonZeroDouble.tryingValid(42.0).get.value shouldBe 42.0
+        NonZeroDouble.tryingValid(Double.PositiveInfinity).get.value shouldEqual Double.PositiveInfinity
+      }
+      it("should return Failure for invalid values") {
+        NonZeroDouble.tryingValid(0.0) should matchPattern { case Failure(_: AssertionError) => }
+        NonZeroDouble.tryingValid(Double.NaN) should matchPattern { case Failure(_: AssertionError) => }
+      }
+    }
+
+    describe("Or / Validation helpers") {
+      it("should return Good for valid values and Bad otherwise") {
+        NonZeroDouble.goodOrElse(42.0)(_ => "err") match {
+          case Good(value) => value.value shouldBe 42.0
+          case _ => fail("expected Good")
+        }
+        NonZeroDouble.goodOrElse(0.0)(_ => "err") shouldBe Bad("err")
+        NonZeroDouble.goodOrElse(Double.NaN)(_ => "err") shouldBe Bad("err")
+      }
+      it("should return Right for valid values and Left otherwise") {
+        NonZeroDouble.rightOrElse(42.0)(_ => "err") match {
+          case Right(value) => value.value shouldBe 42.0
+          case _ => fail("expected Right")
+        }
+        NonZeroDouble.rightOrElse(0.0)(_ => "err") shouldBe Left("err")
+        NonZeroDouble.rightOrElse(Double.NaN)(_ => "err") shouldBe Left("err")
+      }
+      it("should return Pass for valid values and Fail otherwise") {
+        NonZeroDouble.passOrElse(42.0)(_ => "err") shouldBe Pass
+        NonZeroDouble.passOrElse(0.0)(_ => "err") shouldBe Fail("err")
+        NonZeroDouble.passOrElse(Double.NaN)(_ => "err") shouldBe Fail("err")
+      }
+      it("should return the default from fromOrElse when invalid") {
+        NonZeroDouble.fromOrElse(42.0, NonZeroDouble(1.0)).value shouldBe 42.0
+        NonZeroDouble.fromOrElse(0.0, NonZeroDouble(1.0)).value shouldBe 1.0
+        NonZeroDouble.fromOrElse(Double.NaN, NonZeroDouble(1.0)).value shouldBe 1.0
+      }
+    }
+
+    describe("ensuringValid extension") {
+      it("should apply the function when the result is a valid NonZeroDouble") {
+        NonZeroDouble.ensuringValid(42.0).ensuringValid(_ * 2).value shouldBe 84.0
+        NonZeroDouble.ensuringValid(42.0).ensuringValid(_ / 2).value shouldBe 21.0
+      }
+      it("should throw AssertionError when the result is zero or NaN") {
+        an[AssertionError] should be thrownBy NonZeroDouble.ensuringValid(42.0).ensuringValid(_ * 0)
+        an[AssertionError] should be thrownBy NonZeroDouble.ensuringValid(42.0).ensuringValid(_ => Double.NaN)
+      }
+    }
+
+    describe("when created with apply method") {
+
+      it("should compile when 8, 8.0f, or 8.0 is passed in, but not 8L") {
+        "NonZeroDouble(8)" should compile
+        NonZeroDouble(8).value shouldEqual 8.0
+        "NonZeroDouble(8L)" shouldNot compile
+        "NonZeroDouble(8.0f)" should compile
+        NonZeroDouble(8.0f).value shouldEqual 8.0
+        "NonZeroDouble(8.0)" should compile
+        NonZeroDouble(8.0).value shouldEqual 8.0
+      }
+
+      it("should not compile when 0, 0L, 0.0f, or 0.0 is passed in") {
+        "NonZeroDouble(0)" shouldNot compile
+        "NonZeroDouble(0L)" shouldNot compile
+        "NonZeroDouble(0.0f)" shouldNot compile
+        "NonZeroDouble(0.0)" shouldNot compile
+      }
+
+      it("should compile when -8, -8.0f, or -8.0 is passed in, but not -8L") {
+        "NonZeroDouble(-8)" should compile
+        NonZeroDouble(-8).value shouldEqual -8.0
+        "NonZeroDouble(-8L)" shouldNot compile
+        "NonZeroDouble(-8.0f)" should compile
+        NonZeroDouble(-8.0f).value shouldEqual -8.0
+        "NonZeroDouble(-8.0)" should compile
+        NonZeroDouble(-8.0).value shouldEqual -8.0
+      }
+
+      }
+
+    describe("when specified as a plain-old Double") {
+
+      def takesNonZeroDouble(pos: NonZeroDouble): Double = pos.value
+
+      it("should compile when 8, 8.0f, or 8.0 is passed in, but not 8L") {
+        "takesNonZeroDouble(8)" should compile
+        takesNonZeroDouble(8) shouldEqual 8.0
+        "takesNonZeroDouble(8L)" shouldNot compile
+        "takesNonZeroDouble(8.0f)" should compile
+        takesNonZeroDouble(8.0f) shouldEqual 8.0
+        "takesNonZeroDouble(8.0)" should compile
+        takesNonZeroDouble(8.0) shouldEqual 8.0
+      }
+
+      it("should compile when -8, -8.0f, or -8.0 is passed in, but not -8L") {
+        "takesNonZeroDouble(-8)" should compile
+        takesNonZeroDouble(-8) shouldEqual -8.0
+        "takesNonZeroDouble(-8L)" shouldNot compile
+        "takesNonZeroDouble(-8.0f)" should compile
+        takesNonZeroDouble(-8.0f) shouldEqual -8.0
+        "takesNonZeroDouble(-8.0)" should compile
+        takesNonZeroDouble(-8.0) shouldEqual -8.0
+      }
+    }
+
+    it("should offer MaxValue, MinValue, and MinPositiveValue factory methods") {
+      NonZeroDouble.MaxValue shouldEqual NonZeroDouble.from(Double.MaxValue).get
+      NonZeroDouble.MinValue shouldEqual NonZeroDouble.from(Double.MinValue).get
+      NonZeroDouble.MinPositiveValue shouldEqual NonZeroDouble.from(Double.MinPositiveValue).get
+    }
+
+    it("should offer PositiveInfinity and NegativeInfinity factory methods") {
+      NonZeroDouble.PositiveInfinity shouldEqual NonZeroDouble.ensuringValid(Double.PositiveInfinity)
+      NonZeroDouble.NegativeInfinity shouldEqual NonZeroDouble.ensuringValid(Double.NegativeInfinity)
+    }
+
+    it("should offer a isPosInfinity method that returns true if the instance is PositiveInfinity") {
+      NonZeroDouble.ensuringValid(Double.PositiveInfinity).isPosInfinity shouldBe true
+      NonZeroDouble(-1.0).isPosInfinity shouldBe false
+    }
+
+    it("should offer a isNegInfinity method that returns true if the instance is NegativeInfinity") {
+      NonZeroDouble.ensuringValid(Double.NegativeInfinity).isNegInfinity shouldBe true
+      NonZeroDouble(-1.0).isNegInfinity shouldBe false
+    }
+
+    it("should offer an 'isWhole' method that is consistent with Double") {
+      NonZeroDouble(3.0).isWhole shouldBe true
+      NonZeroDouble(-3.0).isWhole shouldBe true
+      NonZeroDouble(2.5).isWhole shouldBe false
+    }
+
+    it("should offer 'toRadians' and 'toDegrees' methods that are consistent with Double") {
+      NonZeroDouble(2.0).toRadians shouldEqual math.toRadians(2.0)
+      NonZeroDouble(2.0).toDegrees shouldEqual math.toDegrees(2.0)
+    }
+
+    it("should offer 'round', 'ceil', and 'floor' methods") {
+      NonZeroDouble(3.6).round.value shouldBe 4L
+      NonZeroDouble(-3.6).round.value shouldBe -4L
+      NonZeroDouble(3.6).ceil.value shouldBe 4.0
+      NonZeroDouble(-3.6).ceil.value shouldBe -3.0
+      NonZeroDouble(3.6).floor.value shouldBe 3.0
+      NonZeroDouble(-3.6).floor.value shouldBe -4.0
+    }
+
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      NonZeroDouble(3.0).isFinite should be (true)
+      NonZeroDouble.NegativeInfinity.isFinite should be (false)
+      NonZeroDouble.PositiveInfinity.isFinite should be (false)
+    }
+
+    it("should offer an isInfinite method that returns true if the value represents positive or negative infinity") {
+      NonZeroDouble(3.0).isInfinite should be (false)
+      NonZeroDouble.NegativeInfinity.isInfinite should be (true)
+      NonZeroDouble.PositiveInfinity.isInfinite should be (true)
+    }
+
+    describe("Ordering") {
+      it("should provide an Ordering that works for both negative and positive values") {
+        NonZeroDouble(-1924396667.0) should be <= NonZeroDouble(1081481977.0)
+      }
+
+      it("should be sortable") {
+        val xs = List(NonZeroDouble(2.2), NonZeroDouble(4.4), NonZeroDouble(1.1), NonZeroDouble(3.3))
+        xs.sorted shouldEqual List(NonZeroDouble(1.1), NonZeroDouble(2.2), NonZeroDouble(3.3), NonZeroDouble(4.4))
+      }
+    }
+
+    describe("constants") {
+      it("should expose MaxValue, MinValue and MinPositiveValue") {
+        NonZeroDouble.MaxValue.value shouldBe Double.MaxValue
+        NonZeroDouble.MinValue.value shouldBe Double.MinValue
+        NonZeroDouble.MinPositiveValue.value shouldBe Double.MinPositiveValue
+      }
+      it("should expose PositiveInfinity and NegativeInfinity") {
+        NonZeroDouble.PositiveInfinity.value shouldBe Double.PositiveInfinity
+        NonZeroDouble.NegativeInfinity.value shouldBe Double.NegativeInfinity
+      }
+    }
+
   }
 
+  describe("NonZeroDouble") {
+    it("should offer widening methods for basic type Double that are consistent with Double") {
+      def widen(value: Double): Double = value
+      widen(NonZeroDoubles.NonZeroDouble(3.0)) shouldEqual 3.0
+    }
+  }
 }

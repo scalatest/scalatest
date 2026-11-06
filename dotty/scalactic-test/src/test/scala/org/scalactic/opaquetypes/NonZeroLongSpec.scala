@@ -58,8 +58,9 @@ class NonZeroLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers w
       (NonZeroLong(3): Long) shouldEqual 3L
       (NonZeroLong(3).toFloat: Float) shouldEqual 3.0f
       (NonZeroLong(3).toDouble: Double) shouldEqual 3.0
-      (NonZeroLong(3L): NonZeroFloat) shouldEqual NonZeroFloat(3.0f)
-      (NonZeroLong(3L): NonZeroDouble) shouldEqual NonZeroDouble(3.0)
+      // Sanity check that widening conversions from NonZeroLong to NonZeroFloat and NonZeroDouble should not work.
+      "(NonZeroLong(3L): NonZeroFloat)" shouldNot compile
+      "(NonZeroLong(3L): NonZeroDouble)" shouldNot compile
       "(NonZeroLong(3): Int)" shouldNot compile
       "(NonZeroLong(3): PosInt)" shouldNot compile
       "(NonZeroLong(3): PosLong)" shouldNot compile
@@ -371,10 +372,14 @@ class NonZeroLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers w
         (p + long) shouldEqual (p.toLong + long)
       }
       forAll { (p: NonZeroLong, float: Float) =>
-        (p + float) shouldEqual (p.toLong + float)
+        val x = p + float
+        val y = p.toLong + float
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (p: NonZeroLong, double: Double) =>
-        (p + double) shouldEqual (p.toLong + double)
+        val x = p + double
+        val y = p.toLong + double
+        areEqualForgivingNaNs(x, y)
       }
     }
 
@@ -522,16 +527,78 @@ class NonZeroLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers w
       }
              forAll { (p: NonZeroLong) =>
         def widen(value: NonZeroFloat): NonZeroFloat = value
-        widen(p) shouldEqual widen(NonZeroFloat.from(p.toLong).get)
+        "widen(p) shouldEqual widen(NonZeroFloat.from(p.toLong).get)" shouldNot compile
+        succeed
       }
              
       forAll { (p: NonZeroLong) =>
         def widen(value: NonZeroDouble): NonZeroDouble = value
-        widen(p) shouldEqual widen(NonZeroDouble.from(p.toLong).get)
+        "widen(p) shouldEqual widen(NonZeroDouble.from(p.toLong).get)" shouldNot compile
+        succeed
       }
              
     }
 
+    describe("when created with apply method") {
+
+      it("should compile when 8 or 8L is passed in") {
+        "NonZeroLong(8)" should compile
+        NonZeroLong(8).value shouldEqual 8L
+        "NonZeroLong(8L)" should compile
+        NonZeroLong(8L).value shouldEqual 8L
+      }
+
+      it("should not compile when 0 or 0L is passed in") {
+        "NonZeroLong(0)" shouldNot compile
+        "NonZeroLong(0L)" shouldNot compile
+      }
+
+      it("should compile when -8 or -8L is passed in") {
+        "NonZeroLong(-8)" should compile
+        NonZeroLong(-8).value shouldEqual -8L
+        "NonZeroLong(-8L)" should compile
+        NonZeroLong(-8L).value shouldEqual -8L
+      }
+
+      it("should not compile when x is passed in") {
+        val a: Int = -8
+        "NonZeroLong(a)" shouldNot compile
+      }
+    }
+
+    describe("when specified as a plain-old Long") {
+
+      def takesNonZeroLong(pos: NonZeroLong): Long = pos.value
+
+      it("should compile when 8L is passed in") {
+        "takesNonZeroLong(8L)" should compile
+        takesNonZeroLong(8L) shouldEqual 8L
+      }
+
+      it("should compile when -8L is passed in") {
+        "takesNonZeroLong(-8L)" should compile
+        takesNonZeroLong(-8L) shouldEqual -8L
+      }
+
+      it("should not compile when 8 is passed in due to the absence of an Int-to-NonZeroLong conversion") {
+        "takesNonZeroLong(8)" shouldNot compile
+      }
+    }
+
+    it("should offer MaxValue and MinValue factory methods") {
+      NonZeroLong.MaxValue shouldEqual NonZeroLong.from(Long.MaxValue).get
+      NonZeroLong.MinValue shouldEqual NonZeroLong.from(Long.MinValue).get
+    }
+
   }
 
+  describe("NonZeroLong") {
+    it("should offer widening methods for basic type Long that are consistent with Long") {
+      def widen(value: Long): Long = value
+      widen(NonZeroLongs.NonZeroLong(3L)) shouldEqual 3L
+    }
+    it("should have a toString consistent with Long") {
+      (NonZeroLongs.NonZeroLong(3L) : Long).toString shouldBe 3L.toString
+    }
+  }
 }

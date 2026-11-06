@@ -108,6 +108,21 @@ object NegLongs {
       def unary_- : Long = -x
       /** Concatenate the string form of this value with the provided suffix. */
       def +(suffix: String): String = s"${x.toString()}$suffix"
+      /** Numeric addition as Long. */
+      @annotation.targetName("plusByte")
+      def +(y: Byte): Long = x + y
+      @annotation.targetName("plusShort")
+      def +(y: Short): Long = x + y
+      @annotation.targetName("plusChar")
+      def +(y: Char): Long = x + y
+      @annotation.targetName("plusInt")
+      def +(y: Int): Long = x + y
+      @annotation.targetName("plusLong")
+      def +(y: Long): Long = x + y
+      @annotation.targetName("plusFloat")
+      def +(y: Float): Float = x + y
+      @annotation.targetName("plusDouble")
+      def +(y: Double): Double = x + y
       /** Left shift by an Int amount. */
       def <<(shift: Int): Long = x << shift
       /** Left shift by a Long amount. */

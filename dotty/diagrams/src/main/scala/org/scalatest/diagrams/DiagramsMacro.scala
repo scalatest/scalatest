@@ -36,6 +36,15 @@ object DiagramsMacro {
           case _ => false
         }
 
+        def isFunctionParam(tp: TypeRepr): Boolean = {
+          def strip(t: TypeRepr): TypeRepr = t.dealias.widen match {
+            case AnnotatedType(underlying, _) => strip(underlying)
+            case other => other
+          }
+          val t = strip(tp)
+          t.isFunctionType || t.typeSymbol.fullName.startsWith("scala.Function") || t.typeSymbol.fullName.startsWith("scala.runtime.Function")
+        }
+
         def selectField(o: Term, name: String): Term = Select.unique(o, name)
 
         def default(term: Term): Term = term.asExpr match {
@@ -80,7 +89,7 @@ object DiagramsMacro {
               case (arg, ByNameType(_)) =>
                 (diagrams, others :+ byNameExpr(arg))
               case (arg, tp) =>
-                if (tp.widen.typeSymbol.fullName.startsWith("scala.Function")) (diagrams, others :+ byNameExpr(arg))
+                if (isFunctionParam(tp)) (diagrams, others :+ byNameExpr(arg))
                 else (diagrams :+ parse(arg), others)
             }
           }

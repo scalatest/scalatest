@@ -748,6 +748,11 @@ object PosFloats {
       */
     val MinValue: PosFloat = Float.MinPositiveValue
 
+    /** The smallest positive value greater than <code>0.0f</code> representable as a [[PosFloat]],
+      * which is <code>Float.MinPositiveValue</code>.
+      */
+    val MinPositiveValue: PosFloat = Float.MinPositiveValue
+
     /**
       * Positive infinity as a <code>PosFloat</code>, which is
       * <code>PosFloat(Float.PositiveInfinity)</code>.
@@ -1062,6 +1067,11 @@ object PosFloats {
       * The smallest value representable as a positive and finite <code>Float</code>, which is <code>PosZFiniteFloat(0.0f)</code>.
       */
     val MinValue: PosZFiniteFloat = Float.MinPositiveValue
+
+    /** The smallest positive value greater than <code>0.0f</code> representable as a [[PosZFiniteFloat]],
+      * which is <code>Float.MinPositiveValue</code>.
+      */
+    val MinPositiveValue: PosZFiniteFloat = Float.MinPositiveValue
 
     extension (p: PosZFiniteFloat) {
       /**

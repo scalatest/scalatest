@@ -26,9 +26,9 @@ object NonZeroDoubles {
   /** Opaque type representing a non-zero <code>Double</code> value.
     *
     * <p>
-    * Instances of this type are guaranteed to satisfy <code>!= 0.0</code>, but may
-    * be <code>Double.PositiveInfinity</code>, <code>Double.NegativeInfinity</code>,
-    * or <code>Double.NaN</code>.
+    * Instances of this type are guaranteed to satisfy <code>!= 0.0</code> and be
+    * not <code>NaN</code>, but may
+    * be <code>Double.PositiveInfinity</code> or <code>Double.NegativeInfinity</code>.
     * </p>
     *
     * <p>
@@ -74,17 +74,15 @@ object NonZeroDoubles {
           error("NonZeroDouble.apply requires an integer or double literal")
       }
 
-    /** Compile-time factory for creating a [[NonZeroDouble]] from a long literal. */
+    /** Blocking Long literal apply to prevent precision loss. Long to Double can lose precision for values > 2^53.
+      *
+      * This overload always produces a compile-time error. Use explicit widening:
+      * `NonZeroDouble(x.toDouble)`.
+      *
+      * @throws scala.compiletime.error unconditionally
+      */
     inline def apply[L <: Long & Singleton](inline l: L): NonZeroDouble =
-      inline constValueOpt[L] match {
-        case Some(v: Long) =>
-          inline if v != 0L then
-            v.toDouble.asInstanceOf[NonZeroDouble]
-          else
-            error("NonZeroDouble cannot be instantiated with zero")
-        case None =>
-          error("NonZeroDouble.apply requires a long or double literal")
-      }
+      error("NonZeroDouble.apply from Long is not supported due to potential precision loss. Use explicit toDouble: NonZeroDouble(x.toDouble)")
 
     /** Compile-time factory for creating a [[NonZeroDouble]] from a float literal. */
     inline def apply[F <: Float & Singleton](inline f: F): NonZeroDouble =
@@ -111,12 +109,12 @@ object NonZeroDoubles {
       * @throws AssertionError if <code>d</code> is zero
       */
     def ensuringValid(d: Double): NonZeroDouble =
-      if (d == 0.0)
+      if (d == 0.0 || d.isNaN)
         throw new AssertionError(Resources.invalidNonZeroDouble)
       else d
 
-    /** Returns <code>Some(NonZeroDouble)</code> if the given <code>Double</code> is non-zero,
-      * or <code>None</code> otherwise.
+    /** Returns <code>Some(NonZeroDouble)</code> if the given <code>Double</code> is non-zero
+      * and not NaN, or <code>None</code> otherwise.
       *
       * <p>
       * This factory method inspects the value at runtime.  Use the compile-time
@@ -124,10 +122,43 @@ object NonZeroDoubles {
       * </p>
       *
       * @param d the <code>Double</code> to inspect
-      * @return <code>Some(NonZeroDouble)</code> if <code>d != 0.0</code>, else <code>None</code>
+      * @return <code>Some(NonZeroDouble)</code> if <code>d != 0.0 && !d.isNaN</code>, else <code>None</code>
       */
     def from(d: Double): Option[NonZeroDouble] =
-      if (d == 0.0) None else Some(d)
+      if (d == 0.0 || d.isNaN) None else Some(d)
+
+    /** Runtime factory that returns Success for valid input, Failure otherwise.
+      *
+      * @param value the Double to validate
+      * @return Success(NonZeroDouble) if value is non-zero and not NaN,
+      *   else Failure(AssertionError)
+      */
+    def tryingValid(value: Double): Try[NonZeroDouble] =
+      if (isValid(value)) Success(value)
+      else Failure(new AssertionError(Resources.invalidNonZeroDouble))
+
+    /** Predicate indicating whether the given Double is valid for [[NonZeroDouble]].
+      *
+      * @param value the Double to validate
+      * @return true if value is non-zero and not NaN, else false
+      */
+    def isValid(value: Double): Boolean = value != 0.0 && !value.isNaN
+
+    /** Validate a value and return Pass, else Fail(f(value)). */
+    def passOrElse[E](value: Double)(f: Double => E): Validation[E] =
+      if (isValid(value)) Pass else Fail(f(value))
+
+    /** Validate a value and return Good(NonZeroDouble), else Bad(f(value)). */
+    def goodOrElse[B](value: Double)(f: Double => B): NonZeroDouble Or B =
+      if (isValid(value)) Good(value) else Bad(f(value))
+
+    /** Validate a value and return Right(NonZeroDouble), else Left(f(value)). */
+    def rightOrElse[L](value: Double)(f: Double => L): Either[L, NonZeroDouble] =
+      if (isValid(value)) Right(ensuringValid(value)) else Left(f(value))
+
+    /** Return a validated value or the provided default if invalid. */
+    def fromOrElse(value: Double, default: => NonZeroDouble): NonZeroDouble =
+      if (isValid(value)) value else default
 
     /** Implicitly widens a [[NonZeroDouble]] to a plain <code>Double</code>. */
     given Conversion[NonZeroDouble, Double] with {
@@ -166,20 +197,13 @@ object NonZeroDoubles {
       def apply(x: Int): NonZeroDouble = NonZeroDouble.ensuringValid(x.toDouble)
     }
 
-    /** Convert Long to [[NonZeroDouble]] via compile-time or runtime validation. */
+    /** Blocking Long conversion to prevent precision loss. Long to Double can lose precision for values > 2^53. */
     given Conversion[Long, NonZeroDouble] with {
       inline def apply[L <: Long & Singleton](inline x: L): NonZeroDouble =
-        inline constValueOpt[L] match {
-          case Some(v: Long) =>
-            inline if v == 0L then
-              error("NonZeroDouble cannot be instantiated with zero")
-            else
-              v.toDouble.asInstanceOf[NonZeroDouble]
-          case None =>
-            error("NonZeroDouble conversion requires a long literal")
-        }
+        error("NonZeroDouble conversion from Long is not supported due to potential precision loss. Use explicit toDouble: NonZeroDouble(x.toDouble)")
 
-      def apply(x: Long): NonZeroDouble = NonZeroDouble.ensuringValid(x.toDouble)
+      def apply(x: Long): NonZeroDouble =
+        throw new AssertionError("NonZeroDouble conversion from Long is not supported due to potential precision loss. Use explicit toDouble: NonZeroDouble(x.toDouble)")
     }
 
     /** Convert Float to [[NonZeroDouble]] via compile-time or runtime validation. */
@@ -202,6 +226,16 @@ object NonZeroDoubles {
     given Ordering[NonZeroDouble] with {
       def compare(x: NonZeroDouble, y: NonZeroDouble): Int = x.compareTo(y)
     }
+
+    /** The largest value representable as a [[NonZeroDouble]], which is
+      * <code>Double.MaxValue</code>.
+      */
+    val MaxValue: NonZeroDouble = Double.MaxValue
+
+    /** The smallest value representable as a [[NonZeroDouble]], which is
+      * <code>Double.MinValue</code> (i.e. <code>-Double.MaxValue</code>).
+      */
+    val MinValue: NonZeroDouble = Double.MinValue
 
     /** The positive infinity value, which is <code>NonZeroDouble.ensuringValid(Double.PositiveInfinity)</code>. */
     val PositiveInfinity: NonZeroDouble = NonZeroDouble.ensuringValid(Double.PositiveInfinity)
@@ -232,6 +266,19 @@ object NonZeroDoubles {
 
     /** Lesser of this and that value. */
     def min(that: NonZeroDouble): NonZeroDouble = if (math.min(x, that) == x) x else that
+
+    /** Apply `f` to the underlying Double and require the result to remain a valid
+      * [[NonZeroDouble]] (non-zero and not NaN).
+      *
+      * @param f the function to apply
+      * @return f(x) as a [[NonZeroDouble]]
+      * @throws AssertionError if f(x) is zero or NaN
+      */
+    def ensuringValid(f: Double => Double): NonZeroDouble = {
+      val candidateResult: Double = f(x)
+      if (NonZeroDouble.isValid(candidateResult)) candidateResult
+      else throw new AssertionError(Resources.invalidNonZeroDouble)
+    }
 
     /** Indicates whether this `NonZeroDouble` has a value that is a whole number: it is finite and it has no fraction part. */
     def isWhole: Boolean = {
@@ -778,7 +825,12 @@ object NonZeroDoubles {
     inline def apply[D <: Double & Singleton](inline d: D): NonZeroFiniteDouble =
       inline constValueOpt[D] match {
         case Some(v: Double) =>
-          inline if v != 0.0 && v != Double.PositiveInfinity && v != Double.NegativeInfinity && v != Double.NaN then
+          // The final conjunct, v == v, is an "is not NaN" check. I can't use !v.isNaN here because an
+          // `inline if` condition must reduce to a constant at compile time, and a method call like `isNaN`
+          // is not constant-foldable. Directly comparing to Double.NaN wouldn't work either, because per
+          // IEEE 754 NaN != NaN is true, so NaN would slip through. Comparing v to itself instead catches
+          // NaN (NaN == NaN is false) while evaluating to true for every other double.
+          inline if v != 0.0 && v != Double.PositiveInfinity && v != Double.NegativeInfinity && v == v then
             v
           else
             error("NonZeroFiniteDouble cannot be instantiated with zero, infinity, or NaN")
@@ -789,7 +841,7 @@ object NonZeroDoubles {
     /** Returns <code>true</code> if the provided <code>Double</code> is a valid [[NonZeroFiniteDouble]]
       * value — that is, if it is both <code>!= 0.0</code> and finite (<code>isFinite</code>).
       */
-    def isValid(value: Double): Boolean = value != 0.0 && value != Double.PositiveInfinity && value != Double.NegativeInfinity && value != Double.NaN
+    def isValid(value: Double): Boolean = value != 0.0 && value != Double.PositiveInfinity && value != Double.NegativeInfinity && !value.isNaN
 
     /** Returns <code>Some(NonZeroFiniteDouble)</code> if the given <code>Double</code> is a valid
       * [[NonZeroFiniteDouble]] (non-zero and finite), or <code>None</code> otherwise.
@@ -850,10 +902,10 @@ object NonZeroDoubles {
       */
     val MaxValue: NonZeroFiniteDouble = Double.MaxValue
 
-    /** The smallest value representable as a positive and finite [[NonZeroFiniteDouble]], which is
-      * <code>NonZeroFiniteDouble(Double.MinPositiveValue)</code>.
+    /** The most negative value representable as a finite [[NonZeroFiniteDouble]], which is
+      * <code>NonZeroFiniteDouble(Double.MinValue)</code>.
       */
-    val MinValue: NonZeroFiniteDouble = Double.MinPositiveValue
+    val MinValue: NonZeroFiniteDouble = Double.MinValue
 
     /** The smallest positive value representable as a [[NonZeroFiniteDouble]], which is
       * <code>NonZeroFiniteDouble(Double.MinPositiveValue)</code>.
@@ -870,6 +922,11 @@ object NonZeroDoubles {
         if (NonZeroFiniteDouble.isValid(candidateResult)) NonZeroFiniteDouble.ensuringValid(candidateResult)
         else throw new AssertionError(s"${candidateResult.toString()}, the result of applying the passed function to ${p.toString()}, was not a valid NonZeroFiniteDouble")
       }
+    }
+
+    /** Ordering instance for NonZeroFiniteDouble that orders by numeric value. */
+    given Ordering[NonZeroFiniteDouble] with {
+      def compare(x: NonZeroFiniteDouble, y: NonZeroFiniteDouble): Int = x.compareTo(y)
     }
   }
 }

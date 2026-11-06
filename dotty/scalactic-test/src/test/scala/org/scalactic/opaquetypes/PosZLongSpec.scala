@@ -399,5 +399,425 @@ class PosZLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with
       an [AssertionError] should be thrownBy { PosZLong.MaxValue.ensuringValid(_ + 1L) }
     }
   }
+  describe("PosZLong") {
+    it("should be automatically widened to compatible AnyVal targets") {
+      (PosLongs.PosZLong(3L) : Long) shouldEqual 3L
+      "(PosLongs.PosZLong(3L) : Byte)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : Short)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : Char)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : Int)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : Float)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : Double)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : PosInts.PosInt)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : PosInts.PosZInt)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : NegInts.NegInt)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : NegInts.NegZInt)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : NonZeroInts.NonZeroInt)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : Percentages.PercentageInt)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : Numerics.NumericChar)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : PosLongs.PosLong)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : NegLongs.NegLong)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : NegLongs.NegZLong)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : NonZeroLongs.NonZeroLong)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : PosFloats.PosFloat)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : PosFloats.PosZFloat)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : NegFloats.NegFloat)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : NegFloats.NegZFloat)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : NonZeroFloats.NonZeroFloat)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : NonZeroFloats.NonZeroFiniteFloat)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : PosFloats.PosFiniteFloat)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : PosFloats.PosZFiniteFloat)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : NegFloats.NegFiniteFloat)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : NegFloats.NegZFiniteFloat)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : Finites.FiniteFloat)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : PosDoubles.PosDouble)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : PosDoubles.PosZDouble)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : NegDoubles.NegDouble)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : NegDoubles.NegZDouble)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : NonZeroDoubles.NonZeroDouble)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : NonZeroDoubles.NonZeroFiniteDouble)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : PosDoubles.PosFiniteDouble)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : PosDoubles.PosZFiniteDouble)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : NegDoubles.NegFiniteDouble)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : NegDoubles.NegZFiniteDouble)" shouldNot compile
+      "(PosLongs.PosZLong(3L) : Finites.FiniteDouble)" shouldNot compile
+    }
+    it("when a compatible AnyVal is passed to a + method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      PosLongs.PosZLong(3L) + 3.toByte shouldEqual 6L
+      PosLongs.PosZLong(3L) + 3.toShort shouldEqual 6L
+      PosLongs.PosZLong(3L) + '3' shouldEqual 54L
+      PosLongs.PosZLong(3L) + 3 shouldEqual 6L
+      PosLongs.PosZLong(3L) + 3L shouldEqual 6L
+      PosLongs.PosZLong(3L) + 3.0f shouldEqual 6.0f
+      PosLongs.PosZLong(3L) + 3.0 shouldEqual 6.0
+      PosLongs.PosZLong(3L) + PosInts.PosInt(3) shouldEqual 6L
+      PosLongs.PosZLong(3L) + PosInts.PosZInt(3) shouldEqual 6L
+      PosLongs.PosZLong(3L) + NegInts.NegInt(-3) shouldEqual 0L
+      PosLongs.PosZLong(3L) + NegInts.NegZInt(-3) shouldEqual 0L
+      PosLongs.PosZLong(3L) + NonZeroInts.NonZeroInt(3) shouldEqual 6L
+      PosLongs.PosZLong(3L) + Percentages.PercentageInt(50) shouldEqual 53L
+      PosLongs.PosZLong(3L) + PosLongs.PosLong(3L) shouldEqual 6L
+      PosLongs.PosZLong(3L) + NegLongs.NegLong(-3L) shouldEqual 0L
+      PosLongs.PosZLong(3L) + NegLongs.NegZLong(-3L) shouldEqual 0L
+      PosLongs.PosZLong(3L) + NonZeroLongs.NonZeroLong(3L) shouldEqual 6L
+      PosLongs.PosZLong(3L) + PosFloats.PosFloat(3.0f) shouldEqual 6.0f
+      PosLongs.PosZLong(3L) + PosFloats.PosZFloat(3.0f) shouldEqual 6.0f
+      PosLongs.PosZLong(3L) + NegFloats.NegFloat(-3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) + NegFloats.NegZFloat(-3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) + NonZeroFloats.NonZeroFloat(3.0f) shouldEqual 6.0f
+      PosLongs.PosZLong(3L) + NonZeroFloats.NonZeroFiniteFloat(3.0f) shouldEqual 6.0f
+      PosLongs.PosZLong(3L) + PosFloats.PosFiniteFloat(3.0f) shouldEqual 6.0f
+      PosLongs.PosZLong(3L) + PosFloats.PosZFiniteFloat(3.0f) shouldEqual 6.0f
+      PosLongs.PosZLong(3L) + NegFloats.NegFiniteFloat(-3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) + NegFloats.NegZFiniteFloat(-3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) + Finites.FiniteFloat(3.0f) shouldEqual 6.0f
+      PosLongs.PosZLong(3L) + PosDoubles.PosDouble(3.0) shouldEqual 6.0
+      PosLongs.PosZLong(3L) + NegDoubles.NegDouble(-3.0) shouldEqual 0.0
+      PosLongs.PosZLong(3L) + NegDoubles.NegZDouble(-3.0) shouldEqual 0.0
+      PosLongs.PosZLong(3L) + NonZeroDoubles.NonZeroDouble(3.0) shouldEqual 6.0
+      PosLongs.PosZLong(3L) + NonZeroDoubles.NonZeroFiniteDouble(3.0) shouldEqual 6.0
+      PosLongs.PosZLong(3L) + PosDoubles.PosFiniteDouble(3.0) shouldEqual 6.0
+      PosLongs.PosZLong(3L) + PosDoubles.PosZFiniteDouble(3.0) shouldEqual 6.0
+      PosLongs.PosZLong(3L) + NegDoubles.NegFiniteDouble(-3.0) shouldEqual 0.0
+      PosLongs.PosZLong(3L) + NegDoubles.NegZFiniteDouble(-3.0) shouldEqual 0.0
+      PosLongs.PosZLong(3L) + Finites.FiniteDouble(3.0) shouldEqual 6.0
+    }
+    it("when a compatible AnyVal is passed to a - method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      PosLongs.PosZLong(3L) - 3.toByte shouldEqual 0L
+      PosLongs.PosZLong(3L) - 3.toShort shouldEqual 0L
+      PosLongs.PosZLong(3L) - '3' shouldEqual -48L
+      PosLongs.PosZLong(3L) - 3 shouldEqual 0L
+      PosLongs.PosZLong(3L) - 3L shouldEqual 0L
+      PosLongs.PosZLong(3L) - 3.0f shouldEqual 0.0f
+      PosLongs.PosZLong(3L) - 3.0 shouldEqual 0.0
+      PosLongs.PosZLong(3L) - PosInts.PosInt(3) shouldEqual 0L
+      PosLongs.PosZLong(3L) - PosInts.PosZInt(3) shouldEqual 0L
+      PosLongs.PosZLong(3L) - NegInts.NegInt(-3) shouldEqual 6L
+      PosLongs.PosZLong(3L) - NegInts.NegZInt(-3) shouldEqual 6L
+      PosLongs.PosZLong(3L) - NonZeroInts.NonZeroInt(3) shouldEqual 0L
+      PosLongs.PosZLong(3L) - Percentages.PercentageInt(50) shouldEqual -47L
+      PosLongs.PosZLong(3L) - PosLongs.PosLong(3L) shouldEqual 0L
+      PosLongs.PosZLong(3L) - NegLongs.NegLong(-3L) shouldEqual 6L
+      PosLongs.PosZLong(3L) - NegLongs.NegZLong(-3L) shouldEqual 6L
+      PosLongs.PosZLong(3L) - NonZeroLongs.NonZeroLong(3L) shouldEqual 0L
+      PosLongs.PosZLong(3L) - PosFloats.PosFloat(3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) - PosFloats.PosZFloat(3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) - NegFloats.NegFloat(-3.0f) shouldEqual 6.0f
+      PosLongs.PosZLong(3L) - NegFloats.NegZFloat(-3.0f) shouldEqual 6.0f
+      PosLongs.PosZLong(3L) - NonZeroFloats.NonZeroFloat(3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) - NonZeroFloats.NonZeroFiniteFloat(3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) - PosFloats.PosFiniteFloat(3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) - PosFloats.PosZFiniteFloat(3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) - NegFloats.NegFiniteFloat(-3.0f) shouldEqual 6.0f
+      PosLongs.PosZLong(3L) - NegFloats.NegZFiniteFloat(-3.0f) shouldEqual 6.0f
+      PosLongs.PosZLong(3L) - Finites.FiniteFloat(3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) - PosDoubles.PosDouble(3.0) shouldEqual 0.0
+      PosLongs.PosZLong(3L) - NegDoubles.NegDouble(-3.0) shouldEqual 6.0
+      PosLongs.PosZLong(3L) - NegDoubles.NegZDouble(-3.0) shouldEqual 6.0
+      PosLongs.PosZLong(3L) - NonZeroDoubles.NonZeroDouble(3.0) shouldEqual 0.0
+      PosLongs.PosZLong(3L) - NonZeroDoubles.NonZeroFiniteDouble(3.0) shouldEqual 0.0
+      PosLongs.PosZLong(3L) - PosDoubles.PosFiniteDouble(3.0) shouldEqual 0.0
+      PosLongs.PosZLong(3L) - PosDoubles.PosZFiniteDouble(3.0) shouldEqual 0.0
+      PosLongs.PosZLong(3L) - NegDoubles.NegFiniteDouble(-3.0) shouldEqual 6.0
+      PosLongs.PosZLong(3L) - NegDoubles.NegZFiniteDouble(-3.0) shouldEqual 6.0
+      PosLongs.PosZLong(3L) - Finites.FiniteDouble(3.0) shouldEqual 0.0
+    }
+    it("when a compatible AnyVal is passed to a * method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      PosLongs.PosZLong(3L) * 3.toByte shouldEqual 9L
+      PosLongs.PosZLong(3L) * 3.toShort shouldEqual 9L
+      PosLongs.PosZLong(3L) * '3' shouldEqual 153L
+      PosLongs.PosZLong(3L) * 3 shouldEqual 9L
+      PosLongs.PosZLong(3L) * 3L shouldEqual 9L
+      PosLongs.PosZLong(3L) * 3.0f shouldEqual 9.0f
+      PosLongs.PosZLong(3L) * 3.0 shouldEqual 9.0
+      PosLongs.PosZLong(3L) * PosInts.PosInt(3) shouldEqual 9L
+      PosLongs.PosZLong(3L) * PosInts.PosZInt(3) shouldEqual 9L
+      PosLongs.PosZLong(3L) * NegInts.NegInt(-3) shouldEqual -9L
+      PosLongs.PosZLong(3L) * NegInts.NegZInt(-3) shouldEqual -9L
+      PosLongs.PosZLong(3L) * NonZeroInts.NonZeroInt(3) shouldEqual 9L
+      PosLongs.PosZLong(3L) * Percentages.PercentageInt(50) shouldEqual 150L
+      PosLongs.PosZLong(3L) * PosLongs.PosLong(3L) shouldEqual 9L
+      PosLongs.PosZLong(3L) * NegLongs.NegLong(-3L) shouldEqual -9L
+      PosLongs.PosZLong(3L) * NegLongs.NegZLong(-3L) shouldEqual -9L
+      PosLongs.PosZLong(3L) * NonZeroLongs.NonZeroLong(3L) shouldEqual 9L
+      PosLongs.PosZLong(3L) * PosFloats.PosFloat(3.0f) shouldEqual 9.0f
+      PosLongs.PosZLong(3L) * PosFloats.PosZFloat(3.0f) shouldEqual 9.0f
+      PosLongs.PosZLong(3L) * NegFloats.NegFloat(-3.0f) shouldEqual -9.0f
+      PosLongs.PosZLong(3L) * NegFloats.NegZFloat(-3.0f) shouldEqual -9.0f
+      PosLongs.PosZLong(3L) * NonZeroFloats.NonZeroFloat(3.0f) shouldEqual 9.0f
+      PosLongs.PosZLong(3L) * NonZeroFloats.NonZeroFiniteFloat(3.0f) shouldEqual 9.0f
+      PosLongs.PosZLong(3L) * PosFloats.PosFiniteFloat(3.0f) shouldEqual 9.0f
+      PosLongs.PosZLong(3L) * PosFloats.PosZFiniteFloat(3.0f) shouldEqual 9.0f
+      PosLongs.PosZLong(3L) * NegFloats.NegFiniteFloat(-3.0f) shouldEqual -9.0f
+      PosLongs.PosZLong(3L) * NegFloats.NegZFiniteFloat(-3.0f) shouldEqual -9.0f
+      PosLongs.PosZLong(3L) * Finites.FiniteFloat(3.0f) shouldEqual 9.0f
+      PosLongs.PosZLong(3L) * PosDoubles.PosDouble(3.0) shouldEqual 9.0
+      PosLongs.PosZLong(3L) * NegDoubles.NegDouble(-3.0) shouldEqual -9.0
+      PosLongs.PosZLong(3L) * NegDoubles.NegZDouble(-3.0) shouldEqual -9.0
+      PosLongs.PosZLong(3L) * NonZeroDoubles.NonZeroDouble(3.0) shouldEqual 9.0
+      PosLongs.PosZLong(3L) * NonZeroDoubles.NonZeroFiniteDouble(3.0) shouldEqual 9.0
+      PosLongs.PosZLong(3L) * PosDoubles.PosFiniteDouble(3.0) shouldEqual 9.0
+      PosLongs.PosZLong(3L) * PosDoubles.PosZFiniteDouble(3.0) shouldEqual 9.0
+      PosLongs.PosZLong(3L) * NegDoubles.NegFiniteDouble(-3.0) shouldEqual -9.0
+      PosLongs.PosZLong(3L) * NegDoubles.NegZFiniteDouble(-3.0) shouldEqual -9.0
+      PosLongs.PosZLong(3L) * Finites.FiniteDouble(3.0) shouldEqual 9.0
+    }
+    it("when a compatible AnyVal is passed to a / method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      PosLongs.PosZLong(3L) / 3.toByte shouldEqual 1L
+      PosLongs.PosZLong(3L) / 3.toShort shouldEqual 1L
+      PosLongs.PosZLong(3L) / '3' shouldEqual 0L
+      PosLongs.PosZLong(3L) / 3 shouldEqual 1L
+      PosLongs.PosZLong(3L) / 3L shouldEqual 1L
+      PosLongs.PosZLong(3L) / 3.0f shouldEqual 1.0f
+      PosLongs.PosZLong(3L) / 3.0 shouldEqual 1.0
+      PosLongs.PosZLong(3L) / PosInts.PosInt(3) shouldEqual 1L
+      PosLongs.PosZLong(3L) / PosInts.PosZInt(3) shouldEqual 1L
+      PosLongs.PosZLong(3L) / NegInts.NegInt(-3) shouldEqual -1L
+      PosLongs.PosZLong(3L) / NegInts.NegZInt(-3) shouldEqual -1L
+      PosLongs.PosZLong(3L) / NonZeroInts.NonZeroInt(3) shouldEqual 1L
+      PosLongs.PosZLong(3L) / Percentages.PercentageInt(50) shouldEqual 0L
+      PosLongs.PosZLong(3L) / PosLongs.PosLong(3L) shouldEqual 1L
+      PosLongs.PosZLong(3L) / NegLongs.NegLong(-3L) shouldEqual -1L
+      PosLongs.PosZLong(3L) / NegLongs.NegZLong(-3L) shouldEqual -1L
+      PosLongs.PosZLong(3L) / NonZeroLongs.NonZeroLong(3L) shouldEqual 1L
+      PosLongs.PosZLong(3L) / PosFloats.PosFloat(3.0f) shouldEqual 1.0f
+      PosLongs.PosZLong(3L) / PosFloats.PosZFloat(3.0f) shouldEqual 1.0f
+      PosLongs.PosZLong(3L) / NegFloats.NegFloat(-3.0f) shouldEqual -1.0f
+      PosLongs.PosZLong(3L) / NegFloats.NegZFloat(-3.0f) shouldEqual -1.0f
+      PosLongs.PosZLong(3L) / NonZeroFloats.NonZeroFloat(3.0f) shouldEqual 1.0f
+      PosLongs.PosZLong(3L) / NonZeroFloats.NonZeroFiniteFloat(3.0f) shouldEqual 1.0f
+      PosLongs.PosZLong(3L) / PosFloats.PosFiniteFloat(3.0f) shouldEqual 1.0f
+      PosLongs.PosZLong(3L) / PosFloats.PosZFiniteFloat(3.0f) shouldEqual 1.0f
+      PosLongs.PosZLong(3L) / NegFloats.NegFiniteFloat(-3.0f) shouldEqual -1.0f
+      PosLongs.PosZLong(3L) / NegFloats.NegZFiniteFloat(-3.0f) shouldEqual -1.0f
+      PosLongs.PosZLong(3L) / Finites.FiniteFloat(3.0f) shouldEqual 1.0f
+      PosLongs.PosZLong(3L) / PosDoubles.PosDouble(3.0) shouldEqual 1.0
+      PosLongs.PosZLong(3L) / NegDoubles.NegDouble(-3.0) shouldEqual -1.0
+      PosLongs.PosZLong(3L) / NegDoubles.NegZDouble(-3.0) shouldEqual -1.0
+      PosLongs.PosZLong(3L) / NonZeroDoubles.NonZeroDouble(3.0) shouldEqual 1.0
+      PosLongs.PosZLong(3L) / NonZeroDoubles.NonZeroFiniteDouble(3.0) shouldEqual 1.0
+      PosLongs.PosZLong(3L) / PosDoubles.PosFiniteDouble(3.0) shouldEqual 1.0
+      PosLongs.PosZLong(3L) / PosDoubles.PosZFiniteDouble(3.0) shouldEqual 1.0
+      PosLongs.PosZLong(3L) / NegDoubles.NegFiniteDouble(-3.0) shouldEqual -1.0
+      PosLongs.PosZLong(3L) / NegDoubles.NegZFiniteDouble(-3.0) shouldEqual -1.0
+      PosLongs.PosZLong(3L) / Finites.FiniteDouble(3.0) shouldEqual 1.0
+    }
+    it("when a compatible AnyVal is passed to a % method invoked on it should give the same AnyVal type back at compile time, and correct value at runtime") {
+      PosLongs.PosZLong(3L) % 3.toByte shouldEqual 0L
+      PosLongs.PosZLong(3L) % 3.toShort shouldEqual 0L
+      PosLongs.PosZLong(3L) % '3' shouldEqual 3L
+      PosLongs.PosZLong(3L) % 3 shouldEqual 0L
+      PosLongs.PosZLong(3L) % 3L shouldEqual 0L
+      PosLongs.PosZLong(3L) % 3.0f shouldEqual 0.0f
+      PosLongs.PosZLong(3L) % 3.0 shouldEqual 0.0
+      PosLongs.PosZLong(3L) % PosInts.PosInt(3) shouldEqual 0L
+      PosLongs.PosZLong(3L) % PosInts.PosZInt(3) shouldEqual 0L
+      PosLongs.PosZLong(3L) % NegInts.NegInt(-3) shouldEqual 0L
+      PosLongs.PosZLong(3L) % NegInts.NegZInt(-3) shouldEqual 0L
+      PosLongs.PosZLong(3L) % NonZeroInts.NonZeroInt(3) shouldEqual 0L
+      PosLongs.PosZLong(3L) % Percentages.PercentageInt(50) shouldEqual 3L
+      PosLongs.PosZLong(3L) % PosLongs.PosLong(3L) shouldEqual 0L
+      PosLongs.PosZLong(3L) % NegLongs.NegLong(-3L) shouldEqual 0L
+      PosLongs.PosZLong(3L) % NegLongs.NegZLong(-3L) shouldEqual 0L
+      PosLongs.PosZLong(3L) % NonZeroLongs.NonZeroLong(3L) shouldEqual 0L
+      PosLongs.PosZLong(3L) % PosFloats.PosFloat(3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) % PosFloats.PosZFloat(3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) % NegFloats.NegFloat(-3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) % NegFloats.NegZFloat(-3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) % NonZeroFloats.NonZeroFloat(3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) % NonZeroFloats.NonZeroFiniteFloat(3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) % PosFloats.PosFiniteFloat(3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) % PosFloats.PosZFiniteFloat(3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) % NegFloats.NegFiniteFloat(-3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) % NegFloats.NegZFiniteFloat(-3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) % Finites.FiniteFloat(3.0f) shouldEqual 0.0f
+      PosLongs.PosZLong(3L) % PosDoubles.PosDouble(3.0) shouldEqual 0.0
+      PosLongs.PosZLong(3L) % NegDoubles.NegDouble(-3.0) shouldEqual 0.0
+      PosLongs.PosZLong(3L) % NegDoubles.NegZDouble(-3.0) shouldEqual 0.0
+      PosLongs.PosZLong(3L) % NonZeroDoubles.NonZeroDouble(3.0) shouldEqual 0.0
+      PosLongs.PosZLong(3L) % NonZeroDoubles.NonZeroFiniteDouble(3.0) shouldEqual 0.0
+      PosLongs.PosZLong(3L) % PosDoubles.PosFiniteDouble(3.0) shouldEqual 0.0
+      PosLongs.PosZLong(3L) % PosDoubles.PosZFiniteDouble(3.0) shouldEqual 0.0
+      PosLongs.PosZLong(3L) % NegDoubles.NegFiniteDouble(-3.0) shouldEqual 0.0
+      PosLongs.PosZLong(3L) % NegDoubles.NegZFiniteDouble(-3.0) shouldEqual 0.0
+      PosLongs.PosZLong(3L) % Finites.FiniteDouble(3.0) shouldEqual 0.0
+    }
+    it("should offer '<' comparison that is consistent with Long") {
+      (PosLongs.PosZLong(3L) < 3.toByte) shouldEqual false
+      (PosLongs.PosZLong(3L) < 3.toShort) shouldEqual false
+      (PosLongs.PosZLong(3L) < '3') shouldEqual true
+      (PosLongs.PosZLong(3L) < 3) shouldEqual false
+      (PosLongs.PosZLong(3L) < 3L) shouldEqual false
+      (PosLongs.PosZLong(3L) < 3.0f) shouldEqual false
+      (PosLongs.PosZLong(3L) < 3.0) shouldEqual false
+      (PosLongs.PosZLong(3L) < PosInts.PosInt(3)) shouldEqual false
+      (PosLongs.PosZLong(3L) < PosInts.PosZInt(3)) shouldEqual false
+      (PosLongs.PosZLong(3L) < NegInts.NegInt(-3)) shouldEqual false
+      (PosLongs.PosZLong(3L) < NegInts.NegZInt(-3)) shouldEqual false
+      (PosLongs.PosZLong(3L) < NonZeroInts.NonZeroInt(3)) shouldEqual false
+      (PosLongs.PosZLong(3L) < Percentages.PercentageInt(50)) shouldEqual true
+      (PosLongs.PosZLong(3L) < PosLongs.PosLong(3L)) shouldEqual false
+      (PosLongs.PosZLong(3L) < NegLongs.NegLong(-3L)) shouldEqual false
+      (PosLongs.PosZLong(3L) < NegLongs.NegZLong(-3L)) shouldEqual false
+      (PosLongs.PosZLong(3L) < NonZeroLongs.NonZeroLong(3L)) shouldEqual false
+      (PosLongs.PosZLong(3L) < PosFloats.PosFloat(3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) < PosFloats.PosZFloat(3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) < NegFloats.NegFloat(-3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) < NegFloats.NegZFloat(-3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) < NonZeroFloats.NonZeroFloat(3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) < NonZeroFloats.NonZeroFiniteFloat(3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) < PosFloats.PosFiniteFloat(3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) < PosFloats.PosZFiniteFloat(3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) < NegFloats.NegFiniteFloat(-3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) < NegFloats.NegZFiniteFloat(-3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) < Finites.FiniteFloat(3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) < PosDoubles.PosDouble(3.0)) shouldEqual false
+      (PosLongs.PosZLong(3L) < NegDoubles.NegDouble(-3.0)) shouldEqual false
+      (PosLongs.PosZLong(3L) < NegDoubles.NegZDouble(-3.0)) shouldEqual false
+      (PosLongs.PosZLong(3L) < NonZeroDoubles.NonZeroDouble(3.0)) shouldEqual false
+      (PosLongs.PosZLong(3L) < NonZeroDoubles.NonZeroFiniteDouble(3.0)) shouldEqual false
+      (PosLongs.PosZLong(3L) < PosDoubles.PosFiniteDouble(3.0)) shouldEqual false
+      (PosLongs.PosZLong(3L) < PosDoubles.PosZFiniteDouble(3.0)) shouldEqual false
+      (PosLongs.PosZLong(3L) < NegDoubles.NegFiniteDouble(-3.0)) shouldEqual false
+      (PosLongs.PosZLong(3L) < NegDoubles.NegZFiniteDouble(-3.0)) shouldEqual false
+      (PosLongs.PosZLong(3L) < Finites.FiniteDouble(3.0)) shouldEqual false
+    }
+    it("should offer '<=' comparison that is consistent with Long") {
+      (PosLongs.PosZLong(3L) <= 3.toByte) shouldEqual true
+      (PosLongs.PosZLong(3L) <= 3.toShort) shouldEqual true
+      (PosLongs.PosZLong(3L) <= '3') shouldEqual true
+      (PosLongs.PosZLong(3L) <= 3) shouldEqual true
+      (PosLongs.PosZLong(3L) <= 3L) shouldEqual true
+      (PosLongs.PosZLong(3L) <= 3.0f) shouldEqual true
+      (PosLongs.PosZLong(3L) <= 3.0) shouldEqual true
+      (PosLongs.PosZLong(3L) <= PosInts.PosInt(3)) shouldEqual true
+      (PosLongs.PosZLong(3L) <= PosInts.PosZInt(3)) shouldEqual true
+      (PosLongs.PosZLong(3L) <= NegInts.NegInt(-3)) shouldEqual false
+      (PosLongs.PosZLong(3L) <= NegInts.NegZInt(-3)) shouldEqual false
+      (PosLongs.PosZLong(3L) <= NonZeroInts.NonZeroInt(3)) shouldEqual true
+      (PosLongs.PosZLong(3L) <= Percentages.PercentageInt(50)) shouldEqual true
+      (PosLongs.PosZLong(3L) <= PosLongs.PosLong(3L)) shouldEqual true
+      (PosLongs.PosZLong(3L) <= NegLongs.NegLong(-3L)) shouldEqual false
+      (PosLongs.PosZLong(3L) <= NegLongs.NegZLong(-3L)) shouldEqual false
+      (PosLongs.PosZLong(3L) <= NonZeroLongs.NonZeroLong(3L)) shouldEqual true
+      (PosLongs.PosZLong(3L) <= PosFloats.PosFloat(3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) <= PosFloats.PosZFloat(3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) <= NegFloats.NegFloat(-3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) <= NegFloats.NegZFloat(-3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) <= NonZeroFloats.NonZeroFloat(3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) <= NonZeroFloats.NonZeroFiniteFloat(3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) <= PosFloats.PosFiniteFloat(3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) <= PosFloats.PosZFiniteFloat(3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) <= NegFloats.NegFiniteFloat(-3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) <= NegFloats.NegZFiniteFloat(-3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) <= Finites.FiniteFloat(3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) <= PosDoubles.PosDouble(3.0)) shouldEqual true
+      (PosLongs.PosZLong(3L) <= NegDoubles.NegDouble(-3.0)) shouldEqual false
+      (PosLongs.PosZLong(3L) <= NegDoubles.NegZDouble(-3.0)) shouldEqual false
+      (PosLongs.PosZLong(3L) <= NonZeroDoubles.NonZeroDouble(3.0)) shouldEqual true
+      (PosLongs.PosZLong(3L) <= NonZeroDoubles.NonZeroFiniteDouble(3.0)) shouldEqual true
+      (PosLongs.PosZLong(3L) <= PosDoubles.PosFiniteDouble(3.0)) shouldEqual true
+      (PosLongs.PosZLong(3L) <= PosDoubles.PosZFiniteDouble(3.0)) shouldEqual true
+      (PosLongs.PosZLong(3L) <= NegDoubles.NegFiniteDouble(-3.0)) shouldEqual false
+      (PosLongs.PosZLong(3L) <= NegDoubles.NegZFiniteDouble(-3.0)) shouldEqual false
+      (PosLongs.PosZLong(3L) <= Finites.FiniteDouble(3.0)) shouldEqual true
+    }
+    it("should offer '>' comparison that is consistent with Long") {
+      (PosLongs.PosZLong(3L) > 3.toByte) shouldEqual false
+      (PosLongs.PosZLong(3L) > 3.toShort) shouldEqual false
+      (PosLongs.PosZLong(3L) > '3') shouldEqual false
+      (PosLongs.PosZLong(3L) > 3) shouldEqual false
+      (PosLongs.PosZLong(3L) > 3L) shouldEqual false
+      (PosLongs.PosZLong(3L) > 3.0f) shouldEqual false
+      (PosLongs.PosZLong(3L) > 3.0) shouldEqual false
+      (PosLongs.PosZLong(3L) > PosInts.PosInt(3)) shouldEqual false
+      (PosLongs.PosZLong(3L) > PosInts.PosZInt(3)) shouldEqual false
+      (PosLongs.PosZLong(3L) > NegInts.NegInt(-3)) shouldEqual true
+      (PosLongs.PosZLong(3L) > NegInts.NegZInt(-3)) shouldEqual true
+      (PosLongs.PosZLong(3L) > NonZeroInts.NonZeroInt(3)) shouldEqual false
+      (PosLongs.PosZLong(3L) > Percentages.PercentageInt(50)) shouldEqual false
+      (PosLongs.PosZLong(3L) > PosLongs.PosLong(3L)) shouldEqual false
+      (PosLongs.PosZLong(3L) > NegLongs.NegLong(-3L)) shouldEqual true
+      (PosLongs.PosZLong(3L) > NegLongs.NegZLong(-3L)) shouldEqual true
+      (PosLongs.PosZLong(3L) > NonZeroLongs.NonZeroLong(3L)) shouldEqual false
+      (PosLongs.PosZLong(3L) > PosFloats.PosFloat(3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) > PosFloats.PosZFloat(3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) > NegFloats.NegFloat(-3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) > NegFloats.NegZFloat(-3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) > NonZeroFloats.NonZeroFloat(3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) > NonZeroFloats.NonZeroFiniteFloat(3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) > PosFloats.PosFiniteFloat(3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) > PosFloats.PosZFiniteFloat(3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) > NegFloats.NegFiniteFloat(-3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) > NegFloats.NegZFiniteFloat(-3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) > Finites.FiniteFloat(3.0f)) shouldEqual false
+      (PosLongs.PosZLong(3L) > PosDoubles.PosDouble(3.0)) shouldEqual false
+      (PosLongs.PosZLong(3L) > NegDoubles.NegDouble(-3.0)) shouldEqual true
+      (PosLongs.PosZLong(3L) > NegDoubles.NegZDouble(-3.0)) shouldEqual true
+      (PosLongs.PosZLong(3L) > NonZeroDoubles.NonZeroDouble(3.0)) shouldEqual false
+      (PosLongs.PosZLong(3L) > NonZeroDoubles.NonZeroFiniteDouble(3.0)) shouldEqual false
+      (PosLongs.PosZLong(3L) > PosDoubles.PosFiniteDouble(3.0)) shouldEqual false
+      (PosLongs.PosZLong(3L) > PosDoubles.PosZFiniteDouble(3.0)) shouldEqual false
+      (PosLongs.PosZLong(3L) > NegDoubles.NegFiniteDouble(-3.0)) shouldEqual true
+      (PosLongs.PosZLong(3L) > NegDoubles.NegZFiniteDouble(-3.0)) shouldEqual true
+      (PosLongs.PosZLong(3L) > Finites.FiniteDouble(3.0)) shouldEqual false
+    }
+    it("should offer '>=' comparison that is consistent with Long") {
+      (PosLongs.PosZLong(3L) >= 3.toByte) shouldEqual true
+      (PosLongs.PosZLong(3L) >= 3.toShort) shouldEqual true
+      (PosLongs.PosZLong(3L) >= '3') shouldEqual false
+      (PosLongs.PosZLong(3L) >= 3) shouldEqual true
+      (PosLongs.PosZLong(3L) >= 3L) shouldEqual true
+      (PosLongs.PosZLong(3L) >= 3.0f) shouldEqual true
+      (PosLongs.PosZLong(3L) >= 3.0) shouldEqual true
+      (PosLongs.PosZLong(3L) >= PosInts.PosInt(3)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= PosInts.PosZInt(3)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= NegInts.NegInt(-3)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= NegInts.NegZInt(-3)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= NonZeroInts.NonZeroInt(3)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= Percentages.PercentageInt(50)) shouldEqual false
+      (PosLongs.PosZLong(3L) >= PosLongs.PosLong(3L)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= NegLongs.NegLong(-3L)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= NegLongs.NegZLong(-3L)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= NonZeroLongs.NonZeroLong(3L)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= PosFloats.PosFloat(3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= PosFloats.PosZFloat(3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= NegFloats.NegFloat(-3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= NegFloats.NegZFloat(-3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= NonZeroFloats.NonZeroFloat(3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= NonZeroFloats.NonZeroFiniteFloat(3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= PosFloats.PosFiniteFloat(3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= PosFloats.PosZFiniteFloat(3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= NegFloats.NegFiniteFloat(-3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= NegFloats.NegZFiniteFloat(-3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= Finites.FiniteFloat(3.0f)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= PosDoubles.PosDouble(3.0)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= NegDoubles.NegDouble(-3.0)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= NegDoubles.NegZDouble(-3.0)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= NonZeroDoubles.NonZeroDouble(3.0)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= NonZeroDoubles.NonZeroFiniteDouble(3.0)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= PosDoubles.PosFiniteDouble(3.0)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= PosDoubles.PosZFiniteDouble(3.0)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= NegDoubles.NegFiniteDouble(-3.0)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= NegDoubles.NegZFiniteDouble(-3.0)) shouldEqual true
+      (PosLongs.PosZLong(3L) >= Finites.FiniteDouble(3.0)) shouldEqual true
+    }
+    it("should offer 'min' and 'max' methods that are consistent with Long") {
+      PosLongs.PosZLong(3L).max(PosLongs.PosZLong(3L)) shouldEqual PosLongs.PosZLong(3L)
+      PosLongs.PosZLong(3L).min(PosLongs.PosZLong(3L)) shouldEqual PosLongs.PosZLong(3L)
+    }
+    it("should return the same type from its unary_+ method") {
+      +PosLongs.PosZLong(3L) shouldEqual PosLongs.PosZLong(3L)
+    }
+    it("should offer a unary - method that is consistent with Long") {
+      (-PosLongs.PosZLong(3L)) shouldEqual -3L
+    }
+    it("should offer widening methods for basic type Long that are consistent with Long") {
+      def widen(value: Long): Long = value
+      widen(PosLongs.PosZLong(3L)) shouldEqual 3L
+    }
+    it("should have a toString consistent with Long") {
+      (PosLongs.PosZLong(3L) : Long).toString shouldBe 3L.toString
+    }
+  }
 }
-

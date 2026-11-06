@@ -745,16 +745,6 @@ object NonZeroLongs {
     def apply(x: NonZeroLong): Long = x
   }
 
-  /** Widen [[NonZeroLong]] to [[NonZeroFloat]]. */
-  given Conversion[NonZeroLong, NonZeroFloats.NonZeroFloat] with {
-    def apply(x: NonZeroLong): NonZeroFloats.NonZeroFloat = NonZeroFloats.NonZeroFloat.ensuringValid(x.toFloat)
-  }
-
-  /** Widen [[NonZeroLong]] to [[NonZeroDouble]]. */
-  given Conversion[NonZeroLong, NonZeroDoubles.NonZeroDouble] with {
-    def apply(x: NonZeroLong): NonZeroDoubles.NonZeroDouble = NonZeroDoubles.NonZeroDouble.ensuringValid(x.toDouble)
-  }
-
   /** Convert Long to [[NonZeroLong]] via compile-time or runtime validation. */
   given Conversion[Long, NonZeroLong] with {
     inline def apply[L <: Long & Singleton](inline x: L): NonZeroLong =

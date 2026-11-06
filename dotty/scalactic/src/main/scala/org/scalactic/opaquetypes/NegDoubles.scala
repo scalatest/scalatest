@@ -516,51 +516,6 @@ object NegDoubles {
         }
 
       def apply(x: Double): NegDouble = NegDouble.ensuringValid(x)
-
-            given Conversion[Int, NegZDouble] with {
-              inline def apply[I <: Int & Singleton](inline x: I): NegZDouble =
-                inline constValueOpt[I] match {
-                  case Some(v: Int) =>
-                    inline if v > 0 then
-                      error("NegZDouble cannot be instantiated with a positive integer literal")
-                    else
-                      v.toDouble.asInstanceOf[NegZDouble]
-                  case None =>
-                    error("NegZDouble conversion requires an integer literal")
-                }
-
-              def apply(x: Int): NegZDouble = NegZDouble.ensuringValid(x.toDouble)
-            }
-
-            given Conversion[Long, NegZDouble] with {
-              inline def apply[L <: Long & Singleton](inline x: L): NegZDouble =
-                inline constValueOpt[L] match {
-                  case Some(v: Long) =>
-                    inline if v > 0L then
-                      error("NegZDouble cannot be instantiated with a positive long literal")
-                    else
-                      v.toDouble.asInstanceOf[NegZDouble]
-                  case None =>
-                    error("NegZDouble conversion requires a long literal")
-                }
-
-              def apply(x: Long): NegZDouble = NegZDouble.ensuringValid(x.toDouble)
-            }
-
-            given Conversion[Float, NegZDouble] with {
-              inline def apply[F <: Float & Singleton](inline x: F): NegZDouble =
-                inline constValueOpt[F] match {
-                  case Some(v: Float) =>
-                    inline if v > 0.0f then
-                      error("NegZDouble cannot be instantiated with a positive float literal")
-                    else
-                      v.toDouble.asInstanceOf[NegZDouble]
-                  case None =>
-                    error("NegZDouble conversion requires a float literal")
-                }
-
-              def apply(x: Float): NegZDouble = NegZDouble.ensuringValid(x.toDouble)
-            }
     }
 
     given Conversion[Int, NegDouble] with {
