@@ -569,7 +569,7 @@ class DirectExpectationsSpec extends AnyFunSpec {
         if (ScalaTestVersions.BuiltForScalaVersion == "2.10")
           assert(fact.factMessage == Resources.expectedNoErrorButGotParseError("reflective compilation has failed: \n\nunclosed string literal\n')' expected but eof found.", "println(\"test)"))
         else if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3."))
-          assert(fact.factMessage == Resources.expectedNoErrorButGotParseError("expression expected but erroneous token found", "println(\"test)"))
+          assert(fact.factMessage == Resources.expectedNoErrorButGotParseError("expression expected but ';' found", "println(\"test)"))
         else
           assert(fact.factMessage == Resources.expectedNoErrorButGotParseError("unclosed string literal", "println(\"test)"))
 
@@ -642,7 +642,7 @@ class DirectExpectationsSpec extends AnyFunSpec {
           assert(fact.factMessage == Resources.expectedNoErrorButGotParseError("reflective compilation has failed: \n\nunclosed string literal\n')' expected but '}' found.", "\nprintln(\"test)\n"))
         else if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3."))
           assert(fact.factMessage == Resources.expectedNoErrorButGotParseError(
-            "expression expected but erroneous token found",
+            "expression expected but ';' found",
             """
               |println("test)
               |""".stripMargin
@@ -1971,7 +1971,7 @@ class DirectExpectationsSpec extends AnyFunSpec {
         if (ScalaTestVersions.BuiltForScalaVersion == "2.10")
           assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("reflective compilation has failed: \n\nunclosed string literal\n')' expected but eof found.", "println(\"test)"))
         else if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3."))
-          assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("expression expected but erroneous token found", "println(\"test)"))
+          assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("expression expected but ';' found", "println(\"test)"))
         else
           assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("unclosed string literal", "println(\"test)"))
         assert(!fact.isVacuousYes)
@@ -2028,7 +2028,7 @@ class DirectExpectationsSpec extends AnyFunSpec {
           assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("reflective compilation has failed: \n\nunclosed string literal\n')' expected but '}' found.", "\nprintln(\"test)\n"))
         else if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3."))
           assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError(
-            "expression expected but erroneous token found",
+            "expression expected but ';' found",
             """
               |println("test)
               |""".stripMargin
