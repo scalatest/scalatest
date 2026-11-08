@@ -226,6 +226,21 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
     util.Try(byNamess(i)(j)).getOrElse(false)
   }
 
+  private def isFunctionParam(fun: Tree, i: Int, j: Int): Boolean = {
+    def strip(tpe: Type): Type = tpe.dealias match {
+      case AnnotatedType(_, underlying) => strip(underlying)
+      case other => other
+    }
+    util.Try {
+      val tpe = strip(fun.tpe.paramLists(i)(j).typeSignature)
+      tpe.typeSymbol.fullName.startsWith("scala.Function") ||
+        tpe.typeSymbol.fullName.startsWith("scala.runtime.Function")
+    }.getOrElse(false)
+  }
+
+  private def isFunctionArg(fun: Tree, arg: Tree, i: Int, j: Int): Boolean =
+    arg.isInstanceOf[Function] || isFunctionParam(fun, i, j)
+
   /**
    * Given a Apply, e.g. a == b, generate AST for the following code:
    *
@@ -250,14 +265,12 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
         currentApply match {
           case Apply(fun, args) =>
             args.zipWithIndex.map { case (arg, j) =>
-              arg match {
-                case func: Function => valDef("$org_scalatest_macro_arg_" + (base + j), byNameExpr(arg)) // ignore function, create a dummy val.
-                case other =>
-                  if (isByName(fun, 0, j))
-                    valDef("$org_scalatest_macro_arg_" + (base + j), byNameExpr(arg))
-                  else
-                    valDef("$org_scalatest_macro_arg_" + (base + j), transformAst(arg))
-              }
+              if (isFunctionArg(fun, arg, 0, j))
+                valDef("$org_scalatest_macro_arg_" + (base + j), byNameExpr(arg)) // ignore function, create a dummy val.
+              else if (isByName(fun, 0, j))
+                valDef("$org_scalatest_macro_arg_" + (base + j), byNameExpr(arg))
+              else
+                valDef("$org_scalatest_macro_arg_" + (base + j), transformAst(arg))
             }
           case _ => List.empty
         }
@@ -272,20 +285,13 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
           currentApply match {
             case Apply(fun, args) =>
               args.zipWithIndex.map { case (arg, j) =>
-                arg match {
-                  case func: Function =>  
-                    Apply(
-                      Select(Select(Ident(TermName("$org_scalatest_macro_arg_" + (base + j))), TermName("value")), TermName("apply")),
-                      List.empty 
-                    )
-                    
-                  case byName if isByName(fun, 0, j) => //byName
-                    Apply(
-                      Select(Select(Ident(TermName("$org_scalatest_macro_arg_" + (base + j))), TermName("value")), TermName("apply")),
-                      List.empty 
-                    ) 
-                  case _ => Select(Ident(TermName("$org_scalatest_macro_arg_" + (base + j))), TermName("value"))
-                }
+                if (isFunctionArg(fun, arg, 0, j) || isByName(fun, 0, j))
+                  Apply(
+                    Select(Select(Ident(TermName("$org_scalatest_macro_arg_" + (base + j))), TermName("value")), TermName("apply")),
+                    List.empty
+                  )
+                else
+                  Select(Ident(TermName("$org_scalatest_macro_arg_" + (base + j))), TermName("value"))
               }
             case _ => currentApply.args
           }
